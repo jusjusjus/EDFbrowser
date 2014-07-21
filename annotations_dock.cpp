@@ -68,11 +68,12 @@ UI_Annotationswindow::UI_Annotationswindow(int file_number, QWidget *w_parent)
   checkbox1->setTristate(false);
   checkbox1->setCheckState(Qt::Checked);
 
-  label1 = new QLabel;
-  label1->setText(" Filter:");
+  // label1 = new QLabel;
+  // label1->setText(" Filter:");
 
   lineedit1 = new QLineEdit;
   lineedit1->setMaxLength(16);
+  lineedit1->setPlaceholderText("Search");
 
   checkbox2 = new QCheckBox("Inv.");
   checkbox2->setGeometry(2, 2, 10, 10);
@@ -111,7 +112,7 @@ UI_Annotationswindow::UI_Annotationswindow(int file_number, QWidget *w_parent)
 
   h_layout = new QHBoxLayout;
   h_layout->addWidget(checkbox1);
-  h_layout->addWidget(label1);
+  // h_layout->addWidget(label1);
   h_layout->addWidget(lineedit1);
   h_layout->addWidget(checkbox2);
 
