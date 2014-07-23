@@ -107,7 +107,7 @@ UI_AnnotationEditwindow::UI_AnnotationEditwindow(int file_number, QWidget *w_par
   
 
   // ### Buttons ###
-  modifybutton = new QPushButton("&Modify");
+  modifybutton = new QPushButton("Modif&y");
   modifybutton->setEnabled(false);
 
   deletebutton = new QPushButton("&Delete");
