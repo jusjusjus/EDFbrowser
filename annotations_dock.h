@@ -53,6 +53,8 @@
 #include <QAction>
 #include <QMessageBox>
 #include <QVariant>
+// #include <QMenu>
+// #include <QMainWindow>
 
 #include <stdio.h>
 #include <stdlib.h>

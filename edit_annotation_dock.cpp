@@ -43,7 +43,7 @@ UI_AnnotationEditwindow::UI_AnnotationEditwindow(int file_number, QWidget *w_par
 
   annotation = mainwindow->annotationlist[file_num];
 
-  dockedit = new QDockWidget("Annotation editor", w_parent);
+  dockedit = new QDockWidget(w_parent);
   dockedit->setAllowedAreas(Qt::TopDockWidgetArea | Qt::BottomDockWidgetArea);
   dockedit->setFeatures(QDockWidget::DockWidgetClosable | QDockWidget::DockWidgetMovable);
 
@@ -52,59 +52,83 @@ UI_AnnotationEditwindow::UI_AnnotationEditwindow(int file_number, QWidget *w_par
 
   dockedit->setWidget(annot_edit_dialog);
 
-  descriptionLabel = new QLabel(annot_edit_dialog);
-  descriptionLabel->setGeometry(10, 10, 78, 25);
-  descriptionLabel->setText("Description");
 
-  annot_descript_lineEdit = new QLineEdit(annot_edit_dialog);
+
+  // ### Annotation ###
+  annot_descript_lineEdit = new QLineEdit();
   annot_descript_lineEdit->setGeometry(90, 10, 150, 25);
+  annot_descript_lineEdit->setPlaceholderText("Enter Annotation Text");
 
-  onsetLabel = new QLabel(annot_edit_dialog);
+  onsetLabel = new QLabel();
   onsetLabel->setGeometry(250, 10, 48, 25);
   onsetLabel->setText("Onset");
 
-  posNegTimebox = new QComboBox(annot_edit_dialog);
+  posNegTimebox = new QComboBox();
   posNegTimebox->setGeometry(300, 10, 35, 25);
   posNegTimebox->setEditable(false);
   posNegTimebox->addItem("+");
   posNegTimebox->addItem("-");
 
-  onset_daySpinbox = new QSpinBox(annot_edit_dialog);
+  onset_daySpinbox = new QSpinBox();
   onset_daySpinbox->setGeometry(335, 10, 45, 25);
   onset_daySpinbox->setRange(0, 99);
   onset_daySpinbox->setSingleStep(1);
   onset_daySpinbox->setValue(0);
 
-  onset_timeEdit = new QTimeEdit(annot_edit_dialog);
+  onset_timeEdit = new QTimeEdit();
   onset_timeEdit->setGeometry(380, 10, 100, 25);
   onset_timeEdit->setDisplayFormat("hh:mm:ss.zzz");
   onset_timeEdit->setMinimumTime(QTime(-1, 0, 0, 0));
 
-  durationLabel = new QLabel(annot_edit_dialog);
+  durationLabel = new QLabel();
   durationLabel->setGeometry(490, 10, 58, 25);
   durationLabel->setText("Duration");
 
-  duration_spinbox = new QDoubleSpinBox(annot_edit_dialog);
+  duration_spinbox = new QDoubleSpinBox();
   duration_spinbox->setGeometry(550, 10, 120, 25);
   duration_spinbox->setRange(-1.0, 10000.0);
   duration_spinbox->setSingleStep(1.0);
   duration_spinbox->setDecimals(3);
   duration_spinbox->setSuffix(" sec");
   duration_spinbox->setValue(-1.0);
+  // ### Annotation ###
 
-  modifybutton = new QPushButton(annot_edit_dialog);
-  modifybutton->setGeometry(720, 10, 100, 25);
-  modifybutton->setText("Modify");
+
+  // ### Annotation container ###
+  QHBoxLayout *annot_specs = new QHBoxLayout();
+  annot_specs->addWidget(annot_descript_lineEdit);
+  annot_specs->addWidget(onsetLabel);
+  annot_specs->addWidget(posNegTimebox);
+  annot_specs->addWidget(onset_daySpinbox);
+  annot_specs->addWidget(onset_timeEdit);
+  annot_specs->addWidget(durationLabel);
+  annot_specs->addWidget(duration_spinbox);
+  // ### Annotation container ###
+  
+
+  // ### Buttons ###
+  modifybutton = new QPushButton("&Modify");
   modifybutton->setEnabled(false);
 
-  deletebutton = new QPushButton(annot_edit_dialog);
-  deletebutton->setGeometry(840, 10, 100, 25);
-  deletebutton->setText("Delete");
+  deletebutton = new QPushButton("&Delete");
   deletebutton->setEnabled(false);
 
-  createbutton = new QPushButton(annot_edit_dialog);
-  createbutton->setGeometry(960, 10, 100, 25);
-  createbutton->setText("Create");
+  createbutton = new QPushButton("&Create");
+  // ### Buttons ###
+  
+
+  // ### Button container ###
+  QHBoxLayout *buttons = new QHBoxLayout();
+  buttons->addWidget(modifybutton);
+  buttons->addWidget(deletebutton);
+  buttons->addWidget(createbutton);
+  // ### Button container ###
+
+
+  QGridLayout* grid = new QGridLayout(annot_edit_dialog);
+  grid->addLayout(annot_specs, 0, 0);
+  grid->addLayout(buttons, 0, 1);
+
 
   QObject::connect(modifybutton, SIGNAL(clicked()),               this, SLOT(modifyButtonClicked()));
   QObject::connect(deletebutton, SIGNAL(clicked()),               this, SLOT(deleteButtonClicked()));

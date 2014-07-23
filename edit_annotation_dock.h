@@ -51,6 +51,8 @@
 #include <QDoubleSpinBox>
 #include <QComboBox>
 #include <QSpinBox>
+#include <QHBoxLayout>
+#include <QGridLayout>
 
 #include <stdio.h>
 #include <stdlib.h>

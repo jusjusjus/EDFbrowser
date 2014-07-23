@@ -51,7 +51,7 @@ UI_Annotationswindow::UI_Annotationswindow(int file_number, QWidget *w_parent)
   palette.setColor(QPalette::Text, mainwindow->maincurve->text_color);
   palette.setColor(QPalette::Base, mainwindow->maincurve->backgroundcolor);
 
-  relative = 1;
+  relative = 0;
 
   selected = -1;
 
@@ -66,10 +66,7 @@ UI_Annotationswindow::UI_Annotationswindow(int file_number, QWidget *w_parent)
   checkbox1 = new QCheckBox("Relative ");
   checkbox1->setGeometry(2, 2, 10, 10);
   checkbox1->setTristate(false);
-  checkbox1->setCheckState(Qt::Checked);
-
-  // label1 = new QLabel;
-  // label1->setText(" Filter:");
+  checkbox1->setCheckState(Qt::Unchecked);
 
   lineedit1 = new QLineEdit;
   lineedit1->setMaxLength(16);
@@ -112,7 +109,6 @@ UI_Annotationswindow::UI_Annotationswindow(int file_number, QWidget *w_parent)
 
   h_layout = new QHBoxLayout;
   h_layout->addWidget(checkbox1);
-  // h_layout->addWidget(label1);
   h_layout->addWidget(lineedit1);
   h_layout->addWidget(checkbox2);
 
@@ -120,6 +116,18 @@ UI_Annotationswindow::UI_Annotationswindow(int file_number, QWidget *w_parent)
   v_layout->addLayout(h_layout);
   v_layout->addWidget(list);
   v_layout->setSpacing(1);
+
+  // ### Menu Bar Item ###
+
+  // QMainWindow* w_inner = new QMainWindow();
+  // w_inner->menuBar()->addMenu(menu);
+
+  // QMenu* menu = new QToolBar(w_inner);
+  // menu->addAction("Relative");
+  // menu->addAction("Invert");
+
+  // ((QMainWindow*)w_parent)->menuBar()->addMenu(menu);
+  // ### Menu Bar Item ###
 
   docklist->setWidget(dialog1);
 
