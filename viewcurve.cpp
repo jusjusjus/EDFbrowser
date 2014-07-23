@@ -161,7 +161,7 @@ void ViewCurve::wheelEvent(QWheelEvent *wheel_event)
   {
     if(wheel_event->delta() > 0)
     {
-      if((mainwindow->viewtime_sync==VIEWTIME_SYNCED_OFFSET)||(mainwindow->viewtime_sync==VIEWTIME_SYNCED_ABSOLUT)||(mainwindow->viewtime_sync==VIEWTIME_USER_DEF_SYNCED))
+      if( (mainwindow->viewtime_sync == VIEWTIME_SYNCED_OFFSET) || (mainwindow->viewtime_sync == VIEWTIME_SYNCED_ABSOLUT) || (mainwindow->viewtime_sync == VIEWTIME_USER_DEF_SYNCED) )
       {
         for(i=0; i<mainwindow->files_open; i++)
         {
@@ -188,7 +188,7 @@ void ViewCurve::wheelEvent(QWheelEvent *wheel_event)
         }
       }
 
-      if(mainwindow->viewtime_sync==VIEWTIME_UNSYNCED)
+      if(mainwindow->viewtime_sync == VIEWTIME_UNSYNCED)
       {
         if(mainwindow->timescale_doubler == 50)
         {
@@ -312,7 +312,7 @@ void ViewCurve::wheelEvent(QWheelEvent *wheel_event)
   }
   else
   {
-    if((mainwindow->viewtime_sync==VIEWTIME_SYNCED_OFFSET)||(mainwindow->viewtime_sync==VIEWTIME_SYNCED_ABSOLUT)||(mainwindow->viewtime_sync==VIEWTIME_USER_DEF_SYNCED))
+    if( (mainwindow->viewtime_sync==VIEWTIME_SYNCED_OFFSET) || (mainwindow->viewtime_sync==VIEWTIME_SYNCED_ABSOLUT) || (mainwindow->viewtime_sync==VIEWTIME_USER_DEF_SYNCED) )
     {
       for(i=0; i<mainwindow->files_open; i++)
       {
@@ -372,7 +372,7 @@ void ViewCurve::mousePressEvent(QMouseEvent *press_event)
 
   setFocus(Qt::MouseFocusReason);
 
-  if(press_event->button()==Qt::LeftButton)
+  if(press_event->button() == Qt::LeftButton)
   {
     crosshair_1.moving = 0;
     crosshair_2.moving = 0;
