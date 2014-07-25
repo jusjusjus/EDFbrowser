@@ -3,7 +3,7 @@
 *
 * Author: Teunis van Beelen
 *
-* Copyright (C) 2007, 2008, 2009, 2010, 2011, 2012, 2013 Teunis van Beelen
+* Copyright (C) 2007, 2008, 2009, 2010, 2011, 2012, 2013, 2014 Teunis van Beelen
 *
 * teuniz@gmail.com
 *
@@ -53,6 +53,8 @@
 #include <QAction>
 #include <QMessageBox>
 #include <QVariant>
+// #include <QMenu>
+// #include <QMainWindow>
 
 #include <stdio.h>
 #include <stdlib.h>

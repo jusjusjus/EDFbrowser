@@ -3,7 +3,7 @@
 *
 * Author: Teunis van Beelen
 *
-* Copyright (C) 2010, 2011, 2012, 2013 Teunis van Beelen
+* Copyright (C) 2010, 2011, 2012, 2013, 2014 Teunis van Beelen
 *
 * teuniz@gmail.com
 *
@@ -56,7 +56,6 @@
 #include "global.h"
 #include "mainwindow.h"
 #include "signalcurve.h"
-#include "fourier.h"
 #include "popup_messagewindow.h"
 #include "utils.h"
 #include "filter.h"
@@ -113,6 +112,7 @@ private:
          *amplitudeLabel;
 
   QCheckBox *sqrtCheckBox,
+            *VlogCheckBox,
             *BWCheckBox;
 
   UI_Flywheel *flywheel1;
@@ -120,6 +120,7 @@ private:
   int samples,
       steps,
       spectrumdialog_is_destroyed,
+      class_is_deleted,
       spectrumdialognumber,
       flywheel_value;
 
@@ -129,9 +130,15 @@ private:
          freqstep,
          maxvalue,
          maxvalue_sqrt,
+         maxvalue_vlog,
+         maxvalue_sqrt_vlog,
+         minvalue_vlog,
+         minvalue_sqrt_vlog,
          *buf1,
          *buf2,
-         *buf3;
+         *buf3,
+         *buf4,
+         *buf5;
 
   char *viewbuf,
        signallabel[512],

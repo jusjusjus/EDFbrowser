@@ -3,7 +3,7 @@
 *
 * Author: Teunis van Beelen
 *
-* Copyright (C) 2007, 2008, 2009, 2010, 2011, 2012, 2013 Teunis van Beelen
+* Copyright (C) 2007, 2008, 2009, 2010, 2011, 2012, 2013, 2014 Teunis van Beelen
 *
 * teuniz@gmail.com
 *
@@ -539,8 +539,8 @@ struct edfhdrblock * EDFfileCheck::check_edf_file(FILE *inputfile, char *txt_str
   {
     if(edfhdr->datarecords<1)
     {
-#ifdef Q_WS_WIN
-      sprintf(txt_string, "Error, number of datarecords is %I64d, expected >0.\n"
+#ifdef Q_OS_WIN32
+      __mingw_sprintf(txt_string, "Error, number of datarecords is %lli, expected >0.\n"
                           "You can fix this problem with the header editor, check the manual for details.",
             edfhdr->datarecords);
 #else
@@ -1632,9 +1632,9 @@ struct edfhdrblock * EDFfileCheck::check_edf_file(FILE *inputfile, char *txt_str
 
     if(l_tmp != l_tmp2)
     {
-#ifdef Q_WS_WIN
-      sprintf(txt_string, "Error, filesize does not match with the calculated filesize based on the parameters\n"
-                          "in the header. Filesize is %I64i and filesize according to header is %I64i.\n"
+#ifdef Q_OS_WIN32
+      __mingw_sprintf(txt_string, "Error, filesize does not match with the calculated filesize based on the parameters\n"
+                          "in the header. Filesize is %lli and filesize according to header is %lli.\n"
                           "You can fix this problem with the header editor, check the manual for details.",
                           l_tmp2, l_tmp);
 #else

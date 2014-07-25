@@ -3,7 +3,7 @@
 *
 * Author: Teunis van Beelen
 *
-* Copyright (C) 2010, 2011, 2012, 2013 Teunis van Beelen
+* Copyright (C) 2010, 2011, 2012, 2013, 2014 Teunis van Beelen
 *
 * teuniz@gmail.com
 *
@@ -57,7 +57,6 @@
 #include "global.h"
 #include "mainwindow.h"
 #include "signalcurve.h"
-#include "fourier.h"
 #include "popup_messagewindow.h"
 #include "utils.h"
 #include "filter.h"
@@ -120,11 +119,13 @@ private:
          *amplitudeLabel;
 
   QRadioButton *sqrtButton,
+               *vlogButton,
                *colorBarButton;
 
   int samples,
       steps,
-      sqrt_powerspectrum,
+      spectrumdock_sqrt,
+      spectrumdock_vlog,
       dashboard;
 
   volatile int busy;
@@ -133,9 +134,15 @@ private:
          freqstep,
          maxvalue,
          maxvalue_sqrt,
+         maxvalue_vlog,
+         maxvalue_sqrt_vlog,
+         minvalue_vlog,
+         minvalue_sqrt_vlog,
          *buf1,
          *buf2,
-         *buf3;
+         *buf3,
+         *buf4,
+         *buf5;
 
   char *viewbuf,
        signallabel[512],
@@ -147,6 +154,7 @@ private slots:
 void update_curve();
 void sliderMoved(int);
 void sqrtButtonClicked(bool);
+void vlogButtonClicked(bool);
 void colorBarButtonClicked(bool);
 void print_to_txt();
 void setdashboard();

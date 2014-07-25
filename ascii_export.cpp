@@ -3,7 +3,7 @@
 *
 * Author: Teunis van Beelen
 *
-* Copyright (C) 2007, 2008, 2009, 2010, 2011, 2012, 2013 Teunis van Beelen
+* Copyright (C) 2007, 2008, 2009, 2010, 2011, 2012, 2013, 2014 Teunis van Beelen
 *
 * teuniz@gmail.com
 *
@@ -61,8 +61,8 @@ UI_AsciiExportwindow::UI_AsciiExportwindow(QWidget *w_parent)
   AsciiExportDialog->setMinimumSize(QSize(800, 180));
   AsciiExportDialog->setMaximumSize(QSize(800, 180));
   AsciiExportDialog->setWindowTitle("Export to ASCII");
-  AsciiExportDialog->setModal(TRUE);
-  AsciiExportDialog->setAttribute(Qt::WA_DeleteOnClose, TRUE);
+  AsciiExportDialog->setModal(true);
+  AsciiExportDialog->setAttribute(Qt::WA_DeleteOnClose, true);
 
   filelist = new QListWidget(AsciiExportDialog);
   filelist->setGeometry(QRect(10, 10, 780, 75));
@@ -151,8 +151,8 @@ void UI_AsciiExportwindow::ExportButtonClicked()
     return;
   }
 
-  ExportButton->setEnabled(FALSE);
-  CloseButton->setEnabled(FALSE);
+  ExportButton->setEnabled(false);
+  CloseButton->setEnabled(false);
 
   for(i=0; i<mainwindow->files_open; i++)
   {
@@ -606,7 +606,7 @@ void UI_AsciiExportwindow::ExportButtonClicked()
 
       qApp->processEvents();
 
-      if(progress.wasCanceled() == TRUE)
+      if(progress.wasCanceled() == true)
       {
         break;
       }

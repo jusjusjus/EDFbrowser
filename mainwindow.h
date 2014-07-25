@@ -3,7 +3,7 @@
 *
 * Author: Teunis van Beelen
 *
-* Copyright (C) 2007, 2008, 2009, 2010, 2011, 2012, 2013 Teunis van Beelen
+* Copyright (C) 2007, 2008, 2009, 2010, 2011, 2012, 2013, 2014 Teunis van Beelen
 *
 * teuniz@gmail.com
 *
@@ -40,24 +40,33 @@
 #include <QFont>
 #include <QToolBar>
 #include <QSlider>
-#include <QPlastiqueStyle>
-#include <QGtkStyle>
-#include <QWindowsStyle>
+#include <QStyle>
+#if QT_VERSION < 0x050000
+  #include <QPlastiqueStyle>
+  #include <QGtkStyle>
+  #include <QWindowsStyle>
+#else
+  #include <QStyleFactory>
+#endif
 #include <QtGlobal>
 #include <QCloseEvent>
 
-#ifdef Q_WS_X11
+#ifdef Q_OS_LINUX
   #include <sys/types.h>
   #include <sys/stat.h>
 #endif
 
-#ifdef Q_WS_MAC
+#ifdef Q_OS_MAC
+#if QT_VERSION < 0x050000
   #include <QMacStyle>
+#else
+  #include <QStyleFactory>
+#endif
   #include <sys/types.h>
   #include <sys/stat.h>
 #endif
 
-#ifdef Q_WS_WIN
+#ifdef Q_OS_WIN32
   #include <windows.h>
   #include <io.h>
   #ifndef CSIDL_COMMON_APPDATA
@@ -202,6 +211,9 @@ public:
       average_bw,
       spectrum_bw,
       spectrum_sqrt,
+      spectrum_vlog,
+      spectrumdock_sqrt,
+      spectrumdock_vlog,
       use_threads,
       check_for_updates,
       amplitude_doubler,
@@ -314,16 +326,6 @@ private:
        montagepath[MAX_PATH_LENGTH],
        recent_file_path[MAX_RECENTFILES][MAX_PATH_LENGTH];
 
-#ifdef BK_MRS_project
-// temporary code for private use in a certain project
-// do not use this code, it will be removed in future
-
-  QAction  *keyboard_bk_mrs_project_act;
-
-  FILE     *bk_mrs_project_file;
-
-#endif
-
   QAction  *former_page_Act,
            *shift_page_left_Act,
            *shift_page_right_Act,
@@ -414,7 +416,7 @@ private:
   void read_recent_file_settings();
   void read_general_settings();
   void write_settings();
-#ifdef Q_WS_WIN
+#ifdef Q_OS_WIN32
   QString specialFolder(int);
 #endif
   long long check_edf_file_datarecords(struct edfhdrblock *);
@@ -512,14 +514,6 @@ private slots:
   void convert_manscan_to_edf();
   void convert_scpecg_to_edf();
 //  void search_pattern();
-
-#ifdef BK_MRS_project
-// temporary code for private use in a certain project
-// do not use this code, it will be removed in future
-
-  void keyboard_bk_mrs_project_func();
-
-#endif
 
 protected:
   void closeEvent(QCloseEvent *);

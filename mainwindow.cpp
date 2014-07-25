@@ -3,7 +3,7 @@
 *
 * Author: Teunis van Beelen
 *
-* Copyright (C) 2007, 2008, 2009, 2010, 2011, 2012, 2013 Teunis van Beelen
+* Copyright (C) 2007, 2008, 2009, 2010, 2011, 2012, 2013, 2014 Teunis van Beelen
 *
 * teuniz@gmail.com
 *
@@ -55,7 +55,7 @@ UI_Mainwindow::UI_Mainwindow()
 
 
   live_stream_timer = new QTimer;
-  live_stream_timer->setSingleShot(TRUE);
+  live_stream_timer->setSingleShot(true);
   QObject::connect(live_stream_timer, SIGNAL(timeout()), this, SLOT(live_stream_timer_func()));
 
   setMinimumSize(QSize(640, 480));
@@ -66,7 +66,7 @@ UI_Mainwindow::UI_Mainwindow()
 
   monofont = new QFont;
 
-#ifdef Q_WS_X11
+#ifdef Q_OS_LINUX
   QApplication::setFont(*myfont);
 
   myfont->setFamily("Arial");
@@ -76,7 +76,7 @@ UI_Mainwindow::UI_Mainwindow()
   monofont->setPixelSize(12);
 #endif
 
-#ifdef Q_WS_MAC
+#ifdef Q_OS_MAC
   QApplication::setFont(*myfont);
 
   myfont->setFamily("Arial");
@@ -86,7 +86,7 @@ UI_Mainwindow::UI_Mainwindow()
   monofont->setPixelSize(12);
 #endif
 
-#ifdef Q_WS_WIN
+#ifdef Q_OS_WIN32
   myfont->setFamily("Tahoma");
   myfont->setPixelSize(11);
 
@@ -214,6 +214,12 @@ UI_Mainwindow::UI_Mainwindow()
 
   spectrum_sqrt = 0;
 
+  spectrum_vlog = 0;
+
+  spectrumdock_sqrt = 0;
+
+  spectrumdock_vlog = 0;
+
   z_score_var.crossoverfreq = 7.5;
   z_score_var.z_threshold = 0.0;
   z_score_var.zscore_page_len = 30;
@@ -267,28 +273,17 @@ UI_Mainwindow::UI_Mainwindow()
   printmenu = new QMenu(this);
   printmenu->setTitle("Print");
   printmenu->addAction("to Printer",    maincurve, SLOT(print_to_printer()), QKeySequence::Print);
+#if QT_VERSION < 0x050000
   printmenu->addAction("to PostScript", maincurve, SLOT(print_to_postscript()));
+#endif
   printmenu->addAction("to PDF",        maincurve, SLOT(print_to_pdf()));
   printmenu->addMenu(print_img_menu);
   printmenu->addAction("to EDF",        this,      SLOT(print_to_edf()));
   printmenu->addAction("to BDF",        this,      SLOT(print_to_bdf()));
 
-
-#ifdef BK_MRS_project
-// temporary code for private use in a certain project
-// do not use this code, it will be removed in future
-  bk_mrs_project_file = NULL;
-
-  keyboard_bk_mrs_project_act = new QAction(this);
-  keyboard_bk_mrs_project_act->setShortcut(Qt::Key_P);
-  this->addAction(keyboard_bk_mrs_project_act);
-  connect(keyboard_bk_mrs_project_act, SIGNAL(triggered()), this, SLOT(keyboard_bk_mrs_project_func()));
-
-#endif
-
   save_act = new QAction("Save as", this);
   save_act->setShortcut(QKeySequence::Save);
-  save_act->setEnabled(FALSE);
+  save_act->setEnabled(false);
   connect(save_act, SIGNAL(triggered()), this, SLOT(save_file()));
 
   filemenu = new QMenu(this);
@@ -357,7 +352,7 @@ UI_Mainwindow::UI_Mainwindow()
   displaymenu->addAction(page_20);
 
   page_30 = new QAction("30 Sec/page", this);
-  page_30->setChecked(TRUE);
+  page_30->setChecked(true);
   displaymenu->addAction(page_30);
 
   page_60 = new QAction("60 Sec/page", this);
@@ -696,23 +691,23 @@ UI_Mainwindow::UI_Mainwindow()
   menubar->addAction(zoomforward_Act);
 
   no_timesync_act = new QAction("no timelock", this);
-  no_timesync_act->setCheckable(TRUE);
+  no_timesync_act->setCheckable(true);
 
   offset_timesync_act = new QAction("synchronize start of files (offset)", this);
-  offset_timesync_act->setCheckable(TRUE);
+  offset_timesync_act->setCheckable(true);
 
   absolut_timesync_act = new QAction("synchronize absolute time", this);
-  absolut_timesync_act->setCheckable(TRUE);
+  absolut_timesync_act->setCheckable(true);
 
   user_def_sync_act = new QAction("user defined synchronizing", this);
-  user_def_sync_act->setCheckable(TRUE);
+  user_def_sync_act->setCheckable(true);
 
   timelock_act_group = new QActionGroup(this);
   timelock_act_group->addAction(no_timesync_act);
   timelock_act_group->addAction(offset_timesync_act);
   timelock_act_group->addAction(absolut_timesync_act);
   timelock_act_group->addAction(user_def_sync_act);
-  absolut_timesync_act->setChecked(TRUE);
+  absolut_timesync_act->setChecked(true);
   connect(timelock_act_group, SIGNAL(triggered(QAction *)), this, SLOT(set_timesync(QAction *)));
 
   sel_viewtime_act_group = new QActionGroup(this);
@@ -742,10 +737,10 @@ UI_Mainwindow::UI_Mainwindow()
 
   helpmenu = new QMenu(this);
   helpmenu->setTitle("&Help");
-#ifdef Q_WS_X11
+#ifdef Q_OS_LINUX
   helpmenu->addAction("Manual",  this, SLOT(show_help()));
 #endif
-#ifdef Q_WS_WIN
+#ifdef Q_OS_WIN32
   helpmenu->addAction("Manual",  this, SLOT(show_help()));
 #endif
   helpmenu->addAction("Keyboard shortcuts", this, SLOT(show_kb_shortcuts()));
@@ -764,13 +759,13 @@ UI_Mainwindow::UI_Mainwindow()
   positionslider->setPageStep(100000);
 
   slidertoolbar = new QToolBar();
-  slidertoolbar->setFloatable(FALSE);
+  slidertoolbar->setFloatable(false);
   slidertoolbar->setAllowedAreas(Qt::TopToolBarArea | Qt::BottomToolBarArea);
   slidertoolbar->addWidget(positionslider);
   addToolBar(Qt::BottomToolBarArea, slidertoolbar);
   QObject::connect(positionslider, SIGNAL(valueChanged(int)), this, SLOT(slider_moved(int)));
-  slidertoolbar->setEnabled(FALSE);
-  positionslider->blockSignals(TRUE);
+  slidertoolbar->setEnabled(false);
+  positionslider->blockSignals(true);
 
   files_open = 0;
   signalcomps = 0;
@@ -1043,7 +1038,7 @@ void UI_Mainwindow::Escape_fun()
   maincurve->crosshair_1.moving = 0;
   maincurve->crosshair_2.moving = 0;
   maincurve->use_move_events = 0;
-  maincurve->setMouseTracking(FALSE);
+  maincurve->setMouseTracking(false);
 
   for(i=0; i<signalcomps; i++)
   {
@@ -1071,17 +1066,17 @@ void UI_Mainwindow::open_stream()
 
   if(files_open == 1)
   {
-    toolsmenu->setEnabled(FALSE);
-    timemenu->setEnabled(FALSE);
-    windowmenu->setEnabled(FALSE);
-    former_page_Act->setEnabled(FALSE);
-    shift_page_left_Act->setEnabled(FALSE);
-    shift_page_right_Act->setEnabled(FALSE);
-    next_page_Act->setEnabled(FALSE);
-    shift_page_up_Act->setEnabled(FALSE);
-    shift_page_down_Act->setEnabled(FALSE);
-    printmenu->setEnabled(FALSE);
-    recent_filesmenu->setEnabled(FALSE);
+    toolsmenu->setEnabled(false);
+    timemenu->setEnabled(false);
+    windowmenu->setEnabled(false);
+    former_page_Act->setEnabled(false);
+    shift_page_left_Act->setEnabled(false);
+    shift_page_right_Act->setEnabled(false);
+    next_page_Act->setEnabled(false);
+    shift_page_up_Act->setEnabled(false);
+    shift_page_down_Act->setEnabled(false);
+    printmenu->setEnabled(false);
+    recent_filesmenu->setEnabled(false);
 
     live_stream_timer->start(live_stream_update_interval);
   }
@@ -1171,225 +1166,6 @@ long long UI_Mainwindow::check_edf_file_datarecords(struct edfhdrblock *hdr)
 }
 
 
-#ifdef BK_MRS_project
-// temporary code for private use in a certain project
-// do not use this code, it will be removed in future
-
-void UI_Mainwindow::keyboard_bk_mrs_project_func()
-{
-  int i, j,
-      len,
-      type,
-      model,
-      order,
-      file_present=0;
-
-  char path[MAX_PATH_LENGTH],
-       str_signal[1024],
-       str_dimension[32];
-
-  double result_mrs,
-         result_rms,
-         frequency,
-         frequency2,
-         ripple;
-
-  struct edfhdrblock *hdr;
-
-
-  hdr = edfheaderlist[0];
-
-  if((!files_open) || (!signalcomps))
-  {
-    return;
-  }
-
-  if(bk_mrs_project_file == NULL)
-  {
-    get_filename_from_path(path, hdr->filename, MAX_PATH_LENGTH);
-    remove_extension_from_filename(path);
-    strcat(path, "_mrs.txt");
-
-    strcpy(path, QFileDialog::getSaveFileName(0, "MRS output file", QString::fromLocal8Bit(path), "Text files (*.txt *.TXT)").toLocal8Bit().data());
-
-    if(!strcmp(path, ""))
-    {
-      return;
-    }
-
-    bk_mrs_project_file = fopeno(path, "rb");
-    if(bk_mrs_project_file != NULL)
-    {
-      fclose(bk_mrs_project_file);
-      bk_mrs_project_file = NULL;
-      file_present = 1;
-    }
-
-    if(file_present)
-    {
-      bk_mrs_project_file = fopeno(path, "ab");
-    }
-    else
-    {
-      bk_mrs_project_file = fopeno(path, "wb");
-    }
-
-    if(bk_mrs_project_file == NULL)
-    {
-      QMessageBox messagewindow(QMessageBox::Critical, "Error", "Can not open outputfile for writing.");
-      messagewindow.exec();
-      return;
-    }
-
-    if(!file_present)
-    {
-      fprintf(bk_mrs_project_file, "starttime,pagetime,signal,number_of_samples,mrs,rms,physical_dimension,file,<filters>\n");
-    }
-  }
-
-  for(i=0; i<signalcomps; i++)
-  {
-    strcpy(str_signal, signalcomp[i]->signallabel);
-    len = strlen(str_signal);
-    for(j=0; j<len; j++)
-    {
-      if(str_signal[j] == ',')
-      {
-        str_signal[j] = '.';
-      }
-    }
-
-    if(signalcomp[i]->stat_cnt)
-    {
-      result_mrs = (signalcomp[i]->stat_sum_rectified / signalcomp[i]->stat_cnt)  * signalcomp[i]->edfhdr->edfparam[signalcomp[i]->edfsignal[0]].bitvalue;
-      result_rms = sqrt(signalcomp[i]->stat_sum_sqr / signalcomp[i]->stat_cnt)  * signalcomp[i]->edfhdr->edfparam[signalcomp[i]->edfsignal[0]].bitvalue;
-    }
-    else
-    {
-      result_mrs = 0.0;
-      result_rms = 0.0;
-    }
-
-    strcpy(str_dimension, signalcomp[i]->physdimension);
-    len = strlen(str_dimension);
-    for(j=0; j<len; j++)
-    {
-      if(str_dimension[j] == ',')
-      {
-        str_dimension[j] = '.';
-      }
-    }
-
-#ifdef Q_WS_WIN
-    fprintf(bk_mrs_project_file, "%I64d.%07I64d,%I64d.%07I64d,%s,%i,%f,%f,%s",
-            hdr->viewtime / TIME_DIMENSION,
-            hdr->viewtime % TIME_DIMENSION,
-            pagetime / TIME_DIMENSION,
-            pagetime % TIME_DIMENSION,
-            str_signal,
-            signalcomp[i]->stat_cnt,
-            result_mrs,
-            result_rms,
-            str_dimension);
-#else
-    fprintf(bk_mrs_project_file, "%lli.%07lli,%lli.%07lli,%s,%i,%f,%f,%s",
-            hdr->viewtime / TIME_DIMENSION,
-            hdr->viewtime % TIME_DIMENSION,
-            pagetime / TIME_DIMENSION,
-            pagetime % TIME_DIMENSION,
-            str_signal,
-            signalcomp[i]->stat_cnt,
-            result_mrs,
-            result_rms,
-            str_dimension);
-#endif
-
-    fprintf(bk_mrs_project_file, ",%s", hdr->filename);
-
-    for(j=0; j<signalcomp[i]->fidfilter_cnt; j++)
-    {
-      type = signalcomp[i]->fidfilter_type[j];
-
-      model = signalcomp[i]->fidfilter_model[j];
-
-      frequency = signalcomp[i]->fidfilter_freq[j];
-
-      frequency2 = signalcomp[i]->fidfilter_freq2[j];
-
-      order = signalcomp[i]->fidfilter_order[j];
-
-      ripple = signalcomp[i]->fidfilter_ripple[j];
-
-      if(type == 0)
-      {
-        fprintf(bk_mrs_project_file, ",HP");
-      }
-
-      if(type == 1)
-      {
-        fprintf(bk_mrs_project_file, ",LP");
-      }
-
-      if(type == 2)
-      {
-        fprintf(bk_mrs_project_file, ",N Res %fHz Q-factor %i", frequency, order);
-      }
-
-      if(type == 3)
-      {
-        fprintf(bk_mrs_project_file, ",BP");
-      }
-
-      if(type == 4)
-      {
-        fprintf(bk_mrs_project_file, ",BS");
-      }
-
-      if(type != 2)
-      {
-        if(model == 0)
-        {
-          fprintf(bk_mrs_project_file, " Bu");
-        }
-
-        if(model == 1)
-        {
-          fprintf(bk_mrs_project_file, " Ch");
-        }
-
-        if(model == 2)
-        {
-          fprintf(bk_mrs_project_file, " Be");
-        }
-
-        if((type == 0) || (type == 1))
-        {
-          fprintf(bk_mrs_project_file, " %fHz %ith order", frequency, order);
-        }
-
-        if((type == 3) || (type == 4))
-        {
-          fprintf(bk_mrs_project_file, " %f-%fHz %ith order", frequency, frequency2, order);
-        }
-
-        if(model == 1)
-        {
-          fprintf(bk_mrs_project_file, " ripple %fdB", ripple);
-        }
-      }
-    }
-
-    fputc('\n', bk_mrs_project_file);
-  }
-
-  fflush(bk_mrs_project_file);
-
-  UI_Messagewindow popupmessage("Message", "Values are written.", NULL, 1000);
-}
-
-#endif
-
-
 void UI_Mainwindow::save_file()
 {
   int len;
@@ -1405,7 +1181,7 @@ void UI_Mainwindow::save_file()
 
   if((!annotations_edited)||(!files_open))
   {
-    save_act->setEnabled(FALSE);
+    save_act->setEnabled(false);
 
     return;
   }
@@ -1472,7 +1248,7 @@ void UI_Mainwindow::save_file()
 
   annotations_edited = 0;
 
-  save_act->setEnabled(FALSE);
+  save_act->setEnabled(false);
 
   annotationEditDock->dockedit->hide();
 
@@ -1673,7 +1449,7 @@ void UI_Mainwindow::sync_by_crosshairs()
 
       maincurve->crosshair_2.x_position = maincurve->crosshair_1.x_position;
 
-      user_def_sync_act->setChecked(TRUE);
+      user_def_sync_act->setChecked(true);
 
       viewtime_sync = VIEWTIME_USER_DEF_SYNCED;
 
@@ -2532,10 +2308,10 @@ void UI_Mainwindow::open_new_file()
     }
 
     sel_viewtime_act[files_open] = new QAction(QString::fromLocal8Bit(edfhdr->filename), this);
-    sel_viewtime_act[files_open]->setCheckable(TRUE);
+    sel_viewtime_act[files_open]->setCheckable(true);
     if(!files_open)
     {
-      sel_viewtime_act[files_open]->setChecked(TRUE);
+      sel_viewtime_act[files_open]->setChecked(true);
     }
     sel_viewtime_act_group->addAction(sel_viewtime_act[files_open]);
     timemenu->addAction(sel_viewtime_act[files_open]);
@@ -2835,8 +2611,8 @@ void UI_Mainwindow::remove_all_signals()
     viewbuf = NULL;
   }
 
-  slidertoolbar->setEnabled(FALSE);
-  positionslider->blockSignals(TRUE);
+  slidertoolbar->setEnabled(false);
+  positionslider->blockSignals(true);
 
   setup_viewbuf();
 }
@@ -2850,17 +2626,17 @@ void UI_Mainwindow::close_all_files()
 
   live_stream_active = 0;
   live_stream_timer->stop();
-  toolsmenu->setEnabled(TRUE);
-  timemenu->setEnabled(TRUE);
-  windowmenu->setEnabled(TRUE);
-  former_page_Act->setEnabled(TRUE);
-  shift_page_left_Act->setEnabled(TRUE);
-  shift_page_right_Act->setEnabled(TRUE);
-  next_page_Act->setEnabled(TRUE);
-  shift_page_up_Act->setEnabled(TRUE);
-  shift_page_down_Act->setEnabled(TRUE);
-  printmenu->setEnabled(TRUE);
-  recent_filesmenu->setEnabled(TRUE);
+  toolsmenu->setEnabled(true);
+  timemenu->setEnabled(true);
+  windowmenu->setEnabled(true);
+  former_page_Act->setEnabled(true);
+  shift_page_left_Act->setEnabled(true);
+  shift_page_right_Act->setEnabled(true);
+  next_page_Act->setEnabled(true);
+  shift_page_up_Act->setEnabled(true);
+  shift_page_down_Act->setEnabled(true);
+  printmenu->setEnabled(true);
+  recent_filesmenu->setEnabled(true);
 
   if(annotations_edited)
   {
@@ -2878,18 +2654,6 @@ void UI_Mainwindow::close_all_files()
   }
 
   annotations_edited = 0;
-
-#ifdef BK_MRS_project
-// temporary code for private use in a certain project
-// do not use this code, it will be removed in future
-
-  if(bk_mrs_project_file != NULL)
-  {
-    fclose(bk_mrs_project_file);
-    bk_mrs_project_file = NULL;
-  }
-
-#endif
 
   remove_all_signals();
 
@@ -2945,7 +2709,7 @@ void UI_Mainwindow::close_all_files()
 
   annotationEditDock->dockedit->hide();
 
-  save_act->setEnabled(FALSE);
+  save_act->setEnabled(false);
 
   annotations_edited = 0;
 
@@ -4378,7 +4142,7 @@ void UI_Mainwindow::setup_viewbuf()
     {
       if(signalcomps && (!live_stream_active))
       {
-        positionslider->blockSignals(TRUE);
+        positionslider->blockSignals(true);
 
         long long record_duration = edfheaderlist[sel_viewtime]->long_data_record_duration * edfheaderlist[sel_viewtime]->datarecords;
 
@@ -4407,20 +4171,20 @@ void UI_Mainwindow::setup_viewbuf()
           }
         }
 
-        slidertoolbar->setEnabled(TRUE);
+        slidertoolbar->setEnabled(true);
       }
       else
       {
-        slidertoolbar->setEnabled(FALSE);
+        slidertoolbar->setEnabled(false);
 
-        positionslider->blockSignals(TRUE);
+        positionslider->blockSignals(true);
       }
 
       maincurve->drawCurve_stage_1();
 
       if(signalcomps && (!live_stream_active))
       {
-        positionslider->blockSignals(FALSE);
+        positionslider->blockSignals(false);
       }
     }
 
@@ -4636,19 +4400,19 @@ void UI_Mainwindow::read_color_settings()
 
   cfg_path[0] = 0;
 
-#ifdef Q_WS_X11
+#ifdef Q_OS_LINUX
   strcpy(cfg_path, getenv("HOME"));
   strcat(cfg_path, "/.");
   strcat(cfg_path, PROGRAM_NAME);
   strcat(cfg_path, "/settings.xml");
 #endif
-#ifdef Q_WS_MAC
+#ifdef Q_OS_MAC
   strcpy(cfg_path, getenv("HOME"));
   strcat(cfg_path, "/.");
   strcat(cfg_path, PROGRAM_NAME);
   strcat(cfg_path, "/settings.xml");
 #endif
-#ifdef Q_WS_WIN
+#ifdef Q_OS_WIN32
   strcpy(cfg_path, specialFolder(CSIDL_APPDATA).toLocal8Bit().data());
   strcat(cfg_path, "\\");
   strcat(cfg_path, PROGRAM_NAME);
@@ -4819,19 +4583,19 @@ void UI_Mainwindow::read_recent_file_settings()
 
   cfg_path[0] = 0;
 
-#ifdef Q_WS_X11
+#ifdef Q_OS_LINUX
   strcpy(cfg_path, getenv("HOME"));
   strcat(cfg_path, "/.");
   strcat(cfg_path, PROGRAM_NAME);
   strcat(cfg_path, "/settings.xml");
 #endif
-#ifdef Q_WS_MAC
+#ifdef Q_OS_MAC
   strcpy(cfg_path, getenv("HOME"));
   strcat(cfg_path, "/.");
   strcat(cfg_path, PROGRAM_NAME);
   strcat(cfg_path, "/settings.xml");
 #endif
-#ifdef Q_WS_WIN
+#ifdef Q_OS_WIN32
   strcpy(cfg_path, specialFolder(CSIDL_APPDATA).toLocal8Bit().data());
   strcat(cfg_path, "\\");
   strcat(cfg_path, PROGRAM_NAME);
@@ -5044,19 +4808,19 @@ void UI_Mainwindow::read_general_settings()
 
   cfg_path[0] = 0;
 
-#ifdef Q_WS_X11
+#ifdef Q_OS_LINUX
   strcpy(cfg_path, getenv("HOME"));
   strcat(cfg_path, "/.");
   strcat(cfg_path, PROGRAM_NAME);
   strcat(cfg_path, "/settings.xml");
 #endif
-#ifdef Q_WS_MAC
+#ifdef Q_OS_MAC
   strcpy(cfg_path, getenv("HOME"));
   strcat(cfg_path, "/.");
   strcat(cfg_path, PROGRAM_NAME);
   strcat(cfg_path, "/settings.xml");
 #endif
-#ifdef Q_WS_WIN
+#ifdef Q_OS_WIN32
   strcpy(cfg_path, specialFolder(CSIDL_APPDATA).toLocal8Bit().data());
   strcat(cfg_path, "\\");
   strcat(cfg_path, PROGRAM_NAME);
@@ -5973,6 +5737,75 @@ void UI_Mainwindow::read_general_settings()
     xml_go_up(xml_hdl);
   }
 
+  if(!(xml_goto_nth_element_inside(xml_hdl, "spectrum_vlog", 0)))
+  {
+    result = xml_get_content_of_element(xml_hdl);
+    if(result==NULL)
+    {
+      xml_close(xml_hdl);
+      return;
+    }
+
+    if(atoi(result) == 1)
+    {
+      spectrum_vlog = 1;
+    }
+    else
+    {
+      spectrum_vlog = 0;
+    }
+
+    free(result);
+
+    xml_go_up(xml_hdl);
+  }
+
+  if(!(xml_goto_nth_element_inside(xml_hdl, "spectrumdock_sqrt", 0)))
+  {
+    result = xml_get_content_of_element(xml_hdl);
+    if(result==NULL)
+    {
+      xml_close(xml_hdl);
+      return;
+    }
+
+    if(atoi(result) == 1)
+    {
+      spectrumdock_sqrt = 1;
+    }
+    else
+    {
+      spectrumdock_sqrt = 0;
+    }
+
+    free(result);
+
+    xml_go_up(xml_hdl);
+  }
+
+  if(!(xml_goto_nth_element_inside(xml_hdl, "spectrumdock_vlog", 0)))
+  {
+    result = xml_get_content_of_element(xml_hdl);
+    if(result==NULL)
+    {
+      xml_close(xml_hdl);
+      return;
+    }
+
+    if(atoi(result) == 1)
+    {
+      spectrumdock_vlog = 1;
+    }
+    else
+    {
+      spectrumdock_vlog = 0;
+    }
+
+    free(result);
+
+    xml_go_up(xml_hdl);
+  }
+
   if(!(xml_goto_nth_element_inside(xml_hdl, "z_score_var.zscore_page_len", 0)))
   {
     result = xml_get_content_of_element(xml_hdl);
@@ -6343,25 +6176,25 @@ void UI_Mainwindow::write_settings()
 
   cfg_path[0] = 0;
 
-#ifdef Q_WS_X11
+#ifdef Q_OS_LINUX
   strcpy(cfg_path, getenv("HOME"));
   strcat(cfg_path, "/.");
   strcat(cfg_path, PROGRAM_NAME);
   mkdir(cfg_path,  S_IRWXU);
   strcat(cfg_path, "/settings.xml");
 #endif
-#ifdef Q_WS_MAC
+#ifdef Q_OS_MAC
   strcpy(cfg_path, getenv("HOME"));
   strcat(cfg_path, "/.");
   strcat(cfg_path, PROGRAM_NAME);
   mkdir(cfg_path,  S_IRWXU);
   strcat(cfg_path, "/settings.xml");
 #endif
-#ifdef Q_WS_WIN
+#ifdef Q_OS_WIN32
   strcpy(cfg_path, specialFolder(CSIDL_APPDATA).toLocal8Bit().data());
   strcat(cfg_path, "\\");
   strcat(cfg_path, PROGRAM_NAME);
-  _mkdir(cfg_path);
+  mkdir(cfg_path);
   strcat(cfg_path, "\\settings.xml");
 #endif
 
@@ -6473,8 +6306,8 @@ void UI_Mainwindow::write_settings()
     fprintf(cfgfile, "      <use_threads>%i</use_threads>\n",
                     use_threads);
 
-#ifdef Q_WS_WIN
-    fprintf(cfgfile, "      <maxfilesize_to_readin_annotations>%I64d</maxfilesize_to_readin_annotations>\n",
+#ifdef Q_OS_WIN32
+    __mingw_fprintf(cfgfile, "      <maxfilesize_to_readin_annotations>%lli</maxfilesize_to_readin_annotations>\n",
                     maxfilesize_to_readin_annotations);
 #else
     fprintf(cfgfile, "      <maxfilesize_to_readin_annotations>%lli</maxfilesize_to_readin_annotations>\n",
@@ -6640,6 +6473,12 @@ void UI_Mainwindow::write_settings()
 
     fprintf(cfgfile, "    <spectrum_sqrt>%i</spectrum_sqrt>\n", spectrum_sqrt);
 
+    fprintf(cfgfile, "    <spectrum_vlog>%i</spectrum_vlog>\n", spectrum_vlog);
+
+    fprintf(cfgfile, "    <spectrumdock_sqrt>%i</spectrumdock_sqrt>\n", spectrumdock_sqrt);
+
+    fprintf(cfgfile, "    <spectrumdock_vlog>%i</spectrumdock_vlog>\n", spectrumdock_vlog);
+
     fprintf(cfgfile, "    <z_score_var.crossoverfreq>%f</z_score_var.crossoverfreq>\n", z_score_var.crossoverfreq);
 
     fprintf(cfgfile, "    <z_score_var.z_threshold>%f</z_score_var.z_threshold>\n", z_score_var.z_threshold);
@@ -6757,11 +6596,11 @@ void UI_Mainwindow::set_dc_offset_to_zero()
 
 void UI_Mainwindow::show_help()
 {
-#ifdef Q_WS_X11
+#ifdef Q_OS_LINUX
   QDesktopServices::openUrl(QUrl("file:///usr/share/doc/edfbrowser/manual.html"));
 #endif
 
-#ifdef Q_WS_WIN
+#ifdef Q_OS_WIN32
   char path[MAX_PATH_LENGTH];
 
   strcpy(path, "file:///");
@@ -6794,7 +6633,7 @@ void UI_Mainwindow::show_kb_shortcuts()
    "\nafter zooming in by dragging a rectangle:\n"
    "Backspace\tzoom back\n"
    "Insert\tzoom in\n"
-#ifdef Q_WS_WIN
+#ifdef Q_OS_WIN32
    "\nCtrl+O\tOpen a file\n"
    "Ctrl+F4\tClose all files\n"
    "Alt+F4\tExit program\n"
@@ -6809,7 +6648,7 @@ void UI_Mainwindow::show_kb_shortcuts()
 
 
 
-#ifdef Q_WS_WIN
+#ifdef Q_OS_WIN32
 
 QString UI_Mainwindow::specialFolder(int type)
 {
@@ -6821,7 +6660,7 @@ QString UI_Mainwindow::specialFolder(int type)
         GetSpecialFolderPath SHGetSpecialFolderPath = (GetSpecialFolderPath)library.resolve("SHGetSpecialFolderPathW");
         if (SHGetSpecialFolderPath) {
             TCHAR path[MAX_PATH];
-            SHGetSpecialFolderPath(0, path, type, FALSE);
+            SHGetSpecialFolderPath(0, path, type, false);
             result = QString::fromUtf16((ushort*)path);
         }
     } , {
@@ -6829,7 +6668,7 @@ QString UI_Mainwindow::specialFolder(int type)
         GetSpecialFolderPath SHGetSpecialFolderPath = (GetSpecialFolderPath)library.resolve("SHGetSpecialFolderPathA");
         if (SHGetSpecialFolderPath) {
             char path[MAX_PATH];
-            SHGetSpecialFolderPath(0, path, type, FALSE);
+            SHGetSpecialFolderPath(0, path, type, false);
             result = QString::fromLocal8Bit(path);
         }
     } );
@@ -6876,6 +6715,12 @@ void UI_Mainwindow::edfplus_annotation_remove_duplicates()
 
   struct annotationblock **list, *annot, *annot_cmp;
 
+  if(!files_open)
+  {
+    QMessageBox messagewindow(QMessageBox::Critical, "Error", "You have to open a file first.");
+    messagewindow.exec();
+    return;
+  }
 
   QProgressDialog progress("Checking for duplicates...", "Abort", 0, 10, this);
   progress.setWindowModality(Qt::WindowModal);
@@ -6902,7 +6747,7 @@ void UI_Mainwindow::edfplus_annotation_remove_duplicates()
 
       qApp->processEvents();
 
-      if(progress.wasCanceled() == TRUE)
+      if(progress.wasCanceled() == true)
       {
         break;
       }
@@ -6951,7 +6796,7 @@ void UI_Mainwindow::edfplus_annotation_remove_duplicates()
 
     annotations_edited = 1;
 
-    save_act->setEnabled(TRUE);
+    save_act->setEnabled(true);
   }
 
   snprintf(str, 256, "Removed %i duplicates from the annotationlist(s)", dup_cnt);

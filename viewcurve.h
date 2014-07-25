@@ -3,7 +3,7 @@
 *
 * Author: Teunis van Beelen
 *
-* Copyright (C) 2007, 2008, 2009, 2010, 2011, 2012, 2013 Teunis van Beelen
+* Copyright (C) 2007, 2008, 2009, 2010, 2011, 2012, 2013, 2014 Teunis van Beelen
 *
 * teuniz@gmail.com
 *
@@ -43,7 +43,11 @@
 #include <QDoubleSpinBox>
 #include <QComboBox>
 #include <QLabel>
+#if QT_VERSION < 0x050000
 #include <QPrinter>
+#else
+#include <QtPrintSupport>
+#endif
 #include <QPixmap>
 #include <QPrintDialog>
 #include <QColor>
@@ -191,7 +195,9 @@ public:
 public slots:
 
   void exec_sidemenu(int);
+#if QT_VERSION < 0x050000
   void print_to_postscript();
+#endif
   void print_to_pdf();
   void print_to_image(int, int);
   void print_to_printer();

@@ -3,7 +3,7 @@
 *
 * Author: Teunis van Beelen
 *
-* Copyright (C) 2009, 2010, 2011, 2012, 2013 Teunis van Beelen
+* Copyright (C) 2009, 2010, 2011, 2012, 2013, 2014 Teunis van Beelen
 *
 * teuniz@gmail.com
 *
@@ -51,6 +51,8 @@
 #include <QDoubleSpinBox>
 #include <QComboBox>
 #include <QSpinBox>
+#include <QHBoxLayout>
+#include <QGridLayout>
 
 #include <stdio.h>
 #include <stdlib.h>

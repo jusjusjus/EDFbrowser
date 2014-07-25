@@ -3,7 +3,7 @@
 *
 * Author: Teunis van Beelen
 *
-* Copyright (C) 2009, 2010, 2011, 2012, 2013 Teunis van Beelen
+* Copyright (C) 2009, 2010, 2011, 2012, 2013, 2014 Teunis van Beelen
 *
 * teuniz@gmail.com
 *
@@ -42,8 +42,10 @@
 #include <QFileDialog>
 #include <QProgressDialog>
 #include <QStyle>
+#if QT_VERSION < 0x050000
 #include <QPlastiqueStyle>
 #include <QWindowsStyle>
+#endif
 #include <QString>
 #include <QByteArray>
 

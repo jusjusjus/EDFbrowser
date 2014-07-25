@@ -3,7 +3,7 @@
 *
 * Author: Teunis van Beelen
 *
-* Copyright (C) 2013 Teunis van Beelen
+* Copyright (C) 2013, 2014 Teunis van Beelen
 *
 * teuniz@gmail.com
 *
@@ -91,8 +91,8 @@ UI_UNISENS2EDFwindow::UI_UNISENS2EDFwindow(char *recent_dir, char *save_dir)
   myobjectDialog->setMinimumSize(QSize(600, 480));
   myobjectDialog->setMaximumSize(QSize(600, 480));
   myobjectDialog->setWindowTitle("Unisens to EDF+ converter");
-  myobjectDialog->setModal(TRUE);
-  myobjectDialog->setAttribute(Qt::WA_DeleteOnClose, TRUE);
+  myobjectDialog->setModal(true);
+  myobjectDialog->setAttribute(Qt::WA_DeleteOnClose, true);
 
   pushButton1 = new QPushButton(myobjectDialog);
   pushButton1->setGeometry(QRect(20, 430, 100, 26));
@@ -105,7 +105,7 @@ UI_UNISENS2EDFwindow::UI_UNISENS2EDFwindow(char *recent_dir, char *save_dir)
   textEdit1 = new QTextEdit(myobjectDialog);
   textEdit1->setGeometry(QRect(20, 20, 560, 380));
   textEdit1->setFrameStyle(QFrame::Panel | QFrame::Sunken);
-  textEdit1->setReadOnly(TRUE);
+  textEdit1->setReadOnly(true);
   textEdit1->setLineWrapMode(QTextEdit::NoWrap);
   sprintf(txt_string, "Unisens to EDF+ converter.\n");
   textEdit1->append(txt_string);
@@ -1116,6 +1116,8 @@ void UI_UNISENS2EDFwindow::SelectFileButton()
 
   long long adcz;
 
+  unsigned long long ul_tmp;
+
   union {
           unsigned int one;
           signed int one_signed;
@@ -1124,6 +1126,12 @@ void UI_UNISENS2EDFwindow::SelectFileButton()
           unsigned char four[4];
           float flp;
         } var;
+
+  union {
+          unsigned long long lone;
+          signed long long lone_signed;
+          double dflp;
+        } var2;
 
 // for(i=0; i<file_cnt; i++)
 // {
@@ -1201,7 +1209,7 @@ void UI_UNISENS2EDFwindow::SelectFileButton()
 
       qApp->processEvents();
 
-      if(progress.wasCanceled() == TRUE)
+      if(progress.wasCanceled() == true)
       {
         break;
       }
@@ -1394,21 +1402,9 @@ void UI_UNISENS2EDFwindow::SelectFileButton()
                         var.four[0] = *((unsigned char *)buf1_t + (((i * signals_t) + j) * 3));
                         var.four[1] = *((unsigned char *)buf1_t + (((i * signals_t) + j) * 3) + 1);
                         var.four[2] = *((unsigned char *)buf1_t + (((i * signals_t) + j) * 3) + 2);
+                        var.four[3] = 0;
 
-                        if(var.four[2] & 0x80)
-                        {
-                          var.four[2] &= 0x7f;
-
-                          var.four[3] = 0x00;
-                        }
-                        else
-                        {
-                          var.four[2] |= 0x80;
-
-                          var.four[3] = 0xff;
-                        }
-
-                        buf2_t[(j * sf_t) + i] = var.one_signed - adcz;
+                        buf2_t[(j * sf_t) + i] = var.one - adcz;
                       }
                     }
                   }
@@ -1442,7 +1438,9 @@ void UI_UNISENS2EDFwindow::SelectFileButton()
                             {
                               tmp3 = *(((signed short *)buf1_t) + (i * signals_t) + j);
 
-                              buf2_t[(j * sf_t) + i] = ((signed short)((((unsigned short)tmp3 & 0xFF00) >> 8) | (((unsigned short)tmp3 & 0x00FF) << 8))) - adcz;
+                              buf2_t[(j * sf_t) + i] = ((signed short)((((unsigned short)tmp3 & 0xFF00) >> 8) |
+                                                                       (((unsigned short)tmp3 & 0x00FF) << 8))
+                                                       ) - adcz;
                             }
                           }
                         }
@@ -1454,7 +1452,9 @@ void UI_UNISENS2EDFwindow::SelectFileButton()
                               {
                                 tmp3 = *(((signed short *)buf1_t) + (i * signals_t) + j);
 
-                                buf2_t[(j * sf_t) + i] = ((unsigned short)((((unsigned short)tmp3 & 0xFF00) >> 8) | (((unsigned short)tmp3 & 0x00FF) << 8)))  - adcz;
+                                buf2_t[(j * sf_t) + i] = ((unsigned short)((((unsigned short)tmp3 & 0xFF00) >> 8) |
+                                                                           (((unsigned short)tmp3 & 0x00FF) << 8))
+                                                         )  - adcz;
                               }
                             }
                           }
@@ -1487,24 +1487,12 @@ void UI_UNISENS2EDFwindow::SelectFileButton()
                                 {
                                   for(j=0; j<signals_t; j++)
                                   {
+                                    var.four[3] = 0;
                                     var.four[2] = *((unsigned char *)buf1_t + (((i * signals_t) + j) * 3));
                                     var.four[1] = *((unsigned char *)buf1_t + (((i * signals_t) + j) * 3) + 1);
                                     var.four[0] = *((unsigned char *)buf1_t + (((i * signals_t) + j) * 3) + 2);
 
-                                    if(var.four[2] & 0x80)
-                                    {
-                                      var.four[2] &= 0x7f;
-
-                                      var.four[3] = 0x00;
-                                    }
-                                    else
-                                    {
-                                      var.four[2] |= 0x80;
-
-                                      var.four[3] = 0xff;
-                                    }
-
-                                    buf2_t[(j * sf_t) + i] = var.one_signed - adcz;
+                                    buf2_t[(j * sf_t) + i] = var.one - adcz;
                                   }
                                 }
                               }
@@ -1536,7 +1524,11 @@ void UI_UNISENS2EDFwindow::SelectFileButton()
                                         {
                                             tmp = *(((signed int *)buf1_t) + (i * signals_t) + j);
 
-                                            buf2_t[(j * sf_t) + i] = ((signed int)((((unsigned int)tmp & 0xFF000000) >> 24) | (((unsigned int)tmp & 0x00FF0000) >> 8) | (((unsigned int)tmp & 0x0000FF00) << 8) | (((unsigned int)tmp & 0x000000FF) << 24))) - adcz;
+                                            buf2_t[(j * sf_t) + i] = ((signed int)((((unsigned int)tmp & 0xFF000000) >> 24) |
+                                                                                   (((unsigned int)tmp & 0x00FF0000) >>  8) |
+                                                                                   (((unsigned int)tmp & 0x0000FF00) <<  8) |
+                                                                                   (((unsigned int)tmp & 0x000000FF) << 24))
+                                                                     ) - adcz;
                                         }
                                       }
                                     }
@@ -1548,7 +1540,11 @@ void UI_UNISENS2EDFwindow::SelectFileButton()
                                           {
                                             tmp = *(((signed int *)buf1_t) + (i * signals_t) + j);
 
-                                            buf2_t[(j * sf_t) + i] = ((unsigned int)((((unsigned int)tmp & 0xFF000000) >> 24) | (((unsigned int)tmp & 0x00FF0000) >> 8) | (((unsigned int)tmp & 0x0000FF00) << 8) | (((unsigned int)tmp & 0x000000FF) << 24))) - adcz;
+                                            buf2_t[(j * sf_t) + i] = ((unsigned int)((((unsigned int)tmp & 0xFF000000) >> 24) |
+                                                                                     (((unsigned int)tmp & 0x00FF0000) >>  8) |
+                                                                                     (((unsigned int)tmp & 0x0000FF00) <<  8) |
+                                                                                     (((unsigned int)tmp & 0x000000FF) << 24))
+                                                                     ) - adcz;
                                           }
                                         }
                                       }
@@ -1570,12 +1566,112 @@ void UI_UNISENS2EDFwindow::SelectFileButton()
                                               {
                                                 tmp = *(((signed int *)buf1_t) + (i * signals_t) + j);
 
-                                                var.one = ((((unsigned int)tmp & 0xFF000000) >> 24) | (((unsigned int)tmp & 0x00FF0000) >> 8) | (((unsigned int)tmp & 0x0000FF00) << 8) | (((unsigned int)tmp & 0x000000FF) << 24));
+                                                var.one = ((((unsigned int)tmp & 0xFF000000) >> 24) |
+                                                           (((unsigned int)tmp & 0x00FF0000) >>  8) |
+                                                           (((unsigned int)tmp & 0x0000FF00) <<  8) |
+                                                           (((unsigned int)tmp & 0x000000FF) << 24));
 
                                                 buf2_t[(j * sf_t) + i] = var.flp - adcz;
                                               }
                                             }
                                           }
+                                          else if(datatype[k] == US_DATATYPE_DOUBLE_LI)
+                                            {
+                                              for(i=0; i<sf_t; i++)
+                                              {
+                                                for(j=0; j<signals_t; j++)
+                                                {
+                                                  buf2_t[(j * sf_t) + i] = (*(((double *)buf1_t) + (i * signals_t) + j) - adcz);
+                                                }
+                                              }
+                                            }
+                                            else if(datatype[k] == US_DATATYPE_DOUBLE_BI)
+                                              {
+                                                for(i=0; i<sf_t; i++)
+                                                {
+                                                  for(j=0; j<signals_t; j++)
+                                                  {
+                                                    ul_tmp = *(((unsigned long long *)buf1_t) + (i * signals_t) + j);
+
+                                                    var2.lone = (((ul_tmp & 0xFF00000000000000) >> 56) |
+                                                                 ((ul_tmp & 0x00FF000000000000) >> 40) |
+                                                                 ((ul_tmp & 0x0000FF0000000000) >> 24) |
+                                                                 ((ul_tmp & 0x000000FF00000000) >>  8) |
+                                                                 ((ul_tmp & 0x00000000FF000000) <<  8) |
+                                                                 ((ul_tmp & 0x0000000000FF0000) << 24) |
+                                                                 ((ul_tmp & 0x000000000000FF00) << 40) |
+                                                                 ((ul_tmp & 0x00000000000000FF) << 56));
+
+                                                    buf2_t[(j * sf_t) + i] = var2.dflp - adcz;
+                                                  }
+                                                }
+                                              }
+                                              else if(datatype[k] == US_DATATYPE_INT64_LI)
+                                                {
+                                                  for(i=0; i<sf_t; i++)
+                                                  {
+                                                    for(j=0; j<signals_t; j++)
+                                                    {
+                                                      buf2_t[(j * sf_t) + i] = *(((signed long long *)buf1_t) + (i * signals_t) + j) - adcz;
+                                                    }
+                                                  }
+                                                }
+                                                else if(datatype[k] == US_DATATYPE_UINT64_LI)
+                                                  {
+                                                    for(i=0; i<sf_t; i++)
+                                                    {
+                                                      for(j=0; j<signals_t; j++)
+                                                      {
+                                                        buf2_t[(j * sf_t) + i] = *(((unsigned long long *)buf1_t) + (i * signals_t) + j) - adcz;
+                                                      }
+                                                    }
+                                                  }
+                                                  else if(datatype[k] == US_DATATYPE_INT64_BI)
+                                                    {
+                                                      for(i=0; i<sf_t; i++)
+                                                      {
+                                                        for(j=0; j<signals_t; j++)
+                                                        {
+                                                          ul_tmp = *(((unsigned long long *)buf1_t) + (i * signals_t) + j);
+
+                                                          var2.lone = ((signed long long)(
+                                                            ((ul_tmp & 0xFF00000000000000) >> 56) |
+                                                            ((ul_tmp & 0x00FF000000000000) >> 40) |
+                                                            ((ul_tmp & 0x0000FF0000000000) >> 24) |
+                                                            ((ul_tmp & 0x000000FF00000000) >>  8) |
+                                                            ((ul_tmp & 0x00000000FF000000) <<  8) |
+                                                            ((ul_tmp & 0x0000000000FF0000) << 24) |
+                                                            ((ul_tmp & 0x000000000000FF00) << 40) |
+                                                            ((ul_tmp & 0x00000000000000FF) << 56))
+                                                            );
+
+                                                          buf2_t[(j * sf_t) + i] = var2.lone_signed - adcz;
+                                                        }
+                                                      }
+                                                    }
+                                                    else if(datatype[k] == US_DATATYPE_UINT64_BI)
+                                                      {
+                                                        for(i=0; i<sf_t; i++)
+                                                        {
+                                                          for(j=0; j<signals_t; j++)
+                                                          {
+                                                            ul_tmp = *(((unsigned long long *)buf1_t) + (i * signals_t) + j);
+
+                                                            var2.lone = ((unsigned long long)(
+                                                              ((ul_tmp & 0xFF00000000000000) >> 56) |
+                                                              ((ul_tmp & 0x00FF000000000000) >> 40) |
+                                                              ((ul_tmp & 0x0000FF0000000000) >> 24) |
+                                                              ((ul_tmp & 0x000000FF00000000) >>  8) |
+                                                              ((ul_tmp & 0x00000000FF000000) <<  8) |
+                                                              ((ul_tmp & 0x0000000000FF0000) << 24) |
+                                                              ((ul_tmp & 0x000000000000FF00) << 40) |
+                                                              ((ul_tmp & 0x00000000000000FF) << 56))
+                                                              );
+
+                                                            buf2_t[(j * sf_t) + i] = var2.lone - adcz;
+                                                          }
+                                                        }
+                                                      }
           }
         }
       }
@@ -1698,7 +1794,7 @@ int UI_UNISENS2EDFwindow::get_events_from_csv_files(int max_files, int edf_hdl, 
 
         qApp->processEvents();
 
-        if(progress.wasCanceled() == TRUE)
+        if(progress.wasCanceled() == true)
         {
           fclose(csvfile);
 
@@ -1957,7 +2053,7 @@ int UI_UNISENS2EDFwindow::get_signalparameters_from_BIN_attributes(struct xml_ha
       return(1);
     }
 
-    baseline[file_nr] = atoll(str);
+    baseline[file_nr] = strtoll(str, NULL, 0);
   }
   else
   {
@@ -1972,7 +2068,7 @@ int UI_UNISENS2EDFwindow::get_signalparameters_from_BIN_attributes(struct xml_ha
       return(1);
     }
 
-    adczero[file_nr] = atoll(str);
+    adczero[file_nr] = strtoll(str, NULL, 0);
   }
   else
   {
@@ -2091,12 +2187,34 @@ int UI_UNISENS2EDFwindow::get_signalparameters_from_BIN_attributes(struct xml_ha
                     digmax[file_nr] = 127;
                     digmin[file_nr] = -128;
                   }
-                  else
-                  {
-                    snprintf(scratchpad, 2047, "Error, unsupported combination of datatype: %s and csv file\n", str);
-                    textEdit1->append(scratchpad);
-                    return(1);
-                  }
+                  else if(!strcmp(str, "int64"))
+                    {
+                      datatype[file_nr] = US_DATATYPE_INT64_LI;
+                      bdf = 1;
+                      straightbinary[file_nr] = 0;
+                      samplesize[file_nr] = 8;
+                      physmax[file_nr] *= (8388607LL - (baseline[file_nr] - adczero[file_nr]));
+                      physmin[file_nr] *= (-8388608LL - (baseline[file_nr] - adczero[file_nr]));
+                      digmax[file_nr] = 8388607;
+                      digmin[file_nr] = -8388608;
+                    }
+                    else if(!strcmp(str, "uint64"))
+                      {
+                        datatype[file_nr] = US_DATATYPE_UINT64_LI;
+                        bdf = 1;
+                        straightbinary[file_nr] = 1;
+                        samplesize[file_nr] = 8;
+                        physmax[file_nr] *= (8388607LL - (baseline[file_nr] - adczero[file_nr]));
+                        physmin[file_nr] *= (-8388608LL - (baseline[file_nr] - adczero[file_nr]));
+                        digmax[file_nr] = 8388607;
+                        digmin[file_nr] = -8388608;
+                      }
+                      else
+                      {
+                        snprintf(scratchpad, 2047, "Error, unsupported combination of datatype: %s and csv file\n", str);
+                        textEdit1->append(scratchpad);
+                        return(1);
+                      }
   }
   else
   {
@@ -2195,12 +2313,45 @@ int UI_UNISENS2EDFwindow::get_signalparameters_from_BIN_attributes(struct xml_ha
                       digmax[file_nr] = 8388607;
                       digmin[file_nr] = -8388608;
                     }
-                    else
-                    {
-                      snprintf(scratchpad, 2047, "Error, unsupported combination of datatype: %s and binary file\n", str);
-                      textEdit1->append(scratchpad);
-                      return(1);
-                    }
+                    else if(!strcmp(str, "double"))
+                      {
+                        datatype[file_nr] = US_DATATYPE_DOUBLE_LI;
+                        bdf = 1;
+                        straightbinary[file_nr] = 0;
+                        samplesize[file_nr] = 8;
+                        physmax[file_nr] *= (8388607LL - (baseline[file_nr] - adczero[file_nr]));
+                        physmin[file_nr] *= (-8388608LL - (baseline[file_nr] - adczero[file_nr]));
+                        digmax[file_nr] = 8388607;
+                        digmin[file_nr] = -8388608;
+                      }
+                      else if(!strcmp(str, "uint64"))
+                        {
+                          datatype[file_nr] = US_DATATYPE_UINT64_LI;
+                          bdf = 1;
+                          straightbinary[file_nr] = 1;
+                          samplesize[file_nr] = 8;
+                          physmax[file_nr] *= (8388607LL - (baseline[file_nr] - adczero[file_nr]));
+                          physmin[file_nr] *= (-8388608LL - (baseline[file_nr] - adczero[file_nr]));
+                          digmax[file_nr] = 8388607;
+                          digmin[file_nr] = -8388608;
+                        }
+                        else if(!strcmp(str, "int64"))
+                          {
+                            datatype[file_nr] = US_DATATYPE_INT64_LI;
+                            bdf = 1;
+                            straightbinary[file_nr] = 0;
+                            samplesize[file_nr] = 8;
+                            physmax[file_nr] *= (8388607LL - (baseline[file_nr] - adczero[file_nr]));
+                            physmin[file_nr] *= (-8388608LL - (baseline[file_nr] - adczero[file_nr]));
+                            digmax[file_nr] = 8388607;
+                            digmin[file_nr] = -8388608;
+                          }
+                          else
+                          {
+                            snprintf(scratchpad, 2047, "Error, unsupported combination of datatype: %s and binary file\n", str);
+                            textEdit1->append(scratchpad);
+                            return(1);
+                          }
   }
 
   return(0);

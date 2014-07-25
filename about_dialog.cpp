@@ -3,7 +3,7 @@
 *
 * Author: Teunis van Beelen
 *
-* Copyright (C) 2007, 2008, 2009, 2010, 2011, 2012, 2013 Teunis van Beelen
+* Copyright (C) 2007, 2008, 2009, 2010, 2011, 2012, 2013, 2014 Teunis van Beelen
 *
 * teuniz@gmail.com
 *
@@ -61,17 +61,17 @@ UI_Aboutwindow::UI_Aboutwindow(UI_Mainwindow *mainwindow)
   AboutDialog->setMinimumSize(QSize(640, 480));
   AboutDialog->setGeometry(300, 250, 640, 480);
   AboutDialog->setWindowTitle("About");
-  AboutDialog->setModal(TRUE);
-  AboutDialog->setAttribute(Qt::WA_DeleteOnClose, TRUE);
+  AboutDialog->setModal(true);
+  AboutDialog->setAttribute(Qt::WA_DeleteOnClose, true);
 
   textedit1 = new QTextEdit;
   textedit1->setFrameStyle(QFrame::Panel | QFrame::Sunken);
-  textedit1->setReadOnly(TRUE);
+  textedit1->setReadOnly(true);
   textedit1->setLineWrapMode(QTextEdit::NoWrap);
   textedit1->setPlainText(
         "\n " PROGRAM_NAME " " PROGRAM_VERSION "\n"
         "\n This program is made by Teunis van Beelen.\n"
-        "\n Copyright (C) 2007, 2008, 2009, 2010, 2011, 2012, 2013 Teunis van Beelen.\n"
+        "\n Copyright (C) 2007, 2008, 2009, 2010, 2011, 2012, 2013, 2014 Teunis van Beelen.\n"
         "\n Email: teuniz@gmail.com\n"
         "\n Disclaimer:\n"
         " Despite this software is intend to be useful, there is no warranty, use this software at your own risk!\n"

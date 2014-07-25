@@ -3,7 +3,7 @@
 *
 * Author: Teunis van Beelen
 *
-* Copyright (C) 2011, 2012, 2013 Teunis van Beelen
+* Copyright (C) 2011, 2012, 2013, 2014 Teunis van Beelen
 *
 * teuniz@gmail.com
 *
@@ -94,6 +94,7 @@ public:
 private:
 
   int averager_curve_dialog_is_destroyed,
+      class_is_deleted,
       averagecurvedialognumber,
       avg_cnt,
       avg_trigger_position_ratio,

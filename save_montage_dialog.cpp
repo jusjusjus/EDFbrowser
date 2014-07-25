@@ -3,7 +3,7 @@
 *
 * Author: Teunis van Beelen
 *
-* Copyright (C) 2007, 2008, 2009, 2010, 2011, 2012, 2013 Teunis van Beelen
+* Copyright (C) 2007, 2008, 2009, 2010, 2011, 2012, 2013, 2014 Teunis van Beelen
 *
 * teuniz@gmail.com
 *
@@ -66,8 +66,8 @@ UI_SaveMontagewindow::UI_SaveMontagewindow(QWidget *w_parent)
   SaveMontageDialog->setMinimumSize(QSize(800, 180));
   SaveMontageDialog->setMaximumSize(QSize(800, 180));
   SaveMontageDialog->setWindowTitle("Save montage");
-  SaveMontageDialog->setModal(TRUE);
-  SaveMontageDialog->setAttribute(Qt::WA_DeleteOnClose, TRUE);
+  SaveMontageDialog->setModal(true);
+  SaveMontageDialog->setAttribute(Qt::WA_DeleteOnClose, true);
 
   label1 = new QLabel(SaveMontageDialog);
   label1->setGeometry(QRect(10, 10, 780, 25));
@@ -265,8 +265,8 @@ void UI_SaveMontagewindow::SaveButtonClicked()
     }
   }
 
-#ifdef Q_WS_WIN
-  fprintf(mtgfile, "  <pagetime>%I64d</pagetime>\n", mainwindow->pagetime);
+#ifdef Q_OS_WIN32
+  __mingw_fprintf(mtgfile, "  <pagetime>%lli</pagetime>\n", mainwindow->pagetime);
 #else
   fprintf(mtgfile, "  <pagetime>%lli</pagetime>\n", mainwindow->pagetime);
 #endif

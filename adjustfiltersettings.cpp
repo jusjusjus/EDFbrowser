@@ -3,7 +3,7 @@
 *
 * Author: Teunis van Beelen
 *
-* Copyright (C) 2010, 2011, 2012, 2013 Teunis van Beelen
+* Copyright (C) 2010, 2011, 2012, 2013, 2014 Teunis van Beelen
 *
 * teuniz@gmail.com
 *
@@ -72,8 +72,8 @@ AdjustFilterSettings::AdjustFilterSettings(struct signalcompblock *signal_comp, 
 
   filtersettings_dialog = new QDialog(w_parent);
 
-  filtersettings_dialog->setMinimumSize(360, 255);
-  filtersettings_dialog->setMaximumSize(360, 255);
+  filtersettings_dialog->setMinimumSize(460, 255);
+  filtersettings_dialog->setMaximumSize(460, 255);
   strcpy(txtbuf, "Filter settings ");
   if(signalcomp->alias[0] != 0)
   {
@@ -84,8 +84,8 @@ AdjustFilterSettings::AdjustFilterSettings(struct signalcompblock *signal_comp, 
     strcat(txtbuf, signalcomp->signallabel);
   }
   filtersettings_dialog->setWindowTitle(txtbuf);
-  filtersettings_dialog->setModal(TRUE);
-  filtersettings_dialog->setAttribute(Qt::WA_DeleteOnClose, TRUE);
+  filtersettings_dialog->setModal(true);
+  filtersettings_dialog->setAttribute(Qt::WA_DeleteOnClose, true);
 
   for(i=0; i<5; i++)
   {
@@ -96,11 +96,11 @@ AdjustFilterSettings::AdjustFilterSettings(struct signalcompblock *signal_comp, 
   label[1]->setText("Order");
   label[2]->setText("Frequency");
   label[3]->setText("Frequency 2");
-  label[3]->setVisible(FALSE);
+  label[3]->setVisible(false);
   label[4]->setText("Stepsize");
 
   filterbox = new QComboBox(filtersettings_dialog);
-  filterbox->setGeometry(120, 10, 230, 25);
+  filterbox->setGeometry(120, 10, 330, 25);
 
   orderbox = new QSpinBox(filtersettings_dialog);
   orderbox->setGeometry(120, 45, 100, 25);
@@ -126,7 +126,7 @@ AdjustFilterSettings::AdjustFilterSettings(struct signalcompblock *signal_comp, 
   freq2box->setMinimum(0.0001);
   freq2box->setMaximum(100000.0);
   freq2box->setValue(2.0);
-  freq2box->setVisible(FALSE);
+  freq2box->setVisible(false);
   freq2box->setSingleStep(1.0);
 
   stepsizebox = new QComboBox(filtersettings_dialog);
@@ -144,10 +144,10 @@ AdjustFilterSettings::AdjustFilterSettings(struct signalcompblock *signal_comp, 
 
   filter_cnt = 0;
 
+  txtbuf[0] = 0;
+
   for(i=0; i<signalcomp->fidfilter_cnt; i++)
   {
-    txtbuf[0] = 0;
-
     type = signalcomp->fidfilter_type[i];
 
     model = signalcomp->fidfilter_model[i];
@@ -155,6 +155,8 @@ AdjustFilterSettings::AdjustFilterSettings(struct signalcompblock *signal_comp, 
     order = signalcomp->fidfilter_order[i];
 
     ripple = signalcomp->fidfilter_ripple[i];
+
+    frequency1 = signalcomp->fidfilter_freq[i];
 
     if(type == 0)
     {
@@ -233,6 +235,12 @@ AdjustFilterSettings::AdjustFilterSettings(struct signalcompblock *signal_comp, 
       }
     }
 
+    sprintf(txtbuf + strlen(txtbuf), " %f", frequency1);
+
+    remove_trailing_zeros(txtbuf);
+
+    strcat(txtbuf, " Hz");
+
     filterbox->addItem(txtbuf);
 
     brand[filter_cnt++] = 0;
@@ -246,13 +254,15 @@ AdjustFilterSettings::AdjustFilterSettings(struct signalcompblock *signal_comp, 
 
     if(type == 0)
     {
-      filterbox->addItem("Highpass Moving Average");
+      sprintf(txtbuf, "Highpass Moving Average %i samples", size);
     }
 
     if(type == 1)
     {
-      filterbox->addItem("Lowpass Moving Average");
+      sprintf(txtbuf, "Lowpass Moving Average %i samples", size);
     }
+
+    filterbox->addItem(txtbuf);
 
     brand[filter_cnt++] = 1;
   }
@@ -355,7 +365,7 @@ void AdjustFilterSettings::filterboxchanged(int i)
 
     label[1]->setText("Order");
     label[2]->setText("Frequency");
-    freq1box->setVisible(TRUE);
+    freq1box->setVisible(true);
     stepsizebox->clear();
     stepsizebox->addItem("0.01Hz");
     stepsizebox->addItem("0.1Hz");
@@ -367,8 +377,8 @@ void AdjustFilterSettings::filterboxchanged(int i)
     if((type == 3) || (type == 4))
     {
       freq2box->setValue(frequency2);
-      label[3]->setVisible(TRUE);
-      freq2box->setVisible(TRUE);
+      label[3]->setVisible(true);
+      freq2box->setVisible(true);
       orderbox->setMinimum(2);
       orderbox->setSingleStep(2);
       orderbox->setMaximum(16);
@@ -376,8 +386,8 @@ void AdjustFilterSettings::filterboxchanged(int i)
     else
     {
       freq2box->setValue(0.0);
-      label[3]->setVisible(FALSE);
-      freq2box->setVisible(FALSE);
+      label[3]->setVisible(false);
+      freq2box->setVisible(false);
       orderbox->setMinimum(1);
       orderbox->setSingleStep(1);
       orderbox->setMaximum(8);
@@ -416,9 +426,9 @@ void AdjustFilterSettings::filterboxchanged(int i)
 
     label[1]->setText("Size");
     label[2]->setText("");
-    freq1box->setVisible(FALSE);
-    label[3]->setVisible(FALSE);
-    freq2box->setVisible(FALSE);
+    freq1box->setVisible(false);
+    label[3]->setVisible(false);
+    freq2box->setVisible(false);
     orderbox->setMinimum(2);
     orderbox->setSingleStep(1);
     orderbox->setMaximum(10000);

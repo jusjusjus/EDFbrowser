@@ -3,7 +3,7 @@
 *
 * Author: Teunis van Beelen
 *
-* Copyright (C) 2007, 2008, 2009, 2010, 2011, 2012, 2013 Teunis van Beelen
+* Copyright (C) 2007, 2008, 2009, 2010, 2011, 2012, 2013, 2014 Teunis van Beelen
 *
 * teuniz@gmail.com
 *
@@ -35,7 +35,7 @@
 
 
 #define PROGRAM_NAME "EDFbrowser"
-#define PROGRAM_VERSION "1.53"
+#define PROGRAM_VERSION "1.54"
 #define MINIMUM_QT_VERSION 0x040701
 #define MAXFILES 32
 #define MAXSIGNALS 512
@@ -56,12 +56,6 @@
 
 #define ANNOT_ID_NK_TRIGGER   0
 #define ANNOT_ID_BS_TRIGGER   1
-
-// #define BK_MRS_project
-// This define activates temporary code for private use in a certain project.
-// Do not use this code, it will be removed in future.
-// When this code is activated, on pressing the 'p'-key, some values will be written
-// to a file.
 
 #include <stdio.h>
 

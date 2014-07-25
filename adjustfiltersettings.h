@@ -3,7 +3,7 @@
 *
 * Author: Teunis van Beelen
 *
-* Copyright (C) 2010, 2011, 2012, 2013 Teunis van Beelen
+* Copyright (C) 2010, 2011, 2012, 2013, 2014 Teunis van Beelen
 *
 * teuniz@gmail.com
 *
@@ -51,6 +51,7 @@
 #include "viewcurve.h"
 #include "popup_messagewindow.h"
 #include "ravg_filter.h"
+#include "utils.h"
 
 #include "third_party/fidlib/fidlib.h"
 

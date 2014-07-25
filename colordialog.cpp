@@ -3,7 +3,7 @@
 *
 * Author: Teunis van Beelen
 *
-* Copyright (C) 2007, 2008, 2009, 2010, 2011, 2012, 2013 Teunis van Beelen
+* Copyright (C) 2007, 2008, 2009, 2010, 2011, 2012, 2013, 2014 Teunis van Beelen
 *
 * teuniz@gmail.com
 *
@@ -43,8 +43,8 @@ UI_ColorMenuDialog::UI_ColorMenuDialog(int *newColor, QWidget *w_parent)
   colormenu_dialog->setMinimumSize(QSize(105, 130));
   colormenu_dialog->setMaximumSize(QSize(105, 130));
   colormenu_dialog->setWindowTitle("Color");
-  colormenu_dialog->setModal(TRUE);
-  colormenu_dialog->setAttribute(Qt::WA_DeleteOnClose, TRUE);
+  colormenu_dialog->setModal(true);
+  colormenu_dialog->setAttribute(Qt::WA_DeleteOnClose, true);
 
   color = newColor;
 
