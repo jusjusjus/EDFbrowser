@@ -117,8 +117,7 @@ UI_Annotationswindow::UI_Annotationswindow(int file_number, QWidget *w_parent)
   v_layout->addWidget(list);
   v_layout->setSpacing(1);
 
-  // ### Menu Bar Item ###
-
+  // ### Menu Bar Item ### (This replaces the ugly relative and inv. buttons.)
   // QMainWindow* w_inner = new QMainWindow();
   // w_inner->menuBar()->addMenu(menu);
 
@@ -892,7 +891,7 @@ void UI_Annotationswindow::updateList(void)
 
 
 
-void UI_Annotationswindow::annotation_selected(QListWidgetItem * item, int centered)
+void UI_Annotationswindow::annotation_selected(QListWidgetItem * item, int centered) // centered=1
 {
   int i=0, n;
 
@@ -903,8 +902,8 @@ void UI_Annotationswindow::annotation_selected(QListWidgetItem * item, int cente
 
   n = item->data(Qt::UserRole).toInt();
 
-  if(mainwindow->annot_editor_active)
-  {
+  if(mainwindow->annot_editor_active)						//  This allows to select annotations on screen,
+  {										//  but only if the Annotations dock is visible.
     mainwindow->annotationEditDock->set_selected_annotation(file_num, n);
   }
 
@@ -913,7 +912,7 @@ void UI_Annotationswindow::annotation_selected(QListWidgetItem * item, int cente
     annotation = annotation->next_annotation;
   }
 
-  if(mainwindow->viewtime_sync==VIEWTIME_SYNCED_OFFSET)
+  if(mainwindow->viewtime_sync == VIEWTIME_SYNCED_OFFSET)
   {
     for(i=0; i<mainwindow->files_open; i++)
     {
@@ -928,7 +927,7 @@ void UI_Annotationswindow::annotation_selected(QListWidgetItem * item, int cente
     }
   }
 
-  if(mainwindow->viewtime_sync==VIEWTIME_UNSYNCED)
+  if(mainwindow->viewtime_sync == VIEWTIME_UNSYNCED)
   {
     mainwindow->edfheaderlist[file_num]->viewtime = annotation->onset;
 
@@ -940,7 +939,7 @@ void UI_Annotationswindow::annotation_selected(QListWidgetItem * item, int cente
     mainwindow->edfheaderlist[file_num]->viewtime -= mainwindow->edfheaderlist[file_num]->starttime_offset;
   }
 
-  if((mainwindow->viewtime_sync==VIEWTIME_SYNCED_ABSOLUT)||(mainwindow->viewtime_sync==VIEWTIME_USER_DEF_SYNCED))
+  if((mainwindow->viewtime_sync == VIEWTIME_SYNCED_ABSOLUT) || (mainwindow->viewtime_sync == VIEWTIME_USER_DEF_SYNCED))
   {
     temp = annotation->onset - mainwindow->edfheaderlist[file_num]->viewtime;
 
