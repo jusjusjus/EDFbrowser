@@ -180,7 +180,7 @@ void UI_AnnotationEditwindow::modifyButtonClicked()
 
   annotation->onset += mainwindow->edfheaderlist[file_num]->starttime_offset;
 
-  if(duration_spinbox->value()>0.0)
+  if(duration_spinbox->value() > 0.)
   {
     snprintf(annotation->duration, 16, "%f", duration_spinbox->value());
   }
@@ -334,13 +334,13 @@ void UI_AnnotationEditwindow::set_selected_annotation(int file_nr, int annot_nr)
 
   annot_num = annot_nr;
 
-  annotation = edfplus_annotation_item(&mainwindow->annotationlist[file_num], annot_num);
+  annotation = edfplus_annotation_item(&mainwindow->annotationlist[file_num], annot_num);	// retreive the selected annotation
 
   annot_descript_lineEdit->setText(QString::fromUtf8(annotation->annotation));
 
   l_tmp = annotation->onset - mainwindow->edfheaderlist[annotation->file_num]->starttime_offset;
 
-  if(l_tmp < 0LL)
+  if(l_tmp < 0LL)	// annotation before recording begin ...
   {
     onset_daySpinbox->setValue((-(l_tmp)) / TIME_DIMENSION / 86400);
 
@@ -349,9 +349,9 @@ void UI_AnnotationEditwindow::set_selected_annotation(int file_nr, int annot_nr)
             ((-(l_tmp)) / TIME_DIMENSION) % 60,
             ((-(l_tmp)) % TIME_DIMENSION) / 10000);
 
-    posNegTimebox->setCurrentIndex(1);
+    posNegTimebox->setCurrentIndex(1);		// ... gets a negative sign.
   }
-  else
+  else					// annotation after recording begin ...
   {
     onset_daySpinbox->setValue(l_tmp / TIME_DIMENSION / 86400);
 
@@ -360,22 +360,21 @@ void UI_AnnotationEditwindow::set_selected_annotation(int file_nr, int annot_nr)
             (l_tmp / TIME_DIMENSION) % 60,
             (l_tmp % TIME_DIMENSION) / 10000);
 
-    posNegTimebox->setCurrentIndex(0);
+    posNegTimebox->setCurrentIndex(0);		// ... gets a positive sign.
   }
   onset_timeEdit->setTime(ta);
 
-  if(strlen(annotation->duration))
+  if(strlen(annotation->duration))		// annotation->duration type is string.
   {
     duration_spinbox->setValue(atof(annotation->duration));
   }
   else
   {
-    duration_spinbox->setValue(-1);
+    duration_spinbox->setValue(-1);		// if string length = 0, set -1 as value.
   }
 
-  modifybutton->setEnabled(true);
-
-  deletebutton->setEnabled(true);
+  modifybutton->setEnabled(true);		// Annotation can be modified.
+  deletebutton->setEnabled(true);		// Annotation can be deleted.
 }
 
 

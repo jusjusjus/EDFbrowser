@@ -229,7 +229,7 @@ Annotationsignals
 
 EDFplus and BDFplus store the annotations in one or more signals (in order to be backwards compatibel with EDF and BDF).
 The counting of the signals in the file starts at 0. Signals used for annotations are skipped by EDFlib.
-This means that the annotationsignal(s) in the file are hided.
+This means that the annotationsignal(s) in the file are hidden.
 Use the function edf_get_annotation() to get the annotations.
 
 So, when a file contains 5 signals and the third signal is used to store the annotations, the library will

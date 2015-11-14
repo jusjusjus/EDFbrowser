@@ -91,7 +91,7 @@ public:
 
 private:
 
-  struct annotationblock *annotation;
+  struct annotationblock *annotation;		// selected annotation block?
 
   int file_num,
       relative,
@@ -106,12 +106,12 @@ private:
 
   QVBoxLayout *v_layout;
 
-  QCheckBox *checkbox1,
-            *checkbox2;
+  QCheckBox *checkboxRel,
+            *checkboxInv;
 
   QLabel *label1;
 
-  QLineEdit *lineedit1;
+  QLineEdit *lineSearch;
 
   QAction *show_between_act,
           *average_annot_act,
@@ -129,8 +129,8 @@ private slots:
 
   void annotation_selected(QListWidgetItem *, int centered=1);
   void hide_editdock(bool);
-  void checkbox1_clicked(int);
-  void checkbox2_clicked(int);
+  void checkboxRel_clicked(int);
+  void checkboxInv_clicked(int);
   void show_between(bool);
   void average_annot(bool);
   void hide_annot(bool);

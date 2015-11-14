@@ -63,19 +63,19 @@ UI_Annotationswindow::UI_Annotationswindow(int file_number, QWidget *w_parent)
 
   dialog1 = new QDialog;
 
-  checkbox1 = new QCheckBox("Relative ");
-  checkbox1->setGeometry(2, 2, 10, 10);
-  checkbox1->setTristate(false);
-  checkbox1->setCheckState(Qt::Unchecked);
+  checkboxRel = new QCheckBox("Relative ");
+  checkboxRel->setGeometry(2, 2, 10, 10);
+  checkboxRel->setTristate(false);
+  checkboxRel->setCheckState(Qt::Unchecked);
 
-  lineedit1 = new QLineEdit;
-  lineedit1->setMaxLength(16);
-  lineedit1->setPlaceholderText("Search");
+  lineSearch = new QLineEdit;
+  lineSearch->setMaxLength(16);
+  lineSearch->setPlaceholderText("Search");
 
-  checkbox2 = new QCheckBox("Inv.");
-  checkbox2->setGeometry(2, 2, 10, 10);
-  checkbox2->setTristate(false);
-  checkbox2->setCheckState(Qt::Unchecked);
+  checkboxInv = new QCheckBox("Inv.");
+  checkboxInv->setGeometry(2, 2, 10, 10);
+  checkboxInv->setTristate(false);
+  checkboxInv->setCheckState(Qt::Unchecked);
 
   list = new QListWidget(dialog1);
   list->setFont(*mainwindow->monofont);
@@ -108,17 +108,16 @@ UI_Annotationswindow::UI_Annotationswindow(int file_number, QWidget *w_parent)
   list->insertAction(NULL, unhide_all_BS_triggers_act);
 
   h_layout = new QHBoxLayout;
-  h_layout->addWidget(checkbox1);
-  h_layout->addWidget(lineedit1);
-  h_layout->addWidget(checkbox2);
+  h_layout->addWidget(checkboxRel);
+  h_layout->addWidget(lineSearch);
+  h_layout->addWidget(checkboxInv);
 
   v_layout = new QVBoxLayout(dialog1);
   v_layout->addLayout(h_layout);
   v_layout->addWidget(list);
   v_layout->setSpacing(1);
 
-  // ### Menu Bar Item ###
-
+  // ### Menu Bar Item ### (This replaces the ugly relative and inv. buttons.)
   // QMainWindow* w_inner = new QMainWindow();
   // w_inner->menuBar()->addMenu(menu);
 
@@ -135,8 +134,8 @@ UI_Annotationswindow::UI_Annotationswindow(int file_number, QWidget *w_parent)
 
   QObject::connect(list,                       SIGNAL(itemPressed(QListWidgetItem *)), this, SLOT(annotation_selected(QListWidgetItem *)));
   QObject::connect(docklist,                   SIGNAL(visibilityChanged(bool)),        this, SLOT(hide_editdock(bool)));
-  QObject::connect(checkbox1,                  SIGNAL(stateChanged(int)),              this, SLOT(checkbox1_clicked(int)));
-  QObject::connect(checkbox2,                  SIGNAL(stateChanged(int)),              this, SLOT(checkbox2_clicked(int)));
+  QObject::connect(checkboxRel,                SIGNAL(stateChanged(int)),              this, SLOT(checkboxRel_clicked(int)));
+  QObject::connect(checkboxInv,                SIGNAL(stateChanged(int)),              this, SLOT(checkboxInv_clicked(int)));
   QObject::connect(hide_annot_act,             SIGNAL(triggered(bool)),                this, SLOT(hide_annot(bool)));
   QObject::connect(unhide_annot_act,           SIGNAL(triggered(bool)),                this, SLOT(unhide_annot(bool)));
   QObject::connect(hide_same_annots_act,       SIGNAL(triggered(bool)),                this, SLOT(hide_same_annots(bool)));
@@ -148,7 +147,7 @@ UI_Annotationswindow::UI_Annotationswindow(int file_number, QWidget *w_parent)
   QObject::connect(hide_all_BS_triggers_act,   SIGNAL(triggered(bool)),                this, SLOT(hide_all_BS_triggers(bool)));
   QObject::connect(unhide_all_NK_triggers_act, SIGNAL(triggered(bool)),                this, SLOT(unhide_all_NK_triggers(bool)));
   QObject::connect(unhide_all_BS_triggers_act, SIGNAL(triggered(bool)),                this, SLOT(unhide_all_BS_triggers(bool)));
-  QObject::connect(lineedit1,                  SIGNAL(textEdited(const QString)),      this, SLOT(filter_edited(const QString)));
+  QObject::connect(lineSearch,                 SIGNAL(textEdited(const QString)),      this, SLOT(filter_edited(const QString)));
 }
 
 
@@ -164,9 +163,9 @@ void UI_Annotationswindow::hide_all_NK_triggers(bool)
   {
     if(annot->ident & (1 << ANNOT_ID_NK_TRIGGER))
     {
-      annot->hided = 1;
+      annot->hidden = 1;
 
-      annot->hided_in_list = 1;
+      annot->hidden_in_list = 1;
     }
 
     annot = annot->next_annotation;
@@ -190,9 +189,9 @@ void UI_Annotationswindow::hide_all_BS_triggers(bool)
   {
     if(annot->ident & (1 << ANNOT_ID_BS_TRIGGER))
     {
-      annot->hided = 1;
+      annot->hidden = 1;
 
-      annot->hided_in_list = 1;
+      annot->hidden_in_list = 1;
     }
 
     annot = annot->next_annotation;
@@ -216,9 +215,9 @@ void UI_Annotationswindow::unhide_all_NK_triggers(bool)
   {
     if(annot->ident & (1 << ANNOT_ID_NK_TRIGGER))
     {
-      annot->hided = 0;
+      annot->hidden = 0;
 
-      annot->hided_in_list = 0;
+      annot->hidden_in_list = 0;
     }
 
     annot = annot->next_annotation;
@@ -242,9 +241,9 @@ void UI_Annotationswindow::unhide_all_BS_triggers(bool)
   {
     if(annot->ident & (1 << ANNOT_ID_BS_TRIGGER))
     {
-      annot->hided = 0;
+      annot->hidden = 0;
 
-      annot->hided_in_list = 0;
+      annot->hidden_in_list = 0;
     }
 
     annot = annot->next_annotation;
@@ -280,9 +279,9 @@ void UI_Annotationswindow::filter_edited(const QString text)
     {
       if(!(((annot->ident & (1 << ANNOT_ID_NK_TRIGGER)) && hide_nk_triggers) || ((annot->ident & (1 << ANNOT_ID_BS_TRIGGER)) && hide_bs_triggers)))
       {
-        annot->hided_in_list = 0;
+        annot->hidden_in_list = 0;
 
-        annot->hided = 0;
+        annot->hidden = 0;
       }
 
       annot = annot->next_annotation;
@@ -295,7 +294,7 @@ void UI_Annotationswindow::filter_edited(const QString text)
     return;
   }
 
-  strcpy(filter_str, lineedit1->text().toUtf8().data());
+  strcpy(filter_str, lineSearch->text().toUtf8().data());
 
   len = strlen(filter_str);
 
@@ -305,7 +304,7 @@ void UI_Annotationswindow::filter_edited(const QString text)
     {
       if(!(((annot->ident & (1 << ANNOT_ID_NK_TRIGGER)) && hide_nk_triggers) || ((annot->ident & (1 << ANNOT_ID_BS_TRIGGER)) && hide_bs_triggers)))
       {
-        annot->hided_in_list = 1;
+        annot->hidden_in_list = 1;
 
         n = strlen(annot->annotation) - len + 1;
 
@@ -313,9 +312,9 @@ void UI_Annotationswindow::filter_edited(const QString text)
         {
           if(!(strncmp(filter_str, annot->annotation + i, len)))
           {
-            annot->hided_in_list = 0;
+            annot->hidden_in_list = 0;
 
-            annot->hided = 0;
+            annot->hidden = 0;
 
             break;
           }
@@ -331,7 +330,7 @@ void UI_Annotationswindow::filter_edited(const QString text)
     {
       if(!(((annot->ident & (1 << ANNOT_ID_NK_TRIGGER)) && hide_nk_triggers) || ((annot->ident & (1 << ANNOT_ID_BS_TRIGGER)) && hide_bs_triggers)))
       {
-        annot->hided_in_list = 0;
+        annot->hidden_in_list = 0;
 
         n = strlen(annot->annotation) - len + 1;
 
@@ -339,9 +338,9 @@ void UI_Annotationswindow::filter_edited(const QString text)
         {
           if(!(strncmp(filter_str, annot->annotation + i, len)))
           {
-            annot->hided_in_list = 1;
+            annot->hidden_in_list = 1;
 
-            annot->hided = 1;
+            annot->hidden = 1;
 
             break;
           }
@@ -358,7 +357,7 @@ void UI_Annotationswindow::filter_edited(const QString text)
 }
 
 
-void UI_Annotationswindow::checkbox2_clicked(int state)
+void UI_Annotationswindow::checkboxInv_clicked(int state)
 {
   int cnt, changed=0;
 
@@ -374,14 +373,14 @@ void UI_Annotationswindow::checkbox2_clicked(int state)
     return;
   }
 
-  if(state==Qt::Checked)
+  if(state == Qt::Checked)
   {
     if(invert_filter == 0)  changed = 1;
 
     invert_filter = 1;
   }
 
-  if(state==Qt::Unchecked)
+  if(state == Qt::Unchecked)
   {
     if(invert_filter == 1)  changed = 1;
 
@@ -390,7 +389,7 @@ void UI_Annotationswindow::checkbox2_clicked(int state)
 
   if(changed == 0)  return;
 
-  filter_edited(lineedit1->text());
+  filter_edited(lineSearch->text());
 }
 
 
@@ -465,9 +464,9 @@ void UI_Annotationswindow::hide_annot(bool)
     annot = annot->next_annotation;
   }
 
-  annot->hided_in_list = 1;
+  annot->hidden_in_list = 1;
 
-  annot->hided = 1;
+  annot->hidden = 1;
 
   mainwindow->maincurve->update();
 }
@@ -494,9 +493,9 @@ void UI_Annotationswindow::unhide_annot(bool)
     annot = annot->next_annotation;
   }
 
-  annot->hided_in_list = 0;
+  annot->hidden_in_list = 0;
 
-  annot->hided = 0;
+  annot->hidden = 0;
 
   mainwindow->maincurve->update();
 }
@@ -544,9 +543,9 @@ void UI_Annotationswindow::hide_same_annots(bool)
 
     if(!strcmp(str1, str2))
     {
-      annot->hided_in_list = 1;
+      annot->hidden_in_list = 1;
 
-      annot->hided = 1;
+      annot->hidden = 1;
     }
 
     annot = annot->next_annotation;
@@ -598,9 +597,9 @@ void UI_Annotationswindow::unhide_same_annots(bool)
 
     if(!strcmp(str1, str2))
     {
-      annot->hided_in_list = 0;
+      annot->hidden_in_list = 0;
 
-      annot->hided = 0;
+      annot->hidden = 0;
     }
 
     annot = annot->next_annotation;
@@ -618,9 +617,9 @@ void UI_Annotationswindow::unhide_all_annots(bool)
 
   while(annot != NULL)
   {
-    annot->hided = 0;
+    annot->hidden = 0;
 
-    annot->hided_in_list = 0;
+    annot->hidden_in_list = 0;
 
     annot = annot->next_annotation;
   }
@@ -661,14 +660,14 @@ void UI_Annotationswindow::average_annot(bool)
 }
 
 
-void UI_Annotationswindow::checkbox1_clicked(int state)
+void UI_Annotationswindow::checkboxRel_clicked(int state)
 {
-  if(state==Qt::Checked)
+  if(state == Qt::Checked)
   {
     relative = 1;
   }
 
-  if(state==Qt::Unchecked)
+  if(state == Qt::Unchecked)
   {
     relative = 0;
   }
@@ -679,7 +678,7 @@ void UI_Annotationswindow::checkbox1_clicked(int state)
 
 void UI_Annotationswindow::hide_editdock(bool visible)
 {
-  if(visible==false)
+  if(visible == false)
   {
     mainwindow->annotationEditDock->dockedit->hide();
   }
@@ -707,7 +706,7 @@ void UI_Annotationswindow::updateList(void)
 
   selected = -1;
 
-
+  // Set special font for modified annotations (could probably be done in constructor)
 #ifdef Q_OS_LINUX
   QFont specialfont("andale mono", 12, QFont::Normal, true);
 
@@ -725,6 +724,7 @@ void UI_Annotationswindow::updateList(void)
 
   specialfont.setPixelSize(12);
 #endif
+  // Set special font for modified annotations
 
   list->clear();
 
@@ -734,7 +734,7 @@ void UI_Annotationswindow::updateList(void)
 
   while(annotation != NULL)
   {
-    if(annotation->hided_in_list)
+    if(annotation->hidden_in_list)
     {
       annotation = annotation->next_annotation;
 
@@ -751,9 +751,9 @@ void UI_Annotationswindow::updateList(void)
     len = 0;
     for(i=0; ; i++)
     {
-      if(str_tmp[i]==0)  break;
+      if(str_tmp[i] == 0)  break;
 
-      if(((((unsigned char *)str_tmp)[i])&224)==192)  len++;
+      if(((( (unsigned char *) str_tmp)[i])&224) == 192)  len++;
     }
 
     for(i=0; i<len; i++)  string.append(' ');
@@ -801,7 +801,7 @@ void UI_Annotationswindow::updateList(void)
 
     listitem->setData(Qt::UserRole, QVariant(sequence_nr));
 
-    if(annotation->modified==1)
+    if(annotation->modified == 1)
     {
       listitem->setFont(specialfont);
 
@@ -865,7 +865,7 @@ void UI_Annotationswindow::updateList(void)
 
   if(mainwindow->annot_editor_active)
   {
-    if(selected>=0)
+    if(selected >= 0)
     {
       list->setCurrentRow(selected, QItemSelectionModel::ClearAndSelect);
 
@@ -892,28 +892,27 @@ void UI_Annotationswindow::updateList(void)
 
 
 
-void UI_Annotationswindow::annotation_selected(QListWidgetItem * item, int centered)
+void UI_Annotationswindow::annotation_selected(QListWidgetItem * item, int centered) // centered=1
 {
   int i=0, n;
-
   long long temp;
 
 
   annotation = mainwindow->annotationlist[file_num];
 
-  n = item->data(Qt::UserRole).toInt();
+  n = item->data(Qt::UserRole).toInt();						// yields the annotation number?
 
-  if(mainwindow->annot_editor_active)
-  {
-    mainwindow->annotationEditDock->set_selected_annotation(file_num, n);
+  if(mainwindow->annot_editor_active)						// Sets the selected annotation info in the
+  {										// annotation editor if the guy is opened.
+    mainwindow->annotationEditDock->set_selected_annotation(file_num, n);	//   ...(int file_nr, int annot_nr)
   }
 
-  while(n--)
-  {
-    annotation = annotation->next_annotation;
-  }
+  while(n--)					// go to last annotation, starting from the
+  {						// one we are at.
+    annotation = annotation->next_annotation;	//
+  }						//
 
-  if(mainwindow->viewtime_sync==VIEWTIME_SYNCED_OFFSET)
+  if(mainwindow->viewtime_sync == VIEWTIME_SYNCED_OFFSET)
   {
     for(i=0; i<mainwindow->files_open; i++)
     {
@@ -928,7 +927,7 @@ void UI_Annotationswindow::annotation_selected(QListWidgetItem * item, int cente
     }
   }
 
-  if(mainwindow->viewtime_sync==VIEWTIME_UNSYNCED)
+  if(mainwindow->viewtime_sync == VIEWTIME_UNSYNCED)
   {
     mainwindow->edfheaderlist[file_num]->viewtime = annotation->onset;
 
@@ -940,7 +939,7 @@ void UI_Annotationswindow::annotation_selected(QListWidgetItem * item, int cente
     mainwindow->edfheaderlist[file_num]->viewtime -= mainwindow->edfheaderlist[file_num]->starttime_offset;
   }
 
-  if((mainwindow->viewtime_sync==VIEWTIME_SYNCED_ABSOLUT)||(mainwindow->viewtime_sync==VIEWTIME_USER_DEF_SYNCED))
+  if((mainwindow->viewtime_sync == VIEWTIME_SYNCED_ABSOLUT) || (mainwindow->viewtime_sync == VIEWTIME_USER_DEF_SYNCED))
   {
     temp = annotation->onset - mainwindow->edfheaderlist[file_num]->viewtime;
 
@@ -957,7 +956,7 @@ void UI_Annotationswindow::annotation_selected(QListWidgetItem * item, int cente
     }
   }
 
-  if(mainwindow->annotationEditDock->dockedit->isVisible()==true)
+  if(mainwindow->annotationEditDock->dockedit->isVisible() == true)
   {
     mainwindow->maincurve->setCrosshair_1_center();
   }
