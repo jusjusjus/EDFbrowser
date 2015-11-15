@@ -3962,7 +3962,7 @@ void ViewCurve::CrosshairButton()
       crosshair_2.moving = 0;
       crosshair_2.file_num = mainwindow->signalcomp[signal_nr]->filenum;
 
-      crosshair_2.x_position = w * 0.3;
+      crosshair_2.x_position = w * 0.6;
       crosshair_2.y_position = h * 0.7;
 
       drawCurve_stage_1();
