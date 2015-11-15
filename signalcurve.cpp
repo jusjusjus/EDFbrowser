@@ -142,19 +142,19 @@ void SignalCurve::mousePressEvent(QMouseEvent *press_event)
   m_x = press_event->x() - bordersize;
   m_y = press_event->y() - bordersize;
 
-  if(m_x < 0 ||
-     m_x > (w - (bordersize * 2)) ||
-     m_y < 0 ||
-     m_y > (h - (bordersize * 2)))
+  if( m_x < 0 ||
+      m_x > w-2*bordersize ||
+      m_y < 0 ||
+      m_y > h-2*bordersize )
   {
     return;
   }
 
-  if(press_event->button()==Qt::LeftButton)
+  if(press_event->button() == Qt::LeftButton)
   {
     if(printEnabled == true)
     {
-      if((m_y<21)&&(m_y>3)&&(m_x>((w - (bordersize * 2)) - 43))&&(m_x<((w - (bordersize * 2)) - 3)))
+      if( (m_y < 21) && (m_y > 3) && (m_x > (w-2*bordersize)-43) && (m_x < ((w-2*bordersize)-3)) )
       {
         exec_sidemenu();
 
@@ -164,7 +164,7 @@ void SignalCurve::mousePressEvent(QMouseEvent *press_event)
 
     if(dashBoardEnabled == true)
     {
-      if((m_y<61)&&(m_y>43)&&(m_x>((w - (bordersize * 2)) - 43))&&(m_x<((w - (bordersize * 2)) - 3)))
+      if( (m_y < 61) && (m_y > 43) && (m_x > (w-2*bordersize)-43) && (m_x < (w-2*bordersize)-3) )
       {
         emit dashBoardClicked();
 
@@ -174,7 +174,7 @@ void SignalCurve::mousePressEvent(QMouseEvent *press_event)
 
     if(cursorEnabled == true)
     {
-      if((m_y<41)&&(m_y>23)&&(m_x>((w - (bordersize * 2)) - 43))&&(m_x<((w - (bordersize * 2)) - 3)))
+      if( (m_y < 41) && (m_y > 23) && (m_x > ((w-2*bordersize)-43)) && (m_x < (w-2*bordersize)-3) )
       {
         if(crosshair_1_active)
         {
@@ -770,7 +770,7 @@ void SignalCurve::print_to_printer()
   QPrintDialog printerdialog(&curve_printer, this);
   printerdialog.setWindowTitle("Print");
 
-  if(!(printerdialog.exec()==QDialog::Accepted))
+  if(!(printerdialog.exec() == QDialog::Accepted))
   {
     sidemenu->close();
 
@@ -1184,7 +1184,7 @@ void SignalCurve::drawWidget_to_printer(QPainter *painter, int curve_w, int curv
 
       if(crosshair_1_active)
       {
-        if(i==((int)(((double)crosshair_1_x_position * p_factor) / h_step)))
+        if(i == ((int)(((double)crosshair_1_x_position * p_factor) / h_step)))
         {
           crosshair_1_y_value = (dbuf[i] + offset) * v_sens;
           crosshair_1_value = dbuf[i];
@@ -1288,7 +1288,7 @@ void SignalCurve::drawWidget_to_printer(QPainter *painter, int curve_w, int curv
 
       if(crosshair_1_active)
       {
-        if(i==((int)(((double)crosshair_1_x_position * p_factor) / h_step)))
+        if(i == ((int)(((double)crosshair_1_x_position * p_factor) / h_step)))
         {
           crosshair_1_y_value = (fbuf[i] + offset) * v_sens;
           crosshair_1_value = fbuf[i];
@@ -1774,7 +1774,7 @@ void SignalCurve::drawWidget(QPainter *painter, int curve_w, int curve_h)
 
         if(crosshair_1_active)
         {
-          if(i==((int)(((double)crosshair_1_x_position) / h_step)))
+          if(i == ((int)(((double)crosshair_1_x_position) / h_step)))
           {
             crosshair_1_y_value = (dbuf[i] + offset) * v_sens;
             crosshair_1_value = dbuf[i];
@@ -1826,7 +1826,7 @@ void SignalCurve::drawWidget(QPainter *painter, int curve_w, int curve_h)
 
         if(crosshair_1_active)
         {
-          if(i==((int)(((double)crosshair_1_x_position) / h_step)))
+          if(i == ((int)(((double)crosshair_1_x_position) / h_step)))
           {
             crosshair_1_y_value = ((double)(ibuf[i]) + offset) * v_sens;
             crosshair_1_value = (double)(ibuf[i]);
@@ -1878,7 +1878,7 @@ void SignalCurve::drawWidget(QPainter *painter, int curve_w, int curve_h)
 
         if(crosshair_1_active)
         {
-          if(i==((int)(((double)crosshair_1_x_position) / h_step)))
+          if(i == ((int)(((double)crosshair_1_x_position) / h_step)))
           {
             crosshair_1_y_value = (fbuf[i] + offset) * v_sens;
             crosshair_1_value = fbuf[i];
@@ -1993,7 +1993,7 @@ void SignalCurve::drawWidget(QPainter *painter, int curve_w, int curve_h)
 
         if(crosshair_1_active)
         {
-          if(i==((int)(((double)crosshair_1_x_position) / h_step)))
+          if(i == ((int)(((double)crosshair_1_x_position) / h_step)))
           {
             crosshair_1_y_value = (dbuf[i] + offset) * v_sens;
             crosshair_1_value = dbuf[i];
@@ -2045,7 +2045,7 @@ void SignalCurve::drawWidget(QPainter *painter, int curve_w, int curve_h)
 
         if(crosshair_1_active)
         {
-          if(i==((int)(((double)crosshair_1_x_position) / h_step)))
+          if(i == ((int)(((double)crosshair_1_x_position) / h_step)))
           {
             crosshair_1_y_value = ((double)(ibuf[i]) + offset) * v_sens;
             crosshair_1_value = (double)(ibuf[i]);
@@ -2097,7 +2097,7 @@ void SignalCurve::drawWidget(QPainter *painter, int curve_w, int curve_h)
 
         if(crosshair_1_active)
         {
-          if(i==((int)(((double)crosshair_1_x_position) / h_step)))
+          if(i == ((int)(((double)crosshair_1_x_position) / h_step)))
           {
             crosshair_1_y_value = (fbuf[i] + offset) * v_sens;
             crosshair_1_value = fbuf[i];
@@ -2572,7 +2572,7 @@ int SignalCurve::get_directory_from_path(char *dest, const char *src, int ssize)
 
   for(i=len-1; i>=0; i--)
   {
-    if((src[i]=='/') || (src[i]=='\\'))
+    if((src[i] == '/') || (src[i] == '\\'))
     {
       break;
     }

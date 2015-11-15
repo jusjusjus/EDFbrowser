@@ -441,7 +441,7 @@ void ViewCurve::mousePressEvent(QMouseEvent *press_event)
 
     if(mainwindow->annot_editor_active)
     {
-      if((!ruler_moving)&&(!crosshair_1.moving)&&(!crosshair_2.moving))
+      if((!ruler_moving) && (!crosshair_1.moving) && (!crosshair_2.moving))
       {
         for(i=0; i<active_markers->count; i++)
         {
@@ -1806,7 +1806,7 @@ void ViewCurve::drawCurve_stage_2(QPainter *painter, int w_width, int w_height, 
       {
         l_tmp = annot->onset - mainwindow->edfheaderlist[i]->starttime_offset;
 
-        if((l_tmp > (mainwindow->edfheaderlist[i]->viewtime - TIME_DIMENSION)) && (!annot->hided) && (!annot->hided_in_list))
+        if((l_tmp > (mainwindow->edfheaderlist[i]->viewtime - TIME_DIMENSION)) && (!annot->hidden) && (!annot->hidden_in_list))
         {
           if(l_tmp > (mainwindow->edfheaderlist[i]->viewtime + mainwindow->pagetime))
           {
@@ -3962,7 +3962,7 @@ void ViewCurve::CrosshairButton()
       crosshair_2.moving = 0;
       crosshair_2.file_num = mainwindow->signalcomp[signal_nr]->filenum;
 
-      crosshair_2.x_position = w * 0.6;
+      crosshair_2.x_position = w * 0.7;
       crosshair_2.y_position = h * 0.7;
 
       drawCurve_stage_1();

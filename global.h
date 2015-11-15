@@ -216,19 +216,19 @@ struct zoomhistoryblock{
         double screen_offset[64][MAXSIGNALS];
        };
 
-struct annotationblock{
-        int file_num;
-        long long onset;
-        char duration[16];
-        char annotation[MAX_ANNOTATION_LEN + 1];
-        struct annotationblock *former_annotation;
-        struct annotationblock *next_annotation;
-        int modified;
-        int x_pos;
-        int selected;
+struct annotationblock {
+        int file_num;					// number of file the annotation belongs to?
+        long long onset;				// (relative?) onset of annotation
+        char duration[16];				// duration (why char?)
+        char annotation[MAX_ANNOTATION_LEN + 1];	// text descriptor of annotation
+        struct annotationblock *former_annotation;	// pointer to previous (temporal?) annotation
+        struct annotationblock *next_annotation;	// pointer to next (temporal?) annotation
+        int modified;					// modified switch (could be bool?)
+        int x_pos;					// ?
+        int selected;					// has the annotation been selected?
         int jump;
-        int hided;
-        int hided_in_list;
+        int hidden;
+        int hidden_in_list;
         unsigned int ident;
        };
 
