@@ -644,51 +644,53 @@ UI_Mainwindow::UI_Mainwindow()
   toolsmenu->addAction("Convert BI9800TL+3 to EDF", this, SLOT(BI98002edf_converter()));
   toolsmenu->addAction("Convert Wave to EDF", this, SLOT(convert_wave_to_edf()));
   toolsmenu->addAction("Convert Binary/raw data to EDF", this, SLOT(convert_binary_to_edf()));
-  toolsmenu->addSeparator();
-  toolsmenu->addAction("Options", this, SLOT(show_options_dialog()));
   menubar->addMenu(toolsmenu);
 
-  menubar->addAction("S&ettings", this, SLOT(show_options_dialog()));
+  settingsmenu = new QMenu(this);
+  settingsmenu->setTitle("S&ettings");
+  settingsmenu->addAction("Settings", this, SLOT(show_options_dialog()));
+  menubar->addMenu(settingsmenu);
+  //menubar->addAction("S&ettings", this, SLOT(show_options_dialog()));
 
-  former_page_Act = new QAction("<<", this);
-  former_page_Act->setShortcut(QKeySequence::MoveToPreviousPage);
-  connect(former_page_Act, SIGNAL(triggered()), this, SLOT(former_page()));
-  menubar->addAction(former_page_Act);
+  //former_page_Act = new QAction("<<", this);
+  //former_page_Act->setShortcut(QKeySequence::MoveToPreviousPage);
+  //connect(former_page_Act, SIGNAL(triggered()), this, SLOT(former_page()));
+  //menubar->addAction(former_page_Act);
 
-  shift_page_left_Act = new QAction("<", this);
-  shift_page_left_Act->setShortcut(QKeySequence::MoveToPreviousChar);
-  connect(shift_page_left_Act, SIGNAL(triggered()), this, SLOT(shift_page_left()));
-  menubar->addAction(shift_page_left_Act);
+  //shift_page_left_Act = new QAction("<", this);
+  //shift_page_left_Act->setShortcut(QKeySequence::MoveToPreviousChar);
+  //connect(shift_page_left_Act, SIGNAL(triggered()), this, SLOT(shift_page_left()));
+  //menubar->addAction(shift_page_left_Act);
 
-  shift_page_right_Act = new QAction(">", this);
-  shift_page_right_Act->setShortcut(QKeySequence::MoveToNextChar);
-  connect(shift_page_right_Act, SIGNAL(triggered()), this, SLOT(shift_page_right()));
-  menubar->addAction(shift_page_right_Act);
+  //shift_page_right_Act = new QAction(">", this);
+  //shift_page_right_Act->setShortcut(QKeySequence::MoveToNextChar);
+  //connect(shift_page_right_Act, SIGNAL(triggered()), this, SLOT(shift_page_right()));
+  //menubar->addAction(shift_page_right_Act);
 
-  next_page_Act = new QAction(">>", this);
-  next_page_Act->setShortcut(QKeySequence::MoveToNextPage);
-  connect(next_page_Act, SIGNAL(triggered()), this, SLOT(next_page()));
-  menubar->addAction(next_page_Act);
+  //next_page_Act = new QAction(">>", this);
+  //next_page_Act->setShortcut(QKeySequence::MoveToNextPage);
+  //connect(next_page_Act, SIGNAL(triggered()), this, SLOT(next_page()));
+  //menubar->addAction(next_page_Act);
 
-  shift_page_up_Act = new QAction("^", this);
-  shift_page_up_Act->setShortcut(QKeySequence::MoveToPreviousLine);
-  connect(shift_page_up_Act, SIGNAL(triggered()), this, SLOT(shift_page_up()));
-  menubar->addAction(shift_page_up_Act);
+  //shift_page_up_Act = new QAction("^", this);
+  //shift_page_up_Act->setShortcut(QKeySequence::MoveToPreviousLine);
+  //connect(shift_page_up_Act, SIGNAL(triggered()), this, SLOT(shift_page_up()));
+  //menubar->addAction(shift_page_up_Act);
 
-  shift_page_down_Act = new QAction("v", this);
-  shift_page_down_Act->setShortcut(QKeySequence::MoveToNextLine);
-  connect(shift_page_down_Act, SIGNAL(triggered()), this, SLOT(shift_page_down()));
-  menubar->addAction(shift_page_down_Act);
+  //shift_page_down_Act = new QAction("v", this);
+  //shift_page_down_Act->setShortcut(QKeySequence::MoveToNextLine);
+  //connect(shift_page_down_Act, SIGNAL(triggered()), this, SLOT(shift_page_down()));
+  //menubar->addAction(shift_page_down_Act);
 
-  zoomback_Act = new QAction("zoomback", this);
-  zoomback_Act->setShortcut(Qt::Key_Backspace);
-  connect(zoomback_Act, SIGNAL(triggered()), this, SLOT(zoomback()));
-  menubar->addAction(zoomback_Act);
+  //zoomback_Act = new QAction("zoomback", this);
+  //zoomback_Act->setShortcut(Qt::Key_Backspace);
+  //connect(zoomback_Act, SIGNAL(triggered()), this, SLOT(zoomback()));
+  //menubar->addAction(zoomback_Act);
 
-  zoomforward_Act = new QAction("zoomforward", this);
-  zoomforward_Act->setShortcut(Qt::Key_Insert);
-  connect(zoomforward_Act, SIGNAL(triggered()), this, SLOT(forward()));
-  menubar->addAction(zoomforward_Act);
+  //zoomforward_Act = new QAction("zoomforward", this);
+  //zoomforward_Act->setShortcut(Qt::Key_Insert);
+  //connect(zoomforward_Act, SIGNAL(triggered()), this, SLOT(forward()));
+  //menubar->addAction(zoomforward_Act);
 
   no_timesync_act = new QAction("no timelock", this);
   no_timesync_act->setCheckable(true);
@@ -728,12 +730,12 @@ UI_Mainwindow::UI_Mainwindow()
   timemenu->addSeparator()->setText("Time reference");
   menubar->addMenu(timemenu);
 
-  windowmenu = new QMenu(this);
-  windowmenu->setTitle("&Window");
-  windowmenu->addAction("Annotations", this, SLOT(show_annotations()));
-  windowmenu->addAction("Annotation editor", this, SLOT(annotation_editor()));
-  windowmenu->addAction("Spectrum", this, SLOT(show_spectrum_dock()));
-  menubar->addMenu(windowmenu);
+  modemenu = new QMenu(this);
+  modemenu->setTitle("&Mode");
+  modemenu->addAction("Annotations", this, SLOT(show_annotations()));
+  modemenu->addAction("Annotation editor", this, SLOT(annotation_editor()));
+  modemenu->addAction("Spectrum", this, SLOT(show_spectrum_dock()));
+  menubar->addMenu(modemenu);
 
   helpmenu = new QMenu(this);
   helpmenu->setTitle("&Help");
@@ -1068,13 +1070,13 @@ void UI_Mainwindow::open_stream()
   {
     toolsmenu->setEnabled(false);
     timemenu->setEnabled(false);
-    windowmenu->setEnabled(false);
-    former_page_Act->setEnabled(false);
-    shift_page_left_Act->setEnabled(false);
-    shift_page_right_Act->setEnabled(false);
-    next_page_Act->setEnabled(false);
-    shift_page_up_Act->setEnabled(false);
-    shift_page_down_Act->setEnabled(false);
+    modemenu->setEnabled(false);
+    //former_page_Act->setEnabled(false);
+    //shift_page_left_Act->setEnabled(false);
+    //shift_page_right_Act->setEnabled(false);
+    //next_page_Act->setEnabled(false);
+    //shift_page_up_Act->setEnabled(false);
+    //shift_page_down_Act->setEnabled(false);
     printmenu->setEnabled(false);
     recent_filesmenu->setEnabled(false);
 
@@ -1687,17 +1689,6 @@ void UI_Mainwindow::add_new_filter()
   UI_FilterDialog filterdialog(this);
 }
 
-
-
-// void UI_Mainwindow::add_new_math_func()
-// {
-// }
-
-
-
-// void UI_Mainwindow::remove_all_math_funcs()
-// {
-// }
 
 
 
@@ -2628,13 +2619,7 @@ void UI_Mainwindow::close_all_files()
   live_stream_timer->stop();
   toolsmenu->setEnabled(true);
   timemenu->setEnabled(true);
-  windowmenu->setEnabled(true);
-  former_page_Act->setEnabled(true);
-  shift_page_left_Act->setEnabled(true);
-  shift_page_right_Act->setEnabled(true);
-  next_page_Act->setEnabled(true);
-  shift_page_up_Act->setEnabled(true);
-  shift_page_down_Act->setEnabled(true);
+  modemenu->setEnabled(true);
   printmenu->setEnabled(true);
   recent_filesmenu->setEnabled(true);
 
