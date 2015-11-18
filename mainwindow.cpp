@@ -298,7 +298,6 @@ UI_Mainwindow::UI_Mainwindow()
   filemenu->addAction("Info",         this, SLOT(show_file_info()));
   filemenu->addAction("Close all",    this, SLOT(close_all_files()), QKeySequence::Close);
   filemenu->addAction("Exit",         this, SLOT(exit_program()), QKeySequence::Quit);
-  menubar->addMenu(filemenu);
 
   signalmenu = new QMenu(this);
   signalmenu->setTitle("&Signals");
@@ -306,7 +305,6 @@ UI_Mainwindow::UI_Mainwindow()
   signalmenu->addAction("Add",        this, SLOT(add_signals_dialog()));
   signalmenu->addAction("Organize",   this, SLOT(organize_signals()));
   signalmenu->addAction("Remove all", this, SLOT(remove_all_signals()));
-  menubar->addMenu(signalmenu);
 
   displaymenu = new QMenu(this);
   displaymenu->setTitle("&Timescale");
@@ -391,7 +389,6 @@ UI_Mainwindow::UI_Mainwindow()
   connect(page_whole_rec, SIGNAL(triggered()), this, SLOT(set_display_time_whole_rec()));
   displaymenu->addAction(page_whole_rec);
 
-  menubar->addMenu(displaymenu);
 
   DisplayGroup = new QActionGroup(this);
   DisplayGroup->addAction(page_10m);
@@ -521,7 +518,6 @@ UI_Mainwindow::UI_Mainwindow()
   connect(amp_minus, SIGNAL(triggered()), this, SLOT(set_amplitude_div2()));
   amplitudemenu->addAction(amp_minus);
 
-  menubar->addMenu(amplitudemenu);
 
   AmplitudeGroup = new QActionGroup(this);
   AmplitudeGroup->addAction(amp_00001);
@@ -558,13 +554,11 @@ UI_Mainwindow::UI_Mainwindow()
   filtermenu->addAction("New", this, SLOT(add_new_filter()));
   filtermenu->addAction("Adjust", this, SLOT(filterproperties_dialog()));
   filtermenu->addAction("Remove all", this, SLOT(remove_all_filters()));
-  menubar->addMenu(filtermenu);
 
 //   math_func_menu = new QMenu(this);
 //   math_func_menu->setTitle("&Math");
 //   math_func_menu->addAction("New", this, SLOT(add_new_math_func()));
 //   math_func_menu->addAction("Remove all", this, SLOT(remove_all_math_funcs()));
-//   menubar->addMenu(math_func_menu);
 
   load_predefined_mtg_act[0] = new QAction("Empty", this);
   load_predefined_mtg_act[0]->setShortcut(Qt::Key_F1);
@@ -610,12 +604,10 @@ UI_Mainwindow::UI_Mainwindow()
   {
     montagemenu->addAction(load_predefined_mtg_act[i]);
   }
-  menubar->addMenu(montagemenu);
 
 //   patternmenu = new QMenu(this);
 //   patternmenu->setTitle("&Pattern");
 //   patternmenu->addAction("Search", this, SLOT(search_pattern()));
-//   menubar->addMenu(patternmenu);
 
   toolsmenu = new QMenu(this);
   toolsmenu->setTitle("T&ools");
@@ -644,13 +636,20 @@ UI_Mainwindow::UI_Mainwindow()
   toolsmenu->addAction("Convert BI9800TL+3 to EDF", this, SLOT(BI98002edf_converter()));
   toolsmenu->addAction("Convert Wave to EDF", this, SLOT(convert_wave_to_edf()));
   toolsmenu->addAction("Convert Binary/raw data to EDF", this, SLOT(convert_binary_to_edf()));
-  menubar->addMenu(toolsmenu);
 
-  settingsmenu = new QMenu(this);
-  settingsmenu->setTitle("S&ettings");
-  settingsmenu->addAction("Settings", this, SLOT(show_options_dialog()));
-  menubar->addMenu(settingsmenu);
-  //menubar->addAction("S&ettings", this, SLOT(show_options_dialog()));
+
+
+	settingsmenu = new QMenu(this);
+	settingsmenu->setTitle("Preferences");
+
+	settingsmenu->addAction("Colors")->setData(0);
+	settingsmenu->addAction("Calibration")->setData(1);
+	settingsmenu->addAction("Power spectrum")->setData(2);
+	settingsmenu->addAction("Other")->setData(3);
+
+	connect(settingsmenu, SIGNAL(triggered(QAction *)),
+			this, SLOT(show_options_dialog(QAction *)), Qt::UniqueConnection);	// if the "Settings"-menu is triggered, it will call show_options_dialog at specific tab.
+
 
   //former_page_Act = new QAction("<<", this);
   //former_page_Act->setShortcut(QKeySequence::MoveToPreviousPage);
@@ -728,14 +727,12 @@ UI_Mainwindow::UI_Mainwindow()
   timemenu->addSeparator();
   timemenu->addAction("synchronize by crosshairs", this, SLOT(sync_by_crosshairs()));
   timemenu->addSeparator()->setText("Time reference");
-  menubar->addMenu(timemenu);
 
   modemenu = new QMenu(this);
   modemenu->setTitle("&Mode");
   modemenu->addAction("Annotations", this, SLOT(show_annotations()));
   modemenu->addAction("Annotation editor", this, SLOT(annotation_editor()));
   modemenu->addAction("Spectrum", this, SLOT(show_spectrum_dock()));
-  menubar->addMenu(modemenu);
 
   helpmenu = new QMenu(this);
   helpmenu->setTitle("&Help");
@@ -748,7 +745,24 @@ UI_Mainwindow::UI_Mainwindow()
   helpmenu->addAction("Keyboard shortcuts", this, SLOT(show_kb_shortcuts()));
   helpmenu->addAction("About EDFbrowser", this, SLOT(show_about_dialog()));
   helpmenu->addAction("Show splashscreen", this, SLOT(show_splashscreen()));
-  menubar->addMenu(helpmenu);
+
+
+
+
+
+	menubar->addMenu(filemenu);
+	menubar->addMenu(signalmenu);
+	menubar->addMenu(displaymenu);
+	menubar->addMenu(amplitudemenu);
+	menubar->addMenu(filtermenu);
+//   menubar->addMenu(math_func_menu);
+	menubar->addMenu(montagemenu);
+//   menubar->addMenu(patternmenu);
+	menubar->addMenu(toolsmenu);
+	menubar->addMenu(timemenu);
+	menubar->addMenu(modemenu);
+	menubar->addMenu(settingsmenu);
+	menubar->addMenu(helpmenu);
 
   Escape_act = new QAction(this);
   Escape_act->setShortcut(Qt::Key_Escape);
@@ -1461,9 +1475,11 @@ void UI_Mainwindow::sync_by_crosshairs()
 }
 
 
-void UI_Mainwindow::show_options_dialog()
+void UI_Mainwindow::show_options_dialog(QAction* menuitem) // menuitem=0
 {
-  UI_OptionsDialog OptionsDialog(this);
+	unsigned tab_number=0;
+	if( not (menuitem==0) ) tab_number = menuitem->data().toInt();
+	UI_OptionsDialog OptionsDialog(this, tab_number);
 }
 
 

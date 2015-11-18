@@ -82,7 +82,7 @@ class UI_OptionsDialog : public QObject
   Q_OBJECT
 
 public:
-  UI_OptionsDialog(QWidget *parent=0);
+  UI_OptionsDialog(QWidget *parent=0, unsigned int tab_number=0);
 
   UI_Mainwindow *mainwindow;
 

@@ -463,7 +463,7 @@ private slots:
   void jump_to_start();
   void jump_to_end();
   void show_annotations();
-  void show_options_dialog();
+  void show_options_dialog(QAction* menuitem=0);
   long long get_long_time(char *);
   void nk2edf_converter();
   void set_timesync(QAction *);

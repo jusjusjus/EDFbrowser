@@ -36,7 +36,7 @@
 
 
 
-UI_OptionsDialog::UI_OptionsDialog(QWidget *w_parent)
+UI_OptionsDialog::UI_OptionsDialog(QWidget *w_parent, unsigned int tab_number) // tab_number=0
 {
   int i,
       showminimized=0;
@@ -631,6 +631,9 @@ UI_OptionsDialog::UI_OptionsDialog(QWidget *w_parent)
   tabholder->addTab(tab4, "Other");
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//
+	tabholder->setCurrentIndex(tab_number);
+//
 
   horLayout = new QHBoxLayout;
   horLayout->addSpacing(300);
