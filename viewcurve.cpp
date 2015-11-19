@@ -564,6 +564,7 @@ void ViewCurve::mouseReleaseEvent(QMouseEvent *release_event)
     if(crosshair_1.moving)
     {
       mainwindow->annotationEditDock->annotEditSetOnset(crosshair_1.time_relative);
+      mainwindow->annotationEditDock->annotEditSetDuration(crosshair_2.time_relative - crosshair_1.time_relative);
     }
 
     if(crosshair_2.moving)
@@ -1984,6 +1985,7 @@ void ViewCurve::drawCurve_stage_2(QPainter *painter, int w_width, int w_height, 
         painter->setPen((Qt::GlobalColor)signalcomp[i]->color);
 
         mainwindow->annotationEditDock->annotEditSetOnset(crosshair_1.time_relative);
+        mainwindow->annotationEditDock->annotEditSetDuration(crosshair_2.time_relative - crosshair_1.time_relative);
       }
     }
 
