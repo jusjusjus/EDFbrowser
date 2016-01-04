@@ -707,22 +707,14 @@ void UI_Annotationswindow::updateList(void)
   selected = -1;
 
   // Set special font for modified annotations (could probably be done in constructor)
-#ifdef Q_OS_LINUX
+#if defined(Q_OS_LINUX) || defined(Q_OS_MAC)
   QFont specialfont("andale mono", 12, QFont::Normal, true);
-
   specialfont.setPixelSize(12);
-#endif
 
-#ifdef Q_OS_MAC
-  QFont specialfont("andale mono", 12, QFont::Normal, true);
-
-  specialfont.setPixelSize(12);
-#endif
-
-#ifdef Q_OS_WIN32
+#elif defined(Q_OS_WIN32)
   QFont specialfont("courier", 11, QFont::Normal, true);
-
   specialfont.setPixelSize(12);
+
 #endif
   // Set special font for modified annotations
 
