@@ -78,6 +78,9 @@
   #ifndef CSIDL_PROGRAM_FILES
     #define CSIDL_PROGRAM_FILES 0x0026 // C:\Program Files
   #endif
+  #if (QT_VERSION >= 0x050000)
+    #define QT_WA(unicode, ansi) unicode
+  #endif
 #endif
 
 #include <QFileDialog>
@@ -131,6 +134,7 @@
 #include "emsa2edf.h"
 #include "bdf2edf.h"
 #include "edit_annotation_dock.h"
+#include "edit_epoch_dock.h"
 #include "popup_save_cancelwindow.h"
 #include "save_annots.h"
 #include "utils.h"
@@ -144,6 +148,7 @@
 #include "reduce_signals.h"
 #include "header_editor.h"
 #include "biosemi2bdfplus.h"
+#include "fma_ecg2edf.h"
 #include "bdf_triggers.h"
 #include "import_annotations.h"
 #include "ravg_filter.h"
@@ -161,13 +166,17 @@
 
 #include "third_party/fidlib/fidlib.h"
 
+#include <iostream>
+
 
 
 
 class ViewCurve;
 class UI_Signalswindow;
 class UI_Annotationswindow;
+class UI_Epochswindow;
 class UI_AnnotationEditwindow;
+class UI_EpochEditwindow;
 class UI_SpectrumDockWindow;
 class UI_FreqSpectrumWindow;
 class UI_AverageCurveWindow;
@@ -184,11 +193,13 @@ public:
 
   int files_open,
       signalcomps,
+      stiffness,
       totalviewbufsize,
       sel_viewtime,
       viewtime_sync,
       print_to_edf_active,
       annot_editor_active,
+      epoch_editor_active,
       show_annot_markers,
       show_baselines,
       annotations_edited,
@@ -217,11 +228,12 @@ public:
       use_threads,
       check_for_updates,
       amplitude_doubler,
-      timescale_doubler,
       viewtime_indicator_type,
       mainwindow_title_type;
 
   long long pagetime,
+       	    epochstart,
+       	    pagestep,
             maxfilesize_to_readin_annotations;
 
   char *viewbuf,
@@ -257,6 +269,8 @@ public:
 
   struct annotationblock *annotationlist[MAXFILES];
 
+  struct annotationblock *epochlist[1];
+
   struct annotationblock *annotationlist_backup;
 
   struct spectrum_markersblock *spectrum_colorbar;
@@ -266,8 +280,11 @@ public:
   struct export_annotations_var_block *export_annotations_var;
 
   UI_Annotationswindow *annotations_dock[MAXFILES];
+  UI_Epochswindow *epochs_dock;
 
   UI_AnnotationEditwindow *annotationEditDock;
+
+  UI_EpochEditwindow *epochEditDock;
 
   UI_FreqSpectrumWindow *spectrumdialog[MAXSPECTRUMDIALOGS];
 
@@ -301,6 +318,14 @@ public:
 
   UI_SpectrumDockWindow *spectrumdock;
 
+  void remove_crosshairs();
+
+  void get_samples_on_screen(int signal_nr, long long &start, long long &end);
+
+protected:
+  int ask_discard_annotationlist(struct annotationblock **);
+  void closeEvent(QCloseEvent *);
+
 
 private:
 
@@ -311,11 +336,11 @@ private:
                *displaymenu,
                *amplitudemenu,
                *toolsmenu,
+               *annotationsmenu,
                *settingsmenu,
                *helpmenu,
                *printmenu,
                *filtermenu,
-//               *math_func_menu,
                *timemenu,
                *modemenu,
                *recent_filesmenu,
@@ -333,8 +358,6 @@ private:
            *next_page_Act,
            *shift_page_up_Act,
            *shift_page_down_Act,
-           *page_div2,
-           *page_mult2,
            *page_10m,
            *page_20m,
            *page_50m,
@@ -417,14 +440,17 @@ private:
   void read_recent_file_settings();
   void read_general_settings();
   void write_settings();
+
 #ifdef Q_OS_WIN32
   QString specialFolder(int);
 #endif
+
   long long check_edf_file_datarecords(struct edfhdrblock *);
 
 public slots:
   void remove_all_signals();
   void edfplus_annotation_remove_duplicates();
+  void set_pagetime(long long pagetime, int stiffness=-1, long long epochlength=-1);
 
 private slots:
   void open_new_file();
@@ -436,8 +462,6 @@ private slots:
   void add_signals_dialog();
   void show_about_dialog();
   void set_display_time(QAction *);
-  void set_page_div2();
-  void set_page_mult2();
   void set_display_time_whole_rec();
   void set_amplitude(QAction *);
   void set_amplitude_div2();
@@ -457,8 +481,6 @@ private slots:
   void check_edf_compatibility();
   void add_new_filter();
   void remove_all_filters();
-//  void add_new_math_func();
-//  void remove_all_math_funcs();
   void jump_to_dialog();
   void jump_to_start();
   void jump_to_end();
@@ -493,7 +515,8 @@ private slots:
   void convert_emsa_to_edf();
   void bdf2edf_converter();
   void set_dc_offset_to_zero();
-  void annotation_editor();
+  int annotation_editor();
+  void epoch_editor();
   void save_file();
   void unisens2edf_converter();
   void BI98002edf_converter();
@@ -505,7 +528,12 @@ private slots:
   void reduce_signals();
   void edit_header();
   void biosemi2bdfplus_converter();
+  void convert_fm_audio_to_edf();
   void import_annotations();
+  void export_epochs();
+  void import_epochs();
+  void set_start_of_epochs();
+  void configure_epochs();
   void open_stream();
   void live_stream_timer_func();
   void organize_signals();
@@ -515,9 +543,6 @@ private slots:
   void convert_manscan_to_edf();
   void convert_scpecg_to_edf();
 //  void search_pattern();
-
-protected:
-  void closeEvent(QCloseEvent *);
 
 };
 

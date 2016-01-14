@@ -203,7 +203,8 @@ int EDF_annotations::get_annotations(int file_num, struct edfhdrblock *edf_hdr, 
   {
     QMessageBox messagewindow(QMessageBox::Critical, "Error", "Memory allocation error occurred when trying to read annotations.\n(cnv_buf)");
     messagewindow.exec();
-    return(1);
+    throw 1;
+    //return(1);
   }
 
   max_tal_ln = 0;
@@ -221,7 +222,8 @@ int EDF_annotations::get_annotations(int file_num, struct edfhdrblock *edf_hdr, 
     QMessageBox messagewindow(QMessageBox::Critical, "Error", "Memory allocation error occurred when trying to read annotations.\n(scratchpad)");
     messagewindow.exec();
     free(cnv_buf);
-    return(1);
+    throw 1;
+    //return(1);
   }
 
   time_in_txt = (char *)calloc(1, max_tal_ln + 3);
@@ -231,7 +233,8 @@ int EDF_annotations::get_annotations(int file_num, struct edfhdrblock *edf_hdr, 
     messagewindow.exec();
     free(cnv_buf);
     free(scratchpad);
-    return(1);
+    throw 1;
+    //return(1);
   }
 
   duration_in_txt = (char *)calloc(1, max_tal_ln + 3);
@@ -242,7 +245,8 @@ int EDF_annotations::get_annotations(int file_num, struct edfhdrblock *edf_hdr, 
     free(cnv_buf);
     free(scratchpad);
     free(time_in_txt);
-    return(1);
+    throw 1;
+    //return(1);
   }
 
   if(fseeko(inputfile, (long long)((edfsignals + 1) * 256), SEEK_SET))
@@ -253,7 +257,8 @@ int EDF_annotations::get_annotations(int file_num, struct edfhdrblock *edf_hdr, 
     free(scratchpad);
     free(time_in_txt);
     free(duration_in_txt);
-    return(2);
+    throw 2;
+    //return(2);
   }
 
   QProgressDialog progress("Scanning file for annotations...", "Abort", 0, datarecords);
@@ -284,7 +289,8 @@ int EDF_annotations::get_annotations(int file_num, struct edfhdrblock *edf_hdr, 
         free(scratchpad);
         free(time_in_txt);
         free(duration_in_txt);
-        return(11);
+	throw 11;
+        //return(11);
       }
     }
 
@@ -297,7 +303,8 @@ int EDF_annotations::get_annotations(int file_num, struct edfhdrblock *edf_hdr, 
       free(scratchpad);
       free(time_in_txt);
       free(duration_in_txt);
-      return(2);
+	throw 2;
+      //return(2);
     }
 
 
@@ -451,7 +458,8 @@ int EDF_annotations::get_annotations(int file_num, struct edfhdrblock *edf_hdr, 
                   free(scratchpad);
                   free(time_in_txt);
                   free(duration_in_txt);
-                  return(1);
+		  throw 1;
+                  //return(1);
                 }
 
                 new_annotation->next_annotation = NULL;
@@ -553,7 +561,8 @@ int EDF_annotations::get_annotations(int file_num, struct edfhdrblock *edf_hdr, 
         free(scratchpad);
         free(time_in_txt);
         free(duration_in_txt);
-        return(9);
+	throw 9;
+	//return(9);
       }
     }
 
@@ -587,7 +596,8 @@ int EDF_annotations::get_annotations(int file_num, struct edfhdrblock *edf_hdr, 
                 free(scratchpad);
                 free(time_in_txt);
                 free(duration_in_txt);
-                return(1);
+		throw 1;
+		//return(1);
               }
 
               new_annotation->file_num = edf_hdr->file_num;
@@ -634,7 +644,7 @@ int EDF_annotations::get_annotations(int file_num, struct edfhdrblock *edf_hdr, 
   free(time_in_txt);
   free(duration_in_txt);
 
-  return(0);
+  return 0;
 }
 
 

@@ -78,6 +78,7 @@ struct export_annotations_var_block
   int separator;
   int format;
   int duration;
+  int end;
 };
 
 
@@ -87,9 +88,18 @@ class UI_ExportAnnotationswindow : public QObject
   Q_OBJECT
 
 public:
-  UI_ExportAnnotationswindow(QWidget *parent);
+  UI_ExportAnnotationswindow(QWidget *parent, struct annotationblock **annotationlist);
 
   UI_Mainwindow *mainwindow;
+  	int execute();
+
+  void backup(const char* extension="annotations");
+
+
+protected:
+	struct annotationblock **annotationlist;
+	void check_list();
+
 
 private:
 
@@ -109,7 +119,9 @@ private:
                *asciiISOtimeRadioButton,
                *asciiISOtimedateRadioButton,
                *asciiISOtimeFractionRadioButton,
-               *asciiISOtimedateFractionRadioButton;
+               *asciiISOtimedateFractionRadioButton,
+               *asciiTimedateRadioButton,
+               *asciiTimedateFractionRadioButton;
 
   QGroupBox    *formatGroupBox,
                *fileGroupBox,
@@ -125,12 +137,18 @@ private:
 
   QLabel       *separatorLabel;
 
-  QCheckBox    *durationCheckBox;
+  QCheckBox    *durationCheckBox,
+	       *endCheckBox;
 
-private slots:
+  QButtonGroup *durationGroup;
+
+
+public slots:
 
   void ExportButtonClicked();
   void outputformatRadioButtonClicked(bool);
+  void DurationCheckBoxChanged(int);
+  void EndCheckBoxChanged(int);
 
 };
 

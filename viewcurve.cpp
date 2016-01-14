@@ -36,7 +36,6 @@
 
 ViewCurve::ViewCurve(QWidget *w_parent) : QWidget(w_parent)
 {
-  int i;
 
   setAttribute(Qt::WA_OpaquePaintEvent);
 
@@ -46,23 +45,24 @@ ViewCurve::ViewCurve(QWidget *w_parent) : QWidget(w_parent)
 
   annot_marker_pen = new QPen(Qt::SolidPattern, 0, Qt::DashLine, Qt::SquareCap, Qt::BevelJoin);
 
+  epoch_marker_pen = new QPen(Qt::SolidPattern, 0, Qt::DashLine, Qt::SquareCap, Qt::BevelJoin);
+
   signal_pen = new QPen(Qt::SolidPattern, 2, Qt::SolidLine, Qt::SquareCap, Qt::BevelJoin);
 
   ruler_pen = new QPen(Qt::SolidPattern, 0, Qt::SolidLine, Qt::SquareCap, Qt::BevelJoin);
 
   active_markers = (struct active_markersblock *)calloc(1, sizeof(struct active_markersblock));
 
-  annot_marker_moving = 0;
-
   use_move_events = 0;
   sidemenu_active = 0;
   draw_zoom_rectangle = 0;
   printing = 0;
   pressed_on_label = 0;
+  spanning = 0;
 
   original_sensitivity = (double *)calloc(1, sizeof(double[MAXSIGNALS]));
 
-  backgroundcolor = Qt::gray;
+  backgroundcolor = Qt::lightGray;
   small_ruler_color = Qt::black;
   big_ruler_color = Qt::darkGray;
   mouse_rect_color = Qt::black;
@@ -73,6 +73,7 @@ ViewCurve::ViewCurve(QWidget *w_parent) : QWidget(w_parent)
   crosshair_2.color = Qt::cyan;
   floating_ruler_color = Qt::red;
   annot_marker_color = Qt::white;
+  epoch_marker_color = Qt::red;
 
   crosshair_1.active = 0;
   crosshair_2.active = 0;
@@ -96,7 +97,7 @@ ViewCurve::ViewCurve(QWidget *w_parent) : QWidget(w_parent)
   if(cpu_cnt < 1) cpu_cnt = 1;
   if(cpu_cnt > MAXSIGNALS) cpu_cnt = MAXSIGNALS;
 
-  for(i=0; i<cpu_cnt; i++)
+  for(int i=0; i<cpu_cnt; i++)
   {
     thr[i] = new drawCurve_stage_1_thread;
   }
@@ -112,67 +113,42 @@ ViewCurve::ViewCurve(QWidget *w_parent) : QWidget(w_parent)
 
 ViewCurve::~ViewCurve()
 {
-  int i;
+  if(graphicBuf!=NULL) free(graphicBuf);
 
-  if(graphicBuf!=NULL)
-  {
-    free(graphicBuf);
-  }
+  if(active_markers!=NULL) free(active_markers);
 
-  if(active_markers!=NULL)
-  {
-    free(active_markers);
-  }
+  if(original_sensitivity!=NULL) free(original_sensitivity);
 
-  if(original_sensitivity!=NULL)
-  {
-    free(original_sensitivity);
-  }
-
-  if(screensamples!=NULL)
-  {
-    free(screensamples);
-  }
+  if(screensamples!=NULL) free(screensamples);
 
   delete printfont;
   delete annot_marker_pen;
+  delete epoch_marker_pen;
   delete special_pen;
   delete signal_pen;
   delete ruler_pen;
 
-  for(i=0; i<cpu_cnt; i++)
-  {
-    delete thr[i];
-  }
+  for(int i=0; i<cpu_cnt; i++) delete thr[i];
 }
 
 
 void ViewCurve::wheelEvent(QWheelEvent *wheel_event)
 {
-  int i;
-
   long long l_tmp, trshld=100LL;
 
-  if(mainwindow->mousewheelsens < 1)  return;
+  if(mainwindow->mousewheelsens < 1) return;
 
-  if(mainwindow->files_open == 0)  return;
+  if(mainwindow->files_open == 0) return;
 
-  if(QApplication::keyboardModifiers() == Qt::ControlModifier)
+  if(QApplication::keyboardModifiers() == Qt::ControlModifier and mainwindow->stiffness == 0) // if control key is pressed.
   {
-    if(wheel_event->delta() > 0)
+    if(wheel_event->delta() > 0)	// zoom in
     {
       if( (mainwindow->viewtime_sync == VIEWTIME_SYNCED_OFFSET) || (mainwindow->viewtime_sync == VIEWTIME_SYNCED_ABSOLUT) || (mainwindow->viewtime_sync == VIEWTIME_USER_DEF_SYNCED) )
       {
-        for(i=0; i<mainwindow->files_open; i++)
+        for(int i=0; i<mainwindow->files_open; i++)
         {
-          if(mainwindow->timescale_doubler == 50)
-          {
-            mainwindow->edfheaderlist[i]->viewtime += (mainwindow->pagetime * 0.3);
-          }
-          else
-          {
-            mainwindow->edfheaderlist[i]->viewtime += (mainwindow->pagetime / 4);
-          }
+		mainwindow->edfheaderlist[i]->viewtime += (mainwindow->pagetime / 4);				// move quarter a page.
 
           l_tmp = mainwindow->edfheaderlist[i]->viewtime % TIME_DIMENSION;
 
@@ -190,14 +166,7 @@ void ViewCurve::wheelEvent(QWheelEvent *wheel_event)
 
       if(mainwindow->viewtime_sync == VIEWTIME_UNSYNCED)
       {
-        if(mainwindow->timescale_doubler == 50)
-        {
-          mainwindow->edfheaderlist[mainwindow->sel_viewtime]->viewtime += (mainwindow->pagetime * 0.3);
-        }
-        else
-        {
-          mainwindow->edfheaderlist[mainwindow->sel_viewtime]->viewtime += (mainwindow->pagetime / 4);
-        }
+		mainwindow->edfheaderlist[mainwindow->sel_viewtime]->viewtime += (mainwindow->pagetime / 4);	// move quarter a page.
 
         l_tmp = mainwindow->edfheaderlist[mainwindow->sel_viewtime]->viewtime % TIME_DIMENSION;
 
@@ -212,42 +181,16 @@ void ViewCurve::wheelEvent(QWheelEvent *wheel_event)
         }
       }
 
-      if(mainwindow->timescale_doubler == 10)
-      {
-        mainwindow->timescale_doubler = 50;
-
-        mainwindow->pagetime /= 2;
-      }
-      else
-      {
-        if(mainwindow->timescale_doubler == 50)
-        {
-          mainwindow->timescale_doubler = 20;
-
-          mainwindow->pagetime /= 2.5;
-        }
-        else
-        {
-          mainwindow->timescale_doubler = 10;
-
-          mainwindow->pagetime /= 2;
-        }
-      }
+	mainwindow->set_pagetime(mainwindow->pagetime / 2);
     }
-    else
+    else				// zoom out
     {
-      if((mainwindow->viewtime_sync==VIEWTIME_SYNCED_OFFSET)||(mainwindow->viewtime_sync==VIEWTIME_SYNCED_ABSOLUT)||(mainwindow->viewtime_sync==VIEWTIME_USER_DEF_SYNCED))
+      if( (mainwindow->viewtime_sync==VIEWTIME_SYNCED_OFFSET) || (mainwindow->viewtime_sync==VIEWTIME_SYNCED_ABSOLUT) || (mainwindow->viewtime_sync==VIEWTIME_USER_DEF_SYNCED) )
       {
-        for(i=0; i<mainwindow->files_open; i++)
+        for(int i=0; i<mainwindow->files_open; i++)
         {
-          if(mainwindow->timescale_doubler == 20)
-          {
-            mainwindow->edfheaderlist[i]->viewtime -= (mainwindow->pagetime * 0.75);
-          }
-          else
-          {
-            mainwindow->edfheaderlist[i]->viewtime -= (mainwindow->pagetime / 2);
-          }
+		mainwindow->edfheaderlist[i]->viewtime -= (mainwindow->pagetime / 2);
+          
 
           l_tmp = mainwindow->edfheaderlist[i]->viewtime % TIME_DIMENSION;
 
@@ -265,14 +208,7 @@ void ViewCurve::wheelEvent(QWheelEvent *wheel_event)
 
       if(mainwindow->viewtime_sync==VIEWTIME_UNSYNCED)
       {
-        if(mainwindow->timescale_doubler == 20)
-        {
-          mainwindow->edfheaderlist[mainwindow->sel_viewtime]->viewtime -= (mainwindow->pagetime * 0.75);
-        }
-        else
-        {
-          mainwindow->edfheaderlist[mainwindow->sel_viewtime]->viewtime -= (mainwindow->pagetime / 2);
-        }
+		mainwindow->edfheaderlist[mainwindow->sel_viewtime]->viewtime -= (mainwindow->pagetime / 2);
 
         l_tmp = mainwindow->edfheaderlist[mainwindow->sel_viewtime]->viewtime % TIME_DIMENSION;
 
@@ -287,34 +223,14 @@ void ViewCurve::wheelEvent(QWheelEvent *wheel_event)
         }
       }
 
-      if(mainwindow->timescale_doubler == 10)
-      {
-        mainwindow->timescale_doubler = 20;
-
-        mainwindow->pagetime *= 2;
-      }
-      else
-      {
-        if(mainwindow->timescale_doubler == 20)
-        {
-          mainwindow->timescale_doubler = 50;
-
-          mainwindow->pagetime *= 2.5;
-        }
-        else
-        {
-          mainwindow->timescale_doubler = 10;
-
-          mainwindow->pagetime *= 2;
-        }
-      }
+	mainwindow->set_pagetime(2*mainwindow->pagetime);
     }
   }
-  else
+  else if(mainwindow->stiffness != 2)	// moving (stiffness=1), everything (stiffness=0) allowed.
   {
     if( (mainwindow->viewtime_sync==VIEWTIME_SYNCED_OFFSET) || (mainwindow->viewtime_sync==VIEWTIME_SYNCED_ABSOLUT) || (mainwindow->viewtime_sync==VIEWTIME_USER_DEF_SYNCED) )
     {
-      for(i=0; i<mainwindow->files_open; i++)
+      for(int i=0; i<mainwindow->files_open; i++)
       {
         if(wheel_event->delta() > 0)
         {
@@ -336,6 +252,35 @@ void ViewCurve::wheelEvent(QWheelEvent *wheel_event)
       else
       {
         mainwindow->edfheaderlist[mainwindow->sel_viewtime]->viewtime += (mainwindow->pagetime / mainwindow->mousewheelsens);
+      }
+    }
+  }
+  else	// stiffness=2 -> moving only a full page.
+  {
+    if( (mainwindow->viewtime_sync==VIEWTIME_SYNCED_OFFSET) || (mainwindow->viewtime_sync==VIEWTIME_SYNCED_ABSOLUT) || (mainwindow->viewtime_sync==VIEWTIME_USER_DEF_SYNCED) )
+    {
+      for(int i=0; i<mainwindow->files_open; i++)
+      {
+        if(wheel_event->delta() > 0)
+        {
+          mainwindow->edfheaderlist[i]->viewtime -= mainwindow->pagestep;
+        }
+        else
+        {
+          mainwindow->edfheaderlist[i]->viewtime += mainwindow->pagestep;
+        }
+      }
+    }
+
+    if(mainwindow->viewtime_sync==VIEWTIME_UNSYNCED)
+    {
+      if(wheel_event->delta() > 0)
+      {
+        mainwindow->edfheaderlist[mainwindow->sel_viewtime]->viewtime -= mainwindow->pagetime;
+      }
+      else
+      {
+        mainwindow->edfheaderlist[mainwindow->sel_viewtime]->viewtime += mainwindow->pagetime;
       }
     }
   }
@@ -372,7 +317,7 @@ void ViewCurve::mousePressEvent(QMouseEvent *press_event)
 
   setFocus(Qt::MouseFocusReason);
 
-  if(press_event->button() == Qt::LeftButton)
+  if(press_event->button() == Qt::LeftButton)	// Start spanning; Open signalmenu.
   {
     crosshair_1.moving = 0;
     crosshair_2.moving = 0;
@@ -411,19 +356,36 @@ void ViewCurve::mousePressEvent(QMouseEvent *press_event)
     {
       if(crosshair_1.active)
       {
-        if((m_y<crosshair_1.y_position)&&(m_y>(crosshair_1.y_position - 51))&&(m_x>crosshair_1.x_position)&&(m_x<(crosshair_1.x_position + 171)))
+        if( (m_y<crosshair_1.y_position) && (m_y>(crosshair_1.y_position - 51)) && (m_x>crosshair_1.x_position) && (m_x<(crosshair_1.x_position + 171)) )
         {
           crosshair_1.moving = 1;
         }
 
-        if(m_x>(crosshair_1.x_position-10)&&(m_x<(crosshair_1.x_position + 10)))
+        if( (m_x>crosshair_1.x_position-10) && (m_x<(crosshair_1.x_position+10)) )
         {
           crosshair_1.moving = 1;
         }
       }
+	else	// if crosshair_1.active == 0
+	{
+		if( (m_x>110) && (signal_nr=ymouseOverSignal(m_y, -15, 15)) != -1 )	// If not daneben geklickt ...
+		{
+			crosshair_1.value = 0.;					// ???
+			crosshair_1.active = 1;					// first crosshair active.
+			crosshair_1.x_position = m_x;				// position should be where clicked.
+			crosshair_1.y_position = m_y+100;			// position of the annotation should be below.
+			mainwindow->signalcomp[signal_nr]->hascursor1 = 1;	// cursors are assigned to respective signal.
+			mainwindow->signalcomp[signal_nr]->hascursor2 = 1;	// ...
+			crosshair_2.active = 1;					// second crosshair active.
+			crosshair_2.moving = 1;					// .. and moving.
+			crosshair_2.x_position = m_x;				// .. position should start where the cursor is.
+			crosshair_2.y_position = m_y+100;			// y_position also below the signal.
+			spanning = 1;						// tell the viewcurve that we are spanning something.
+		}
+	}
     }
 
-    if((!ruler_moving)&&(!crosshair_1.moving))
+    if( (!ruler_moving) && (!crosshair_1.moving) )
     {
       if(crosshair_2.active)
       {
@@ -432,54 +394,47 @@ void ViewCurve::mousePressEvent(QMouseEvent *press_event)
           crosshair_2.moving = 1;
         }
 
-        if(m_x>(crosshair_2.x_position-10)&&(m_x<(crosshair_2.x_position + 10)))
+        if( (m_x>crosshair_2.x_position-10) && (m_x<crosshair_2.x_position + 10) )
         {
           crosshair_2.moving = 1;
         }
       }
     }
 
-    if(mainwindow->annot_editor_active)
-    {
-      if((!ruler_moving) && (!crosshair_1.moving) && (!crosshair_2.moving))
-      {
-        for(i=0; i<active_markers->count; i++)
-        {
-          if(m_x>(active_markers->list[i]->x_pos-5)&&(m_x<(active_markers->list[i]->x_pos+5)))
-          {
-            active_markers->selected = i;
+		if(mainwindow->annot_editor_active || mainwindow->epoch_editor_active)
+		{
+			if((!ruler_moving) && (!crosshair_1.moving) && (!crosshair_2.moving))	// If neither ruler nor crosshairs move ...
+			{
+				for(i=0; i<active_markers->count; i++)
+				{
 
-            annot_marker_moving = 1;
+		if( (m_x > active_markers->list[i]->x_pos-5) && (m_x < active_markers->list[i]->x_pos+5) )	// and mouse within range of annotation i
+		{
+			active_markers->selected = i;
+			active_markers->list[i]->selected = 1;
+			mainwindow->annotationEditDock->set_selected_annotation(active_markers->list[i]);
+			break;
+		}
 
-            active_markers->list[i]->selected = 1;
-
-            break;
-          }
-        }
-      }
+				}
+			}
     }
 
-    if((!ruler_moving)&&(!crosshair_1.moving)&&(!crosshair_2.moving)&&(!annot_marker_moving))
+    if( (!ruler_moving) && (!crosshair_1.moving) && (!crosshair_2.moving) ) // If nothing moves ...
     {
-      for(i=0; i<signalcomps; i++)
-      {
-        baseline = h / (signalcomps + 1);
-        baseline *= (i + 1);
-
-        if((m_y<(baseline-5))&&(m_y>(baseline-24))&&(m_x>3)&&(m_x<110))
-        {
-          original_screen_offset = signalcomp[i]->screen_offset;
-          signalcomp[i]->hasoffsettracking = 1;
-          signal_nr = i;
-          pressed_on_label = i + 1;
-          label_press_y_position = m_y;
-
-          break;
-        }
-      }
+	    if( (m_x>3) && (m_x<110) )
+	    {
+		if( (signal_nr=ymouseOverSignal(m_y)) != -1)	// If not daneben geklickt ...
+		{
+			original_screen_offset = mainwindow->signalcomp[signal_nr]->screen_offset;
+			mainwindow->signalcomp[signal_nr]->hasoffsettracking = 1;
+			pressed_on_label = signal_nr + 1;
+			label_press_y_position = m_y;
+		}
+	    }
     }
 
-    if((!pressed_on_label)&&(!ruler_moving)&&(!crosshair_1.moving)&&(!crosshair_2.moving)&&(!annot_marker_moving))
+    if( (!pressed_on_label) && (!ruler_moving) && (!crosshair_1.moving) && (!crosshair_2.moving) )
     {
       draw_zoom_rectangle = 1;
 
@@ -539,6 +494,23 @@ void ViewCurve::mousePressEvent(QMouseEvent *press_event)
 }
 
 
+
+int ViewCurve::ymouseOverSignal(int m_y, int ymin, int ymax)	// returns which signal.  ymin,ymax:  distances from baseline of signal.
+{
+	int baseline;
+	for(int i=0; i<mainwindow->signalcomps; i++)
+	{
+		baseline = (i + 1) * h / (mainwindow->signalcomps + 1);
+		if( (m_y<baseline-ymin) && (m_y>baseline-ymax) )
+		{
+			return i;
+		}
+	}
+	return -1;
+}
+
+
+
 void ViewCurve::mouseReleaseEvent(QMouseEvent *release_event)
 {
   int i, j,
@@ -572,31 +544,9 @@ void ViewCurve::mouseReleaseEvent(QMouseEvent *release_event)
       mainwindow->annotationEditDock->annotEditSetDuration(crosshair_2.time_relative - crosshair_1.time_relative);
     }
 
-    if(annot_marker_moving)
-    {
-      active_markers->list[active_markers->selected]->x_pos = m_x;
-
-      active_markers->list[active_markers->selected]->onset = ((long long)((((double)m_x) / w) * mainwindow->pagetime))
-                                                               + mainwindow->edfheaderlist[active_markers->file_num]->viewtime
-                                                               + mainwindow->edfheaderlist[active_markers->file_num]->starttime_offset;
-
-      active_markers->list[active_markers->selected]->modified = 1;
-
-      active_markers->list[active_markers->selected]->selected = 1;
-
-      mainwindow->annotationEditDock->set_selected_annotation(active_markers->list[active_markers->selected]);
-
-      mainwindow->annotations_dock[active_markers->file_num]->updateList();
-
-      mainwindow->annotations_edited = 1;
-
-      update();
-    }
-
     ruler_moving = 0;
     crosshair_1.moving = 0;
     crosshair_2.moving = 0;
-    annot_marker_moving = 0;
     use_move_events = 0;
     setMouseTracking(false);
 
@@ -706,7 +656,20 @@ void ViewCurve::mouseReleaseEvent(QMouseEvent *release_event)
   }
 
   pressed_on_label = 0;
+	if(spanning)	// end spanning.
+	{
+		if(mainwindow->annot_editor_active)
+			mainwindow->annotationEditDock->eventSelectionMenu(signalcomp[signal_nr]->type, m_x, m_y);
+ 
+		crosshair_1.active = 0;					// Deactivate crosshairs after the annotation
+		crosshair_2.active = 0;					// ... has (not) been set.
+		mainwindow->signalcomp[signal_nr]->hascursor1 = 0;	// Remove cursors 
+		mainwindow->signalcomp[signal_nr]->hascursor2 = 0;	// ... from the signal.
+
+		spanning = 0;
+	}
 }
+
 
 
 void ViewCurve::mouseMoveEvent(QMouseEvent *move_event)
@@ -804,15 +767,6 @@ void ViewCurve::mouseMoveEvent(QMouseEvent *move_event)
       }
     }
 
-    if(annot_marker_moving)
-    {
-      active_markers->list[active_markers->selected]->x_pos = mouse_x;
-
-      active_markers->list[active_markers->selected]->onset = ((long long)((((double)mouse_x) / w) * mainwindow->pagetime))
-                                                               + mainwindow->edfheaderlist[active_markers->file_num]->viewtime
-                                                               + mainwindow->edfheaderlist[active_markers->file_num]->starttime_offset;
-    }
-
     delta_y = mouse_y - mouse_press_coordinate_y;
 
     for(i=0; i<signalcomps; i++)
@@ -842,7 +796,7 @@ void ViewCurve::mouseMoveEvent(QMouseEvent *move_event)
       }
     }
 
-    if(draw_zoom_rectangle||annot_marker_moving)
+    if(draw_zoom_rectangle)
     {
       update();
     }
@@ -854,12 +808,14 @@ void ViewCurve::mouseMoveEvent(QMouseEvent *move_event)
 }
 
 
+
 void ViewCurve::paintEvent(QPaintEvent *)
 {
     QPainter paint(this);
 
     drawCurve_stage_2(&paint);
 }
+
 
 
 void ViewCurve::print_to_printer()
@@ -960,6 +916,7 @@ void ViewCurve::print_to_printer()
     drawCurve_stage_1();
   }
 }
+
 
 
 #if QT_VERSION < 0x050000
@@ -1083,6 +1040,7 @@ void ViewCurve::print_to_postscript()
 #endif
 
 
+
 void ViewCurve::print_to_pdf()
 {
   double height_factor;
@@ -1202,6 +1160,7 @@ void ViewCurve::print_to_pdf()
 }
 
 
+
 void ViewCurve::print_to_image(int w_img, int h_img)
 {
   int i, j, len;
@@ -1305,6 +1264,7 @@ void ViewCurve::print_to_image(int w_img, int h_img)
 }
 
 
+
 void ViewCurve::drawCurve_stage_2(QPainter *painter, int w_width, int w_height, int print_linewidth)
 {
   int i, j, x_pix=0,
@@ -1330,10 +1290,7 @@ void ViewCurve::drawCurve_stage_2(QPainter *painter, int w_width, int w_height, 
 
   QFont paintersfont;
 
-  if(mainwindow->exit_in_progress)
-  {
-    return;
-  }
+  if(mainwindow->exit_in_progress) return;
 
   signalcomps = mainwindow->signalcomps;
   signalcomp = mainwindow->signalcomp;
@@ -1343,7 +1300,7 @@ void ViewCurve::drawCurve_stage_2(QPainter *painter, int w_width, int w_height, 
 
   painter_pixelsizefactor = 1.0 / mainwindow->pixelsizefactor;
 
-  if(!w_width||!w_height)
+  if( !w_width || !w_height )		// If one of these INTs is zero ..
   {
     w = width();
     h = height();
@@ -1353,24 +1310,14 @@ void ViewCurve::drawCurve_stage_2(QPainter *painter, int w_width, int w_height, 
     paintersfont.setWeight(QFont::Black);
     painter->setFont(paintersfont);
 
-    printing = 0;
+    printing = 0;			// .. we aren't printing.
   }
   else
   {
     w = w_width;
     h = w_height;
 
-#ifdef Q_OS_LINUX
     printfont->setPixelSize((int)((double)w / 104.0));
-#endif
-
-#ifdef Q_OS_MAC
-    printfont->setPixelSize((int)((double)w / 104.0));
-#endif
-
-#ifdef Q_OS_WIN32
-    printfont->setPixelSize((int)((double)w / 104.0));
-#endif
 
     painter->setFont(*printfont);
 
@@ -1414,7 +1361,7 @@ void ViewCurve::drawCurve_stage_2(QPainter *painter, int w_width, int w_height, 
     painter->drawLine(w-1, h-1, 0, h-1);
   }
 
-  if(m_pagetime<=20)
+  if(m_pagetime <= 20)		// Page shows less than 20 sec.? 
   {
     ruler_pen->setColor(small_ruler_color);
     painter->setPen(*ruler_pen);
@@ -1458,7 +1405,7 @@ void ViewCurve::drawCurve_stage_2(QPainter *painter, int w_width, int w_height, 
     }
   }
 
-  if((m_pagetime>20)&&(m_pagetime<100))
+  else if(m_pagetime < 100)			// .. more than 20 sec, but less than 100.
   {
     ruler_pen->setColor(small_ruler_color);
     painter->setPen(*ruler_pen);
@@ -1477,8 +1424,8 @@ void ViewCurve::drawCurve_stage_2(QPainter *painter, int w_width, int w_height, 
         }
       }
 
-      if(((ll_elapsed_time / TIME_DIMENSION)!=((ll_elapsed_time + time_ppixel) / TIME_DIMENSION)) ||
-        ((ll_elapsed_time < time_ppixel) && (ll_elapsed_time > -time_ppixel)))
+      if(( (ll_elapsed_time / TIME_DIMENSION) != ((ll_elapsed_time + time_ppixel) / TIME_DIMENSION)) ||
+        ( (ll_elapsed_time < time_ppixel) and (ll_elapsed_time > -time_ppixel) ))
       {
         if(x_pix)
         {
@@ -1502,7 +1449,7 @@ void ViewCurve::drawCurve_stage_2(QPainter *painter, int w_width, int w_height, 
     }
   }
 
-  if((m_pagetime>=100)&&(m_pagetime<1000))
+  else if(m_pagetime < 1000)		// .. more than 100 sec, but less than 1000.
   {
     ruler_pen->setColor(small_ruler_color);
     painter->setPen(*ruler_pen);
@@ -1546,7 +1493,7 @@ void ViewCurve::drawCurve_stage_2(QPainter *painter, int w_width, int w_height, 
     }
   }
 
-  if((m_pagetime>=1000)&&(m_pagetime<5000))
+  else if(m_pagetime < 5000)	// .. more than 1000, but less than 5000
   {
     ruler_pen->setColor(small_ruler_color);
     painter->setPen(*ruler_pen);
@@ -1590,7 +1537,7 @@ void ViewCurve::drawCurve_stage_2(QPainter *painter, int w_width, int w_height, 
     }
   }
 
-  if((m_pagetime>=5000)&&(m_pagetime<173000))
+  else if(m_pagetime < 173000) // more than 5000, but less than 173,000
   {
     ruler_pen->setColor(small_ruler_color);
     painter->setPen(*ruler_pen);
@@ -1609,8 +1556,8 @@ void ViewCurve::drawCurve_stage_2(QPainter *painter, int w_width, int w_height, 
         }
       }
 
-      if(((ll_elapsed_time / (TIME_DIMENSION * 3600))!=((ll_elapsed_time + time_ppixel) / (TIME_DIMENSION * 3600))) ||
-        ((ll_elapsed_time < time_ppixel) && (ll_elapsed_time > -time_ppixel)))
+      if( ( (ll_elapsed_time / (TIME_DIMENSION * 3600)) != ((ll_elapsed_time + time_ppixel) / (TIME_DIMENSION * 3600)) ) ||
+          ( (ll_elapsed_time < time_ppixel) && (ll_elapsed_time > -time_ppixel) ) )
       {
         if(x_pix)
         {
@@ -1634,14 +1581,14 @@ void ViewCurve::drawCurve_stage_2(QPainter *painter, int w_width, int w_height, 
     }
   }
 
-  if((m_pagetime>=173000)&&(m_pagetime<3000000))
+  else if(m_pagetime < 3000000)	// more than 173,000 sec, but less than 3,000,000 sec.
   {
     ruler_pen->setColor(small_ruler_color);
     painter->setPen(*ruler_pen);
 
     for(x_pix=0; x_pix<w; x_pix++)
     {
-      if((ll_elapsed_time / (TIME_DIMENSION * 3600))!=((ll_elapsed_time + time_ppixel) / (TIME_DIMENSION * 3600)))
+      if( (ll_elapsed_time / (TIME_DIMENSION * 3600)) != ((ll_elapsed_time + time_ppixel) / (TIME_DIMENSION * 3600)) )
       {
         if(printing)
         {
@@ -1653,8 +1600,8 @@ void ViewCurve::drawCurve_stage_2(QPainter *painter, int w_width, int w_height, 
         }
       }
 
-      if(((ll_elapsed_time / (TIME_DIMENSION * 86400))!=((ll_elapsed_time + time_ppixel) / (TIME_DIMENSION * 86400))) ||
-         ((ll_elapsed_time < time_ppixel) && (ll_elapsed_time > -time_ppixel)))
+      if( ( (ll_elapsed_time / (TIME_DIMENSION * 86400)) != ( (ll_elapsed_time + time_ppixel) / (TIME_DIMENSION * 86400) ) ) ||
+          ( (ll_elapsed_time < time_ppixel) && (ll_elapsed_time > -time_ppixel) ) )
      {
         if(x_pix)
         {
@@ -1678,14 +1625,11 @@ void ViewCurve::drawCurve_stage_2(QPainter *painter, int w_width, int w_height, 
     }
   }
 
-  if((viewbuf==NULL)||(graphicBuf==NULL)||(screensamples==NULL))
-  {
-    return;
-  }
+  if( (viewbuf==NULL) or (graphicBuf==NULL) or (screensamples==NULL) ) return;
 
-  if(mainwindow->show_baselines)
+  if(mainwindow->show_baselines)	// Should we plot horizontals ..
   {
-    vertical_distance = h / (signalcomps + 1);
+    vertical_distance = h / (signalcomps + 1);			// Vertical pixels per signal.
 
     painter->setPen(baseline_color);
 
@@ -1695,89 +1639,59 @@ void ViewCurve::drawCurve_stage_2(QPainter *painter, int w_width, int w_height, 
 
       painter->drawLine(0, baseline, w, baseline);
 
-      if(signalcomp[i]->voltpercm < 0.1)
-      {
-        strcpy(str2, "%+.3f ");
-      }
-      else if(signalcomp[i]->voltpercm < 1.0)
-            {
-              strcpy(str2, "%+.2f ");
-            }
-            else if(signalcomp[i]->voltpercm < 10.0)
-                {
-                  strcpy(str2, "%+.1f ");
-                }
-                else
-                {
-                  strcpy(str2, "%+.0f ");
-                }
+      if(signalcomp[i]->voltpercm < 0.1)	strcpy(str2, "%+.3f ");
+      else if(signalcomp[i]->voltpercm < 1.0)	strcpy(str2, "%+.2f ");
+      else if(signalcomp[i]->voltpercm < 10.0)	strcpy(str2, "%+.1f ");
+      else					strcpy(str2, "%+.0f ");
 
       strcat(str2, signalcomp[i]->physdimension);
 
-      for(j=1; j<18; j++)
+      for(j=1; j<18; j++)	// at most
       {
-        vert_ruler_offset = j * painter_pixelsizefactor;
+        vert_ruler_offset = j * painter_pixelsizefactor;	// j centimeters above/below baseline, given in pixel?
 
-        if(signalcomps!=1)
+        if(signalcomps != 1)
         {
-          if(vert_ruler_offset>((vertical_distance / 2)) - 8)
-          {
-            break;
-          }
+          if(vert_ruler_offset > ((vertical_distance / 2)) - 8) break;
         }
 
+// Check if horizontal rulers are too close to the edges of the drawing area.
         if(printing)
         {
-          if((baseline + vert_ruler_offset)>(h - (15 * printsize_y_factor)))
-          {
-            break;
-          }
-
-          if((baseline - vert_ruler_offset)<(15 * printsize_y_factor))
-          {
-            break;
-          }
+          if(baseline + vert_ruler_offset > h-(15*printsize_y_factor))	break;
+          if(baseline - vert_ruler_offset < 15*printsize_y_factor)	break;
         }
-        else
+        else	// .. not printing
         {
-          if((baseline + vert_ruler_offset)>(h - 15))
-          {
-            break;
-          }
-
-          if((baseline - vert_ruler_offset)<15)
-          {
-            break;
-          }
+          if(baseline + vert_ruler_offset > h-15)	break;		// Too close to the top
+          if(baseline - vert_ruler_offset < 15)		break;		// Too close to the bottom
         }
 
+// Draw the ruler below baseline ..
         painter->drawLine(0, baseline - vert_ruler_offset, w, baseline - vert_ruler_offset);
 
+// Set the annotation of the horizontal
         if(printing)
-        {
           snprintf(string, 128, str2,
             ((signalcomp[i]->voltpercm * j) + ((signalcomp[i]->screen_offset * signalcomp[i]->voltpercm) / (painter_pixelsizefactor / printsize_y_factor))) * (double)signalcomp[i]->polarity);
-        }
+
         else
-        {
           snprintf(string, 128, str2,
             ((signalcomp[i]->voltpercm * j) + ((signalcomp[i]->screen_offset * signalcomp[i]->voltpercm) / painter_pixelsizefactor)) * (double)signalcomp[i]->polarity);
-        }
 
-        painter->drawText(5 * printsize_x_factor, baseline - vert_ruler_offset - (4 * printsize_y_factor), string);
+        painter->drawText(5*printsize_x_factor, baseline - vert_ruler_offset - (4*printsize_y_factor), string);		// drawText(x, y, string)
 
-        painter->drawLine(0, baseline + vert_ruler_offset, w, baseline + vert_ruler_offset);
+// Draw the ruler above baseline ..
+        painter->drawLine(0, baseline + vert_ruler_offset, w, baseline + vert_ruler_offset);		// drawLine(x0, y0, x1, y1)
 
+// Set the annotation of the horizontal
         if(printing)
-        {
           snprintf(string, 128, str2,
             (((signalcomp[i]->screen_offset * signalcomp[i]->voltpercm) / (painter_pixelsizefactor / printsize_y_factor)) - (signalcomp[i]->voltpercm * j)) * (double)signalcomp[i]->polarity);
-        }
+
         else
-        {
           snprintf(string, 128, str2,
             (((signalcomp[i]->screen_offset * signalcomp[i]->voltpercm) / painter_pixelsizefactor) - (signalcomp[i]->voltpercm * j)) * (double)signalcomp[i]->polarity);
-        }
 
         painter->drawText(5 * printsize_x_factor, baseline + vert_ruler_offset - (4 * printsize_y_factor), string);
       }
@@ -1792,95 +1706,126 @@ void ViewCurve::drawCurve_stage_2(QPainter *painter, int w_width, int w_height, 
 
     painter->setPen(*annot_marker_pen);
 
-    if(!annot_marker_moving)
-    {
-      active_markers->count = 0;
-    }
-
     for(i=0; i<mainwindow->files_open; i++)
     {
-      annot = mainwindow->annotationlist[i];
+	for(annot=mainwindow->annotationlist[i], j=0; annot!=NULL; annot=annot->next_annotation, j++)
+	{
+		l_tmp = annot->onset - mainwindow->edfheaderlist[i]->starttime_offset;
 
-      j = 0;
+		if((l_tmp > (mainwindow->edfheaderlist[i]->viewtime - TIME_DIMENSION)) && (!annot->hidden) && (!annot->hidden_in_list))
+		{
+			if(l_tmp > (mainwindow->edfheaderlist[i]->viewtime + mainwindow->pagetime)) break;
 
-      while(annot!=NULL)
-      {
-        l_tmp = annot->onset - mainwindow->edfheaderlist[i]->starttime_offset;
+			l_tmp -= mainwindow->edfheaderlist[i]->viewtime;
 
-        if((l_tmp > (mainwindow->edfheaderlist[i]->viewtime - TIME_DIMENSION)) && (!annot->hidden) && (!annot->hidden_in_list))
-        {
-          if(l_tmp > (mainwindow->edfheaderlist[i]->viewtime + mainwindow->pagetime))
-          {
-            break;
-          }
+			marker_x = (int)((((double)w) / mainwindow->pagetime) * l_tmp);
 
-          l_tmp -= mainwindow->edfheaderlist[i]->viewtime;
+			painter->drawLine(marker_x, 0, marker_x, h);
 
-          marker_x = (int)((((double)w) / mainwindow->pagetime) * l_tmp);
+			l_tmp = annot->onset - mainwindow->edfheaderlist[i]->starttime_offset;
 
-          painter->drawLine(marker_x, 0, marker_x, h);
+			if(l_tmp < 0LL)
+			{
+				snprintf(string, 32, "-%i:%02i:%02i.%04i",
+						(int)(((-(l_tmp)) / TIME_DIMENSION)/ 3600LL),
+						(int)((((-(l_tmp)) / TIME_DIMENSION) % 3600LL) / 60LL),
+						(int)(((-(l_tmp)) / TIME_DIMENSION) % 60LL),
+						(int)((((-(l_tmp)) % TIME_DIMENSION) / 1000LL)));
+			}
+			else
+			{
+				snprintf(string, 32, "%i:%02i:%02i.%04i",
+						(int)((l_tmp / TIME_DIMENSION)/ 3600LL),
+						(int)(((l_tmp / TIME_DIMENSION) % 3600LL) / 60LL),
+						(int)((l_tmp / TIME_DIMENSION) % 60LL),
+						(int)(((l_tmp % TIME_DIMENSION) / 1000LL)));
+			}
 
-          l_tmp = annot->onset - mainwindow->edfheaderlist[i]->starttime_offset;
+			remove_trailing_zeros(string);
 
-          if(l_tmp < 0LL)
-          {
-            snprintf(string, 32, "-%i:%02i:%02i.%04i",
-                    (int)(((-(l_tmp)) / TIME_DIMENSION)/ 3600LL),
-                    (int)((((-(l_tmp)) / TIME_DIMENSION) % 3600LL) / 60LL),
-                    (int)(((-(l_tmp)) / TIME_DIMENSION) % 60LL),
-                    (int)((((-(l_tmp)) % TIME_DIMENSION) / 1000LL)));
-          }
-          else
-          {
-            snprintf(string, 32, "%i:%02i:%02i.%04i",
-                    (int)((l_tmp / TIME_DIMENSION)/ 3600LL),
-                    (int)(((l_tmp / TIME_DIMENSION) % 3600LL) / 60LL),
-                    (int)((l_tmp / TIME_DIMENSION) % 60LL),
-                    (int)(((l_tmp % TIME_DIMENSION) / 1000LL)));
-          }
+			if(printing)	painter->drawText(marker_x + (5	* printsize_x_factor), h - (25	* printsize_y_factor), string);
+			else		painter->drawText(marker_x + 5, 			h - 65 + ((j % 3) * 30), 	string);
 
-          remove_trailing_zeros(string);
+			strncpy(string, annot->annotation, 20);
 
-          if(printing)
-          {
-            painter->drawText(marker_x + (5  * printsize_x_factor), h - (25  * printsize_y_factor), string);
-          }
-          else
-          {
-            painter->drawText(marker_x + 5, h - 65 + ((j % 3) * 30), string);
-          }
+			string[20] = 0;
 
-          strncpy(string, annot->annotation, 20);
+			if(printing)	painter->drawText(marker_x + (5	* printsize_x_factor), h - (40	* printsize_y_factor), QString::fromUtf8(string));
+			else 		painter->drawText(marker_x + 5, 			h - 80 + ((j % 3) * 30),	QString::fromUtf8(string));
 
-          string[20] = 0;
-
-          if(printing)
-          {
-            painter->drawText(marker_x + (5  * printsize_x_factor), h - (40  * printsize_y_factor), QString::fromUtf8(string));
-          }
-          else
-          {
-            painter->drawText(marker_x + 5, h - 80 + ((j % 3) * 30), QString::fromUtf8(string));
-          }
-
-          if(!annot_marker_moving)
-          {
-            if(active_markers->count<MAX_ACTIVE_ANNOT_MARKERS)
-            {
-              annot->x_pos = marker_x;
-
-              active_markers->list[active_markers->count] = annot;
-
-              active_markers->count++;
-            }
-          }
-        }
-
-        annot = annot->next_annotation;
-
-        j++;
-      }
+			if(active_markers->count<MAX_ACTIVE_ANNOT_MARKERS)
+			{
+				annot->x_pos = marker_x;
+				active_markers->list[active_markers->count] = annot;
+				active_markers->count++;
+			}
+		}
+	}
     }
+
+
+    if(mainwindow->files_open > 0)
+    {
+    	epoch_marker_pen->setColor(epoch_marker_color);
+    	epoch_marker_pen->setWidth(print_linewidth);
+    	painter->setPen(*epoch_marker_pen);
+	for(annot=mainwindow->epochlist[0]; annot!=NULL; annot=annot->next_annotation)
+	{
+		l_tmp = annot->onset - mainwindow->edfheaderlist[0]->starttime_offset;
+
+		if((l_tmp > (mainwindow->edfheaderlist[0]->viewtime - TIME_DIMENSION)) && (!annot->hidden) && (!annot->hidden_in_list))
+		{
+			if(l_tmp > (mainwindow->edfheaderlist[0]->viewtime + mainwindow->pagetime)) break;
+
+			l_tmp -= mainwindow->edfheaderlist[0]->viewtime;
+
+			marker_x = (int)((((double)w) / mainwindow->pagetime) * l_tmp);
+
+			painter->drawLine(marker_x, 0, marker_x, h);
+
+			l_tmp = annot->onset - mainwindow->edfheaderlist[0]->starttime_offset;
+
+			if(l_tmp < 0LL)
+			{
+				snprintf(string, 32, "-%i:%02i:%02i.%04i",
+						(int)(((-(l_tmp)) / TIME_DIMENSION)/ 3600LL),
+						(int)((((-(l_tmp)) / TIME_DIMENSION) % 3600LL) / 60LL),
+						(int)(((-(l_tmp)) / TIME_DIMENSION) % 60LL),
+						(int)((((-(l_tmp)) % TIME_DIMENSION) / 1000LL)));
+			}
+			else
+			{
+				snprintf(string, 32, "%i:%02i:%02i.%04i",
+						(int)((l_tmp / TIME_DIMENSION)/ 3600LL),
+						(int)(((l_tmp / TIME_DIMENSION) % 3600LL) / 60LL),
+						(int)((l_tmp / TIME_DIMENSION) % 60LL),
+						(int)(((l_tmp % TIME_DIMENSION) / 1000LL)));
+			}
+
+			remove_trailing_zeros(string);
+
+			if(printing)	painter->drawText(marker_x + (5	* printsize_x_factor), h - (25	* printsize_y_factor), string);
+			else		painter->drawText(marker_x + 5, 		       h - 65, 			       string);
+
+			strncpy(string, annot->annotation, 20);
+
+			string[20] = 0;
+
+			if(printing) painter->drawText(marker_x + (5 * printsize_x_factor), h - (40 * printsize_y_factor), QString::fromUtf8(string));
+			else 	     painter->drawText(marker_x + 5, 			    h - 80,			   QString::fromUtf8(string));
+
+			if(active_markers->count<MAX_ACTIVE_ANNOT_MARKERS)
+			{
+				annot->x_pos = marker_x;
+				active_markers->list[active_markers->count] = annot;
+				active_markers->count++;
+			}
+			
+		}
+	}
+    }
+
+
   }
 
   if(mainwindow->clip_to_pane)
@@ -2152,8 +2097,11 @@ void ViewCurve::drawCurve_stage_2(QPainter *painter, int w_width, int w_height, 
 }
 
 
+
 void ViewCurve::drawCurve_stage_1(QPainter *painter, int w_width, int w_height, int print_linewidth)
 {
+
+// Definitions
   int i, j, k, n, x1, y1, x2, y2,
       signalcomps,
       baseline,
@@ -2181,38 +2129,30 @@ void ViewCurve::drawCurve_stage_1(QPainter *painter, int w_width, int w_height, 
         } var;
 
 
+// Initialize and check
   if(mainwindow->exit_in_progress)
   {
-    if(graphicBuf!=NULL)
-    {
-      free(graphicBuf);
-
-      graphicBuf = NULL;
-    }
-
+    if(graphicBuf != NULL) { free(graphicBuf); graphicBuf = NULL; }
     return;
   }
 
-  for(i=0; i<MAXSIGNALS; i++)
-  {
-    screensamples[i] = 0;
-  }
+  for(i=0; i<MAXSIGNALS; i++) screensamples[i] = 0;
 
-  signalcomps = mainwindow->signalcomps;
+  signalcomps = mainwindow->signalcomps;		// number of signalcomps
   signalcomp = mainwindow->signalcomp;
   viewbuf = mainwindow->viewbuf;
 
-  painter_pixelsizefactor = 1.0 / mainwindow->pixelsizefactor;
+  painter_pixelsizefactor = 1. / mainwindow->pixelsizefactor;
 
-  if(!w_width||!w_height)
+  if( !w_width || !w_height )		// If one of these INTs is zero ..
   {
     w = width();
     h = height();
 
-    printsize_x_factor = 1.0;
-    printsize_y_factor = 1.0;
+    printsize_x_factor = 1.;
+    printsize_y_factor = 1.;
 
-    printing = 0;
+    printing = 0;			// .. then we are not printing print.
   }
   else
   {
@@ -2239,21 +2179,18 @@ void ViewCurve::drawCurve_stage_1(QPainter *painter, int w_width, int w_height, 
     }
   }
 
-  if((viewbuf==NULL)||(screensamples==NULL))
+  if( (viewbuf==NULL) || (screensamples==NULL) )
   {
     if(graphicBuf!=NULL)
     {
       free(graphicBuf);
-
       graphicBuf = NULL;
     }
-
     update();
-
     return;
   }
 
-  if((graphicBuf==NULL)||(graphicBufWidth!=w))
+  if( (graphicBuf==NULL) || (graphicBufWidth!=w) )
   {
     if(graphicBuf!=NULL)
     {
@@ -2318,9 +2255,9 @@ void ViewCurve::drawCurve_stage_1(QPainter *painter, int w_width, int w_height, 
 
       signalcomp[i]->pixels_shift = signalcomp[i]->sample_timeoffset_part / signalcomp[i]->sample_pixel_ratio;
 
-      for(s=signalcomp[i]->sample_start; s<signalcomp[i]->samples_on_screen; s++)
+      for(s=signalcomp[i]->sample_start; s<signalcomp[i]->samples_on_screen; s++)		// For all signals on the screen ..
       {
-        if(s>=signalcomp[i]->sample_stop)  break;
+        if(s>=signalcomp[i]->sample_stop) break;
 
         dig_value = 0.0;
         s2 = s + signalcomp[i]->sample_timeoffset - signalcomp[i]->sample_start;
@@ -2392,7 +2329,7 @@ void ViewCurve::drawCurve_stage_1(QPainter *painter, int w_width, int w_height, 
 
         for(k=0; k<signalcomp[i]->ravg_filter_cnt; k++)
         {
-          if(s==signalcomp[i]->sample_start)
+          if(s == signalcomp[i]->sample_start)
           {
             if((mainwindow->edfheaderlist[signalcomp[i]->filenum]->viewtime <= 0) && signalcomp[i]->ravg_filter_setup[k])
             {
@@ -2411,7 +2348,7 @@ void ViewCurve::drawCurve_stage_1(QPainter *painter, int w_width, int w_height, 
 
         for(k=0; k<signalcomp[i]->fidfilter_cnt; k++)
         {
-          if(s==signalcomp[i]->sample_start)
+          if(s == signalcomp[i]->sample_start)
           {
             if((mainwindow->edfheaderlist[signalcomp[i]->filenum]->viewtime <= 0) && signalcomp[i]->fidfilter_setup[k])
             {
@@ -2444,7 +2381,7 @@ void ViewCurve::drawCurve_stage_1(QPainter *painter, int w_width, int w_height, 
 
         if(signalcomp[i]->ecg_filter != NULL)
         {
-          if(s==signalcomp[i]->sample_start)
+          if(s == signalcomp[i]->sample_start)
           {
             if(mainwindow->edfheaderlist[signalcomp[i]->filenum]->viewtime <= 0LL)
             {
@@ -2461,7 +2398,7 @@ void ViewCurve::drawCurve_stage_1(QPainter *painter, int w_width, int w_height, 
 
         if(signalcomp[i]->zratio_filter != NULL)
         {
-          if(s==signalcomp[i]->sample_start)
+          if(s == signalcomp[i]->sample_start)
           {
             if(mainwindow->edfheaderlist[signalcomp[i]->filenum]->viewtime <= 0LL)
             {
@@ -2496,16 +2433,10 @@ void ViewCurve::drawCurve_stage_1(QPainter *painter, int w_width, int w_height, 
             signalcomp[i]->stat_sum_rectified += dig_value;
           }
 
-          if(s==signalcomp[i]->sample_start)
+          if(s == signalcomp[i]->sample_start)
           {
-            if(dig_value < 0.0)
-            {
-              stat_zero_crossing = 0;
-            }
-            else
-            {
-              stat_zero_crossing = 1;
-            }
+            if(dig_value < 0.)	stat_zero_crossing = 0;
+            else		stat_zero_crossing = 1;
           }
           else
           {
@@ -2530,19 +2461,13 @@ void ViewCurve::drawCurve_stage_1(QPainter *painter, int w_width, int w_height, 
           }
         }
 
-        if(((int)dig_value)>signalcomp[i]->max_dig_value)  signalcomp[i]->max_dig_value = dig_value;
-        if(((int)dig_value)<signalcomp[i]->min_dig_value)  signalcomp[i]->min_dig_value = dig_value;
+        if(((int)dig_value) > signalcomp[i]->max_dig_value)  signalcomp[i]->max_dig_value = dig_value;
+        if(((int)dig_value) < signalcomp[i]->min_dig_value)  signalcomp[i]->min_dig_value = dig_value;
 
-        if(printing)
-        {
-          value = baseline - value + (int)(signalcomp[i]->screen_offset * printsize_y_factor);
-        }
-        else
-        {
-          value = baseline - value + signalcomp[i]->screen_offset;
-        }
+        if(printing)	value = baseline - value + (int)(signalcomp[i]->screen_offset * printsize_y_factor);
+        else		value = baseline - value + signalcomp[i]->screen_offset;
 
-        if(s>=signalcomp[i]->sample_start)
+        if(s >= signalcomp[i]->sample_start)
         {
           x1 = (int)((double)s / signalcomp[i]->sample_pixel_ratio);
           y1 = signalcomp[i]->oldvalue;
@@ -2604,7 +2529,7 @@ void ViewCurve::drawCurve_stage_1(QPainter *painter, int w_width, int w_height, 
                 graphicBuf[screensamples[i]].graphicLine[i].x2 = x2;
                 graphicBuf[screensamples[i]].graphicLine[i].y2 = y2;
 
-                if(screensamples[i]<(w * 2))  screensamples[i]++;
+                if(screensamples[i] < w*2)  screensamples[i]++;
               }
             }
           }
@@ -2663,15 +2588,10 @@ void ViewCurve::drawCurve_stage_1(QPainter *painter, int w_width, int w_height, 
     }
   }
 
-  if(printing)
-  {
-    drawCurve_stage_2(painter, w_width, w_height, print_linewidth);
-  }
-  else
-  {
-    update();
-  }
+  if(printing)	drawCurve_stage_2(painter, w_width, w_height, print_linewidth);
+  else		update();
 }
+
 
 
 void drawCurve_stage_1_thread::init_vars(UI_Mainwindow *mainwindow_a, struct signalcompblock **signalcomp_a, int i_a,
@@ -2758,7 +2678,7 @@ void drawCurve_stage_1_thread::run()
 
     for(s=signalcomp->sample_start; s<signalcomp->samples_on_screen; s++)
     {
-      if(s>=signalcomp->sample_stop)  break;
+      if(s >= signalcomp->sample_stop) break;
 
       dig_value = 0.0;
       s2 = s + signalcomp->sample_timeoffset - signalcomp->sample_start;
@@ -2812,9 +2732,9 @@ void drawCurve_stage_1_thread::run()
 
       for(k=0; k<signalcomp->filter_cnt; k++)
       {
-        if(s==signalcomp->sample_start)
+        if(s == signalcomp->sample_start)
         {
-          if(mainwindow->edfheaderlist[signalcomp->filenum]->viewtime==0)
+          if(mainwindow->edfheaderlist[signalcomp->filenum]->viewtime == 0)
           {
             reset_filter(dig_value, signalcomp->filter[k]);
           }
@@ -2830,7 +2750,7 @@ void drawCurve_stage_1_thread::run()
 
       for(k=0; k<signalcomp->ravg_filter_cnt; k++)
       {
-        if(s==signalcomp->sample_start)
+        if(s == signalcomp->sample_start)
         {
           if((mainwindow->edfheaderlist[signalcomp->filenum]->viewtime <= 0) && signalcomp->ravg_filter_setup[k])
           {
@@ -2980,7 +2900,7 @@ void drawCurve_stage_1_thread::run()
         value = baseline - value + signalcomp->screen_offset;
       }
 
-      if(s>=signalcomp->sample_start)
+      if(s >= signalcomp->sample_start)
       {
         x1 = (int)((double)s / signalcomp->sample_pixel_ratio);
         y1 = signalcomp->oldvalue;
@@ -3469,7 +3389,7 @@ void ViewCurve::Z_scoringButton()
     return;
   }
 
-  if(mainwindow->annot_editor_active)
+    if(mainwindow->annot_editor_active || mainwindow->epoch_editor_active)
   {
     QMessageBox messagewindow(QMessageBox::Critical, "Error", "Close the annotation editor and try again.");
     messagewindow.exec();
@@ -3922,36 +3842,34 @@ END_OF_FUNC:
 
 void ViewCurve::CrosshairButton()
 {
-  int i;
-
   if(!crosshair_1.active)
   {
-    for(i=0; i<mainwindow->signalcomps; i++)
-    {
-      mainwindow->signalcomp[i]->hascursor1 = 0;
-      mainwindow->signalcomp[i]->hascursor2 = 0;
-    }
-    crosshair_1.value = 0.0;
-    crosshair_2.value = 0.0;
-    mainwindow->signalcomp[signal_nr]->hascursor1 = 1;
-    use_move_events = 0;
-    setMouseTracking(true);
-    crosshair_1.active = 1;
-    crosshair_2.active = 0;
-    crosshair_1.moving = 0;
-    crosshair_2.moving = 0;
-    crosshair_1.file_num = mainwindow->signalcomp[signal_nr]->filenum;
+	for(int i=0; i<mainwindow->signalcomps; i++)
+	{
+	  mainwindow->signalcomp[i]->hascursor1 = 0;
+	  mainwindow->signalcomp[i]->hascursor2 = 0;
+	}
+	crosshair_1.value = 0.0;
+	crosshair_2.value = 0.0;
+	mainwindow->signalcomp[signal_nr]->hascursor1 = 1;
+	use_move_events = 0;
+	setMouseTracking(true);
+	crosshair_1.active = 1;
+	crosshair_2.active = 0;
+	crosshair_1.moving = 0;
+	crosshair_2.moving = 0;
+	crosshair_1.file_num = mainwindow->signalcomp[signal_nr]->filenum;
 
-    crosshair_1.x_position = w * 0.3;
-    crosshair_1.y_position = h * 0.7;
+	crosshair_1.x_position = w * 0.3;	// early third part of the window
+	crosshair_1.y_position = h * 0.7;	// annotation of crosshair at lower half of the window
 
-    drawCurve_stage_1();
+	drawCurve_stage_1();
   }
   else
   {
     if(!crosshair_2.active)
     {
-      for(i=0; i<mainwindow->signalcomps; i++)
+      for(int i=0; i<mainwindow->signalcomps; i++)
       {
         mainwindow->signalcomp[i]->hascursor2 = 0;
       }
@@ -3964,8 +3882,8 @@ void ViewCurve::CrosshairButton()
       crosshair_2.moving = 0;
       crosshair_2.file_num = mainwindow->signalcomp[signal_nr]->filenum;
 
-      crosshair_2.x_position = w * 0.7;
-      crosshair_2.y_position = h * 0.7;
+      crosshair_2.x_position = w * 0.7;		// late third part of the window
+      crosshair_2.y_position = h * 0.7;		// annotation of crosshair at lower half of the window
 
       drawCurve_stage_1();
     }
@@ -4233,6 +4151,7 @@ void ViewCurve::backup_colors_for_printing()
   baseline_color = Qt::black;
   backup_color_15 = annot_marker_color;
   annot_marker_color = Qt::black;
+  epoch_marker_color = Qt::black;
 }
 
 
@@ -4255,13 +4174,15 @@ void ViewCurve::restore_colors_after_printing()
   crosshair_2.color = backup_color_12;
   baseline_color = backup_color_13;
   annot_marker_color = backup_color_15;
+  epoch_marker_color = backup_color_15;
 }
 
 
 
-void ViewCurve::setCrosshair_1_center(void)
+void ViewCurve::set_crosshairs(double fraction_1, double fraction_2)
 {
-  crosshair_1.x_position = width() / 2;
+	if(crosshair_1.active) crosshair_1.x_position = fraction_1 * width();
+	if(crosshair_2.active) crosshair_2.x_position = fraction_2 * width();
 }
 
 
@@ -4278,13 +4199,13 @@ void ViewCurve::strip_types_from_label(char *label)
     return;
   }
 
-  if((!(strncmp(label, "EEG ", 4)))
-   ||(!(strncmp(label, "ECG ", 4)))
-   ||(!(strncmp(label, "EOG ", 4)))
-   ||(!(strncmp(label, "ERG ", 4)))
-   ||(!(strncmp(label, "EMG ", 4)))
-   ||(!(strncmp(label, "MEG ", 4)))
-   ||(!(strncmp(label, "MCG ", 4))))
+  if((!(strncmp(label, "EEG ", 4)))	// Electrencephalogram
+   ||(!(strncmp(label, "ECG ", 4)))	// Electrocardiogram
+   ||(!(strncmp(label, "EOG ", 4)))	// Electrookulogram
+   ||(!(strncmp(label, "ERG ", 4)))	// Electroretinogramm
+   ||(!(strncmp(label, "EMG ", 4)))	// Electromuogram
+   ||(!(strncmp(label, "MEG ", 4)))	// Magnetencephalogram
+   ||(!(strncmp(label, "MCG ", 4))))	// Magnetokardiogram??
   {
     if(label[4]!=' ')
     {

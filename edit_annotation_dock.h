@@ -15,7 +15,7 @@
 *
 * This program is distributed in the hope that it will be useful,
 * but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.	See the
 * GNU General Public License for more details.
 *
 * You should have received a copy of the GNU General Public License along
@@ -53,6 +53,7 @@
 #include <QSpinBox>
 #include <QHBoxLayout>
 #include <QGridLayout>
+#include <QInputDialog>
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -63,67 +64,82 @@
 #include "annotations_dock.h"
 #include "popup_save_cancelwindow.h"
 #include "edf_annot_list.h"
+#include "Signaltypes.h"
 
 
 
 class UI_Mainwindow;
-
+class Signaltypes;
 
 
 
 class UI_AnnotationEditwindow : public QObject
 {
-  Q_OBJECT
+	Q_OBJECT
 
 public:
-  UI_AnnotationEditwindow(int, QWidget *parent);
+	UI_AnnotationEditwindow(int, QWidget *parent);
 
-  UI_Mainwindow *mainwindow;
+	UI_Mainwindow *mainwindow;
 
-  QDockWidget  *dockedit;
+	QDockWidget *dockedit;
 
-  void annotEditSetOnset(long long);
+	void annotEditSetOnset(long long);
 
-  void annotEditSetDuration(long long);
+	void annotEditSetDuration(long long);
 
-  void set_selected_annotation(int, int);
+	void set_selected_annotation(struct annotationblock *);
 
-  void set_selected_annotation(struct annotationblock *);
+	void set_selected_annotation(int, int);
+
+	virtual void deselect();
+
+	virtual void setup();
+
+	void eventSelectionMenu(int, int, int);
+
+
+public slots:
+
+	void annotEditSetAnnotation(QAction*);
+	void annotEditSetAnnotation();
+	void open_close_dock(bool);
+
 
 private:
 
-  struct annotationblock *annotation;
+	Signaltypes *signaltypes;
 
-  int file_num,
-      annot_num;
+	int signal_nr;
 
-  QDialog *annot_edit_dialog;
+	struct annotationblock *annotation;
 
-  QLabel *onsetLabel,
-         *durationLabel,
-         *descriptionLabel;
+	int file_num,
+		annot_num;
 
-  QLineEdit *annot_descript_lineEdit;
+	QWidget *annot_edit_widget;
 
-  QTimeEdit *onset_timeEdit;
+	QLabel *onsetLabel,
+		 *durationLabel,
+		 *descriptionLabel;
 
-  QSpinBox  *onset_daySpinbox;
+	QString default_custom_annotation;
 
-  QDoubleSpinBox *duration_spinbox;
+	QLineEdit *annot_descript_lineEdit;
 
-  QPushButton *modifybutton,
-              *deletebutton,
-              *createbutton;
+	QTimeEdit *onset_timeEdit;
 
-  QComboBox *posNegTimebox;
+	QSpinBox *onset_daySpinbox;
 
-private slots:
+	QDoubleSpinBox *duration_spinbox;
 
-  void modifyButtonClicked();
-  void deleteButtonClicked();
-  void createButtonClicked();
+	QComboBox *posNegTimebox;
 
-  void open_close_dock(bool);
+
+protected slots:
+
+	void modifyButtonClicked();
+	void createButtonClicked();
 };
 
 

@@ -30,7 +30,7 @@
 */
 
 
-
+#include<stdio.h>
 #include "edf_annot_list.h"
 
 
@@ -43,18 +43,16 @@ void edfplus_annotation_add_item(struct annotationblock **list, struct annotatio
 
   annotation->next_annotation = NULL;
 
-  if(annotlist == NULL)
+  if(annotlist == NULL)	// list is empty
   {
     annotation->former_annotation = NULL;
-
     *list = annotation;
-
     return;
   }
 
-  while(annotlist->next_annotation != NULL)
+  while(annotlist->next_annotation != NULL)	// find the one annotation in the annotation list ...
   {
-    if(annotlist->next_annotation->onset > annotation->onset)
+    if(annotlist->next_annotation->onset > annotation->onset)	// ... with onset before the previous one
     {
       break;
     }
@@ -73,6 +71,7 @@ void edfplus_annotation_add_item(struct annotationblock **list, struct annotatio
 
   annotation->former_annotation = annotlist;
 }
+
 
 
 void edfplus_annotation_add_copy(struct annotationblock **list, struct annotationblock *annotation)
@@ -202,24 +201,15 @@ struct annotationblock * edfplus_annotation_item(struct annotationblock **list, 
 
   annotlist = *list;
 
-  if(annotlist == NULL)
-  {
-    return(NULL);
-  }
+  if(annotlist == NULL) return NULL;
 
-  while(n)
+  while(n--)
   {
-    if(annotlist->next_annotation == NULL)
-    {
-      return(NULL);
-    }
-
+    if(annotlist->next_annotation == NULL) return NULL;
     annotlist = annotlist->next_annotation;
-
-    n--;
   }
 
-  return(annotlist);
+  return annotlist;
 }
 
 

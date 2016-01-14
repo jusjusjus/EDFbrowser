@@ -1282,7 +1282,6 @@ void UI_LoadMontagewindow::LoadButtonClicked()
     strcpy(&mainwindow->recent_file_mtg_path[0][0], mtg_path);
   }
 
-  mainwindow->timescale_doubler = round_125_cat(mainwindow->pagetime);
 
   for(i=0; i<3; i++)
   {

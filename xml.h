@@ -34,9 +34,76 @@
 #define xml_INCLUDED
 
 
+#include <QApplication>
+#include <QMainWindow>
+#include <QMenuBar>
+#include <QMenu>
+#include <QFont>
+#include <QToolBar>
+#include <QSlider>
+#include <QStyle>
+#if QT_VERSION < 0x050000
+  #include <QPlastiqueStyle>
+  #include <QGtkStyle>
+  #include <QWindowsStyle>
+#else
+  #include <QStyleFactory>
+#endif
+#include <QtGlobal>
+#include <QCloseEvent>
+
+#ifdef Q_OS_LINUX
+  #include <sys/types.h>
+  #include <sys/stat.h>
+#endif
+
+#ifdef Q_OS_MAC
+#if QT_VERSION < 0x050000
+  #include <QMacStyle>
+#else
+  #include <QStyleFactory>
+#endif
+  #include <sys/types.h>
+  #include <sys/stat.h>
+#endif
+
+#ifdef Q_OS_WIN32
+  #include <windows.h>
+  #include <io.h>
+  #ifndef CSIDL_COMMON_APPDATA
+    #define CSIDL_COMMON_APPDATA 0x0023 // All Users\Application Data
+  #endif
+  #ifndef CSIDL_APPDATA
+    #define CSIDL_APPDATA 0x001a // <username>\Application Data
+  #endif
+  #ifndef CSIDL_PROGRAM_FILES
+    #define CSIDL_PROGRAM_FILES 0x0026 // C:\Program Files
+  #endif
+  #if (QT_VERSION >= 0x050000)
+    #define QT_WA(unicode, ansi) unicode
+  #endif
+#endif
+
+#include <QFileDialog>
+#include <QAction>
+#include <QActionGroup>
+#include <QPixmap>
+#include <QSplashScreen>
+#include <QTimer>
+#include <QDesktopServices>
+#include <QUrl>
+#include <QLibrary>
+#include <QString>
+#include <QLocale>
+#include <QMessageBox>
+#include <QProgressDialog>
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <locale.h>
+
+#include "global.h"
 
 
 
@@ -72,6 +139,14 @@ void xml_strcpy_decode_entity(char *, const char *);
 int xml_strncpy_decode_entity(char *, const char *, int);
 int xml_character_encoding_type(struct xml_handle *);
 int xml_get_attribute_of_element(struct xml_handle *, const char *, char *, int);
+
+void configpath(char*, const char*);
+FILE *open_configfile(const char*);
+
+#ifdef __WIN32
+QString specialFolder(int);
+#endif
+
 
 #endif
 

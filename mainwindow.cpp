@@ -1,30 +1,6 @@
 /*
 ***************************************************************************
 *
-* Author: Teunis van Beelen
-*
-* Copyright (C) 2007, 2008, 2009, 2010, 2011, 2012, 2013, 2014 Teunis van Beelen
-*
-* teuniz@gmail.com
-*
-***************************************************************************
-*
-* This program is free software; you can redistribute it and/or modify
-* it under the terms of the GNU General Public License as published by
-* the Free Software Foundation version 2 of the License.
-*
-* This program is distributed in the hope that it will be useful,
-* but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-* GNU General Public License for more details.
-*
-* You should have received a copy of the GNU General Public License along
-* with this program; if not, write to the Free Software Foundation, Inc.,
-* 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
-*
-***************************************************************************
-*
-* This version of GPL is at http://www.gnu.org/licenses/old-licenses/gpl-2.0.txt
 *
 ***************************************************************************
 */
@@ -32,6 +8,7 @@
 
 
 #include "mainwindow.h"
+#include "epochs_dock.h"
 
 
 #if defined(__APPLE__) || defined(__MACH__) || defined(__APPLE_CC__)
@@ -66,7 +43,7 @@ UI_Mainwindow::UI_Mainwindow()
 
   monofont = new QFont;
 
-#ifdef Q_OS_LINUX
+#if defined(Q_OS_LINUX) || defined(Q_OS_MAC)
   QApplication::setFont(*myfont);
 
   myfont->setFamily("Arial");
@@ -74,19 +51,8 @@ UI_Mainwindow::UI_Mainwindow()
 
   monofont->setFamily("andale mono");
   monofont->setPixelSize(12);
-#endif
 
-#ifdef Q_OS_MAC
-  QApplication::setFont(*myfont);
-
-  myfont->setFamily("Arial");
-  myfont->setPixelSize(12);
-
-  monofont->setFamily("andale mono");
-  monofont->setPixelSize(12);
-#endif
-
-#ifdef Q_OS_WIN32
+#elif defined(Q_OS_WIN32)
   myfont->setFamily("Tahoma");
   myfont->setPixelSize(11);
 
@@ -138,7 +104,6 @@ UI_Mainwindow::UI_Mainwindow()
 
   amplitude_doubler = 10;
 
-  timescale_doubler = 10;
 
   recent_montagedir[0] = 0;
   recent_savedir[0] = 0;
@@ -201,6 +166,7 @@ UI_Mainwindow::UI_Mainwindow()
   export_annotations_var->separator = 0;
   export_annotations_var->format = 1;
   export_annotations_var->duration = 0;
+  export_annotations_var->end = 0;
 
   average_period = 0.3;
 
@@ -366,16 +332,6 @@ UI_Mainwindow::UI_Mainwindow()
   displaymenu->addAction(page_3600);
 
   displaymenu->addSeparator();
-
-  page_div2 = new QAction("Timescale / 2", this);
-  page_div2->setShortcut(QKeySequence::ZoomIn);
-  connect(page_div2, SIGNAL(triggered()), this, SLOT(set_page_div2()));
-  displaymenu->addAction(page_div2);
-
-  page_mult2 = new QAction("Timescale x 2", this);
-  page_mult2->setShortcut(QKeySequence::ZoomOut);
-  connect(page_mult2, SIGNAL(triggered()), this, SLOT(set_page_mult2()));
-  displaymenu->addAction(page_mult2);
 
   displaymenu->addSeparator();
 
@@ -555,11 +511,6 @@ UI_Mainwindow::UI_Mainwindow()
   filtermenu->addAction("Adjust", this, SLOT(filterproperties_dialog()));
   filtermenu->addAction("Remove all", this, SLOT(remove_all_filters()));
 
-//   math_func_menu = new QMenu(this);
-//   math_func_menu->setTitle("&Math");
-//   math_func_menu->addAction("New", this, SLOT(add_new_math_func()));
-//   math_func_menu->addAction("Remove all", this, SLOT(remove_all_math_funcs()));
-
   load_predefined_mtg_act[0] = new QAction("Empty", this);
   load_predefined_mtg_act[0]->setShortcut(Qt::Key_F1);
   load_predefined_mtg_act[1] = new QAction("Empty", this);
@@ -605,38 +556,48 @@ UI_Mainwindow::UI_Mainwindow()
     montagemenu->addAction(load_predefined_mtg_act[i]);
   }
 
-//   patternmenu = new QMenu(this);
-//   patternmenu->setTitle("&Pattern");
-//   patternmenu->addAction("Search", this, SLOT(search_pattern()));
+	toolsmenu = new QMenu(this);
+	toolsmenu->setTitle("T&ools");
+	toolsmenu->addAction("Check EDF/BDF compatibility", this, SLOT(check_edf_compatibility()));
+	toolsmenu->addSeparator();
+	toolsmenu->addAction("Header editor", this, SLOT(edit_header()));
+	toolsmenu->addAction("Reduce signals, duration or samplerate", this, SLOT(reduce_signals()));
+	toolsmenu->addAction("Remove duplicates in annotations", this, SLOT(edfplus_annotation_remove_duplicates()));
+	toolsmenu->addSeparator();
+	toolsmenu->addAction("Export EDF/BDF to ASCII", this, SLOT(export_to_ascii()));
+	toolsmenu->addAction("Export/Import ECG RR-interval", this, SLOT(export_ecg_rr_interval_to_ascii()));
+	toolsmenu->addSeparator();
 
-  toolsmenu = new QMenu(this);
-  toolsmenu->setTitle("T&ools");
-  toolsmenu->addAction("Check EDF/BDF compatibility", this, SLOT(check_edf_compatibility()));
-  toolsmenu->addSeparator();
-  toolsmenu->addAction("Header editor", this, SLOT(edit_header()));
-  toolsmenu->addAction("Reduce signals, duration or samplerate", this, SLOT(reduce_signals()));
-  toolsmenu->addAction("Remove duplicates in annotations", this, SLOT(edfplus_annotation_remove_duplicates()));
-  toolsmenu->addSeparator();
-  toolsmenu->addAction("Import annotations/events", this, SLOT(import_annotations()));
-  toolsmenu->addAction("Export annotations/events", this, SLOT(export_annotations()));
-  toolsmenu->addAction("Export EDF/BDF to ASCII", this, SLOT(export_to_ascii()));
-  toolsmenu->addAction("Export/Import ECG RR-interval", this, SLOT(export_ecg_rr_interval_to_ascii()));
-  toolsmenu->addSeparator();
-  toolsmenu->addAction("Convert Nihon Kohden to EDF+", this, SLOT(nk2edf_converter()));
-  toolsmenu->addAction("Convert ASCII to EDF/BDF", this, SLOT(convert_ascii_to_edf()));
-  toolsmenu->addAction("Convert Manscan to EDF+", this, SLOT(convert_manscan_to_edf()));
-  toolsmenu->addAction("Convert SCP ECG to EDF+", this, SLOT(convert_scpecg_to_edf()));
-  toolsmenu->addAction("Convert Finometer to EDF", this, SLOT(convert_fino_to_edf()));
-  toolsmenu->addAction("Convert Nexfin to EDF", this, SLOT(convert_nexfin_to_edf()));
-  toolsmenu->addAction("Convert Emsa to EDF+", this, SLOT(convert_emsa_to_edf()));
-  toolsmenu->addAction("Convert EDF+D to EDF+C", this, SLOT(edfd_converter()));
-  toolsmenu->addAction("Convert Biosemi to BDF+", this, SLOT(biosemi2bdfplus_converter()));
-  toolsmenu->addAction("Convert BDF to EDF", this, SLOT(bdf2edf_converter()));
-  toolsmenu->addAction("Convert Unisens to EDF+", this, SLOT(unisens2edf_converter()));
-  toolsmenu->addAction("Convert BI9800TL+3 to EDF", this, SLOT(BI98002edf_converter()));
-  toolsmenu->addAction("Convert Wave to EDF", this, SLOT(convert_wave_to_edf()));
-  toolsmenu->addAction("Convert Binary/raw data to EDF", this, SLOT(convert_binary_to_edf()));
+	QMenu *convertsubmenu = new QMenu("Convert ...");
+	convertsubmenu->addAction("Convert Nihon Kohden to EDF+", this, SLOT(nk2edf_converter()));
+	convertsubmenu->addAction("Convert ASCII to EDF/BDF", this, SLOT(convert_ascii_to_edf()));
+	convertsubmenu->addAction("Convert Manscan to EDF+", this, SLOT(convert_manscan_to_edf()));
+	convertsubmenu->addAction("Convert SCP ECG to EDF+", this, SLOT(convert_scpecg_to_edf()));
+	convertsubmenu->addAction("Convert Finometer to EDF", this, SLOT(convert_fino_to_edf()));
+	convertsubmenu->addAction("Convert Nexfin to EDF", this, SLOT(convert_nexfin_to_edf()));
+	convertsubmenu->addAction("Convert Emsa to EDF+", this, SLOT(convert_emsa_to_edf()));
+	convertsubmenu->addAction("Convert EDF+D to EDF+C", this, SLOT(edfd_converter()));
+	convertsubmenu->addAction("Convert Biosemi to BDF+", this, SLOT(biosemi2bdfplus_converter()));
+	convertsubmenu->addAction("Convert BDF to EDF", this, SLOT(bdf2edf_converter()));
+	convertsubmenu->addAction("Convert Unisens to EDF+", this, SLOT(unisens2edf_converter()));
+	convertsubmenu->addAction("Convert FM Audio ECG to EDF", this, SLOT(convert_fm_audio_to_edf()));
+	convertsubmenu->addAction("Convert BI9800TL+3 to EDF", this, SLOT(BI98002edf_converter()));
+	convertsubmenu->addAction("Convert Wave to EDF", this, SLOT(convert_wave_to_edf()));
+	convertsubmenu->addAction("Convert Binary/raw data to EDF", this, SLOT(convert_binary_to_edf()));
 
+	toolsmenu->addMenu(convertsubmenu);
+
+
+	annotationsmenu = new QMenu(this);
+	annotationsmenu->setTitle("Annotations");
+
+	annotationsmenu->addAction("Import events", this,	SLOT(import_annotations()));
+	annotationsmenu->addAction("Export events", this,	SLOT(export_annotations()));
+	annotationsmenu->addSeparator();
+	annotationsmenu->addAction("Import epochs", this,	SLOT(import_epochs()));
+	annotationsmenu->addAction("Export epochs", this,	SLOT(export_epochs()));
+	annotationsmenu->addAction("Set start of epochs", this, SLOT(set_start_of_epochs()));
+	annotationsmenu->addAction("Configure epochs ...", this, SLOT(configure_epochs()));
 
 
 	settingsmenu = new QMenu(this);
@@ -650,46 +611,6 @@ UI_Mainwindow::UI_Mainwindow()
 	connect(settingsmenu, SIGNAL(triggered(QAction *)),
 			this, SLOT(show_options_dialog(QAction *)), Qt::UniqueConnection);	// if the "Settings"-menu is triggered, it will call show_options_dialog at specific tab.
 
-
-  //former_page_Act = new QAction("<<", this);
-  //former_page_Act->setShortcut(QKeySequence::MoveToPreviousPage);
-  //connect(former_page_Act, SIGNAL(triggered()), this, SLOT(former_page()));
-  //menubar->addAction(former_page_Act);
-
-  //shift_page_left_Act = new QAction("<", this);
-  //shift_page_left_Act->setShortcut(QKeySequence::MoveToPreviousChar);
-  //connect(shift_page_left_Act, SIGNAL(triggered()), this, SLOT(shift_page_left()));
-  //menubar->addAction(shift_page_left_Act);
-
-  //shift_page_right_Act = new QAction(">", this);
-  //shift_page_right_Act->setShortcut(QKeySequence::MoveToNextChar);
-  //connect(shift_page_right_Act, SIGNAL(triggered()), this, SLOT(shift_page_right()));
-  //menubar->addAction(shift_page_right_Act);
-
-  //next_page_Act = new QAction(">>", this);
-  //next_page_Act->setShortcut(QKeySequence::MoveToNextPage);
-  //connect(next_page_Act, SIGNAL(triggered()), this, SLOT(next_page()));
-  //menubar->addAction(next_page_Act);
-
-  //shift_page_up_Act = new QAction("^", this);
-  //shift_page_up_Act->setShortcut(QKeySequence::MoveToPreviousLine);
-  //connect(shift_page_up_Act, SIGNAL(triggered()), this, SLOT(shift_page_up()));
-  //menubar->addAction(shift_page_up_Act);
-
-  //shift_page_down_Act = new QAction("v", this);
-  //shift_page_down_Act->setShortcut(QKeySequence::MoveToNextLine);
-  //connect(shift_page_down_Act, SIGNAL(triggered()), this, SLOT(shift_page_down()));
-  //menubar->addAction(shift_page_down_Act);
-
-  //zoomback_Act = new QAction("zoomback", this);
-  //zoomback_Act->setShortcut(Qt::Key_Backspace);
-  //connect(zoomback_Act, SIGNAL(triggered()), this, SLOT(zoomback()));
-  //menubar->addAction(zoomback_Act);
-
-  //zoomforward_Act = new QAction("zoomforward", this);
-  //zoomforward_Act->setShortcut(Qt::Key_Insert);
-  //connect(zoomforward_Act, SIGNAL(triggered()), this, SLOT(forward()));
-  //menubar->addAction(zoomforward_Act);
 
   no_timesync_act = new QAction("no timelock", this);
   no_timesync_act->setCheckable(true);
@@ -732,33 +653,26 @@ UI_Mainwindow::UI_Mainwindow()
   modemenu->setTitle("&Mode");
   modemenu->addAction("Annotations", this, SLOT(show_annotations()));
   modemenu->addAction("Annotation editor", this, SLOT(annotation_editor()));
+  modemenu->addAction("Sleep scoring", this, SLOT(epoch_editor()));
   modemenu->addAction("Spectrum", this, SLOT(show_spectrum_dock()));
 
   helpmenu = new QMenu(this);
   helpmenu->setTitle("&Help");
-#ifdef Q_OS_LINUX
-  helpmenu->addAction("Manual",  this, SLOT(show_help()));
-#endif
-#ifdef Q_OS_WIN32
+#if defined(Q_OS_LINUX) || defined(Q_OS_WIN32)
   helpmenu->addAction("Manual",  this, SLOT(show_help()));
 #endif
   helpmenu->addAction("Keyboard shortcuts", this, SLOT(show_kb_shortcuts()));
-  helpmenu->addAction("About EDFbrowser", this, SLOT(show_about_dialog()));
+  helpmenu->addAction("About edfView", this, SLOT(show_about_dialog()));
   helpmenu->addAction("Show splashscreen", this, SLOT(show_splashscreen()));
-
-
-
-
 
 	menubar->addMenu(filemenu);
 	menubar->addMenu(signalmenu);
 	menubar->addMenu(displaymenu);
 	menubar->addMenu(amplitudemenu);
 	menubar->addMenu(filtermenu);
-//   menubar->addMenu(math_func_menu);
 	menubar->addMenu(montagemenu);
-//   menubar->addMenu(patternmenu);
 	menubar->addMenu(toolsmenu);
+	menubar->addMenu(annotationsmenu);
 	menubar->addMenu(timemenu);
 	menubar->addMenu(modemenu);
 	menubar->addMenu(settingsmenu);
@@ -788,11 +702,13 @@ UI_Mainwindow::UI_Mainwindow()
   sel_viewtime = 0;
   viewtime_sync = VIEWTIME_SYNCED_ABSOLUT;
   pagetime = 10 * TIME_DIMENSION;
+  pagestep = pagetime;
   viewtime_string[0] = 0;
   pagetime_string[0] = 0;
   totalviewbufsize = 0;
   print_to_edf_active = 0;
   annot_editor_active = 0;
+  epoch_editor_active = 0;
   annotations_edited = 0;
 
   viewbuf = NULL;
@@ -802,6 +718,8 @@ UI_Mainwindow::UI_Mainwindow()
     annotationlist[i] = NULL;
     annotations_dock[i] = NULL;
   }
+	epochlist[0] = NULL;
+	epochs_dock = NULL;
 
   annotationlist_backup = NULL;
 
@@ -856,16 +774,20 @@ UI_Mainwindow::UI_Mainwindow()
   }
 
   annotationEditDock = new UI_AnnotationEditwindow(files_open, this);
+  annotationEditDock->setup();
+	annotationEditDock->open_close_dock(false);
 
-  addDockWidget(Qt::BottomDockWidgetArea, annotationEditDock->dockedit, Qt::Horizontal);
 
-  annotationEditDock->dockedit->hide();
+	epochEditDock = new UI_EpochEditwindow(this);
+	addDockWidget(Qt::BottomDockWidgetArea, epochEditDock->dockedit, Qt::Horizontal);
+	epochEditDock->setup();
+	epochEditDock->dockedit->hide();
+
 
   spectrumdock = new UI_SpectrumDockWindow(this);
-
   addDockWidget(Qt::TopDockWidgetArea, spectrumdock->dock, Qt::Horizontal);
-
   spectrumdock->dock->hide();
+
 
   setCorner(Qt::TopLeftCorner, Qt::LeftDockWidgetArea);
   setCorner(Qt::TopRightCorner, Qt::RightDockWidgetArea);
@@ -943,6 +865,7 @@ UI_Mainwindow::~UI_Mainwindow()
   delete monofont;
   delete maincurve;
   delete annotationEditDock;
+	delete epochEditDock;
   delete spectrumdock;
   delete live_stream_timer;
   if(update_checker != NULL)  delete update_checker;
@@ -986,7 +909,6 @@ void UI_Mainwindow::closeEvent(QCloseEvent *cl_event)
       if(spectrumdialog[i] != NULL)
       {
         delete spectrumdialog[i];
-
         spectrumdialog[i] = NULL;
       }
     }
@@ -996,7 +918,6 @@ void UI_Mainwindow::closeEvent(QCloseEvent *cl_event)
       if(averagecurvedialog[i] != NULL)
       {
         delete averagecurvedialog[i];
-
         averagecurvedialog[i] = NULL;
       }
     }
@@ -1006,7 +927,6 @@ void UI_Mainwindow::closeEvent(QCloseEvent *cl_event)
       if(zscoredialog[i] != NULL)
       {
         delete zscoredialog[i];
-
         zscoredialog[i] = NULL;
       }
     }
@@ -1027,43 +947,34 @@ void UI_Mainwindow::closeEvent(QCloseEvent *cl_event)
 }
 
 
-// void UI_Mainwindow::search_pattern()
-// {
-//   if(!signalcomps)
-//   {
-//     return;
-//   }
-//
-//
-//
-// }
+
+void UI_Mainwindow::remove_crosshairs()
+{
+	for(int i=0; i<signalcomps; i++)
+	{
+		signalcomp[i]->hascursor1 = 0;
+		signalcomp[i]->hascursor2 = 0;
+		signalcomp[i]->hasoffsettracking = 0;
+		signalcomp[i]->hasruler = 0;
+	}
+	maincurve->crosshair_1.active = 0;
+	maincurve->crosshair_2.active = 0;
+	maincurve->crosshair_1.moving = 0;
+	maincurve->crosshair_2.moving = 0;
+	maincurve->spanning = 0;
+	maincurve->update();
+}
+
 
 
 void UI_Mainwindow::Escape_fun()
 {
-  int i;
-
-  for(i=0; i<signalcomps; i++)
-  {
-    signalcomp[i]->hascursor1 = 0;
-    signalcomp[i]->hascursor2 = 0;
-    signalcomp[i]->hasoffsettracking = 0;
-  }
-  maincurve->crosshair_1.active = 0;
-  maincurve->crosshair_2.active = 0;
-  maincurve->crosshair_1.moving = 0;
-  maincurve->crosshair_2.moving = 0;
-  maincurve->use_move_events = 0;
-  maincurve->setMouseTracking(false);
-
-  for(i=0; i<signalcomps; i++)
-  {
-    signalcomp[i]->hasruler = 0;
-  }
-  maincurve->ruler_active = 0;
-  maincurve->ruler_moving = 0;
-
-  maincurve->update();
+	maincurve->use_move_events = 0;
+	maincurve->setMouseTracking(false);
+	maincurve->ruler_active = 0;
+	maincurve->ruler_moving = 0;
+	if(epochs_dock) epochs_dock->deselect();
+	remove_crosshairs();
 }
 
 
@@ -1083,6 +994,7 @@ void UI_Mainwindow::open_stream()
   if(files_open == 1)
   {
     toolsmenu->setEnabled(false);
+	annotationsmenu->setEnabled(false);
     timemenu->setEnabled(false);
     modemenu->setEnabled(false);
     //former_page_Act->setEnabled(false);
@@ -1109,15 +1021,11 @@ void UI_Mainwindow::live_stream_timer_func()
             datarecords_new;
 
 
-  if((!live_stream_active) || (files_open != 1))
-  {
-    return;
-  }
+  if( (!live_stream_active) || (files_open != 1) ) return;
 
   if(!signalcomps)
   {
     live_stream_timer->start(live_stream_update_interval);
-
     return;
   }
 
@@ -1129,19 +1037,16 @@ void UI_Mainwindow::live_stream_timer_func()
   {
     QMessageBox messagewindow(QMessageBox::Critical, "Error", "Stream has no datarecords.");
     messagewindow.exec();
-
     close_all_files();
-
     return;
   }
 
-  if((datarecords_new > datarecords_old) && (datarecords_new > 0))
-  {
+  if( (datarecords_new > datarecords_old) && (datarecords_new > 0) )
     jump_to_end();
-  }
 
   live_stream_timer->start(live_stream_update_interval);
 }
+
 
 
 long long UI_Mainwindow::check_edf_file_datarecords(struct edfhdrblock *hdr)
@@ -1180,6 +1085,7 @@ long long UI_Mainwindow::check_edf_file_datarecords(struct edfhdrblock *hdr)
 
   return(datarecords);
 }
+
 
 
 void UI_Mainwindow::save_file()
@@ -1261,12 +1167,13 @@ void UI_Mainwindow::save_file()
   edfplus_annotation_delete_list(&annot);
 
   annotations_dock[0]->updateList();
+  epochs_dock->updateList();
 
   annotations_edited = 0;
 
   save_act->setEnabled(false);
 
-  annotationEditDock->dockedit->hide();
+	annotationEditDock->open_close_dock(false);
 
   maincurve->update();
 }
@@ -1281,7 +1188,7 @@ void UI_Mainwindow::slider_moved(int value)
             tmp;
 
 
-  if(!signalcomps)  return;
+  if(not signalcomps) return;
 
   new_viewtime = edfheaderlist[sel_viewtime]->long_data_record_duration * edfheaderlist[sel_viewtime]->datarecords;
 
@@ -1304,41 +1211,36 @@ void UI_Mainwindow::slider_moved(int value)
 
     new_viewtime -= tmp;
   }
-  else
-    if(pagetime >= (60LL * TIME_DIMENSION))
-    {
-      tmp = new_viewtime % (6LL * TIME_DIMENSION);
+  else if(pagetime >= (60LL * TIME_DIMENSION))
+  {
+    tmp = new_viewtime % (6LL * TIME_DIMENSION);
 
-      new_viewtime -= tmp;
-    }
-    else
-      if(pagetime >= (30LL * TIME_DIMENSION))
-      {
-        tmp = new_viewtime % (3LL * TIME_DIMENSION);
+    new_viewtime -= tmp;
+  }
+  else if(pagetime >= (30LL * TIME_DIMENSION))
+  {
+    tmp = new_viewtime % (3LL * TIME_DIMENSION);
 
-        new_viewtime -= tmp;
-      }
-      else
-        if(pagetime >= (20LL * TIME_DIMENSION))
-        {
-          tmp = new_viewtime % (2LL * TIME_DIMENSION);
+    new_viewtime -= tmp;
+  }
+  else if(pagetime >= (20LL * TIME_DIMENSION))
+  {
+    tmp = new_viewtime % (2LL * TIME_DIMENSION);
 
-          new_viewtime -= tmp;
-        }
-        else
-          if(pagetime >= (10LL * TIME_DIMENSION))
-          {
-            tmp = new_viewtime % TIME_DIMENSION;
+    new_viewtime -= tmp;
+  }
+  else if(pagetime >= (10LL * TIME_DIMENSION))
+  {
+    tmp = new_viewtime % TIME_DIMENSION;
 
-            new_viewtime -= tmp;
-          }
-          else
-            if(pagetime >= TIME_DIMENSION)
-            {
-              tmp = new_viewtime % (TIME_DIMENSION / 10LL);
+    new_viewtime -= tmp;
+  }
+  else if(pagetime >= TIME_DIMENSION)
+  {
+    tmp = new_viewtime % (TIME_DIMENSION / 10LL);
 
-              new_viewtime -= tmp;
-            }
+    new_viewtime -= tmp;
+  }
 
   if(viewtime_sync==VIEWTIME_SYNCED_OFFSET)
   {
@@ -1475,12 +1377,21 @@ void UI_Mainwindow::sync_by_crosshairs()
 }
 
 
+
 void UI_Mainwindow::show_options_dialog(QAction* menuitem) // menuitem=0
 {
 	unsigned tab_number=0;
 	if( not (menuitem==0) ) tab_number = menuitem->data().toInt();
 	UI_OptionsDialog OptionsDialog(this, tab_number);
 }
+
+
+
+void UI_Mainwindow::convert_fm_audio_to_edf()
+{
+  UI_FMaudio2EDFwindow fma2edf(recent_opendir, recent_savedir);
+}
+
 
 
 void UI_Mainwindow::nk2edf_converter()
@@ -1713,9 +1624,8 @@ void UI_Mainwindow::zoomback()
   int i, j;
 
   if(!zoomhistory->history_size_tail)
-  {
     return;
-  }
+
   zoomhistory->history_size_front++;
   zoomhistory->history_size_tail--;
 
@@ -1742,7 +1652,7 @@ void UI_Mainwindow::zoomback()
   {
     edfheaderlist[i]->viewtime = zoomhistory->viewtime[zoomhistory->pntr][i];
   }
-  pagetime = zoomhistory->pagetime[zoomhistory->pntr];
+  set_pagetime( zoomhistory->pagetime[zoomhistory->pntr]);
 
   for(i=0; i<signalcomps; i++)
   {
@@ -1765,9 +1675,8 @@ void UI_Mainwindow::forward()
   int i, j;
 
   if(!zoomhistory->history_size_front)
-  {
     return;
-  }
+
   zoomhistory->history_size_front--;
   zoomhistory->history_size_tail++;
 
@@ -1778,7 +1687,7 @@ void UI_Mainwindow::forward()
   {
     edfheaderlist[i]->viewtime = zoomhistory->viewtime[zoomhistory->pntr][i];
   }
-  pagetime = zoomhistory->pagetime[zoomhistory->pntr];
+  set_pagetime( zoomhistory->pagetime[zoomhistory->pntr] );
 
   for(i=0; i<signalcomps; i++)
   {
@@ -1798,11 +1707,9 @@ void UI_Mainwindow::forward()
 
 void UI_Mainwindow::former_page()
 {
-  int i;
-
   if((viewtime_sync==VIEWTIME_SYNCED_OFFSET)||(viewtime_sync==VIEWTIME_SYNCED_ABSOLUT)||(viewtime_sync==VIEWTIME_USER_DEF_SYNCED))
   {
-    for(i=0; i<files_open; i++)
+    for(int i=0; i<files_open; i++)
     {
       edfheaderlist[i]->viewtime -= pagetime;
     }
@@ -1820,11 +1727,9 @@ void UI_Mainwindow::former_page()
 
 void UI_Mainwindow::shift_page_left()
 {
-  int i;
-
   if((viewtime_sync==VIEWTIME_SYNCED_OFFSET)||(viewtime_sync==VIEWTIME_SYNCED_ABSOLUT)||(viewtime_sync==VIEWTIME_USER_DEF_SYNCED))
   {
-    for(i=0; i<files_open; i++)
+    for(int i=0; i<files_open; i++)
     {
       edfheaderlist[i]->viewtime -= (pagetime / 10);
     }
@@ -1842,11 +1747,9 @@ void UI_Mainwindow::shift_page_left()
 
 void UI_Mainwindow::shift_page_right()
 {
-  int i;
-
   if((viewtime_sync==VIEWTIME_SYNCED_OFFSET)||(viewtime_sync==VIEWTIME_SYNCED_ABSOLUT)||(viewtime_sync==VIEWTIME_USER_DEF_SYNCED))
   {
-    for(i=0; i<files_open; i++)
+    for(int i=0; i<files_open; i++)
     {
       edfheaderlist[i]->viewtime += (pagetime / 10);
     }
@@ -1864,11 +1767,9 @@ void UI_Mainwindow::shift_page_right()
 
 void UI_Mainwindow::next_page()
 {
-  int i;
-
-  if((viewtime_sync==VIEWTIME_SYNCED_OFFSET)||(viewtime_sync==VIEWTIME_SYNCED_ABSOLUT)||(viewtime_sync==VIEWTIME_USER_DEF_SYNCED))
+  if((viewtime_sync==VIEWTIME_SYNCED_OFFSET) || (viewtime_sync==VIEWTIME_SYNCED_ABSOLUT) || (viewtime_sync==VIEWTIME_USER_DEF_SYNCED))
   {
-    for(i=0; i<files_open; i++)
+    for(int i=0; i<files_open; i++)
     {
       edfheaderlist[i]->viewtime += pagetime;
     }
@@ -1886,9 +1787,7 @@ void UI_Mainwindow::next_page()
 
 void UI_Mainwindow::shift_page_up()
 {
-  int i;
-
-  for(i=0; i<signalcomps; i++)
+  for(int i=0; i<signalcomps; i++)
   {
     signalcomp[i]->screen_offset += (height() / 20.0);
 
@@ -1901,9 +1800,7 @@ void UI_Mainwindow::shift_page_up()
 
 void UI_Mainwindow::shift_page_down()
 {
-  int i;
-
-  for(i=0; i<signalcomps; i++)
+  for(int i=0; i<signalcomps; i++)
   {
     signalcomp[i]->screen_offset -= (height() / 20.0);
 
@@ -1916,94 +1813,65 @@ void UI_Mainwindow::shift_page_down()
 
 void UI_Mainwindow::show_annotations()
 {
-  int i;
+	EDF_annotations annotations;
 
-  EDF_annotations annotations;
+	for(int i=0; i<files_open; i++)
+	{
+		if( edfheaderlist[i]->annots_not_read && (edfheaderlist[i]->edfplus || edfheaderlist[i]->bdfplus) )	// if the annotations have not been read yet, and the file contains annotations
+		{
+			try
+			{
+				annotations.get_annotations(i, edfheaderlist[i], &(annotationlist[i]), read_nk_trigger_signal);	// if cancelled, annots_not_read is changed back to 1.
+				edfheaderlist[i]->annots_not_read = 0;								// annotations were successfully read.
+			}
+			catch(int e)
+			{
+				edfplus_annotation_delete_list(&annotationlist[i]);						// ... delete annotationlist for this file.
+			}
+		}
 
-  for(i=0; i<files_open; i++)
-  {
-    if(edfheaderlist[i]->annots_not_read)
-    {
-      if((edfheaderlist[i]->edfplus) || (edfheaderlist[i]->bdfplus))
-      {
-        edfheaderlist[i]->annots_not_read = 0;
-
-        annotations.get_annotations(i, edfheaderlist[i], &annotationlist[i], read_nk_trigger_signal);
-
-        if(edfheaderlist[i]->annots_not_read)
-        {
-          edfplus_annotation_delete_list(&annotationlist[i]);
-        }
-        else
-        {
-          if(annotations_dock[i] == NULL)
-          {
-            annotations_dock[i] = new UI_Annotationswindow(i, this);
-
-            addDockWidget(Qt::RightDockWidgetArea, annotations_dock[i]->docklist, Qt::Vertical);
-          }
-        }
-      }
-    }
-
-    if(annotationlist[i] != NULL)
-    {
-      if(annotations_dock[i] != NULL)
-      {
-        annotations_dock[i]->docklist->show();
-      }
-    }
-  }
+		if(annotations_dock[i] == NULL)
+		{
+			annotations_dock[i] = new UI_Annotationswindow(i, this);
+			addDockWidget(Qt::RightDockWidgetArea, annotations_dock[i]->docklist, Qt::Vertical);
+		}
+		annotations_dock[i]->docklist->show();
+	}
 }
 
 
 
-void UI_Mainwindow::annotation_editor()
+int UI_Mainwindow::annotation_editor()
 {
-  if(files_open==1)
-  {
-    if(edfheaderlist[0]->annots_not_read)
-    {
-      edfplus_annotation_delete_list(&annotationlist[0]);
+	if(files_open == 1)
+	{
+		this->show_annotations();
+		annotationEditDock->open_close_dock(true);
+		return 0;
+	}
+	else
+	{
+		QMessageBox messagewindow(QMessageBox::Critical, "Error", "Editing annotations is possible when you have opened one file only.");
+		messagewindow.exec();
+		return -1;
+	}
+}
 
-      if(annotations_dock[0] != NULL)
-      {
-        annotations_dock[0]->docklist->close();
-        delete annotations_dock[0];
-        annotations_dock[0] = NULL;
-      }
 
-      edfheaderlist[0]->annots_not_read = 0;
 
-      EDF_annotations annotations;
+void UI_Mainwindow::epoch_editor()	// sets sleep scoring mode
+{
+	if(annotation_editor() != 0)
+		return;
 
-      annotations.get_annotations(0, edfheaderlist[0], &annotationlist[0], read_nk_trigger_signal);
-
-      if(edfheaderlist[0]->annots_not_read)
-      {
-        QMessageBox messagewindow(QMessageBox::Critical, "Error", "Editing annotations is not possible when you abort the scanning of the file.");
-        messagewindow.exec();
-
-        return;
-      }
-    }
-
-    if(annotations_dock[0]==NULL)
-    {
-      annotations_dock[0] = new UI_Annotationswindow(0, this);
-
-      addDockWidget(Qt::RightDockWidgetArea, annotations_dock[0]->docklist, Qt::Vertical);
-    }
-
-    annotations_dock[0]->docklist->show();
-
-    annotationEditDock->dockedit->show();
-  }
-  else
-  {
-    QMessageBox messagewindow(QMessageBox::Critical, "Error", "Editing annotations is possible when you have opened one file only.");
-    messagewindow.exec();
-  }
+	if(epochs_dock == NULL)
+	{
+		epochs_dock = new UI_Epochswindow(this);
+		addDockWidget(Qt::RightDockWidgetArea, epochs_dock->docklist, Qt::Vertical);
+		epochs_dock->setup();
+	}
+	epochs_dock->docklist->show();
+	epochEditDock->dockedit->show();
 }
 
 
@@ -2027,14 +1895,12 @@ void UI_Mainwindow::open_new_file()
 
   struct edfhdrblock *edfhdr=NULL;
 
-  if(annot_editor_active&&files_open)
+  if((annot_editor_active || epoch_editor_active) && files_open)
   {
     QMessageBox messagewindow(QMessageBox::Critical, "Error", "You can not open multiple files when editing annotations.\n"
                                                               "Close the annotation edit window first.");
     messagewindow.exec();
-
     cmdlineargument = 0;
-
     return;
   }
 
@@ -2043,7 +1909,6 @@ void UI_Mainwindow::open_new_file()
     QMessageBox messagewindow(QMessageBox::Critical, "Error", "You can not open multiple files while a streaming file is open.\n"
                                                               "Close the streaming file first.");
     messagewindow.exec();
-
     return;
   }
 
@@ -2138,12 +2003,12 @@ void UI_Mainwindow::open_new_file()
   {
     len = strlen(path);
 
-    if((strcmp(path + (len - 4), ".edf"))
-       &&(strcmp(path + (len - 4), ".EDF"))
-       &&(strcmp(path + (len - 4), ".rec"))
-       &&(strcmp(path + (len - 4), ".REC"))
-       &&(strcmp(path + (len - 4), ".bdf"))
-       &&(strcmp(path + (len - 4), ".BDF")))
+    if(   (strcmp(path + (len - 4), ".edf"))
+       && (strcmp(path + (len - 4), ".EDF"))
+       && (strcmp(path + (len - 4), ".rec"))
+       && (strcmp(path + (len - 4), ".REC"))
+       && (strcmp(path + (len - 4), ".bdf"))
+       && (strcmp(path + (len - 4), ".BDF")))
     {
       snprintf(str, 2048, "File has an unknown extension:  \"%s\"", path + (len - 4));
 
@@ -2202,7 +2067,7 @@ void UI_Mainwindow::open_new_file()
     {
       if(edfhdr->edf)
       {
-        QMessageBox messagewindow(QMessageBox::Critical, "Error", "EDFbrowser can not show EDF+D (discontiguous) files.\n"
+        QMessageBox messagewindow(QMessageBox::Critical, "Error", "edfView can not show EDF+D (discontiguous) files.\n"
                                                                   "Convert this file to EDF+C first. You can find this converter\n"
                                                                   "in the Tools menu (EDF+D to EDF+C converter).");
         messagewindow.exec();
@@ -2210,9 +2075,9 @@ void UI_Mainwindow::open_new_file()
 
       if(edfhdr->bdf)
       {
-        QMessageBox messagewindow(QMessageBox::Critical, "Error", "EDFbrowser can not show BDF+D (discontiguous) files.\n"
+        QMessageBox messagewindow(QMessageBox::Critical, "Error", "edfView cannot show BDF+D (discontiguous) files.\n"
                                                                   "Convert this file to BDF+C first. You can find this converter\n"
-                                                                  "in the Tools menu (EDF+D to EDF+C converter).");
+                                                                  "in the Tols menu (EDF+D to EDF+C converter).");
         messagewindow.exec();
       }
 
@@ -2326,7 +2191,7 @@ void UI_Mainwindow::open_new_file()
     files_open++;
   }
 
-  if((montagepath[0]!=0)&&(cmdlineargument==2))
+  if( (montagepath[0]!=0) && (cmdlineargument==2) )
   {
     UI_LoadMontagewindow load_mtg(this, montagepath);
     strcpy(&recent_file_mtg_path[0][0], montagepath);
@@ -2569,34 +2434,13 @@ void UI_Mainwindow::remove_all_signals()
   spectrumdock->dock->hide();
 
   for(i=0; i<MAXSPECTRUMDIALOGS; i++)
-  {
-    if(spectrumdialog[i] != NULL)
-    {
-      delete spectrumdialog[i];
-
-      spectrumdialog[i] = NULL;
-    }
-  }
+    if(spectrumdialog[i] != NULL) { delete spectrumdialog[i]; spectrumdialog[i] = NULL; }
 
   for(i=0; i<MAXAVERAGECURVEDIALOGS; i++)
-  {
-    if(averagecurvedialog[i] != NULL)
-    {
-      delete averagecurvedialog[i];
-
-      averagecurvedialog[i] = NULL;
-    }
-  }
+    if(averagecurvedialog[i] != NULL) { delete averagecurvedialog[i]; averagecurvedialog[i] = NULL; }
 
   for(i=0; i<MAXZSCOREDIALOGS; i++)
-  {
-    if(zscoredialog[i] != NULL)
-    {
-      delete zscoredialog[i];
-
-      zscoredialog[i] = NULL;
-    }
-  }
+    if(zscoredialog[i] != NULL) { delete zscoredialog[i]; zscoredialog[i] = NULL; }
 
   maincurve->crosshair_1.active = 0;
   maincurve->crosshair_2.active = 0;
@@ -2606,17 +2450,11 @@ void UI_Mainwindow::remove_all_signals()
   remove_all_filters();
 
   for(i=0; i<signalcomps; i++)
-  {
     free(signalcomp[i]);
-  }
 
   signalcomps = 0;
 
-  if(viewbuf!=NULL)
-  {
-    free(viewbuf);
-    viewbuf = NULL;
-  }
+  if(viewbuf!=NULL) { free(viewbuf); viewbuf = NULL; }
 
   slidertoolbar->setEnabled(false);
   positionslider->blockSignals(true);
@@ -2634,6 +2472,7 @@ void UI_Mainwindow::close_all_files()
   live_stream_active = 0;
   live_stream_timer->stop();
   toolsmenu->setEnabled(true);
+  annotationsmenu->setEnabled(true);
   timemenu->setEnabled(true);
   modemenu->setEnabled(true);
   printmenu->setEnabled(true);
@@ -2649,10 +2488,7 @@ void UI_Mainwindow::close_all_files()
     button_nr = messagewindow.exec();
   }
 
-  if(button_nr == QMessageBox::Cancel)
-  {
-    return;
-  }
+  if(button_nr == QMessageBox::Cancel) return;
 
   annotations_edited = 0;
 
@@ -2678,6 +2514,12 @@ void UI_Mainwindow::close_all_files()
 
     delete sel_viewtime_act[files_open];
   }
+	if(epochs_dock != NULL)
+	{
+  		epochs_dock->docklist->close();
+  		delete epochs_dock;
+  		epochs_dock = NULL;
+	}
 
   edfplus_annotation_delete_list(&annotationlist_backup);
 
@@ -2685,7 +2527,6 @@ void UI_Mainwindow::close_all_files()
 
   pagetime = 10 * TIME_DIMENSION;
 
-  timescale_doubler = 10;
 
   amplitude_doubler = 10;
 
@@ -2708,6 +2549,7 @@ void UI_Mainwindow::close_all_files()
     }
   }
 
+	annotationEditDock->open_close_dock(false);
   annotationEditDock->dockedit->hide();
 
   save_act->setEnabled(false);
@@ -2737,247 +2579,53 @@ void UI_Mainwindow::page_3cmsec()
   {
     mm = maincurve->widthMM();
 
-    pagetime = mm * 333333.3333;
+    set_pagetime( mm * 333333.3333 );
   }
   else
   {
-    pagetime = (long long)((((double)maincurve->width()) / (1.0 / x_pixelsizefactor) / 3.0) * TIME_DIMENSION);
+    set_pagetime ( (long long)((((double)maincurve->width()) / (1.0 / x_pixelsizefactor) / 3.0) * TIME_DIMENSION) );
   }
 
   setup_viewbuf();
 }
 
 
-void UI_Mainwindow::set_page_div2()
+
+void UI_Mainwindow::set_pagetime(long long pagetime, int stiffness, long long pagestep) // stiff = 0 move freely (resize),  1 move freely (don't resize), 2 everything fixed
 {
-  int i;
+	if( pagetime != -1 and this->stiffness == 0 )
+		this->pagetime = pagetime;
 
-  long long l_tmp, trshld=100LL;
+	if(stiffness != -1)
+		this->stiffness = stiffness;
 
-  if((viewtime_sync==VIEWTIME_SYNCED_OFFSET)||(viewtime_sync==VIEWTIME_SYNCED_ABSOLUT)||(viewtime_sync==VIEWTIME_USER_DEF_SYNCED))
-  {
-    for(i=0; i<files_open; i++)
-    {
-      if(timescale_doubler == 50)
-      {
-        edfheaderlist[i]->viewtime += (pagetime * 0.3);
-      }
-      else
-      {
-        edfheaderlist[i]->viewtime += (pagetime / 4);
-      }
+	if(pagestep != -1)	this->pagestep = pagestep;
+	else			this->pagestep = pagetime;		// step over a full page
 
-      l_tmp = edfheaderlist[i]->viewtime % TIME_DIMENSION;
-
-      if(l_tmp < trshld)
-      {
-        edfheaderlist[i]->viewtime -= l_tmp;
-      }
-
-      if(l_tmp > (TIME_DIMENSION - trshld))
-      {
-        edfheaderlist[i]->viewtime += (TIME_DIMENSION - l_tmp);
-      }
-    }
-  }
-
-  if(viewtime_sync==VIEWTIME_UNSYNCED)
-  {
-    if(timescale_doubler == 50)
-    {
-      edfheaderlist[sel_viewtime]->viewtime += (pagetime * 0.3);
-    }
-    else
-    {
-      edfheaderlist[sel_viewtime]->viewtime += (pagetime / 4);
-    }
-
-      l_tmp = edfheaderlist[sel_viewtime]->viewtime % TIME_DIMENSION;
-
-      if(l_tmp < trshld)
-      {
-        edfheaderlist[sel_viewtime]->viewtime -= l_tmp;
-      }
-
-      if(l_tmp > (TIME_DIMENSION - trshld))
-      {
-        edfheaderlist[sel_viewtime]->viewtime += (TIME_DIMENSION - l_tmp);
-      }
-  }
-
-  if(timescale_doubler == 10)
-  {
-    timescale_doubler = 50;
-
-    pagetime /= 2;
-  }
-  else
-  {
-    if(timescale_doubler == 50)
-    {
-      timescale_doubler = 20;
-
-      pagetime /= 2.5;
-    }
-    else
-    {
-      timescale_doubler = 10;
-
-      pagetime /= 2;
-    }
-  }
-
-  setup_viewbuf();
+	setup_viewbuf();
 }
 
-
-void UI_Mainwindow::set_page_mult2()
-{
-  int i;
-
-  long long l_tmp, trshld=100LL;
-
-  if((viewtime_sync==VIEWTIME_SYNCED_OFFSET)||(viewtime_sync==VIEWTIME_SYNCED_ABSOLUT)||(viewtime_sync==VIEWTIME_USER_DEF_SYNCED))
-  {
-    for(i=0; i<files_open; i++)
-    {
-      if(timescale_doubler == 20)
-      {
-        edfheaderlist[i]->viewtime -= (pagetime * 0.75);
-      }
-      else
-      {
-        edfheaderlist[i]->viewtime -= (pagetime / 2);
-      }
-
-      l_tmp = edfheaderlist[i]->viewtime % TIME_DIMENSION;
-
-      if(l_tmp < trshld)
-      {
-        edfheaderlist[i]->viewtime -= l_tmp;
-      }
-
-      if(l_tmp > (TIME_DIMENSION - trshld))
-      {
-        edfheaderlist[i]->viewtime += (TIME_DIMENSION - l_tmp);
-      }
-    }
-  }
-
-  if(viewtime_sync==VIEWTIME_UNSYNCED)
-  {
-    if(timescale_doubler == 20)
-    {
-      edfheaderlist[sel_viewtime]->viewtime -= (pagetime * 0.75);
-    }
-    else
-    {
-      edfheaderlist[sel_viewtime]->viewtime -= (pagetime / 2);
-    }
-  }
-
-  if(timescale_doubler == 10)
-  {
-    timescale_doubler = 20;
-
-    pagetime *= 2;
-  }
-  else
-  {
-    if(timescale_doubler == 20)
-    {
-      timescale_doubler = 50;
-
-      pagetime *= 2.5;
-    }
-    else
-    {
-      timescale_doubler = 10;
-
-      pagetime *= 2;
-    }
-  }
-
-  setup_viewbuf();
-}
 
 
 void UI_Mainwindow::set_display_time(QAction *action)
 {
-  if(action==page_10m)
-  {
-    pagetime = TIME_DIMENSION / 100;
-
-    timescale_doubler = 10;
-  }
-  if(action==page_20m)
-  {
-    pagetime = TIME_DIMENSION / 50;
-
-    timescale_doubler = 20;
-  }
-  if(action==page_50m)
-  {
-    pagetime = TIME_DIMENSION / 20;
-
-    timescale_doubler = 50;
-  }
-  if(action==page_100m)
-  {
-    pagetime = TIME_DIMENSION / 10;
-
-    timescale_doubler = 10;
-  }
-  if(action==page_200m)
-  {
-    pagetime = TIME_DIMENSION / 5;
-
-    timescale_doubler = 20;
-  }
-  if(action==page_500m)
-  {
-    pagetime = TIME_DIMENSION / 2;
-
-    timescale_doubler = 50;
-  }
-  if(action==page_1)
-  {
-    pagetime = TIME_DIMENSION;
-
-    timescale_doubler = 10;
-  }
-  if(action==page_2)
-  {
-    pagetime = TIME_DIMENSION * 2;
-
-    timescale_doubler = 20;
-  }
-  if(action==page_5)
-  {
-    pagetime = TIME_DIMENSION * 5;
-
-    timescale_doubler = 50;
-  }
-  if(action==page_10)
-  {
-    pagetime = TIME_DIMENSION * 10;
-
-    timescale_doubler = 10;
-  }
-  if(action==page_15)    pagetime = TIME_DIMENSION * 15;
-  if(action==page_20)
-  {
-    pagetime = TIME_DIMENSION * 20;
-
-    timescale_doubler = 20;
-  }
-  if(action==page_30)    pagetime = TIME_DIMENSION * 30;
-  if(action==page_60)    pagetime = TIME_DIMENSION * 60;
-  if(action==page_300)   pagetime = TIME_DIMENSION * 300;
-  if(action==page_1200)  pagetime = TIME_DIMENSION * 1200;
-  if(action==page_3600)  pagetime = TIME_DIMENSION * 3600;
-
-  setup_viewbuf();
+	if(action==page_10m)	set_pagetime(TIME_DIMENSION / 100);
+	if(action==page_20m)	set_pagetime(TIME_DIMENSION / 50);
+	if(action==page_50m)	set_pagetime(TIME_DIMENSION / 20);
+	if(action==page_100m)	set_pagetime(TIME_DIMENSION / 10);
+	if(action==page_200m)	set_pagetime(TIME_DIMENSION / 5);
+	if(action==page_500m)	set_pagetime(TIME_DIMENSION / 2);
+	if(action==page_1)	this->set_pagetime(TIME_DIMENSION);
+	if(action==page_2)	set_pagetime(TIME_DIMENSION * 2);
+	if(action==page_5)	set_pagetime(TIME_DIMENSION * 5);
+	if(action==page_10)	set_pagetime(TIME_DIMENSION * 10);
+	if(action==page_15)	set_pagetime(TIME_DIMENSION * 15);
+	if(action==page_20)	set_pagetime(TIME_DIMENSION * 20);
+	if(action==page_30)	set_pagetime(TIME_DIMENSION * 30);
+	if(action==page_60)	set_pagetime(TIME_DIMENSION * 60);
+	if(action==page_300)	set_pagetime(TIME_DIMENSION * 300);
+	if(action==page_1200)	set_pagetime(TIME_DIMENSION * 1200);
+	if(action==page_3600)	set_pagetime(TIME_DIMENSION * 3600);
 }
 
 
@@ -2991,7 +2639,7 @@ void UI_Mainwindow::set_display_time_whole_rec()
 {
   int i;
 
-  if(!files_open)  return;
+  if(!files_open) return;
 
   if(viewtime_sync==VIEWTIME_SYNCED_OFFSET)
   {
@@ -3032,7 +2680,7 @@ void UI_Mainwindow::set_display_time_whole_rec()
     edfheaderlist[sel_viewtime]->viewtime = 0;
   }
 
-  pagetime = edfheaderlist[sel_viewtime]->datarecords * edfheaderlist[sel_viewtime]->long_data_record_duration;
+  set_pagetime( edfheaderlist[sel_viewtime]->datarecords * edfheaderlist[sel_viewtime]->long_data_record_duration ); 
 
   setup_viewbuf();
 }
@@ -3076,7 +2724,7 @@ void UI_Mainwindow::fit_signals_dc_offset()
 {
   int i;
 
-  if(!signalcomps)  return;
+  if(!signalcomps) return;
 
   for(i=0; i<signalcomps; i++)
   {
@@ -3261,20 +2909,8 @@ void UI_Mainwindow::set_amplitude_mult2()
 
   for(i=0; i<signalcomps; i++)
   {
-    if(signalcomp[i]->voltpercm < 0)
-    {
-      if(signalcomp[i]->voltpercm < -5000000.0)
-      {
-        return;
-      }
-    }
-    else
-    {
-      if(signalcomp[i]->voltpercm > 5000000.0)
-      {
-        return;
-      }
-    }
+    if(signalcomp[i]->voltpercm < -5000000.0) return;
+    if(signalcomp[i]->voltpercm > 5000000.0) return;
   }
 
   for(i=0; i<signalcomps; i++)
@@ -3824,21 +3460,15 @@ void UI_Mainwindow::setup_viewbuf()
 
     signalcomp[i]->samples_on_screen = (int)(((double)pagetime / (double)signalcomp[i]->edfhdr->long_data_record_duration) * (double)signalcomp[i]->edfhdr->edfparam[signalcomp[i]->edfsignal[0]].smp_per_record);
 
-    if(signalcomp[i]->edfhdr->viewtime<0)
+    if(signalcomp[i]->edfhdr->viewtime < 0)
     {
       d_temp =
         (((double)(-(signalcomp[i]->edfhdr->viewtime)))
         / (double)signalcomp[i]->edfhdr->long_data_record_duration)
         * (double)signalcomp[i]->edfhdr->edfparam[signalcomp[i]->edfsignal[0]].smp_per_record;
 
-      if(d_temp>2147483648.0)
-      {
-        signalcomp[i]->sample_start = 2147483647LL;
-      }
-      else
-      {
-        signalcomp[i]->sample_start = (int)d_temp;
-      }
+      if(d_temp	> 2147483648.0)	signalcomp[i]->sample_start = 2147483647LL;
+      else			signalcomp[i]->sample_start = (int)d_temp;
     }
     else
     {
@@ -4051,7 +3681,7 @@ void UI_Mainwindow::setup_viewbuf()
       snprintf(viewtime_string, 32, "%2i-%s ", date_time_str.day, date_time_str.month_str);
     }
 
-    if((edfheaderlist[sel_viewtime]->viewtime + edfheaderlist[sel_viewtime]->starttime_offset)>=0LL)
+    if((edfheaderlist[sel_viewtime]->viewtime + edfheaderlist[sel_viewtime]->starttime_offset) >= 0LL)
     {
       if(viewtime_indicator_type > 0)
       {
@@ -4197,6 +3827,7 @@ void UI_Mainwindow::setup_viewbuf()
 }
 
 
+
 void UI_Mainwindow::export_to_ascii()
 {
   if(!files_open)
@@ -4210,10 +3841,43 @@ void UI_Mainwindow::export_to_ascii()
 }
 
 
+
 void UI_Mainwindow::export_ecg_rr_interval_to_ascii()
 {
   UI_ECGExport ECG_export(this);
 }
+
+
+
+void UI_Mainwindow::export_epochs()
+{
+	if(!files_open)
+	{
+		QMessageBox messagewindow(QMessageBox::Critical, "Error", "You have to open a file first.");
+		messagewindow.exec();
+		return;
+	}
+
+	UI_ExportAnnotationswindow exportAnnotsDialog(this, &epochlist[0]);
+	exportAnnotsDialog.execute();
+}
+
+
+
+void UI_Mainwindow::set_start_of_epochs()
+{
+	QMessageBox messagewindow(QMessageBox::Critical, "Error", "Function not implimented yet.");
+	messagewindow.exec();
+}
+
+
+
+void UI_Mainwindow::configure_epochs()
+{
+	QMessageBox messagewindow(QMessageBox::Critical, "Error", "Function not implimented yet.");
+	messagewindow.exec();
+}
+
 
 
 void UI_Mainwindow::export_annotations()
@@ -4225,14 +3889,68 @@ void UI_Mainwindow::export_annotations()
     return;
   }
 
-  UI_ExportAnnotationswindow exportAnnotsDialog(this);
+  UI_ExportAnnotationswindow exportAnnotsDialog(this, &annotationlist[0]);
+  exportAnnotsDialog.execute();
 }
+
+
+
+void UI_Mainwindow::import_epochs()
+{
+	if(epochs_dock == NULL)
+	{
+		epochs_dock = new UI_Epochswindow(this);
+    		addDockWidget(Qt::RightDockWidgetArea, epochs_dock->docklist, Qt::Vertical);
+		epochs_dock->docklist->hide();
+	}
+
+	if( ask_discard_annotationlist(epochlist) ) return;								// if check doesn't work, cancel the import.
+	UI_ImportAnnotationswindow importAnnotsDialog(this, epochs_dock, epochlist);
+	epochs_dock->updateList();
+}
+
 
 
 void UI_Mainwindow::import_annotations()
 {
-  UI_ImportAnnotationswindow importAnnotsDialog(this);
+	if(annotations_dock[0] == NULL)
+	{
+		annotations_dock[0] = new UI_Annotationswindow(0, this);
+    		addDockWidget(Qt::RightDockWidgetArea, annotations_dock[0]->docklist, Qt::Vertical);
+		annotations_dock[0]->docklist->hide();		// Hide the dock.
+	}
+
+	if( ask_discard_annotationlist(annotationlist) ) return;
+	
+	UI_ImportAnnotationswindow importAnnotsDialog(this, annotations_dock[0], annotationlist);
+
+	annotations_dock[0]->updateList();
 }
+
+
+
+int UI_Mainwindow::ask_discard_annotationlist(struct annotationblock **annotationlist)
+{
+	if( not (annotationlist[0] == NULL) )	// Active epochlist, which has to be removed before loading.
+	{
+		QMessageBox::StandardButton reply = QMessageBox::question(this, tr("Import annotations ..."), "Save current annotations?",
+	                                					QMessageBox::Yes | QMessageBox::No | QMessageBox::Cancel);
+		if (reply == QMessageBox::Yes)
+		{
+  			UI_ExportAnnotationswindow exportAnnotsDialog(this, &annotationlist[0]);	// Create dialog
+			if( exportAnnotsDialog.execute() == QDialog::Rejected ) return -2;		// Execute dialog and catch exceptions.
+		}
+
+		else if (reply == QMessageBox::Cancel)
+			return -1;
+
+		edfplus_annotation_delete_list(&annotationlist[0]);
+		annotationlist[0] = NULL;
+	}
+	return 0;
+}
+
+
 
 
 void UI_Mainwindow::check_edf_compatibility()
@@ -4248,10 +3966,12 @@ void UI_Mainwindow::check_edf_compatibility()
 }
 
 
+
 void UI_Mainwindow::print_to_img_640x480()
 {
   maincurve->print_to_image(640, 480);
 }
+
 
 
 void UI_Mainwindow::print_to_img_800x600()
@@ -4260,10 +3980,12 @@ void UI_Mainwindow::print_to_img_800x600()
 }
 
 
+
 void UI_Mainwindow::print_to_img_1024x768()
 {
   maincurve->print_to_image(1024, 768);
 }
+
 
 
 void UI_Mainwindow::print_to_img_1280x1024()
@@ -4272,10 +3994,12 @@ void UI_Mainwindow::print_to_img_1280x1024()
 }
 
 
+
 void UI_Mainwindow::print_to_img_1600x1200()
 {
   maincurve->print_to_image(1600, 1200);
 }
+
 
 
 long long UI_Mainwindow::get_long_time(char *str)
@@ -4331,6 +4055,7 @@ long long UI_Mainwindow::get_long_time(char *str)
 
   return(value);
 }
+
 
 
 void UI_Mainwindow::get_rgbcolor_settings(struct xml_handle *xml_hdl, const char *id, int cnt, QColor *rgb_color)
@@ -4392,6 +4117,7 @@ void UI_Mainwindow::get_rgbcolor_settings(struct xml_handle *xml_hdl, const char
 }
 
 
+
 void UI_Mainwindow::read_color_settings()
 {
   char cfg_path[MAX_PATH_LENGTH],
@@ -4401,30 +4127,10 @@ void UI_Mainwindow::read_color_settings()
 
   cfg_path[0] = 0;
 
-#ifdef Q_OS_LINUX
-  strcpy(cfg_path, getenv("HOME"));
-  strcat(cfg_path, "/.");
-  strcat(cfg_path, PROGRAM_NAME);
-  strcat(cfg_path, "/settings.xml");
-#endif
-#ifdef Q_OS_MAC
-  strcpy(cfg_path, getenv("HOME"));
-  strcat(cfg_path, "/.");
-  strcat(cfg_path, PROGRAM_NAME);
-  strcat(cfg_path, "/settings.xml");
-#endif
-#ifdef Q_OS_WIN32
-  strcpy(cfg_path, specialFolder(CSIDL_APPDATA).toLocal8Bit().data());
-  strcat(cfg_path, "\\");
-  strcat(cfg_path, PROGRAM_NAME);
-  strcat(cfg_path, "\\settings.xml");
-#endif
+  configpath(cfg_path, "settings.xml");
 
   xml_hdl = xml_get_handle(cfg_path);
-  if(!xml_hdl)
-  {
-    return;
-  }
+  if(!xml_hdl) return;
 
   if(strcmp(xml_hdl->elementname, "config"))
   {
@@ -4474,17 +4180,10 @@ void UI_Mainwindow::read_color_settings()
 
   xml_go_up(xml_hdl);
 
-  if(xml_goto_nth_element_inside(xml_hdl, "floating_ruler_color", 0))
-  {
-    xml_close(xml_hdl);
-    return;
-  }
-  result = xml_get_content_of_element(xml_hdl);
-  if(result==NULL)
-  {
-    xml_close(xml_hdl);
-    return;
-  }
+  if( xml_goto_nth_element_inside(xml_hdl, "floating_ruler_color", 0) )	{ xml_close(xml_hdl); return; }
+
+  if( (result = xml_get_content_of_element(xml_hdl)) == NULL)		{ xml_close(xml_hdl); return; }
+
   maincurve->floating_ruler_color = atoi(result);
   free(result);
 
@@ -4584,44 +4283,16 @@ void UI_Mainwindow::read_recent_file_settings()
 
   cfg_path[0] = 0;
 
-#ifdef Q_OS_LINUX
-  strcpy(cfg_path, getenv("HOME"));
-  strcat(cfg_path, "/.");
-  strcat(cfg_path, PROGRAM_NAME);
-  strcat(cfg_path, "/settings.xml");
-#endif
-#ifdef Q_OS_MAC
-  strcpy(cfg_path, getenv("HOME"));
-  strcat(cfg_path, "/.");
-  strcat(cfg_path, PROGRAM_NAME);
-  strcat(cfg_path, "/settings.xml");
-#endif
-#ifdef Q_OS_WIN32
-  strcpy(cfg_path, specialFolder(CSIDL_APPDATA).toLocal8Bit().data());
-  strcat(cfg_path, "\\");
-  strcat(cfg_path, PROGRAM_NAME);
-  strcat(cfg_path, "\\settings.xml");
-#endif
+	configpath(cfg_path, "settings.xml");
 
   xml_hdl = xml_get_handle(cfg_path);
-  if(xml_hdl==NULL)
-  {
-    return;
-  }
+  if(xml_hdl==NULL) return;
 
-  if(strcmp(xml_hdl->elementname, "config"))
-  {
-    xml_close(xml_hdl);
-    return;
-  }
+  if( strcmp(xml_hdl->elementname, "config") ) { xml_close(xml_hdl); return; }
 
-  if(xml_goto_nth_element_inside(xml_hdl, "UI", 0))
-  {
-    xml_close(xml_hdl);
-    return;
-  }
+  if( xml_goto_nth_element_inside(xml_hdl, "UI", 0) ) { xml_close(xml_hdl); return; }
 
-  if(!(xml_goto_nth_element_inside(xml_hdl, "recent_montagedir", 0)))
+  if(!( xml_goto_nth_element_inside(xml_hdl, "recent_montagedir", 0) ))
   {
     result = xml_get_content_of_element(xml_hdl);
     if(result==NULL)
@@ -4809,36 +4480,11 @@ void UI_Mainwindow::read_general_settings()
 
   cfg_path[0] = 0;
 
-#ifdef Q_OS_LINUX
-  strcpy(cfg_path, getenv("HOME"));
-  strcat(cfg_path, "/.");
-  strcat(cfg_path, PROGRAM_NAME);
-  strcat(cfg_path, "/settings.xml");
-#endif
-#ifdef Q_OS_MAC
-  strcpy(cfg_path, getenv("HOME"));
-  strcat(cfg_path, "/.");
-  strcat(cfg_path, PROGRAM_NAME);
-  strcat(cfg_path, "/settings.xml");
-#endif
-#ifdef Q_OS_WIN32
-  strcpy(cfg_path, specialFolder(CSIDL_APPDATA).toLocal8Bit().data());
-  strcat(cfg_path, "\\");
-  strcat(cfg_path, PROGRAM_NAME);
-  strcat(cfg_path, "\\settings.xml");
-#endif
+	configpath(cfg_path, "settings.xml");
 
-  xml_hdl = xml_get_handle(cfg_path);
-  if(xml_hdl==NULL)
-  {
-    return;
-  }
+  if( (xml_hdl = xml_get_handle(cfg_path)) == NULL) return;
 
-  if(strcmp(xml_hdl->elementname, "config"))
-  {
-    xml_close(xml_hdl);
-    return;
-  }
+  if( strcmp(xml_hdl->elementname, "config") ) { xml_close(xml_hdl); return; }
 
   if(!xml_goto_nth_element_inside(xml_hdl, "cfg_app_version", 0))
   {
@@ -4857,17 +4503,9 @@ void UI_Mainwindow::read_general_settings()
     xml_go_up(xml_hdl);
   }
 
-  if(xml_goto_nth_element_inside(xml_hdl, "UI", 0))
-  {
-    xml_close(xml_hdl);
-    return;
-  }
+  if( xml_goto_nth_element_inside(xml_hdl, "UI", 0) ) { xml_close(xml_hdl); return; }
 
-  if(xml_goto_nth_element_inside(xml_hdl, "pixelsizefactor", 0))
-  {
-    xml_close(xml_hdl);
-    return;
-  }
+  if( xml_goto_nth_element_inside(xml_hdl, "pixelsizefactor", 0) ) { xml_close(xml_hdl); return; }
 
   result = xml_get_content_of_element(xml_hdl);
   if(result==NULL)
@@ -5547,6 +5185,22 @@ void UI_Mainwindow::read_general_settings()
       xml_go_up(xml_hdl);
     }
 
+    if(!(xml_goto_nth_element_inside(xml_hdl, "end", 0)))
+    {
+      result = xml_get_content_of_element(xml_hdl);
+      if(result==NULL)
+      {
+        xml_close(xml_hdl);
+        return;
+      }
+
+      export_annotations_var->end = atoi(result);
+
+      free(result);
+
+      xml_go_up(xml_hdl);
+    }
+
     xml_go_up(xml_hdl);
   }
 
@@ -6170,36 +5824,12 @@ void UI_Mainwindow::write_settings()
 {
   int i, len;
 
-  char cfg_path[MAX_PATH_LENGTH],
-       str[1024];
+  char str[1024];
 
   FILE *cfgfile;
 
-  cfg_path[0] = 0;
+  cfgfile = open_configfile("settings.xml");
 
-#ifdef Q_OS_LINUX
-  strcpy(cfg_path, getenv("HOME"));
-  strcat(cfg_path, "/.");
-  strcat(cfg_path, PROGRAM_NAME);
-  mkdir(cfg_path,  S_IRWXU);
-  strcat(cfg_path, "/settings.xml");
-#endif
-#ifdef Q_OS_MAC
-  strcpy(cfg_path, getenv("HOME"));
-  strcat(cfg_path, "/.");
-  strcat(cfg_path, PROGRAM_NAME);
-  mkdir(cfg_path,  S_IRWXU);
-  strcat(cfg_path, "/settings.xml");
-#endif
-#ifdef Q_OS_WIN32
-  strcpy(cfg_path, specialFolder(CSIDL_APPDATA).toLocal8Bit().data());
-  strcat(cfg_path, "\\");
-  strcat(cfg_path, PROGRAM_NAME);
-  mkdir(cfg_path);
-  strcat(cfg_path, "\\settings.xml");
-#endif
-
-  cfgfile = fopeno(cfg_path, "wb");
   if(cfgfile)
   {
     fprintf(cfgfile, "<?xml version=\"1.0\"?>\n"
@@ -6453,6 +6083,7 @@ void UI_Mainwindow::write_settings()
     fprintf(cfgfile, "      <format>%i</format>\n", export_annotations_var->format);
 
     fprintf(cfgfile, "      <duration>%i</duration>\n", export_annotations_var->duration);
+    fprintf(cfgfile, "      <end>%i</end>\n", export_annotations_var->end);
 
     fprintf(cfgfile, "    </annotations_export_var>\n");
 
@@ -6598,7 +6229,7 @@ void UI_Mainwindow::set_dc_offset_to_zero()
 void UI_Mainwindow::show_help()
 {
 #ifdef Q_OS_LINUX
-  QDesktopServices::openUrl(QUrl("file:///usr/share/doc/edfbrowser/manual.html"));
+  QDesktopServices::openUrl(QUrl("file:///usr/share/doc/edfView/manual.html"));
 #endif
 
 #ifdef Q_OS_WIN32
@@ -6606,7 +6237,7 @@ void UI_Mainwindow::show_help()
 
   strcpy(path, "file:///");
   strcat(path, specialFolder(CSIDL_PROGRAM_FILES).toLocal8Bit().data());
-  strcat(path, "\\EDFbrowser\\manual.html");
+  strcat(path, "\\EDFView\\manual.html");
   QDesktopServices::openUrl(QUrl(path));
 #endif
 }
@@ -6653,32 +6284,37 @@ void UI_Mainwindow::show_kb_shortcuts()
 
 QString UI_Mainwindow::specialFolder(int type)
 {
-    QString result;
+	QString result;
 
-    QLibrary library(QLatin1String("shell32"));
-    QT_WA( {
-        typedef BOOL (WINAPI*GetSpecialFolderPath)(HWND, LPTSTR, int, BOOL);
-        GetSpecialFolderPath SHGetSpecialFolderPath = (GetSpecialFolderPath)library.resolve("SHGetSpecialFolderPathW");
-        if (SHGetSpecialFolderPath) {
-            TCHAR path[MAX_PATH];
-            SHGetSpecialFolderPath(0, path, type, false);
-            result = QString::fromUtf16((ushort*)path);
-        }
-    } , {
-        typedef BOOL (WINAPI*GetSpecialFolderPath)(HWND, char*, int, BOOL);
-        GetSpecialFolderPath SHGetSpecialFolderPath = (GetSpecialFolderPath)library.resolve("SHGetSpecialFolderPathA");
-        if (SHGetSpecialFolderPath) {
-            char path[MAX_PATH];
-            SHGetSpecialFolderPath(0, path, type, false);
-            result = QString::fromLocal8Bit(path);
-        }
-    } );
+	QLibrary library(QLatin1String("shell32"));
+	QT_WA(
+		{
+			typedef BOOL (WINAPI*GetSpecialFolderPath)(HWND, LPTSTR, int, BOOL);
+			GetSpecialFolderPath SHGetSpecialFolderPath = (GetSpecialFolderPath)library.resolve("SHGetSpecialFolderPathW");
+			if(SHGetSpecialFolderPath)
+			{
+				TCHAR path[MAX_PATH];
+				SHGetSpecialFolderPath(0, path, type, false);
+				result = QString::fromUtf16((ushort*)path);
+			}
+		},
+		{
+			typedef BOOL (WINAPI*GetSpecialFolderPath)(HWND, char*, int, BOOL);
+			GetSpecialFolderPath SHGetSpecialFolderPath = (GetSpecialFolderPath)library.resolve("SHGetSpecialFolderPathA");
+			if(SHGetSpecialFolderPath)
+			{
+				char path[MAX_PATH];
+				SHGetSpecialFolderPath(0, path, type, false);
+				result = QString::fromLocal8Bit(path);
+			}
+		});
 
-    if (result.isEmpty()) {
-         result = QLatin1String("C:\\temp");
-    }
+	if(result.isEmpty())
+	{
+		result = QLatin1String("C:\\temp");
+	}
 
-    return result;
+	return result;
 }
 
 #endif
@@ -6793,6 +6429,10 @@ void UI_Mainwindow::edfplus_annotation_remove_duplicates()
       {
         annotations_dock[k]->updateList();
       }
+    }
+    if(epochs_dock != NULL)
+    {
+    	epochs_dock->updateList();
     }
 
     annotations_edited = 1;
@@ -6976,10 +6616,27 @@ struct signalcompblock * UI_Mainwindow::create_signalcomp_copy(struct signalcomp
 
   signalcomps++;
 
-  return(newsignalcomp);
+  return newsignalcomp;
 }
 
 
+void UI_Mainwindow::get_samples_on_screen(int signal_nr, long long &start, long long &end)
+{
+// Essentially it works.  Segfaults if viewcurve moves across boarders.  Where is signalcomp[]->sample_start updated?
+	if(stiffness == 2 and epoch_editor_active)
+	{
+//		start   = (int)(((double)epochstart / (double)signalcomp[signal_nr]->edfhdr->long_data_record_duration) * (double)signalcomp[signal_nr]->edfhdr->edfparam[signalcomp[signal_nr]->edfsignal[0]].smp_per_record);
+//		end   = start + (int)(((double)pagestep / (double)signalcomp[signal_nr]->edfhdr->long_data_record_duration) * (double)signalcomp[signal_nr]->edfhdr->edfparam[signalcomp[signal_nr]->edfsignal[0]].smp_per_record);
+		start = this->signalcomp[signal_nr]->sample_start;
+		end   = this->signalcomp[signal_nr]->samples_on_screen;
+	}
+	else
+	{
+		start = this->signalcomp[signal_nr]->sample_start;
+		end   = this->signalcomp[signal_nr]->samples_on_screen;
+	}
+	std::cout << "samplestart " <<  start  <<  " "<< end << std::endl;
+}
 
 
 

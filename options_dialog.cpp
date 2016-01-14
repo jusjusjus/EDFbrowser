@@ -1151,7 +1151,7 @@ void UI_OptionsDialog::DefaultButtonClicked()
   {
     if(mainwindow->annotations_dock[i])
     {
-      mainwindow->annotations_dock[i]->list->setPalette(palette);
+      mainwindow->annotations_dock[i]->setPalette(palette);
     }
   }
 
@@ -1194,7 +1194,7 @@ void UI_OptionsDialog::BgColorButtonClicked(SpecialButton *)
     {
       if(mainwindow->annotations_dock[i])
       {
-        mainwindow->annotations_dock[i]->list->setPalette(palette);
+        mainwindow->annotations_dock[i]->setPalette(palette);
       }
     }
 
@@ -1281,7 +1281,7 @@ void UI_OptionsDialog::TxtColorButtonClicked(SpecialButton *)
     {
       if(mainwindow->annotationlist[i])
       {
-        mainwindow->annotations_dock[i]->list->setPalette(palette);
+        mainwindow->annotations_dock[i]->setPalette(palette);
       }
     }
 
@@ -1783,7 +1783,7 @@ void UI_OptionsDialog::update_interface(void)
   {
     if(mainwindow->annotations_dock[i])
     {
-      mainwindow->annotations_dock[i]->list->setPalette(palette);
+      mainwindow->annotations_dock[i]->setPalette(palette);
     }
   }
 

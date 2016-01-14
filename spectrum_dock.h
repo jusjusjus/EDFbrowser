@@ -87,6 +87,7 @@ public:
 
   QDockWidget *dock;
 
+  int signal_nr;
   struct signalcompblock *signalcomp;
 
   struct spectrum_markersblock *spectrum_color;
@@ -138,11 +139,11 @@ private:
          maxvalue_sqrt_vlog,
          minvalue_vlog,
          minvalue_sqrt_vlog,
-         *buf1,
-         *buf2,
-         *buf3,
-         *buf4,
-         *buf5;
+         *buf1,			// 
+         *buf2,			// Power spectral density = Power spectrum / dw : uV^2 / Hz
+	 *buf3,			// sqrt( Power spectral density )	
+	 *buf4,			// log10( buf2 )
+         *buf5;			// log10( buf3 )
 
   char *viewbuf,
        signallabel[512],

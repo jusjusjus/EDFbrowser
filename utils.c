@@ -1174,10 +1174,7 @@ long long atoll_x(const char *str, int dimension)
 
   long long value=0LL;
 
-  while(*str==' ')
-  {
-    str++;
-  }
+  while(*str==' ') str++;		// Remove trailing empty space.
 
   if(*str=='-')
   {
@@ -1194,28 +1191,21 @@ long long atoll_x(const char *str, int dimension)
 
   for(i=0; ; i++)
   {
-    if(str[i]=='.')
-    {
-      str += (i + 1);
-
-      break;
+    if(str[i]=='.')			// If we are at a decimal point,
+    {		
+      str += (i + 1);			// ... forward the pointer,
+      break;				// ... and end the loop.
     }
 
-    if((str[i]<'0') || (str[i]>'9'))
+    if((str[i]<'0') || (str[i]>'9'))	// str[i] not a number:  return the result.
     {
-      if(negative)
-      {
-        return(value * dimension * -1LL);
-      }
-      else
-      {
-        return(value * dimension);
-      }
+      if(negative)	return	value * dimension * -1LL;
+      else		return	value * dimension;
     }
 
     value *= 10LL;
 
-    value += str[i] - '0';
+    value += str[i] - '0';			// I don't get this.
   }
 
   radix = 1;
@@ -1234,14 +1224,8 @@ long long atoll_x(const char *str, int dimension)
     value += str[i] - '0';
   }
 
-  if(negative)
-  {
-    return(value * (dimension / radix) * -1LL);
-  }
-  else
-  {
-    return(value * (dimension / radix));
-  }
+  if(negative)	return	value * (dimension / radix) * -1LL;
+  else		return	value * (dimension / radix);
 }
 
 

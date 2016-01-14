@@ -33,8 +33,21 @@
 #ifndef VIEWER_GLOBAL_H
 #define VIEWER_GLOBAL_H
 
+#if defined(__APPLE__) || defined(__MACH__) || defined(__APPLE_CC__)
 
-#define PROGRAM_NAME "EDFbrowser"
+	#define fopeno fopen
+
+#else
+
+	#define fseeko fseeko64
+	#define ftello ftello64
+	#define fopeno fopen64
+
+#endif
+
+
+
+#define PROGRAM_NAME "EDFView"
 #define PROGRAM_VERSION "1.54"
 #define MINIMUM_QT_VERSION 0x040701
 #define MAXFILES 32
@@ -67,7 +80,8 @@
 
 
 
-struct edfparamblock{
+struct edfparamblock
+{
         char   label[17];
         char   transducer[81];
         char   physdimension[9];
@@ -82,9 +96,12 @@ struct edfparamblock{
         int    buf_offset;
         double bitvalue;
         int    annotation;
-      };
+};
 
-struct edfhdrblock{
+
+
+struct edfhdrblock
+{
         FILE      *file_hdl;
         int       file_num;
         char      version[32];
@@ -125,9 +142,12 @@ struct edfhdrblock{
         long long prefiltertime;
         int       annots_not_read;
         struct edfparamblock *edfparam;
-      };
+};
 
-struct signalcompblock{
+
+
+struct signalcompblock
+{
         int filenum;
         struct edfhdrblock *edfhdr;
         int num_of_signals;
@@ -136,7 +156,7 @@ struct signalcompblock{
         long long records_in_viewbuf;
         long long samples_in_viewbuf;
         long long samples_on_screen;
-        long long sample_start;
+        long long sample_start;			// Start of samples on window relative to beginning of window.
         long long sample_stop;
         int timeoffset;
         int sample_timeoffset;
@@ -203,9 +223,13 @@ struct signalcompblock{
         int spectr_dialog[MAXSPECTRUMDIALOGS];
         int avg_dialog[MAXAVERAGECURVEDIALOGS];
         int zscoredialog[MAXZSCOREDIALOGS];
-      };
+	int type;
+};
 
-struct zoomhistoryblock{
+
+
+struct zoomhistoryblock
+{
         int pntr;
         int history_size_tail;
         int history_size_front;
@@ -214,9 +238,12 @@ struct zoomhistoryblock{
         double voltpercm[64][MAXSIGNALS];
         double sensitivity[64][MAXSIGNALS][MAXSIGNALS];
         double screen_offset[64][MAXSIGNALS];
-       };
+};
 
-struct annotationblock {
+
+
+struct annotationblock
+{
         int file_num;					// number of file the annotation belongs to?
         long long onset;				// (relative?) onset of annotation
         char duration[16];				// duration (why char?)
@@ -224,34 +251,45 @@ struct annotationblock {
         struct annotationblock *former_annotation;	// pointer to previous (temporal?) annotation
         struct annotationblock *next_annotation;	// pointer to next (temporal?) annotation
         int modified;					// modified switch (could be bool?)
-        int x_pos;					// ?
+        int x_pos;					// position of the annotation in the viewcurve?
         int selected;					// has the annotation been selected?
         int jump;
         int hidden;
         int hidden_in_list;
         unsigned int ident;
-       };
+};
 
-struct active_markersblock{
+
+
+struct active_markersblock
+{
         int file_num;
         struct annotationblock *list[MAX_ACTIVE_ANNOT_MARKERS];
         int count;
         int selected;
-       };
+};
 
 
-struct graphicLineStruct{
+
+struct graphicLineStruct
+{
         int x1;
         int y1;
         int x2;
         int y2;
-        };
+};
 
-struct graphicBufStruct{
+
+
+struct graphicBufStruct
+{
         struct graphicLineStruct graphicLine[MAXSIGNALS];
-        };
+};
 
-struct crossHairStruct{
+
+
+struct crossHairStruct
+{
         int color;
         int file_num;
         int active;
@@ -263,7 +301,7 @@ struct crossHairStruct{
         double value;
         long long time;
         long long time_relative;
-       };
+};
 
 #endif
 

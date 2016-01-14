@@ -116,7 +116,7 @@ private:
   struct crossHairStruct *crosshair_1,
                          *crosshair_2;
 
-void run();
+	void run();
 
 };
 
@@ -142,6 +142,7 @@ public:
       mouse_press_coordinate_x,
       mouse_press_coordinate_y,
       draw_zoom_rectangle,
+      spanning,
       signal_color,
       floating_ruler_color,
       ruler_active,
@@ -155,7 +156,6 @@ public:
       backup_color_11,
       backup_color_12,
       backup_color_14,
-      annot_marker_moving,
       pressed_on_label,
       label_press_y_position,
       cpu_cnt,
@@ -178,6 +178,7 @@ public:
          baseline_color,
          text_color,
          annot_marker_color,
+         epoch_marker_color,
          backup_color_1,
          backup_color_2,
          backup_color_3,
@@ -189,7 +190,8 @@ public:
   QFont *printfont;
 
   void drawCurve_stage_1(QPainter *painter=NULL, int w_width=0, int w_height=0, int print_linewidth=0);
-  void setCrosshair_1_center(void);
+  //void setCrosshair_1_center(void);
+	void set_crosshairs(double fraction_1, double fraction_2);
 
 
 public slots:
@@ -235,6 +237,7 @@ private:
 
   QPen        *special_pen,
               *annot_marker_pen,
+              *epoch_marker_pen,
               *signal_pen,
               *ruler_pen;
 
@@ -253,6 +256,7 @@ private:
 
   void backup_colors_for_printing(void);
   void restore_colors_after_printing(void);
+	int ymouseOverSignal(int my, int ymin=-5, int ymax=24);
 
 protected slots:
 

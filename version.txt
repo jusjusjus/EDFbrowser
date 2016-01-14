@@ -78,7 +78,7 @@
 
  - Added the possibility to adjust the samplerate divider for all signals at once in the reducer/decimator tool.
 
- - EDFbrowser now checks online for a newer version during startup. This can be switched off in the settings menu.
+ - EDFView now checks online for a newer version during startup. This can be switched off in the settings menu.
 
 
  version 1.49      February 5, 2013
@@ -153,7 +153,7 @@
    (Due to the nature of the EDF-format, the annotations-channel(s)
    needs to be read from the beginning till the end of the file.)
    In the "Settings -> other" dialog you can adjust the filesize
-   which above EDFbrowser will not scan the file for annotations.
+   which above EDFView will not scan the file for annotations.
    (between 100 MB and 10 GB)
 
  - extended the capabilities of the header-editor. Now it can also fix
@@ -192,14 +192,14 @@
  version 1.42      Februari 1, 2012
  ------------
 
- - Fixed a problem with EDFbrowser not capable to
+ - Fixed a problem with EDFView not capable to
    handle filenames and/or directories that contain
    non-ascii characters. From now on, filenames/paths
    will be handled and saved using the local 8-bit
    encoding.
 
  - Added multi-threading capabilities to the drawing engine.
-   EDFbrowser will now use all available cpu-cores in your system
+   EDFView will now use all available cpu-cores in your system
    to speedup the drawing of the signals.
 
 
@@ -231,7 +231,7 @@
 
  - The Nihon Kohden to EDF+ converter now processes also the Trigger/Marker channel.
    For example, photo- or dc-triggers will be processed by the converter and can be
-   displayed by EDFbrowser.
+   displayed by EDFView.
 
  - Fixed a bug in the signalcurve (graph) of the averaging window, when "invert" was selected,
    the vertical ruler could disappear.
@@ -266,7 +266,7 @@
  ------------
 
  - Removed the limitation that no more annotations can be saved than the amount of datarecords.
-   EDFbrowser could only write one annotation per datarecord. From now on, if there are more
+   EDFView could only write one annotation per datarecord. From now on, if there are more
    annotations than datarecords, the size (smpls/record) of the annotationchannel will increase
    automatically in order to fit multiple annotations as needed.
 
@@ -361,8 +361,8 @@
 
  - Added a streaming mode. The stream must be a "growing" file.
    This mode can be used when you have an aquisitionprogram running that writes EDF or BDF.
-   While the aquisitionprogram writes the data to the file, you can use EDFbrowser to watch
-   (follow) the actual data. EDFbrowser will regularly check the actual filesize and show the
+   While the aquisitionprogram writes the data to the file, you can use EDFView to watch
+   (follow) the actual data. EDFView will regularly check the actual filesize and show the
    last part of the file i.e. the most actual/recent data.
 
  - Added a "moving average" filtermodel (high- and lowpass).
@@ -410,7 +410,7 @@ version 1.28      October 27, 2010
 
  - Added a Biosemi to BDF+ converter.
    It converts the Biosemi trigger inputs to annotations which can be
-   read and processed by EDFbrowser.
+   read and processed by EDFView.
 
  - Added an EDF-converter for the Bmeye Nexfin / FrameInspector csv-output
    (beat-to-beat data, bloodpressure waveform, analog inputs).
@@ -459,7 +459,7 @@ version 1.28      October 27, 2010
 
  - Added the entry "3 cm/sec" to the the Timescale menu.
 
- - From now on EDFbrowser will use the DPI-settings from the underlying windowmanager
+ - From now on EDFView will use the DPI-settings from the underlying windowmanager
    in order to calibrate the screen. If this doesn't work well in your situation,
    you can still calibrate the screen manually in the settingsmenu.
 
@@ -746,7 +746,7 @@ version 1.28      October 27, 2010
  - added option jump to end of recording
 
  - dropped the maximum datarecordblocksize of 61440 bytes requirement for EDF+ files
-   from now on EDFbrowser will accept EDF+ files with  larger blocksizes
+   from now on EDFView will accept EDF+ files with  larger blocksizes
 
 
 

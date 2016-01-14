@@ -35,32 +35,24 @@
 
 
 #if defined(__APPLE__) || defined(__MACH__) || defined(__APPLE_CC__)
-
-#define fopeno fopen
+	#define fopeno fopen
 
 #else
-
-#define fseeko fseeko64
-#define ftello ftello64
-#define fopeno fopen64
+	#define fseeko fseeko64
+	#define ftello ftello64
+	#define fopeno fopen64
 
 #endif
 
 
-#define XML_FORMAT      0
-#define ASCIICSV_FORMAT 1
-#define DCEVENT_FORMAT  2
-#define EDFPLUS_FORMAT  3
-
-#define TAB_CNT         4
 
 
-UI_ImportAnnotationswindow::UI_ImportAnnotationswindow(QWidget *w_parent)
+
+UI_ImportAnnotationswindow::UI_ImportAnnotationswindow(QWidget *w_parent, UI_Annotationswindow *annotations_dock, struct annotationblock **annotationlist)
 {
-  int i;
-
-
   mainwindow = (UI_Mainwindow *)w_parent;
+  this->annotations_dock = annotations_dock;
+  this->annotationlist = annotationlist;
 
   if(mainwindow->files_open < 1)
   {
@@ -71,8 +63,8 @@ UI_ImportAnnotationswindow::UI_ImportAnnotationswindow(QWidget *w_parent)
 
   ImportAnnotsDialog = new QDialog;
 
-  ImportAnnotsDialog->setMinimumSize(490, 500);
-  ImportAnnotsDialog->setMaximumSize(490, 500);
+  ImportAnnotsDialog->setMinimumSize(690, 500);
+  ImportAnnotsDialog->setMaximumSize(690, 800);
   ImportAnnotsDialog->setWindowTitle("Import annotations/events");
   ImportAnnotsDialog->setModal(true);
   ImportAnnotsDialog->setAttribute(Qt::WA_DeleteOnClose, true);
@@ -84,7 +76,7 @@ UI_ImportAnnotationswindow::UI_ImportAnnotationswindow(QWidget *w_parent)
   tab_index_array[XML_FORMAT] = 2;
   tab_index_array[EDFPLUS_FORMAT] = 3;
 
-  for(i=0; i<TAB_CNT; i++)
+  for(int i=0; i<TAB_CNT; i++)
   {
     tab[i] = new QWidget;
   }
@@ -102,7 +94,7 @@ UI_ImportAnnotationswindow::UI_ImportAnnotationswindow(QWidget *w_parent)
   DatastartLabel->setMinimumSize(200, 25);
 
   OnsetTimeLabel = new QLabel(ImportAnnotsDialog);
-  OnsetTimeLabel->setText("Onset time coding is");
+  OnsetTimeLabel->setText("Time coding is");
   OnsetTimeLabel->setMinimumSize(200, 25);
 
   SeparatorLineEdit = new QLineEdit(ImportAnnotsDialog);
@@ -125,6 +117,11 @@ UI_ImportAnnotationswindow::UI_ImportAnnotationswindow(QWidget *w_parent)
   DurationColumnSpinBox->setValue(3);
   DurationColumnSpinBox->setMinimumSize(80, 25);
 
+	EndColumnSpinBox = new QSpinBox(ImportAnnotsDialog);
+	EndColumnSpinBox->setRange(1,256);
+	EndColumnSpinBox->setValue(3);
+	EndColumnSpinBox->setMinimumSize(80, 25);
+
   DescriptionColumnSpinBox = new QSpinBox(ImportAnnotsDialog);
   DescriptionColumnSpinBox->setRange(1,256);
   DescriptionColumnSpinBox->setValue(2);
@@ -141,6 +138,7 @@ UI_ImportAnnotationswindow::UI_ImportAnnotationswindow(QWidget *w_parent)
   RelativeTimeComboBox->addItem("hh:mm:ss.xxx");
   RelativeTimeComboBox->addItem("yyyy-mm-ddThh:mm:ss");
   RelativeTimeComboBox->addItem("yyyy-mm-ddThh:mm:ss.xxx");
+  RelativeTimeComboBox->addItem("mm/dd/yyyy hh:mm:ss");
   RelativeTimeComboBox->setMinimumSize(200, 25);
 
   DescriptionColumnRadioButton = new QRadioButton("Description column");
@@ -149,10 +147,22 @@ UI_ImportAnnotationswindow::UI_ImportAnnotationswindow(QWidget *w_parent)
   UseManualDescriptionRadioButton = new QRadioButton("Manual description");
   UseManualDescriptionRadioButton->setMinimumSize(198, 25);
 
+
   DurationCheckBox = new QCheckBox(" Duration column", ImportAnnotsDialog);
   DurationCheckBox->setTristate(false);
   DurationCheckBox->setCheckState(Qt::Unchecked);
   DurationCheckBox->setMinimumSize(198, 25);
+
+	EndCheckBox = new QCheckBox(" End column", ImportAnnotsDialog);
+	EndCheckBox->setTristate(false);
+	EndCheckBox->setCheckState(Qt::Unchecked);
+	EndCheckBox->setMinimumSize(198, 25);
+
+	durationGroup = new QButtonGroup(ImportAnnotsDialog);
+	durationGroup->addButton(DurationCheckBox);
+	durationGroup->addButton(EndCheckBox);
+	durationGroup->setExclusive(false);
+
 
   asciiSettingsHBoxLayout1 = new QHBoxLayout;
   asciiSettingsHBoxLayout1->addWidget(SeparatorLabel);
@@ -179,6 +189,11 @@ UI_ImportAnnotationswindow::UI_ImportAnnotationswindow(QWidget *w_parent)
   asciiSettingsHBoxLayout7->addWidget(DurationColumnSpinBox);
   asciiSettingsHBoxLayout7->addStretch(100);
 
+	asciiSettingsHBoxLayout8 = new QHBoxLayout;
+	asciiSettingsHBoxLayout8->addWidget(EndCheckBox);
+	asciiSettingsHBoxLayout8->addWidget(EndColumnSpinBox);
+	asciiSettingsHBoxLayout8->addStretch(100);
+
   asciiSettingsHBoxLayout5 = new QHBoxLayout;
   asciiSettingsHBoxLayout5->addWidget(DatastartLabel);
   asciiSettingsHBoxLayout5->addWidget(DatastartSpinbox);
@@ -195,6 +210,7 @@ UI_ImportAnnotationswindow::UI_ImportAnnotationswindow(QWidget *w_parent)
   asciiSettingsVBoxLayout->addLayout(asciiSettingsHBoxLayout3);
   asciiSettingsVBoxLayout->addLayout(asciiSettingsHBoxLayout4);
   asciiSettingsVBoxLayout->addLayout(asciiSettingsHBoxLayout7);
+  asciiSettingsVBoxLayout->addLayout(asciiSettingsHBoxLayout8);
   asciiSettingsVBoxLayout->addLayout(asciiSettingsHBoxLayout5);
   asciiSettingsVBoxLayout->addLayout(asciiSettingsHBoxLayout6);
   tab[tab_index_array[ASCIICSV_FORMAT]]->setLayout(asciiSettingsVBoxLayout);
@@ -212,7 +228,7 @@ UI_ImportAnnotationswindow::UI_ImportAnnotationswindow(QWidget *w_parent)
   DCEventTriggerLevelLabel->setMinimumSize(130, 25);
 
   DCEventSignalComboBox = new QComboBox(ImportAnnotsDialog);
-  for(i=0; i<mainwindow->signalcomps; i++)
+  for(int i=0; i<mainwindow->signalcomps; i++)
   {
     DCEventSignalComboBox->addItem(mainwindow->signalcomp[i]->signallabel);
   }
@@ -230,10 +246,7 @@ UI_ImportAnnotationswindow::UI_ImportAnnotationswindow(QWidget *w_parent)
   DCEventTriggerLevelSpinBox->setValue(500.0);
   DCEventTriggerLevelSpinBox->setMinimumSize(130, 25);
 
-  if(mainwindow->signalcomps)
-  {
-    DCEventSignalChanged(0);
-  }
+  if(mainwindow->signalcomps) DCEventSignalChanged(0);
 
   DCEventHBoxLayout1 = new QHBoxLayout;
   DCEventHBoxLayout1->addWidget(DCEventSignalLabel);
@@ -300,6 +313,7 @@ UI_ImportAnnotationswindow::UI_ImportAnnotationswindow(QWidget *w_parent)
   DescriptionColumnSpinBox->setValue(mainwindow->import_annotations_var->descriptioncolumn);
   DescriptionLineEdit->setText(mainwindow->import_annotations_var->description);
   DurationColumnSpinBox->setValue(mainwindow->import_annotations_var->durationcolumn);
+	EndColumnSpinBox->setValue(mainwindow->import_annotations_var->endcolumn);
   DatastartSpinbox->setValue(mainwindow->import_annotations_var->datastartline);
   RelativeTimeComboBox->setCurrentIndex(mainwindow->import_annotations_var->onsettimeformat);
   BitTimeSpinbox->setValue(mainwindow->import_annotations_var->dceventbittime);
@@ -333,6 +347,17 @@ UI_ImportAnnotationswindow::UI_ImportAnnotationswindow(QWidget *w_parent)
     DurationColumnSpinBox->setEnabled(false);
   }
 
+	if(mainwindow->import_annotations_var->useend == 1)
+	{
+		EndCheckBox->setCheckState(Qt::Checked);
+		EndColumnSpinBox->setEnabled(true);
+	}
+	else
+	{
+		EndCheckBox->setCheckState(Qt::Unchecked);
+		EndColumnSpinBox->setEnabled(false);
+	}
+
   if(mainwindow->import_annotations_var->ignoreconsecutive == 1)
   {
     IgnoreConsecutiveCheckBox->setCheckState(Qt::Checked);
@@ -355,23 +380,31 @@ UI_ImportAnnotationswindow::UI_ImportAnnotationswindow(QWidget *w_parent)
   QObject::connect(DescriptionColumnRadioButton,    SIGNAL(toggled(bool)),            this,               SLOT(descriptionRadioButtonClicked(bool)));
   QObject::connect(UseManualDescriptionRadioButton, SIGNAL(toggled(bool)),            this,               SLOT(descriptionRadioButtonClicked(bool)));
   QObject::connect(DurationCheckBox,                SIGNAL(stateChanged(int)),        this,               SLOT(DurationCheckBoxChanged(int)));
+	QObject::connect(EndCheckBox, SIGNAL(stateChanged(int)), this, SLOT(EndCheckBoxChanged(int)));
   QObject::connect(tabholder,                       SIGNAL(currentChanged(int)),      this,               SLOT(TabChanged(int)));
 
   ImportAnnotsDialog->exec();
 }
 
 
+
 void UI_ImportAnnotationswindow::DurationCheckBoxChanged(int state)
 {
-  if(state == Qt::Unchecked)
-  {
-    DurationColumnSpinBox->setEnabled(false);
-  }
-  else
-  {
-    DurationColumnSpinBox->setEnabled(true);
-  }
+	bool checked = state == Qt::Checked;
+	DurationColumnSpinBox->setEnabled(checked);
+	if(checked) EndCheckBox->setCheckState(Qt::Unchecked);
+
 }
+
+
+
+void UI_ImportAnnotationswindow::EndCheckBoxChanged(int state)
+{
+	bool checked = state == Qt::Checked;
+	EndColumnSpinBox->setEnabled(checked);
+	if(checked) DurationCheckBox->setCheckState(Qt::Unchecked);
+}
+
 
 
 void UI_ImportAnnotationswindow::descriptionRadioButtonClicked(bool)
@@ -392,30 +425,20 @@ void UI_ImportAnnotationswindow::descriptionRadioButtonClicked(bool)
 }
 
 
+
 void UI_ImportAnnotationswindow::TabChanged(int index)
 {
-  if((index == tab_index_array[XML_FORMAT]) || (index == tab_index_array[DCEVENT_FORMAT]))
-  {
-    IgnoreConsecutiveCheckBox->setEnabled(true);
-  }
+	if((index == tab_index_array[XML_FORMAT]) || (index == tab_index_array[DCEVENT_FORMAT]))	IgnoreConsecutiveCheckBox->setEnabled(true);
 
-  if(index == tab_index_array[EDFPLUS_FORMAT])
-  {
-    IgnoreConsecutiveCheckBox->setEnabled(false);
-  }
+	if(index == tab_index_array[EDFPLUS_FORMAT])							IgnoreConsecutiveCheckBox->setEnabled(false);
 
-  if(index == tab_index_array[ASCIICSV_FORMAT])
-  {
-    if(UseManualDescriptionRadioButton->isChecked() == true)
-    {
-      IgnoreConsecutiveCheckBox->setEnabled(false);
-    }
-    else
-    {
-      IgnoreConsecutiveCheckBox->setEnabled(true);
-    }
-  }
+	if(index == tab_index_array[ASCIICSV_FORMAT])
+	{
+		if(UseManualDescriptionRadioButton->isChecked() == true)	IgnoreConsecutiveCheckBox->setEnabled(false);
+		else								IgnoreConsecutiveCheckBox->setEnabled(true);
+	}
 }
+
 
 
 void UI_ImportAnnotationswindow::DCEventSignalChanged(int index)
@@ -486,27 +509,12 @@ void UI_ImportAnnotationswindow::ImportButtonClicked()
     error = import_from_ascii();
   }
 
-  if(mainwindow->annotations_dock[0] == NULL)
+  if(annotationlist[0])					// if annotationslist is not empty,
   {
-    mainwindow->annotations_dock[0] = new UI_Annotationswindow(0, mainwindow);
-
-    mainwindow->addDockWidget(Qt::RightDockWidgetArea, mainwindow->annotations_dock[0]->docklist, Qt::Vertical);
-
-    if(!mainwindow->annotationlist[0])
-    {
-      mainwindow->annotations_dock[0]->docklist->hide();
-    }
-  }
-
-  if(mainwindow->annotationlist[0])
-  {
-    mainwindow->annotations_dock[0]->docklist->show();
-
-    mainwindow->annotations_edited = 1;
-
-    mainwindow->annotations_dock[0]->updateList();
-
-    mainwindow->save_act->setEnabled(true);
+	annotations_dock->docklist->show();		// ...show the dock,
+	mainwindow->annotations_edited = 1;		// ...call that you edited it,
+	annotations_dock->updateList();			// ...update the list,
+	mainwindow->save_act->setEnabled(true);		// ...ask before quitting.
   }
 
   mainwindow->maincurve->update();
@@ -571,10 +579,8 @@ int UI_ImportAnnotationswindow::import_from_xml(void)
 
   get_directory_from_path(mainwindow->recent_opendir, path, MAX_PATH_LENGTH);
 
-  if(mainwindow->annotationlist_backup==NULL)
-  {
-    mainwindow->annotationlist_backup = edfplus_annotation_copy_list(&mainwindow->annotationlist[0]);
-  }
+	if(mainwindow->annotationlist_backup==NULL)									// if not yet done, ...
+		mainwindow->annotationlist_backup = edfplus_annotation_copy_list(annotationlist);			// create a backup list.
 
   xml_hdl = xml_get_handle(path);
   if(xml_hdl==NULL)
@@ -728,7 +734,7 @@ int UI_ImportAnnotationswindow::import_from_xml(void)
       }
       annotation->annotation[MAX_ANNOTATION_LEN] = 0;
       strcpy(annotation->duration, duration);
-      edfplus_annotation_add_item(&mainwindow->annotationlist[0], annotation);
+      edfplus_annotation_add_item(annotationlist, annotation);
 
       strcpy(last_description, result);
     }
@@ -760,15 +766,16 @@ int UI_ImportAnnotationswindow::import_from_ascii(void)
       onset_column=1,
       descr_column=2,
       duration_column=3,
+      end_column=4,
       onset_is_set,
       descr_is_set,
       duration_is_set,
+      end_is_set,
       max_descr_length,
-      onsettime_coding=0,
-      digits,
       days=0,
       ignore_consecutive=0,
       use_duration=0,
+      use_end=0,
       manualdescription;
 
   char path[MAX_PATH_LENGTH],
@@ -781,15 +788,12 @@ int UI_ImportAnnotationswindow::import_from_ascii(void)
        duration[32];
 
   long long onset=0LL,
-            l_temp,
-            last_onset=0LL,
-            utc_time=0LL;
+		end=0LL;
 
   FILE *inputfile=NULL;
 
   struct annotationblock *annotation;
 
-  struct date_time_struct date_time;
 
 
   max_descr_length = 20;
@@ -813,20 +817,17 @@ int UI_ImportAnnotationswindow::import_from_ascii(void)
 
   strcpy(str, SeparatorLineEdit->text().toLatin1().data());
 
-  if(!strcmp(str, "tab"))
-  {
-    separator = '\t';
-  }
+  if(!strcmp(str, "tab")) separator = '\t';
   else
   {
-    if(strlen(str)!=1)
+    if(strlen(str) != 1)
     {
       QMessageBox messagewindow(QMessageBox::Critical, "Invalid input", "Separator must be one character or \"tab\".");
       messagewindow.exec();
       return(1);
     }
 
-    if((str[0]<32)||(str[0]>126))
+    if( (str[0]<32) || (str[0]>126) )
     {
       QMessageBox messagewindow(QMessageBox::Critical, "Invalid input", "Separator character is not a valid ASCII character.");
       messagewindow.exec();
@@ -840,7 +841,7 @@ int UI_ImportAnnotationswindow::import_from_ascii(void)
       return(1);
     }
 
-    if((str[0]>47)&&(str[0]<58))
+    if( (str[0]>47) && (str[0]<58) )
     {
       QMessageBox messagewindow(QMessageBox::Critical, "Invalid input", "Separator character can not be a number.");
       messagewindow.exec();
@@ -860,27 +861,36 @@ int UI_ImportAnnotationswindow::import_from_ascii(void)
 
   duration_column = DurationColumnSpinBox->value() - 1;
 
-  onsettime_coding = RelativeTimeComboBox->currentIndex();
+  end_column = EndColumnSpinBox->value() - 1;
 
-  if(DurationCheckBox->checkState() == Qt::Checked)
-  {
-    use_duration = 1;
-  }
-  else
-  {
-    use_duration = 0;
-  }
 
-  if((descr_column == onset_column) && (!manualdescription))
+	use_duration = (int)(DurationCheckBox->checkState() == Qt::Checked);	// use_duration = 1 if checked.  Else: = 0.
+	use_end = (int)(EndCheckBox->checkState() == Qt::Checked);	// use_duration = 1 if checked.  Else: = 0.
+
+  if( (descr_column == onset_column) && (!manualdescription) )
   {
     QMessageBox messagewindow(QMessageBox::Critical, "Invalid input", "Onset and Description can not be in the same column.");
     messagewindow.exec();
     return(1);
   }
 
-  if((duration_column == onset_column) && use_duration)
+  if( (duration_column == onset_column) && use_duration )
   {
     QMessageBox messagewindow(QMessageBox::Critical, "Invalid input", "Onset and Duration can not be in the same column.");
+    messagewindow.exec();
+    return(1);
+  }
+
+  if( (end_column == onset_column) && use_end )
+  {
+    QMessageBox messagewindow(QMessageBox::Critical, "Invalid input", "Onset and End can not be in the same column.");
+    messagewindow.exec();
+    return(1);
+  }
+
+  if( (end_column == duration_column) && use_end && use_duration )
+  {
+    QMessageBox messagewindow(QMessageBox::Critical, "Invalid input", "Duration and End can not be in the same column.");
     messagewindow.exec();
     return(1);
   }
@@ -892,10 +902,18 @@ int UI_ImportAnnotationswindow::import_from_ascii(void)
     return(1);
   }
 
-  mainwindow->import_annotations_var->onsettimeformat = onsettime_coding;
+  if((descr_column == end_column) && (!manualdescription) && use_end)
+  {
+    QMessageBox messagewindow(QMessageBox::Critical, "Invalid input", "End and Description can not be in the same column.");
+    messagewindow.exec();
+    return(1);
+  }
+
+  mainwindow->import_annotations_var->onsettimeformat = RelativeTimeComboBox->currentIndex();
   mainwindow->import_annotations_var->onsetcolumn = onset_column + 1;
   mainwindow->import_annotations_var->descriptioncolumn = descr_column + 1;
   mainwindow->import_annotations_var->durationcolumn = duration_column + 1;
+  mainwindow->import_annotations_var->endcolumn = end_column + 1;
   mainwindow->import_annotations_var->useduration = use_duration;
   mainwindow->import_annotations_var->datastartline = startline;
   if(UseManualDescriptionRadioButton->isChecked() == true)
@@ -928,9 +946,9 @@ int UI_ImportAnnotationswindow::import_from_ascii(void)
 
   get_directory_from_path(mainwindow->recent_opendir, path, MAX_PATH_LENGTH);
 
-  if(mainwindow->annotationlist_backup==NULL)
+  if(mainwindow->annotationlist_backup == NULL)
   {
-    mainwindow->annotationlist_backup = edfplus_annotation_copy_list(&mainwindow->annotationlist[0]);
+    mainwindow->annotationlist_backup = edfplus_annotation_copy_list(annotationlist);
   }
 
   inputfile = fopeno(path, "rb");
@@ -947,7 +965,7 @@ int UI_ImportAnnotationswindow::import_from_ascii(void)
 
   for(j=0; j<10; j++)  qApp->processEvents();
 
-  for(i=0; i<(startline-1);)
+  for(i=0; i<(startline-1);)	// checks whethere there are really startline lines in the file.
   {
     temp = fgetc(inputfile);
 
@@ -977,34 +995,25 @@ int UI_ImportAnnotationswindow::import_from_ascii(void)
   line_nr = startline;
 
   onset_is_set = 0;
+  end_is_set = 0;
 
   descr_is_set = 0;
 
   duration_is_set = 0;
 
-  while(1)
+  while(1)	// start reading the file.
   {
-    temp = fgetc(inputfile);
+    temp = fgetc(inputfile);	// peak a char
 
-    if(temp==EOF)
-    {
-      break;
-    }
+    if(temp==EOF) break;	// check EOF.  End file reading.
 
     line[i] = temp;
 
-    if(line[i]=='\r')
-    {
-      continue;
-    }
+    if(line[i]=='\r') continue;			// Indicates a new line. (r: reset.  Carriage return.)
 
-    if(separator!=',')
-    {
-      if(line[i]==',')
-      {
-        line[i] = '.';
-      }
-    }
+		if(separator!=',')			// If ',' isn't a separator,
+			if(line[i]==',')		// ... and it shows up,
+				line[i] = '.';		// it should be replaced by '.'.  Euro -> US decimal point conversion.
 
     if(line[i]==separator)
     {
@@ -1012,195 +1021,11 @@ int UI_ImportAnnotationswindow::import_from_ascii(void)
 
       if(!column_end)
       {
-        if(column == onset_column)
-        {
-          onset = 0LL;
-          strncpy(scratchpad, line + str_start, 30);
-          scratchpad[30] = 0;
+        if(column == onset_column)			// If column is the indicated onset column,
+		onset_is_set = read_datetime(line + str_start, onset);
 
-          if(onsettime_coding == 0)
-          {
-            onset = atoll_x(scratchpad, TIME_DIMENSION);
-            onset += mainwindow->edfheaderlist[0]->starttime_offset;
-
-            onset_is_set = 1;
-          }
-
-          if(onsettime_coding == 1)
-          {
-            if(strlen(scratchpad) > 6)
-            {
-              if((scratchpad[2] == ':') && (scratchpad[5] == ':'))
-              {
-                scratchpad[8] = 0;
-                onset = atoi(scratchpad) * 3600LL;
-                onset += (atoi(scratchpad + 3) * 60LL);
-                onset += (long long)(atoi(scratchpad + 6));
-                onset *= TIME_DIMENSION;
-                onset -= mainwindow->edfheaderlist[0]->l_starttime;
-                if(onset < last_onset)
-                {
-                  last_onset = onset;
-                  days++;
-                }
-
-                onset_is_set = 1;
-              }
-            }
-            if(strlen(scratchpad) > 5)
-            {
-              if((scratchpad[1] == ':') && (scratchpad[4] == ':'))
-              {
-                scratchpad[7] = 0;
-                onset = atoi(scratchpad) * 3600LL;
-                onset += (atoi(scratchpad + 2) * 60LL);
-                onset += (long long)(atoi(scratchpad + 5));
-                onset *= TIME_DIMENSION;
-                onset -= mainwindow->edfheaderlist[0]->l_starttime;
-                if(onset < last_onset)
-                {
-                  last_onset = onset;
-                  days++;
-                }
-
-                onset_is_set = 1;
-              }
-            }
-          }
-
-          if(onsettime_coding == 2)
-          {
-            if(strlen(scratchpad) > 8)
-            {
-              if((scratchpad[2] == ':') && (scratchpad[5] == ':') && ((scratchpad[8] == '.') || (scratchpad[8] == ',')))
-              {
-                for(digits=0; digits<32; digits++)
-                {
-                  if((scratchpad[9 + digits] < '0') || (scratchpad[9 + digits] > '9'))
-                  {
-                    break;
-                  }
-                }
-                scratchpad[9 + digits] = 0;
-                onset = atoi(scratchpad) * 3600LL;
-                onset += (atoi(scratchpad + 3) * 60LL);
-                onset += (long long)(atoi(scratchpad + 6));
-                onset *= TIME_DIMENSION;
-                if(digits)
-                {
-                  l_temp = (atoi(scratchpad + 9) * TIME_DIMENSION);
-                  for(; digits>0; digits--)
-                  {
-                    l_temp /= 10LL;
-                  }
-                  onset += l_temp;
-                }
-                onset -= mainwindow->edfheaderlist[0]->l_starttime;
-                if(onset < last_onset)
-                {
-                  last_onset = onset;
-                  days++;
-                }
-
-                onset_is_set = 1;
-              }
-            }
-            if(strlen(scratchpad) > 7)
-            {
-              if((scratchpad[1] == ':') && (scratchpad[4] == ':') && ((scratchpad[7] == '.') || (scratchpad[7] == ',')))
-              {
-                for(digits=0; digits<32; digits++)
-                {
-                  if((scratchpad[8 + digits] < '0') || (scratchpad[8 + digits] > '9'))
-                  {
-                    break;
-                  }
-                }
-                scratchpad[8 + digits] = 0;
-                onset = atoi(scratchpad) * 3600LL;
-                onset += (atoi(scratchpad + 2) * 60LL);
-                onset += (long long)(atoi(scratchpad + 5));
-                onset *= TIME_DIMENSION;
-                if(digits)
-                {
-                  l_temp = (atoi(scratchpad + 8) * TIME_DIMENSION);
-                  for(; digits>0; digits--)
-                  {
-                    l_temp /= 10LL;
-                  }
-                  onset += l_temp;
-                }
-                onset -= mainwindow->edfheaderlist[0]->l_starttime;
-                if(onset < last_onset)
-                {
-                  last_onset = onset;
-                  days++;
-                }
-
-                onset_is_set = 1;
-              }
-            }
-          }
-
-          if(onsettime_coding == 3)
-          {
-            if(strlen(scratchpad) > 17)
-            {
-              if((scratchpad[4] == '-') && (scratchpad[7] == '-') && (scratchpad[13] == ':') && (scratchpad[16] == ':'))
-              {
-                scratchpad[19] = 0;
-                date_time.year = atoi(scratchpad);
-                date_time.month = atoi(scratchpad + 5);
-                date_time.day = atoi(scratchpad + 8);
-                date_time.hour = atoi(scratchpad + 11);
-                date_time.minute = atoi(scratchpad + 14);
-                date_time.second = atoi(scratchpad + 17);
-                date_time_to_utc(&utc_time, date_time);
-                onset = utc_time - mainwindow->edfheaderlist[0]->utc_starttime;
-                onset *= TIME_DIMENSION;
-                onset_is_set = 1;
-              }
-            }
-          }
-
-          if(onsettime_coding == 4)
-          {
-            if(strlen(scratchpad) > 19)
-            {
-              if((scratchpad[4] == '-') && (scratchpad[7] == '-') && (scratchpad[13] == ':') && (scratchpad[16] == ':') && ((scratchpad[19] == ',') || (scratchpad[19] == '.')))
-              {
-                for(digits=0; digits<32; digits++)
-                {
-                  if((scratchpad[20 + digits] < '0') || (scratchpad[20 + digits] > '9'))
-                  {
-                    break;
-                  }
-                }
-                scratchpad[20 + digits] = 0;
-                date_time.year = atoi(scratchpad);
-                date_time.month = atoi(scratchpad + 5);
-                date_time.day = atoi(scratchpad + 8);
-                date_time.hour = atoi(scratchpad + 11);
-                date_time.minute = atoi(scratchpad + 14);
-                date_time.second = atoi(scratchpad + 17);
-                date_time_to_utc(&utc_time, date_time);
-                onset = utc_time - mainwindow->edfheaderlist[0]->utc_starttime;
-                onset *= TIME_DIMENSION;
-                if(digits)
-                {
-                  l_temp = (atoi(scratchpad + 20) * TIME_DIMENSION);
-                  for(; digits>0; digits--)
-                  {
-                    l_temp /= 10LL;
-                  }
-                  onset += l_temp;
-                }
-
-                onset_is_set = 1;
-              }
-            }
-          }
-        }
+        if(use_end && (column == end_column) )			// If column is the indicated onset column,
+		end_is_set = read_datetime(line + str_start, end);
 
         if((!manualdescription) && (column == descr_column))
         {
@@ -1244,197 +1069,14 @@ int UI_ImportAnnotationswindow::import_from_ascii(void)
       {
         if(column == onset_column)
         {
-          if((descr_is_set) || (manualdescription))
-          {
-            onset = 0LL;
-            strncpy(scratchpad, line + str_start, 30);
-            scratchpad[30] = 0;
-
-            if(onsettime_coding == 0)
-            {
-              onset = atoll_x(scratchpad, TIME_DIMENSION);
-              onset += mainwindow->edfheaderlist[0]->starttime_offset;
-
-              onset_is_set = 1;
-            }
-
-            if(onsettime_coding == 1)
-            {
-              if(strlen(scratchpad) > 6)
-              {
-                if((scratchpad[2] == ':') && (scratchpad[5] == ':'))
-                {
-                  scratchpad[8] = 0;
-                  onset = atoi(scratchpad) * 3600LL;
-                  onset += (atoi(scratchpad + 3) * 60LL);
-                  onset += (long long)(atoi(scratchpad + 6));
-                  onset *= TIME_DIMENSION;
-                  onset -= mainwindow->edfheaderlist[0]->l_starttime;
-                  if(onset < last_onset)
-                  {
-                    last_onset = onset;
-                    days++;
-                  }
-
-                  onset_is_set = 1;
-                }
-              }
-              if(strlen(scratchpad) > 5)
-              {
-                if((scratchpad[1] == ':') && (scratchpad[4] == ':'))
-                {
-                  scratchpad[7] = 0;
-                  onset = atoi(scratchpad) * 3600LL;
-                  onset += (atoi(scratchpad + 2) * 60LL);
-                  onset += (long long)(atoi(scratchpad + 5));
-                  onset *= TIME_DIMENSION;
-                  onset -= mainwindow->edfheaderlist[0]->l_starttime;
-                  if(onset < last_onset)
-                  {
-                    last_onset = onset;
-                    days++;
-                  }
-
-                  onset_is_set = 1;
-                }
-              }
-            }
-
-            if(onsettime_coding == 2)
-            {
-              if(strlen(scratchpad) > 8)
-              {
-                if((scratchpad[2] == ':') && (scratchpad[5] == ':') && ((scratchpad[8] == '.') || (scratchpad[8] == ',')))
-                {
-                  for(digits=0; digits<32; digits++)
-                  {
-                    if((scratchpad[9 + digits] < '0') || (scratchpad[9 + digits] > '9'))
-                    {
-                      break;
-                    }
-                  }
-                  scratchpad[9 + digits] = 0;
-                  onset = atoi(scratchpad) * 3600LL;
-                  onset += (atoi(scratchpad + 3) * 60LL);
-                  onset += (long long)(atoi(scratchpad + 6));
-                  onset *= TIME_DIMENSION;
-                  if(digits)
-                  {
-                    l_temp = (atoi(scratchpad + 9) * TIME_DIMENSION);
-                    for(; digits>0; digits--)
-                    {
-                      l_temp /= 10LL;
-                    }
-                    onset += l_temp;
-                  }
-                  onset -= mainwindow->edfheaderlist[0]->l_starttime;
-                  if(onset < last_onset)
-                  {
-                    last_onset = onset;
-                    days++;
-                  }
-
-                  onset_is_set = 1;
-                }
-              }
-              if(strlen(scratchpad) > 7)
-              {
-                if((scratchpad[1] == ':') && (scratchpad[4] == ':') && ((scratchpad[7] == '.') || (scratchpad[7] == ',')))
-                {
-                  for(digits=0; digits<32; digits++)
-                  {
-                    if((scratchpad[8 + digits] < '0') || (scratchpad[8 + digits] > '9'))
-                    {
-                      break;
-                    }
-                  }
-                  scratchpad[8 + digits] = 0;
-                  onset = atoi(scratchpad) * 3600LL;
-                  onset += (atoi(scratchpad + 2) * 60LL);
-                  onset += (long long)(atoi(scratchpad + 5));
-                  onset *= TIME_DIMENSION;
-                  if(digits)
-                  {
-                    l_temp = (atoi(scratchpad + 8) * TIME_DIMENSION);
-                    for(; digits>0; digits--)
-                    {
-                      l_temp /= 10LL;
-                    }
-                    onset += l_temp;
-                  }
-                  onset -= mainwindow->edfheaderlist[0]->l_starttime;
-                  if(onset < last_onset)
-                  {
-                    last_onset = onset;
-                    days++;
-                  }
-
-                  onset_is_set = 1;
-                }
-              }
-            }
-
-            if(onsettime_coding == 3)
-            {
-              if(strlen(scratchpad) > 17)
-              {
-                if((scratchpad[4] == '-') && (scratchpad[7] == '-') && (scratchpad[13] == ':') && (scratchpad[16] == ':'))
-                {
-                  scratchpad[19] = 0;
-                  date_time.year = atoi(scratchpad);
-                  date_time.month = atoi(scratchpad + 5);
-                  date_time.day = atoi(scratchpad + 8);
-                  date_time.hour = atoi(scratchpad + 11);
-                  date_time.minute = atoi(scratchpad + 14);
-                  date_time.second = atoi(scratchpad + 17);
-                  date_time_to_utc(&utc_time, date_time);
-                  onset = utc_time - mainwindow->edfheaderlist[0]->utc_starttime;
-                  onset *= TIME_DIMENSION;
-
-                  onset_is_set = 1;
-                }
-              }
-            }
-
-            if(onsettime_coding == 4)
-            {
-              if(strlen(scratchpad) > 19)
-              {
-                if((scratchpad[4] == '-') && (scratchpad[7] == '-') && (scratchpad[13] == ':') && (scratchpad[16] == ':') && ((scratchpad[19] == ',') || (scratchpad[19] == '.')))
-                {
-                  for(digits=0; digits<32; digits++)
-                  {
-                    if((scratchpad[20 + digits] < '0') || (scratchpad[20 + digits] > '9'))
-                    {
-                      break;
-                    }
-                  }
-                  scratchpad[20 + digits] = 0;
-                  date_time.year = atoi(scratchpad);
-                  date_time.month = atoi(scratchpad + 5);
-                  date_time.day = atoi(scratchpad + 8);
-                  date_time.hour = atoi(scratchpad + 11);
-                  date_time.minute = atoi(scratchpad + 14);
-                  date_time.second = atoi(scratchpad + 17);
-                  date_time_to_utc(&utc_time, date_time);
-                  onset = utc_time - mainwindow->edfheaderlist[0]->utc_starttime;
-                  onset *= TIME_DIMENSION;
-                  if(digits)
-                  {
-                    l_temp = (atoi(scratchpad + 20) * TIME_DIMENSION);
-                    for(; digits>0; digits--)
-                    {
-                      l_temp /= 10LL;
-                    }
-                    onset += l_temp;
-                  }
-
-                  onset_is_set = 1;
-                }
-              }
-            }
-          }
+		onset_is_set = read_datetime(line+str_start, onset);
         }
+
+        if( use_end && (column == end_column) )
+        {
+		end_is_set = read_datetime(line+str_start, end);
+        }
+
 
         if((!manualdescription) && (column == descr_column))
         {
@@ -1447,7 +1089,7 @@ int UI_ImportAnnotationswindow::import_from_ascii(void)
           }
         }
 
-        if((use_duration) && (column == duration_column))
+        if( use_duration && (column == duration_column))
         {
           strncpy(duration, line + str_start, 15);
           duration[15] = 0;
@@ -1456,7 +1098,15 @@ int UI_ImportAnnotationswindow::import_from_ascii(void)
         }
       }
 
-      if((!use_duration) || duration_is_set)
+	if(end_is_set)
+	{
+		double Duration = (double)(end-onset)/(double)TIME_DIMENSION;
+		sprintf(duration, "%f", Duration);
+		use_duration = 1;
+		duration_is_set = 1;
+	}
+
+      if( ((!use_duration) || duration_is_set) && ((!use_end) || end_is_set) )
       {
         if(onset_is_set && descr_is_set && (!manualdescription))
         {
@@ -1489,7 +1139,7 @@ int UI_ImportAnnotationswindow::import_from_ascii(void)
                 }
               }
             }
-            edfplus_annotation_add_item(&mainwindow->annotationlist[0], annotation);
+            edfplus_annotation_add_item(annotationlist, annotation);
 
             strcpy(last_description, description);
           }
@@ -1524,7 +1174,7 @@ int UI_ImportAnnotationswindow::import_from_ascii(void)
               }
             }
           }
-          edfplus_annotation_add_item(&mainwindow->annotationlist[0], annotation);
+          edfplus_annotation_add_item(annotationlist, annotation);
         }
       }
 
@@ -1605,7 +1255,7 @@ int UI_ImportAnnotationswindow::import_from_edfplus(void)
 
   if(mainwindow->annotationlist_backup==NULL)
   {
-    mainwindow->annotationlist_backup = edfplus_annotation_copy_list(&mainwindow->annotationlist[0]);
+    mainwindow->annotationlist_backup = edfplus_annotation_copy_list(annotationlist);
   }
 
   inputfile = fopeno(path, "rb");
@@ -1681,10 +1331,10 @@ int UI_ImportAnnotationswindow::import_from_edfplus(void)
   {
     annotation = edfplus_annotation_item(&annotlist[0], i);
     annotation->onset += starttime_diff;
-    edfplus_annotation_add_copy(&mainwindow->annotationlist[0], annotation);
+    edfplus_annotation_add_copy(annotationlist, annotation);
   }
 
-  edfplus_annotation_sort(&mainwindow->annotationlist[0]);
+  edfplus_annotation_sort(annotationlist);
 
   edfplus_annotation_delete_list(&annotlist[0]);
   free(edfhdr->edfparam);
@@ -1967,18 +1617,18 @@ int UI_ImportAnnotationswindow::import_from_dcevent(void)
                   annotation = (struct annotationblock *)calloc(1, sizeof(struct annotationblock));
                   if(annotation == NULL)
                   {
-                    progress.reset();
-                    QMessageBox messagewindow(QMessageBox::Critical, "Error", "A memory allocation error occurred (annotation).");
-                    messagewindow.exec();
-                    free(buf);
-                    return(1);
+                  	progress.reset();
+                  	QMessageBox messagewindow(QMessageBox::Critical, "Error", "A memory allocation error occurred (annotation).");
+                  	messagewindow.exec();
+                  	free(buf);
+                  	return(1);
                   }
                   annotation->onset = ((trigger_datrec * signalcomp->edfhdr->long_data_record_duration) + (trigger_sample * time_per_sample));
                   annotation->onset += signalcomp->edfhdr->starttime_offset;
                   annotation->file_num = signalcomp->edfhdr->file_num;
                   strncpy(annotation->annotation, scratchpad, MAX_ANNOTATION_LEN);
                   annotation->annotation[MAX_ANNOTATION_LEN] = 0;
-                  edfplus_annotation_add_item(&mainwindow->annotationlist[0], annotation);
+                  edfplus_annotation_add_item(annotationlist, annotation);
 
                   annotations_found++;
 
@@ -2026,6 +1676,209 @@ int UI_ImportAnnotationswindow::import_from_dcevent(void)
 
 
 
+int UI_ImportAnnotationswindow::read_datetime(char *line, long long &timestamp)
+{
+	int time_coding,
+	    is_set,
+	    digits;
+	long long l_temp,
+	     	utc_time;
+	struct date_time_struct date_time;
+	char scratchpad[256];
+
+	timestamp = 0LL;
+	is_set = 0;
+	strncpy(scratchpad, line, 30);		// char* strncpy(char* dest, const char *src, size_t n)
+	scratchpad[30] = 0;
+	time_coding = RelativeTimeComboBox->currentIndex();
+
+	if(time_coding == 0)				// in seconds relative to start of file.
+	{
+		timestamp = atoll_x(scratchpad, TIME_DIMENSION);
+		timestamp += mainwindow->edfheaderlist[0]->starttime_offset;
+
+		is_set = 1;
+	}
+
+	if(time_coding == 1)				// hh:mm:ss
+	{
+		if(strlen(scratchpad) > 6)
+		{
+			if((scratchpad[2] == ':') && (scratchpad[5] == ':'))
+			{
+				scratchpad[8] = 0;
+				timestamp = atoi(scratchpad) * 3600LL;
+				timestamp += (atoi(scratchpad + 3) * 60LL);
+				timestamp += (long long)(atoi(scratchpad + 6));
+				timestamp *= TIME_DIMENSION;
+				timestamp -= mainwindow->edfheaderlist[0]->l_starttime;
+
+				is_set = 1;
+			}
+		}
+		if(strlen(scratchpad) > 5)
+		{
+			if((scratchpad[1] == ':') && (scratchpad[4] == ':'))
+			{
+				scratchpad[7] = 0;
+				timestamp = atoi(scratchpad) * 3600LL;
+				timestamp += (atoi(scratchpad + 2) * 60LL);
+				timestamp += (long long)(atoi(scratchpad + 5));
+				timestamp *= TIME_DIMENSION;
+				timestamp -= mainwindow->edfheaderlist[0]->l_starttime;
+
+				is_set = 1;
+			}
+		}
+	}
+
+	if(time_coding == 2)				// hh:mm:ss.xxx
+	{
+		if(strlen(scratchpad) > 8)
+		{
+			if((scratchpad[2] == ':') && (scratchpad[5] == ':') && ((scratchpad[8] == '.') || (scratchpad[8] == ',')))
+			{
+				for(digits=0; digits<32; digits++)
+				{
+					if((scratchpad[9 + digits] < '0') || (scratchpad[9 + digits] > '9'))
+					{
+						break;
+					}
+				}
+				scratchpad[9 + digits] = 0;
+				timestamp = atoi(scratchpad) * 3600LL;
+				timestamp += (atoi(scratchpad + 3) * 60LL);
+				timestamp += (long long)(atoi(scratchpad + 6));
+				timestamp *= TIME_DIMENSION;
+				if(digits)
+				{
+					l_temp = (atoi(scratchpad + 9) * TIME_DIMENSION);
+					for(; digits>0; digits--)
+					{
+						l_temp /= 10LL;
+					}
+					timestamp += l_temp;
+				}
+				timestamp -= mainwindow->edfheaderlist[0]->l_starttime;
+
+				is_set = 1;
+			}
+		}
+		if(strlen(scratchpad) > 7)
+		{
+			if((scratchpad[1] == ':') && (scratchpad[4] == ':') && ((scratchpad[7] == '.') || (scratchpad[7] == ',')))
+			{
+				for(digits=0; digits<32; digits++)
+				{
+					if((scratchpad[8 + digits] < '0') || (scratchpad[8 + digits] > '9'))
+					{
+						break;
+					}
+				}
+				scratchpad[8 + digits] = 0;
+				timestamp = atoi(scratchpad) * 3600LL;
+				timestamp += (atoi(scratchpad + 2) * 60LL);
+				timestamp += (long long)(atoi(scratchpad + 5));
+				timestamp *= TIME_DIMENSION;
+				if(digits)
+				{
+					l_temp = (atoi(scratchpad + 8) * TIME_DIMENSION);
+					for(; digits>0; digits--)
+					{
+						l_temp /= 10LL;
+					}
+					timestamp += l_temp;
+				}
+				timestamp -= mainwindow->edfheaderlist[0]->l_starttime;
+
+				is_set = 1;
+			}
+		}
+	}
+
+	if(time_coding == 3)				// yyyy-mm-ddThh:mm:ss
+	{
+		if(strlen(scratchpad) > 17)
+		{
+			if((scratchpad[4] == '-') && (scratchpad[7] == '-') && (scratchpad[13] == ':') && (scratchpad[16] == ':'))
+			{
+				scratchpad[19] = 0;
+				date_time.year = atoi(scratchpad);
+				date_time.month = atoi(scratchpad + 5);
+				date_time.day = atoi(scratchpad + 8);
+				date_time.hour = atoi(scratchpad + 11);
+				date_time.minute = atoi(scratchpad + 14);
+				date_time.second = atoi(scratchpad + 17);
+				date_time_to_utc(&utc_time, date_time);
+				timestamp = utc_time - mainwindow->edfheaderlist[0]->utc_starttime;
+				timestamp *= TIME_DIMENSION;
+				is_set = 1;
+			}
+		}
+	}
+
+	if(time_coding == 4)				// yyyy-mm-ddThh:mm:ss.xxx
+	{
+		if(strlen(scratchpad) > 19)
+		{
+			if((scratchpad[4] == '-') && (scratchpad[7] == '-') && (scratchpad[13] == ':') && (scratchpad[16] == ':') && ((scratchpad[19] == ',') || (scratchpad[19] == '.')))
+			{
+				for(digits=0; digits<32; digits++)
+				{
+					if((scratchpad[20 + digits] < '0') || (scratchpad[20 + digits] > '9'))
+					{
+						break;
+					}
+				}
+				scratchpad[20 + digits] = 0;
+				date_time.year = atoi(scratchpad);
+				date_time.month = atoi(scratchpad + 5);
+				date_time.day = atoi(scratchpad + 8);
+				date_time.hour = atoi(scratchpad + 11);
+				date_time.minute = atoi(scratchpad + 14);
+				date_time.second = atoi(scratchpad + 17);
+				date_time_to_utc(&utc_time, date_time);
+				timestamp = utc_time - mainwindow->edfheaderlist[0]->utc_starttime;
+				timestamp *= TIME_DIMENSION;
+				if(digits)
+				{
+					l_temp = (atoi(scratchpad + 20) * TIME_DIMENSION);
+					for(; digits>0; digits--)
+					{
+						l_temp /= 10LL;
+					}
+					timestamp += l_temp;
+				}
+
+				is_set = 1;
+			}
+		}
+	}
+
+	if(time_coding == 5)				// "mm/dd/yyyy hh:mm:ss"
+	{
+		if(strlen(scratchpad) > 17)
+		{
+			if( (scratchpad[2] == '/') && (scratchpad[5] == '/') && (scratchpad[10] == ' ') && (scratchpad[13] == ':') && (scratchpad[16] == ':') )
+			{
+				scratchpad[19] = 0;
+				date_time.month = atoi(scratchpad);
+				date_time.day = atoi(scratchpad + 3);
+				date_time.year = atoi(scratchpad + 6);
+
+				date_time.hour = atoi(scratchpad + 11);
+				date_time.minute = atoi(scratchpad + 14);
+				date_time.second = atoi(scratchpad + 17);
+
+				date_time_to_utc(&utc_time, date_time);
+				timestamp = utc_time - mainwindow->edfheaderlist[0]->utc_starttime;
+				timestamp *= TIME_DIMENSION;
+				is_set = 1;
+			}
+		}
+	}
+	return is_set;
+}
 
 
 

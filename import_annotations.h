@@ -74,8 +74,16 @@
 #include "edf_annotations.h"
 
 
+#define XML_FORMAT      0
+#define ASCIICSV_FORMAT 1
+#define DCEVENT_FORMAT  2
+#define EDFPLUS_FORMAT  3
+
+#define TAB_CNT         4
+
 
 class UI_Mainwindow;
+class UI_Annotationswindow;
 
 
 
@@ -88,7 +96,9 @@ struct import_annotations_var_block
   int descriptioncolumn;
   int manualdescription;
   int useduration;
+  int useend;
   int durationcolumn;
+  int endcolumn;
   char description[21];
   int datastartline;
   int dceventbittime;
@@ -100,25 +110,29 @@ struct import_annotations_var_block
 
 class UI_ImportAnnotationswindow : public QObject
 {
-  Q_OBJECT
+	Q_OBJECT
 
 public:
 
-UI_ImportAnnotationswindow(QWidget *parent);
+// UI_ImportAnnotationswindow(QWidget *parent);
+	UI_ImportAnnotationswindow(QWidget *parent, UI_Annotationswindow *annotations_dock, struct annotationblock **annotationlist);
 
-UI_Mainwindow  *mainwindow;
+	UI_Mainwindow  *mainwindow;
 
 private:
 
-QDialog        *ImportAnnotsDialog;
+	struct annotationblock **annotationlist;
+	UI_Annotationswindow *annotations_dock;
 
-QTabWidget     *tabholder;
+	QDialog        *ImportAnnotsDialog;
 
-QWidget        *tab[4];
+	QTabWidget     *tabholder;
 
-QLabel         *SeparatorLabel,
-               *OnsetColumnLabel,
-               *DatastartLabel,
+	QWidget        *tab[TAB_CNT];
+
+	QLabel         *SeparatorLabel,
+               		*OnsetColumnLabel,
+               		*DatastartLabel,
                *OnsetTimeLabel,
                *DCEventSignalLabel,
                *DCEventBitTimeLabel,
@@ -129,6 +143,7 @@ QLineEdit      *SeparatorLineEdit,
 
 QSpinBox       *OnsetColumnSpinBox,
                *DurationColumnSpinBox,
+               *EndColumnSpinBox,
                *DescriptionColumnSpinBox,
                *DatastartSpinbox,
                *BitTimeSpinbox;
@@ -149,6 +164,7 @@ QHBoxLayout    *asciiSettingsHBoxLayout1,
                *asciiSettingsHBoxLayout5,
                *asciiSettingsHBoxLayout6,
                *asciiSettingsHBoxLayout7,
+               *asciiSettingsHBoxLayout8,
                *DCEventHBoxLayout1,
                *DCEventHBoxLayout2,
                *DCEventHBoxLayout3,
@@ -158,17 +174,21 @@ QRadioButton   *DescriptionColumnRadioButton,
                *UseManualDescriptionRadioButton;
 
 QCheckBox      *IgnoreConsecutiveCheckBox,
-               *DurationCheckBox;
+               *DurationCheckBox,
+		*EndCheckBox;
+
+	QButtonGroup *durationGroup;
 
 QPushButton    *CloseButton,
                *ImportButton;
 
-int tab_index_array[4];
+	int tab_index_array[TAB_CNT];
 
 int import_from_xml(void);
 int import_from_ascii(void);
 int import_from_edfplus(void);
 int import_from_dcevent(void);
+	int read_datetime(char* line, long long& onset);
 
 
 private slots:
@@ -177,6 +197,7 @@ void ImportButtonClicked();
 void descriptionRadioButtonClicked(bool);
 void DCEventSignalChanged(int);
 void DurationCheckBoxChanged(int);
+	void EndCheckBoxChanged(int);
 void TabChanged(int);
 
 };
