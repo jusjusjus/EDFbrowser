@@ -1,0 +1,46 @@
+
+#########################################
+### BUGS (or, if you ever get bored) ####
+#########################################
+
+@Tools->Import Annotations/events:
+
+If one imports such lines
+
+> # Onset,Duration,Annotation
+> 2014-07-21T21:57:02.9930000,,test
+
+The duration column should be set to column 2 I guess, but the duration is not
+correctly read because the event was saved without duration.
+
+###
+
+@annotations_dock.cpp->UI_Annotationswindow::annotation_selected:
+
+the line
+
+> annotation = edfplus_annotation_item(&mainwindow->annotationlist[file_num], n);
+
+seems to give a segmentation fault when trying to select the last one in a list
+of annotations.  Funny enough, the function is used at elsewhere and works
+fine.  The workaround is a manual, sequential re-iteration of the linear list
+search, instead of calling that function.  However, something is fishy.
+
+###
+
+Hilfslinien have to be drawn to distinguish amplitude variations above
+threshold, for example in Delta waves.
+
+###
+
+Epoch annotation should be shown somewhere in the figure.
+
+###
+
+Pfeiltasten
+
+###
+
+Statisch Verlinkung der Qt Bibliothek.
+
+

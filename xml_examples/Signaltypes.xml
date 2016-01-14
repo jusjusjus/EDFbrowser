@@ -1,0 +1,11 @@
+<?xml version="1.0"?>
+<Signaltypes version="0.0.1">
+	<Signaltype Name="EEG">
+		<Event Name="Spindle" min="0.5" max="2.0"></Event>
+		<Event Name="K complex" min="0.5" max="10.0"></Event>
+		<Event Name="Delta wave" min="0.5" max="2.0"></Event>
+		<Event Name="Vertex sharp wave" min="0.0" max="0.5"></Event>
+	</Signaltype>
+	<Signaltype Name="EMG">
+	</Signaltype>
+</Signaltypes>
