@@ -1846,7 +1846,6 @@ int UI_Mainwindow::annotation_editor()
 	if(files_open == 1)
 	{
 		this->show_annotations();
-		annotationEditDock->open_close_dock(true);
 		return 0;
 	}
 	else

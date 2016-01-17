@@ -38,8 +38,7 @@
 
 UI_OptionsDialog::UI_OptionsDialog(QWidget *w_parent, unsigned int tab_number) // tab_number=0
 {
-  int i,
-      showminimized=0;
+  int showminimized=0;
 
   mainwindow = (UI_Mainwindow *)w_parent;
 
@@ -76,7 +75,7 @@ UI_OptionsDialog::UI_OptionsDialog(QWidget *w_parent, unsigned int tab_number) /
   CloseButton = new QPushButton;
   CloseButton->setText("Close");
 
-/////////////////////////////////////// tab 1  Colors ///////////////////////////////////////////////////////////////////////
+/////////////////////////////////////// Tab 1 : Colors ///////////////////////////////////////////////////////////////////////
 
   tab1 = new QWidget;
 
@@ -267,7 +266,7 @@ UI_OptionsDialog::UI_OptionsDialog(QWidget *w_parent, unsigned int tab_number) /
 
   tabholder->addTab(tab1, "Colors");
 
-/////////////////////////////////////// tab 2   Calibration ///////////////////////////////////////////////////////////////////////
+/////////////////////////////////////// Tab 2 : Calibration ///////////////////////////////////////////////////////////////////////
 
   tab2 = new QWidget;
 
@@ -325,7 +324,7 @@ UI_OptionsDialog::UI_OptionsDialog(QWidget *w_parent, unsigned int tab_number) /
 
   tabholder->addTab(tab2, "Calibration");
 
-/////////////////////////////////////// tab 3  Powerspectrum ///////////////////////////////////////////////////////////////////////
+/////////////////////////////////////// Tab 3 : Powerspectrum ///////////////////////////////////////////////////////////////////////
 
   tab3 = new QWidget;
 
@@ -342,7 +341,7 @@ UI_OptionsDialog::UI_OptionsDialog(QWidget *w_parent, unsigned int tab_number) /
   colorBarTable->setColumnWidth(2, 80);
   colorBarTable->setColumnWidth(3, 100);
   colorBarTable->setRowCount(MAXSPECTRUMMARKERS);
-  for(i=0; i < MAXSPECTRUMMARKERS; i++)
+  for(int i=0; i < MAXSPECTRUMMARKERS; i++)
   {
     colorBarTable->setRowHeight(i, 20);
 
@@ -444,7 +443,7 @@ UI_OptionsDialog::UI_OptionsDialog(QWidget *w_parent, unsigned int tab_number) /
 
   tabholder->addTab(tab3, "Powerspectrum");
 
-/////////////////////////////////////// tab 4  Other ///////////////////////////////////////////////////////////////////////
+/////////////////////////////////////// Tab 4 : Other ///////////////////////////////////////////////////////////////////////
 
   tab4 = new QWidget;
 
@@ -679,22 +678,14 @@ void UI_OptionsDialog::spinBox4_2ValueChanged(int stepsize)
 
 void UI_OptionsDialog::combobox4_1IndexChanged(int index)
 {
-  if(index == 0)
-  {
-    mainwindow->powerlinefreq = 50;
-  }
-
-  if(index == 1)
-  {
-    mainwindow->powerlinefreq = 60;
-  }
+  	if(index == 0) mainwindow->powerlinefreq = 50;
+	if(index == 1) mainwindow->powerlinefreq = 60;
 }
 
 
 void UI_OptionsDialog::combobox4_2IndexChanged(int index)
 {
   mainwindow->viewtime_indicator_type = index;
-
   mainwindow->setup_viewbuf();
 }
 
@@ -702,15 +693,16 @@ void UI_OptionsDialog::combobox4_2IndexChanged(int index)
 void UI_OptionsDialog::combobox4_3IndexChanged(int index)
 {
   mainwindow->mainwindow_title_type = index;
-
   mainwindow->setMainwindowTitle(mainwindow->edfheaderlist[mainwindow->sel_viewtime]);
 }
+
 
 
 void UI_OptionsDialog::spinBox4_1ValueChanged(int interval)
 {
   mainwindow->live_stream_update_interval = interval;
 }
+
 
 
 void UI_OptionsDialog::calibrate_checkbox_stateChanged(int state)
@@ -734,6 +726,7 @@ void UI_OptionsDialog::calibrate_checkbox_stateChanged(int state)
     mainwindow->maincurve->drawCurve_stage_1();
   }
 }
+
 
 
 void UI_OptionsDialog::ApplyButtonClicked()
@@ -760,10 +753,12 @@ void UI_OptionsDialog::ApplyButtonClicked()
 }
 
 
+
 void UI_OptionsDialog::labelEdited(const QString  &)
 {
   ApplyButton2->setEnabled(true);
 }
+
 
 
 void UI_OptionsDialog::spinBox3_3ValueChanged(int)
@@ -772,16 +767,19 @@ void UI_OptionsDialog::spinBox3_3ValueChanged(int)
 }
 
 
+
 void UI_OptionsDialog::radioButtonToggled(bool)
 {
   ApplyButton2->setEnabled(true);
 }
 
 
+
 void UI_OptionsDialog::spinBoxValueChanged(double)
 {
   ApplyButton2->setEnabled(true);
 }
+
 
 
 void UI_OptionsDialog::ApplyButton2Clicked()

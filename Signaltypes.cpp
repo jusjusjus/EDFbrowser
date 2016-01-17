@@ -47,8 +47,6 @@ void Signaltypes::load_types()
 						{ QMessageBox::information(parent->mainwindow, tr("Signaltypes"), tr("%1 is not Signaltypes.xml version 0.0.1 file.").arg(cfg_path) ); return; }
 
 
-
-
 	for(QDomElement child = root.firstChildElement("Signaltype"); not child.isNull(); child = child.nextSiblingElement("Signaltype"))
 		types.push_back( new Signaltype(this, &child) );
 
@@ -108,7 +106,7 @@ int Signaltypes::get_type_from_label(char *label)
 
 void Signaltypes::ask_for_types()
 {
-	UI_Signaltype_dialog win(this); /// segmentation fault!!!
+	UI_Signaltype_dialog win(this); // segmentation fault!!!
 }
 
 

@@ -105,7 +105,7 @@ UI_Annotationswindow::UI_Annotationswindow(int file_number, QWidget *w_parent, c
   QObject::connect(autosave,			SIGNAL(timeout()),			this, SLOT(backupAnnotations()));
   QObject::connect(this,                       SIGNAL(itemPressed(QListWidgetItem *)), this, SLOT(annotation_selected(QListWidgetItem *)));
   QObject::connect(this,                       SIGNAL(currentRowChanged(int)), this, SLOT(selectionChanged(int)));
-  QObject::connect(docklist,                   SIGNAL(visibilityChanged(bool)),        this, SLOT(hide_editdock(bool)));
+  QObject::connect(docklist,                   SIGNAL(visibilityChanged(bool)),        this, SLOT(show_editdock(bool)));
   QObject::connect(hide_annot_act,             SIGNAL(triggered(bool)),                this, SLOT(hide_annot(bool)));
   QObject::connect(unhide_annot_act,           SIGNAL(triggered(bool)),                this, SLOT(unhide_annot(bool)));
   QObject::connect(hide_same_annots_act,       SIGNAL(triggered(bool)),                this, SLOT(hide_same_annots(bool)));
@@ -673,7 +673,7 @@ void UI_Annotationswindow::average_annot(bool)
 
 
 
-void UI_Annotationswindow::hide_editdock(bool visible)
+void UI_Annotationswindow::show_editdock(bool visible)
 {
 	mainwindow->annot_editor_active = (int)visible;
 	mainwindow->annotationEditDock->open_close_dock(visible);

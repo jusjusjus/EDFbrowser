@@ -490,7 +490,7 @@ void UI_Epochswindow::delete_annotation()
 
 
 
-void UI_Epochswindow::hide_editdock(bool visible)
+void UI_Epochswindow::show_editdock(bool visible)
 {
 	mainwindow->epoch_editor_active = (int)visible;
 	mainwindow->epochEditDock->open_close_dock(visible);
