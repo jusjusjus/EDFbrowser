@@ -330,6 +330,7 @@ void UI_LoadMontagewindow::LoadButtonClicked()
     newsignalcomp->fidfilter_cnt = 0;
     newsignalcomp->hasruler = 0;
     newsignalcomp->polarity = 1;
+    newsignalcomp->type = -1;
 
     xml_go_up(xml_hdl);
     if(!(xml_goto_nth_element_inside(xml_hdl, "alias", 0)))

@@ -202,6 +202,7 @@ void UI_Signalswindow::DisplayCompButtonClicked()
   newsignalcomp->color = curve_color;
   newsignalcomp->hasruler = 0;
   newsignalcomp->polarity = 1;
+  newsignalcomp->type = -1;			// undetermined default type
 
   for(i=0; i<n; i++)
   {
@@ -302,6 +303,7 @@ void UI_Signalswindow::DisplayButtonClicked()
     newsignalcomp->color = curve_color;
     newsignalcomp->hasruler = 0;
     newsignalcomp->polarity = 1;
+    newsignalcomp->type = -1; // undetermined default type
 
     item = selectedlist.at(i);
     s = item->data(Qt::UserRole).toInt();

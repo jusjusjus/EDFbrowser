@@ -70,21 +70,25 @@ void Signaltypes::registerSignaltypes()
 
 	for(unsigned i=0; i<signalcomps; i++)
 	{
-		signalcomp = parent->mainwindow->signalcomp[i];			// current signalcomp
-		edfparam   = signalcomp->edfhdr->edfparam;		// edfparam of signal composition.
-
-		signalcomp->type = get_type_from_label(edfparam[signalcomp->edfsignal[0]].label);
-
-		for(int j=1; j<signalcomp->num_of_signals; j++)	// inconsistencies in type, e.g. units, are only problematic with signal combinations (num_of_signals>1).
+		signalcomp = parent->mainwindow->signalcomp[i];		// current signalcomp
+		printf("%i\n", signalcomp->type);
+		if(signalcomp->type == -1)				// -1 : type default value
 		{
-			if( signalcomp->type != get_type_from_label(edfparam[signalcomp->edfsignal[j]].label) )
+			edfparam   = signalcomp->edfhdr->edfparam;		// edfparam of signal composition.
+
+			signalcomp->type = get_type_from_label(edfparam[signalcomp->edfsignal[0]].label);
+	
+			for(int j=1; j<signalcomp->num_of_signals; j++)	// inconsistencies in type, e.g. units, are only problematic with signal combinations (num_of_signals>1).
 			{
-    				QMessageBox messagewindow(QMessageBox::Critical, "Error", "In Signaltypes::registerSignaltypes(): Your signal composition consists of incompatible types.  Setting to Unspecified.");
-    				messagewindow.exec();
-				signalcomp->type = 0;
+				if( signalcomp->type != get_type_from_label(edfparam[signalcomp->edfsignal[j]].label) )
+				{
+    					QMessageBox messagewindow(QMessageBox::Critical, "Error", "In Signaltypes::registerSignaltypes(): Your signal composition consists of incompatible types.  Setting to Unspecified.");
+    					messagewindow.exec();
+					signalcomp->type = 0;
+				}
 			}
+			if(signalcomp->type == 0) ask = true;
 		}
-		if(signalcomp->type == 0) ask = true;
 	}
 	if(ask) ask_for_types();		// if not all types were determined, fire up the user interface.
 }

@@ -108,7 +108,7 @@ void UI_AnnotationEditwindow::open_close_dock(bool set_visible)
 	}
 	else
 	{
-		mainwindow->annot_editor_active = 0;
+		mainwindow->show_annot_markers = 0;
 	}
 }
 
