@@ -1088,6 +1088,7 @@ void UI_Annotationswindow::setCurrentRow(int row, QItemSelectionModel::Selection
 
 void UI_Annotationswindow::backupAnnotations()
 {
+//	std::cout << "Backing up " << std::endl;
 	UI_ExportAnnotationswindow exportAnnotsDialog(mainwindow, &annotationlist[0]);
 	exportAnnotsDialog.backup( docklist->windowTitle().toLatin1().data() );
 }
