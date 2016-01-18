@@ -167,6 +167,7 @@
 #include "third_party/fidlib/fidlib.h"
 
 #include <iostream>
+//#include <algorithm>	// std::min
 
 
 
@@ -320,7 +321,7 @@ public:
 
   void remove_crosshairs();
 
-  void get_samples_on_screen(int signal_nr, long long &start, long long &end);
+  int get_samples_on_screen(int signal_nr, long long &start, long long &end);
 
 protected:
   int ask_discard_annotationlist(struct annotationblock **);
