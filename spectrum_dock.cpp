@@ -548,40 +548,27 @@ void UI_SpectrumDockWindow::update_curve()	// Compute and plot the spectrum.
         } var;
 
 
-// Initialize and check initialization
+// Initialize and check ..
   if(signalcomp == NULL) return;
-
-  viewbuf = mainwindow->viewbuf;
-  if(viewbuf == NULL) return;
 
   if(busy) return;		// If busy don't bother ..
   busy = 1;			// .. else, now you're busy.
 
+  viewbuf = mainwindow->viewbuf;
+  if(viewbuf == NULL) return;
+
   curve1->setUpdatesEnabled(false);
 
-  samples = signalcomp->samples_on_screen;
+	samples = mainwindow->get_samples_on_screen(signal_nr, sample_start, samples_on_screen);		// read start, and samples on screen.
 
-  if(signalcomp->samples_on_screen > signalcomp->sample_stop)
-    samples = signalcomp->sample_stop;
-
-  samples -= signalcomp->sample_start;
-
-  if((samples < 10) || (viewbuf == NULL))
+  if(samples < 10)
   {
     curve1->setUpdatesEnabled(true);
-
     busy = 0;
-
     if(spectrum_color != NULL)
-    {
-      for(i=0; i<spectrum_color->items; i++)
-      {
-        spectrum_color->value[i] = 0.0;
-      }
-    }
-
+	    for(i=0; i<spectrum_color->items; i++)
+		    spectrum_color->value[i] = 0.;
     curve1->clear();
-
     return;
   }
 
@@ -595,14 +582,10 @@ void UI_SpectrumDockWindow::update_curve()	// Compute and plot the spectrum.
     return;
   }
 
+// Get the data ..
   samples = 0;			// from here on, samples is index for buf1.
-
-	mainwindow->get_samples_on_screen(signal_nr, sample_start, samples_on_screen);
-
   for(s=sample_start; s<samples_on_screen; s++)	// for all samples on the screen
   {
-    if(s > signalcomp->sample_stop) break;				// ???
-
     dig_value = 0.;
     s2 = s + signalcomp->sample_timeoffset - signalcomp->sample_start;
 
@@ -648,9 +631,7 @@ void UI_SpectrumDockWindow::update_curve()	// Compute and plot the spectrum.
     }
 
     for(k=0; k<signalcomp->filter_cnt; k++)
-    {
-      dig_value = first_order_filter(dig_value, signalcomp->filter[k]);
-    }
+    	dig_value = first_order_filter(dig_value, signalcomp->filter[k]);
 
     for(k=0; k<signalcomp->ravg_filter_cnt; k++)
     {
@@ -682,10 +663,8 @@ void UI_SpectrumDockWindow::update_curve()	// Compute and plot the spectrum.
       dig_value = run_ecg_filter(dig_value, signalcomp->ecg_filter);
     }
 
-    if(s >= signalcomp->sample_start)
-    {
-      buf1[samples++] = dig_value * signalcomp->edfhdr->edfparam[signalcomp->edfsignal[0]].bitvalue;
-    }
+// Save the sample to the buffer ..
+    buf1[samples++] = dig_value * signalcomp->edfhdr->edfparam[signalcomp->edfsignal[0]].bitvalue;
   }
 
   samplefreq = (double)signalcomp->edfhdr->edfparam[signalcomp->edfsignal[0]].smp_per_record / ((double)signalcomp->edfhdr->long_data_record_duration / TIME_DIMENSION);

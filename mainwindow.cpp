@@ -6619,23 +6619,34 @@ struct signalcompblock * UI_Mainwindow::create_signalcomp_copy(struct signalcomp
 }
 
 
-void UI_Mainwindow::get_samples_on_screen(int signal_nr, long long &start, long long &end)
+int UI_Mainwindow::get_samples_on_screen(int signal_nr, long long &start, long long &end)
 {
-// Essentially it works.  Segfaults if viewcurve moves across boarders.  Where is signalcomp[]->sample_start updated?
+	start = this->signalcomp[signal_nr]->sample_start;
+	end   = std::min(this->signalcomp[signal_nr]->samples_on_screen, this->signalcomp[signal_nr]->sample_stop);
+
 	if(stiffness == 2 and epoch_editor_active)
 	{
-//		start   = (int)(((double)epochstart / (double)signalcomp[signal_nr]->edfhdr->long_data_record_duration) * (double)signalcomp[signal_nr]->edfhdr->edfparam[signalcomp[signal_nr]->edfsignal[0]].smp_per_record);
-//		end   = start + (int)(((double)pagestep / (double)signalcomp[signal_nr]->edfhdr->long_data_record_duration) * (double)signalcomp[signal_nr]->edfhdr->edfparam[signalcomp[signal_nr]->edfsignal[0]].smp_per_record);
-		start = this->signalcomp[signal_nr]->sample_start;
-		end   = this->signalcomp[signal_nr]->samples_on_screen;
+		long long epochstart_smp = (long long)(((double)epochstart / (double)signalcomp[signal_nr]->edfhdr->long_data_record_duration) * (double)signalcomp[signal_nr]->edfhdr->edfparam[signalcomp[signal_nr]->edfsignal[0]].smp_per_record),
+		     	  epochlen_smp = (long long)(((double)pagestep / (double)signalcomp[signal_nr]->edfhdr->long_data_record_duration) * (double)signalcomp[signal_nr]->edfhdr->edfparam[signalcomp[signal_nr]->edfsignal[0]].smp_per_record);
+
+		start = std::max(start, epochstart_smp);
+		end   = std::min(end, epochstart_smp + epochlen_smp);
 	}
-	else
-	{
-		start = this->signalcomp[signal_nr]->sample_start;
-		end   = this->signalcomp[signal_nr]->samples_on_screen;
-	}
-	std::cout << "samplestart " <<  start  <<  " "<< end << std::endl;
+
+	return end - start;				// return #(samples to be processed).
 }
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
