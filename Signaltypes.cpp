@@ -71,7 +71,6 @@ void Signaltypes::registerSignaltypes()
 	for(unsigned i=0; i<signalcomps; i++)
 	{
 		signalcomp = parent->mainwindow->signalcomp[i];		// current signalcomp
-		printf("%i\n", signalcomp->type);
 		if(signalcomp->type == -1)				// -1 : type default value
 		{
 			edfparam   = signalcomp->edfhdr->edfparam;		// edfparam of signal composition.

@@ -98,7 +98,8 @@ UI_Annotationswindow::UI_Annotationswindow(int file_number, QWidget *w_parent, c
   main_widget->addAction(Delete_act);
 
   autosave = new QTimer(this);
-  autosave->start(30 * 1000);	// Backup annotations every 30 seconds.
+//  autosave->start(10 * 1000);	// Backup annotations every 30 seconds.
+  autosave->start(10 * 60 * 1000);	// Backup annotations every 10 minutes.
 
   updateList();
 
