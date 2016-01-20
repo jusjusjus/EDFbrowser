@@ -45,7 +45,7 @@ UI_Annotationswindow::UI_Annotationswindow(int file_number, QWidget *w_parent, c
 
   hide_bs_triggers = 0;
 
-  main_widget = new QWidget;
+  main_widget = new QWidget(w_parent);
 
   lineSearch = new QLineEdit;
   lineSearch->setMaxLength(16);
@@ -144,12 +144,11 @@ void UI_Annotationswindow::delete_annotation()
 		messagewindow.exec();
 		return;
 	}
-	edfplus_annotation_delete( &(mainwindow->annotationlist[file_num]), selected_annot );
 
 	selected_annot--;			// Select previous annotation.
-	if(not (selected_annot < 0) )
+	if(selected_annot >= 0 )
 	{
-		annotation = edfplus_annotation_item( &(mainwindow->annotationlist[file_num]), selected_annot );
+		annotation = edfplus_annotation_item( annotationlist, selected_annot );
   		if(annotation != NULL)
   		{
     			annotation->selected = 1;
@@ -157,6 +156,7 @@ void UI_Annotationswindow::delete_annotation()
   		}
 	}
 
+	edfplus_annotation_delete( annotationlist, selected_annot );
 	mainwindow->annotations_edited = 1;
 	mainwindow->save_act->setEnabled(true);
 	updateList();
@@ -666,14 +666,6 @@ void UI_Annotationswindow::average_annot(bool)
 
 
 
-//void UI_Annotationswindow::checkboxRel_clicked(int state)
-//{
-//	relative = (int)(state == Qt::Checked);	// if relative == 1:  annotation time shown relative to start.
-//	updateList();
-//}
-
-
-
 void UI_Annotationswindow::show_editdock(bool visible)
 {
 	mainwindow->annot_editor_active = (int)visible;
@@ -881,7 +873,6 @@ void UI_Annotationswindow::updateList(void)
       if(annotation->jump)	// if the item commands to jump ...
       {
         jump = 1;		//  the list is ordered a jump.
-
         annotation->jump = 0;	// The command is deactivated.
       }
     }

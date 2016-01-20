@@ -134,7 +134,7 @@ protected slots:
 
 	virtual void annotation_selected(QListWidgetItem *);
 	virtual void delete_annotation();
-	void selectionChanged(int);
+	virtual void selectionChanged(int);
 	virtual void show_editdock(bool);
 	void backupAnnotations();
 

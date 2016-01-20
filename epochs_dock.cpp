@@ -52,19 +52,12 @@ void UI_Epochswindow::load_epochinfo()
 	child = root.firstChildElement("Page");
 	if( not child.isNull() )
 	{
-		if( child.hasAttribute("Seconds") ) page = atoi( child.attribute("Seconds").toLatin1().data() );
-		if( child.hasAttribute("Minutes") ) page = 60*atoi( child.attribute("Minutes").toLatin1().data() );
+		page = 0;
+		if( child.hasAttribute("Seconds") ) page +=    atoi( child.attribute("Seconds").toLatin1().data() );
+		if( child.hasAttribute("Minutes") ) page += 60*atoi( child.attribute("Minutes").toLatin1().data() );
 
 		pagelength = (long long)page*TIME_DIMENSION;
 	}
-
-//	root = root.firstChildElement("Epochtypes");
-//	if( root.isNull() ) { QMessageBox::information(parent->mainwindow, tr("Epochsconfig"), tr("No epochtypes defined in %1.").arg(cfg_path) ); return; }
-//
-//	for(child = root.firstChildElement("Epochtype"); not child.isNull(); child = child.nextSiblingElement("Epochtype"))
-//	{
-//		types.push_back( new Signaltype(this, &child) );
-//	}
 }
 
 
@@ -105,6 +98,71 @@ void UI_Epochswindow::fill_with_epochs()
 
 		onset += epochlength;			// @i=0: onset = mainwindow->edfheaderlist[0]->starttime_offset + this->start_offset;
 	}	
+}
+
+
+
+void UI_Epochswindow::selectionChanged(int currentRow)
+{
+	int n;
+	long long new_viewtime;
+	double fraction, fraction_2, duration, window_length;
+
+	if(currentRow < 0) return;				// No annotation selected.
+
+	// select the right annotation:
+	annotation = *annotationlist;						// first annotation in the list.  What is file_num?
+	n = currentRow;					// yields the annotation number.
+
+	//annotation = edfplus_annotation_item(annotationlist, n);		// why doesn't this work?
+	//if(annotation == NULL) return;								// ... ???
+
+  	if(mainwindow->annot_editor_active)
+		mainwindow->annotationEditDock->set_selected_annotation(file_num, n);	//   ...(int file_nr, int annot_nr)
+
+	while(n--) annotation = annotation->next_annotation;				// Linear list seek starting from the first annotation, until number n.
+
+
+	// find fraction so that left and right margin to the annotation (duration) are equal.
+	duration = atof(annotation->duration);
+	window_length = (double)mainwindow->pagetime/(double)TIME_DIMENSION;
+	fraction = 0.5 * (1. - duration / window_length);
+	fraction_2 = 1.-fraction;
+	if(fraction < 0.)		// if not possible, center everything.
+	{
+		fraction = 0.5;
+		fraction_2 = 0.99;
+	}
+
+	// set the new viewtime
+	new_viewtime = annotation->onset - mainwindow->edfheaderlist[file_num]->starttime_offset - (long long)(mainwindow->pagetime * fraction); // new time:  onset - start - fraction * page;
+
+	if(mainwindow->viewtime_sync == VIEWTIME_SYNCED_OFFSET)
+	{
+		for(int i=0; i<mainwindow->files_open; i++)			// for each file
+		{
+			mainwindow->edfheaderlist[i]->viewtime = new_viewtime;
+		}
+	}
+
+	if(mainwindow->viewtime_sync == VIEWTIME_UNSYNCED)
+	{
+		mainwindow->edfheaderlist[file_num]->viewtime = new_viewtime;
+	}
+
+	if( (mainwindow->viewtime_sync == VIEWTIME_SYNCED_ABSOLUT) || (mainwindow->viewtime_sync == VIEWTIME_USER_DEF_SYNCED) )
+	{
+		new_viewtime -= mainwindow->edfheaderlist[file_num]->viewtime;
+	  	for(int i=0; i<mainwindow->files_open; i++)
+	  	{
+	    		mainwindow->edfheaderlist[i]->viewtime += new_viewtime;
+	  	}
+	}
+
+	mainwindow->maincurve->set_crosshairs(fraction, fraction_2);		// sets the crosshairs to match annotation
+
+	mainwindow->setup_viewbuf();
+	mainwindow->set_pagetime(-1, 0);
 }
 
 
@@ -169,7 +227,6 @@ void UI_Epochswindow::updateList(annotationblock *annotation, int jump)	// updat
 
 	QListWidgetItem *listitem;
 	QString string;
-	QByteArray ba;
 
 
 	selected = -1;
@@ -177,8 +234,7 @@ void UI_Epochswindow::updateList(annotationblock *annotation, int jump)	// updat
 	string = QString::fromUtf8(annotation->annotation);
 
 
-	ba = string.toUtf8();
-	str_tmp = ba.data();
+	str_tmp = string.toUtf8().data();
 
 	len = 0;
 	for(int i=0; ; i++)
@@ -320,7 +376,6 @@ void UI_Epochswindow::updateList(void)
 
 	QString string;
 
-	QByteArray ba;
 
 	selected = -1;
 
@@ -343,8 +398,7 @@ void UI_Epochswindow::updateList(void)
 		string = QString::fromUtf8(annotation->annotation);
 
 
-		ba = string.toUtf8();
-		str_tmp = ba.data();
+		str_tmp = string.toUtf8().data();
 
 		len = 0;
 		for(i=0; ; i++)
