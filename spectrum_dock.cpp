@@ -65,8 +65,8 @@ UI_SpectrumDockWindow::UI_SpectrumDockWindow(QWidget *w_parent)
   if(mainwindow->spectrumdock_sqrt)	dock = new QDockWidget("Amplitude Spectrum", w_parent);
   else					dock = new QDockWidget("Power Spectral Density", w_parent);
 
-  dock->setFeatures(QDockWidget::DockWidgetClosable | QDockWidget::DockWidgetMovable);
-  dock->setAllowedAreas(Qt::TopDockWidgetArea | Qt::BottomDockWidgetArea);
+  dock->setFeatures(QDockWidget::DockWidgetClosable | QDockWidget::DockWidgetMovable  | QDockWidget::DockWidgetFloatable);
+  dock->setAllowedAreas(Qt::TopDockWidgetArea | Qt::BottomDockWidgetArea | Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea);
   dock->setMinimumHeight(300);
 
   if(dashboard)	dock->setWidget(SpectrumDialog);

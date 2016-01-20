@@ -86,7 +86,7 @@ public:
 	QDockWidget *docklist;
 
 	virtual void updateList(annotationblock* annotation, int jump);
-	virtual void updateList(void);
+	virtual void updateList();
 	virtual void deselect();
 	virtual void setSelectedText(QString&);
 	void setCurrentRow(int row, QItemSelectionModel::SelectionFlags command=QItemSelectionModel::ClearAndSelect);

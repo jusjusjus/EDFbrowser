@@ -145,6 +145,8 @@ void UI_Annotationswindow::delete_annotation()
 		return;
 	}
 
+	edfplus_annotation_delete( annotationlist, selected_annot );
+
 	selected_annot--;			// Select previous annotation.
 	if(selected_annot >= 0 )
 	{
@@ -156,7 +158,6 @@ void UI_Annotationswindow::delete_annotation()
   		}
 	}
 
-	edfplus_annotation_delete( annotationlist, selected_annot );
 	mainwindow->annotations_edited = 1;
 	mainwindow->save_act->setEnabled(true);
 	updateList();
@@ -724,7 +725,7 @@ void UI_Annotationswindow::updateList(annotationblock*, int)	// updates a single
 
 
 
-void UI_Annotationswindow::updateList(void)
+void UI_Annotationswindow::updateList()
 {
   char str[MAX_ANNOTATION_LEN + 32],	// this contains the final string?
        *str_tmp;
@@ -755,9 +756,9 @@ void UI_Annotationswindow::updateList(void)
   {
     if(annotation->hidden_in_list)
     {
-      annotation = annotation->next_annotation;
+      annotation = annotation->next_annotation;	// Select the next annotation.
       sequence_nr++;
-      continue;	// hidden annotations are not shown.
+      continue;	// Hidden annotations are not shown.
     }
 
 
@@ -810,12 +811,6 @@ void UI_Annotationswindow::updateList(void)
 
     remove_trailing_zeros(str);
 
-//    if(string.size() < 20)
-//    {
-//      string = string.leftJustified(20, ' ');
-//      string = string.rightJustified(20, ' ');
-//    }
-
     string.append(QString::fromLatin1(str));
 
     listitem = new QListWidgetItem(string, this);
@@ -864,15 +859,16 @@ void UI_Annotationswindow::updateList(void)
 
     listitem->setToolTip(string);
 
+//    std::cout << annotation->selected << " " << sequence_nr << std::endl;
     if(annotation->selected)
     {
-      selected = sequence_nr;
+      selected = sequence_nr;	// Remember the index of the selected annotation.
 
       annotation->selected = 0;
 
-      if(annotation->jump)	// if the item commands to jump ...
+      if(annotation->jump)	// If the item commands to jump, ..
       {
-        jump = 1;		//  the list is ordered a jump.
+        jump = 1;		// the list is ordered a jump.
         annotation->jump = 0;	// The command is deactivated.
       }
     }
@@ -884,8 +880,9 @@ void UI_Annotationswindow::updateList(void)
 
   if(mainwindow->annot_editor_active || mainwindow->epoch_editor_active)
   {
-    if(selected >= 0)
+    if(selected >= 0)		// An annotation has been selected.
     {
+//	std::cout << "selected "<< selected << std::endl;
       setCurrentRow(selected, QItemSelectionModel::ClearAndSelect);
 
       mainwindow->annotationEditDock->set_selected_annotation(file_num, selected);
@@ -895,7 +892,7 @@ void UI_Annotationswindow::updateList(void)
       {
         jump = 0;
 
-        annotation_selected(currentItem());
+        annotation_selected( currentItem() );
       }
 
       selected = -1;
@@ -913,6 +910,7 @@ void UI_Annotationswindow::updateList(void)
 
 void UI_Annotationswindow::selectionChanged(int currentRow)
 {
+//	std::cout << "selectionChanged to " << currentRow << std::endl;
 	int n;
 	long long new_viewtime;
 	double fraction, fraction_2, duration, window_length;
@@ -985,6 +983,8 @@ void UI_Annotationswindow::annotation_selected(QListWidgetItem * item)
 	// select the right annotation:
 	annotation = *annotationlist;						// First annotation in the list.  What is file_num?
 	n = item->data(Qt::UserRole).toInt();					// This yields the annotation number.
+
+//	std::cout << "item->data " << n << std::endl;
 
 	//annotation = edfplus_annotation_item(annotationlist, n);		// why doesn't this work?
 	//if(annotation == NULL) return;								// ... ???
