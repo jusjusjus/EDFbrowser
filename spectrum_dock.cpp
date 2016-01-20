@@ -141,6 +141,14 @@ UI_SpectrumDockWindow::UI_SpectrumDockWindow(QWidget *w_parent)
   colorBarButton->setText("Colorbar");
   colorBarButton->setAutoExclusive(false);
 
+
+  autoscaleButton = new QRadioButton;
+  autoscaleButton->setMinimumSize(50, 20);
+  autoscaleButton->setText("Autoscale");
+  autoscaleButton->setAutoExclusive(false);
+  autoscaleButton->setChecked(true);
+
+
   vlayout2 = new QVBoxLayout;
   vlayout2->setSpacing(10);
   vlayout2->addStretch(100);
@@ -149,6 +157,7 @@ UI_SpectrumDockWindow::UI_SpectrumDockWindow(QWidget *w_parent)
   vlayout2->addWidget(sqrtButton);
   vlayout2->addWidget(vlogButton);
   vlayout2->addWidget(colorBarButton);
+  vlayout2->addWidget(autoscaleButton);
 
   spanSlider = new QSlider;
   spanSlider->setOrientation(Qt::Horizontal);
@@ -526,6 +535,8 @@ void UI_SpectrumDockWindow::update_curve()	// Compute and plot the spectrum.
 {
 
 // Definitions
+	bool autoscale_flag;
+
   int i, j, k, n,
       dftblocksize,
       dftblocks,
@@ -549,6 +560,8 @@ void UI_SpectrumDockWindow::update_curve()	// Compute and plot the spectrum.
 
 
 // Initialize and check ..
+	autoscale_flag = autoscaleButton->isChecked();
+
   if(signalcomp == NULL) return;
 
   if(busy) return;		// If busy don't bother ..
@@ -749,12 +762,15 @@ void UI_SpectrumDockWindow::update_curve()	// Compute and plot the spectrum.
     return;
   }
 
-  maxvalue = 0.000001;
-  maxvalue_sqrt = 0.000001;
-  maxvalue_vlog = 0.000001;
-  maxvalue_sqrt_vlog = 0.000001;
-  minvalue_vlog = 0.;
-  minvalue_sqrt_vlog = 0.;
+  if(autoscale_flag)
+  {
+	maxvalue = 0.000001;
+  	maxvalue_sqrt = 0.000001;
+  	maxvalue_vlog = 0.000001;
+  	maxvalue_sqrt_vlog = 0.000001;
+  	minvalue_vlog = 0.;
+  	minvalue_sqrt_vlog = 0.;
+  }
 
   kiss_fftr_cfg cfg;
 
@@ -840,7 +856,7 @@ void UI_SpectrumDockWindow::update_curve()	// Compute and plot the spectrum.
       buf5[i] = log10(buf3[i]);
     }
 
-    if(i)  // Don't use the dc-bin for the autogain of the screen
+    if(i and autoscale_flag)  // Don't use the dc-bin for the autogain of the screen
     {
       if(buf2[i] > maxvalue)
       {

@@ -121,7 +121,8 @@ private:
 
   QRadioButton *sqrtButton,
                *vlogButton,
-               *colorBarButton;
+               *colorBarButton,
+	       *autoscaleButton;
 
   int samples,
       steps,

@@ -973,7 +973,8 @@ void UI_Mainwindow::Escape_fun()
 	maincurve->setMouseTracking(false);
 	maincurve->ruler_active = 0;
 	maincurve->ruler_moving = 0;
-	if(epochs_dock) epochs_dock->deselect();
+	if(annotations_dock[0])	annotations_dock[0]->deselect();
+	if(epochs_dock)			epochs_dock->deselect();
 	remove_crosshairs();
 }
 

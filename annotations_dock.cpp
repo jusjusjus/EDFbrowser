@@ -706,7 +706,7 @@ void UI_Annotationswindow::setSelectedText(QString& annot)
 		messagewindow.exec();
 		return;
 	}
-	annotation = edfplus_annotation_item(&mainwindow->epochlist[0], row);
+	annotation = edfplus_annotation_item(annotationlist, row);
 	if(annotation != NULL)
 	{
 		strncpy(annotation->annotation, annot.toLatin1().data(), MAX_ANNOTATION_LEN);
@@ -1065,7 +1065,7 @@ void UI_Annotationswindow::setCurrentRow(int row, QItemSelectionModel::Selection
 
 	if(current < 0)
 	{
-		annotation = mainwindow->epochlist[0];
+		annotation = annotationlist[0];
 		QListWidget::setCurrentRow(0, command);
 		return;
 	}
