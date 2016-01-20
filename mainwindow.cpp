@@ -785,7 +785,7 @@ UI_Mainwindow::UI_Mainwindow()
 
 
   spectrumdock = new UI_SpectrumDockWindow(this);
-  addDockWidget(Qt::TopDockWidgetArea, spectrumdock->dock, Qt::Horizontal);
+  addDockWidget(Qt::RightDockWidgetArea, spectrumdock->dock, Qt::Horizontal);
   spectrumdock->dock->hide();
 
 

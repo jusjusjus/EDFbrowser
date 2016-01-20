@@ -238,6 +238,7 @@ private:
   QPen        *special_pen,
               *annot_marker_pen,
               *epoch_marker_pen,
+              *epoch_marker_fat_pen,
               *signal_pen,
               *ruler_pen;
 

@@ -104,9 +104,9 @@ void UI_Epochswindow::fill_with_epochs()
 
 void UI_Epochswindow::selectionChanged(int currentRow)
 {
+//	std::cout << "selectionChanged to " << currentRow << std::endl;
 	int n;
-	long long new_viewtime;
-	double fraction, fraction_2, duration, window_length;
+	long long new_viewtime, epochstart;
 
 	if(currentRow < 0) return;				// No annotation selected.
 
@@ -123,19 +123,11 @@ void UI_Epochswindow::selectionChanged(int currentRow)
 	while(n--) annotation = annotation->next_annotation;				// Linear list seek starting from the first annotation, until number n.
 
 
-	// find fraction so that left and right margin to the annotation (duration) are equal.
-	duration = atof(annotation->duration);
-	window_length = (double)mainwindow->pagetime/(double)TIME_DIMENSION;
-	fraction = 0.5 * (1. - duration / window_length);
-	fraction_2 = 1.-fraction;
-	if(fraction < 0.)		// if not possible, center everything.
-	{
-		fraction = 0.5;
-		fraction_2 = 0.99;
-	}
+	n = page/epoch;
 
-	// set the new viewtime
-	new_viewtime = annotation->onset - mainwindow->edfheaderlist[file_num]->starttime_offset - (long long)(mainwindow->pagetime * fraction); // new time:  onset - start - fraction * page;
+	new_viewtime = annotation->onset - mainwindow->edfheaderlist[0]->starttime_offset - (long long)(n/2) * epochlength; // new time:	onset - start; the beginning of the epoch.
+
+	epochstart = (long long)(n/2) * epochlength;
 
 	if(mainwindow->viewtime_sync == VIEWTIME_SYNCED_OFFSET)
 	{
@@ -147,22 +139,27 @@ void UI_Epochswindow::selectionChanged(int currentRow)
 
 	if(mainwindow->viewtime_sync == VIEWTIME_UNSYNCED)
 	{
-		mainwindow->edfheaderlist[file_num]->viewtime = new_viewtime;
+		mainwindow->edfheaderlist[0]->viewtime = new_viewtime;
 	}
 
 	if( (mainwindow->viewtime_sync == VIEWTIME_SYNCED_ABSOLUT) || (mainwindow->viewtime_sync == VIEWTIME_USER_DEF_SYNCED) )
 	{
-		new_viewtime -= mainwindow->edfheaderlist[file_num]->viewtime;
-	  	for(int i=0; i<mainwindow->files_open; i++)
-	  	{
-	    		mainwindow->edfheaderlist[i]->viewtime += new_viewtime;
-	  	}
+		new_viewtime -= mainwindow->edfheaderlist[0]->viewtime;
+		for(int i=0; i<mainwindow->files_open; i++)
+		{
+			mainwindow->edfheaderlist[i]->viewtime += new_viewtime;
+		}
 	}
-
-	mainwindow->maincurve->set_crosshairs(fraction, fraction_2);		// sets the crosshairs to match annotation
-
+	
+	mainwindow->epochstart = epochstart;
 	mainwindow->setup_viewbuf();
-	mainwindow->set_pagetime(-1, 0);
+	mainwindow->set_pagetime(pagelength, 2, epochlength);
+
+//	if(annotation->former_annotation->former_annotation != NULL) annotation->former_annotation->former_annotation->selected = 0;
+	if(annotation->former_annotation != NULL) annotation->former_annotation->selected = 0;
+	if(annotation != NULL) annotation->selected = 1;
+	if(annotation->next_annotation != NULL) annotation->next_annotation->selected = 0;
+//	if(annotation->next_annotation->next_annotation != NULL) annotation->next_annotation->next_annotation->selected = 0;
 }
 
 
@@ -212,6 +209,13 @@ void UI_Epochswindow::annotation_selected(QListWidgetItem * item)
 	mainwindow->epochstart = epochstart;
 	mainwindow->setup_viewbuf();
 	mainwindow->set_pagetime(pagelength, 2, epochlength);
+
+
+//	if(annotation->former_annotation->former_annotation != NULL) annotation->former_annotation->former_annotation->selected = 0;
+	if(annotation->former_annotation != NULL) annotation->former_annotation->selected = 0;
+	if(annotation != NULL) annotation->selected = 1;
+	if(annotation->next_annotation != NULL) annotation->next_annotation->selected = 0;
+//	if(annotation->next_annotation->next_annotation != NULL) annotation->next_annotation->next_annotation->selected = 0;
 }
 
 

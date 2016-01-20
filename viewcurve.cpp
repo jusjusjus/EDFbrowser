@@ -47,6 +47,8 @@ ViewCurve::ViewCurve(QWidget *w_parent) : QWidget(w_parent)
 
   epoch_marker_pen = new QPen(Qt::SolidPattern, 0, Qt::DashLine, Qt::SquareCap, Qt::BevelJoin);
 
+  epoch_marker_fat_pen = new QPen(Qt::SolidPattern, 3, Qt::DashLine, Qt::SquareCap, Qt::BevelJoin);
+
   signal_pen = new QPen(Qt::SolidPattern, 2, Qt::SolidLine, Qt::SquareCap, Qt::BevelJoin);
 
   ruler_pen = new QPen(Qt::SolidPattern, 0, Qt::SolidLine, Qt::SquareCap, Qt::BevelJoin);
@@ -1722,24 +1724,33 @@ void ViewCurve::drawCurve_stage_2(QPainter *painter, int w_width, int w_height, 
 
 			painter->drawLine(marker_x, 0, marker_x, h);
 
-			l_tmp = annot->onset - mainwindow->edfheaderlist[i]->starttime_offset;
+// Time Marker relative to beginning.
+//			l_tmp = annot->onset - mainwindow->edfheaderlist[i]->starttime_offset;
+//			if(l_tmp < 0LL)
+//			{
+//				snprintf(string, 32, "-%i:%02i:%02i.%04i",
+//						(int)(((-(l_tmp)) / TIME_DIMENSION)/ 3600LL),
+//						(int)((((-(l_tmp)) / TIME_DIMENSION) % 3600LL) / 60LL),
+//						(int)(((-(l_tmp)) / TIME_DIMENSION) % 60LL),
+//						(int)((((-(l_tmp)) % TIME_DIMENSION) / 1000LL)));
+//			}
+//			else
+//			{
+//				snprintf(string, 32, "%i:%02i:%02i.%04i",
+//						(int)((l_tmp / TIME_DIMENSION)/ 3600LL),
+//						(int)(((l_tmp / TIME_DIMENSION) % 3600LL) / 60LL),
+//						(int)((l_tmp / TIME_DIMENSION) % 60LL),
+//						(int)(((l_tmp % TIME_DIMENSION) / 1000LL)));
+//			}
 
-			if(l_tmp < 0LL)
-			{
-				snprintf(string, 32, "-%i:%02i:%02i.%04i",
-						(int)(((-(l_tmp)) / TIME_DIMENSION)/ 3600LL),
-						(int)((((-(l_tmp)) / TIME_DIMENSION) % 3600LL) / 60LL),
-						(int)(((-(l_tmp)) / TIME_DIMENSION) % 60LL),
-						(int)((((-(l_tmp)) % TIME_DIMENSION) / 1000LL)));
-			}
-			else
-			{
-				snprintf(string, 32, "%i:%02i:%02i.%04i",
-						(int)((l_tmp / TIME_DIMENSION)/ 3600LL),
-						(int)(((l_tmp / TIME_DIMENSION) % 3600LL) / 60LL),
-						(int)((l_tmp / TIME_DIMENSION) % 60LL),
-						(int)(((l_tmp % TIME_DIMENSION) / 1000LL)));
-			}
+// Marker absolute to beginning.
+			l_tmp = annot->onset + mainwindow->edfheaderlist[i]->l_starttime;
+			snprintf(string, 32, "%i:%02i:%02i.%04i",
+					(int)((l_tmp / TIME_DIMENSION)/ 3600LL),
+					(int)(((l_tmp / TIME_DIMENSION) % 3600LL) / 60LL),
+					(int)((l_tmp / TIME_DIMENSION) % 60LL),
+					(int)(((l_tmp % TIME_DIMENSION) / 1000LL)));
+			
 
 			remove_trailing_zeros(string);
 
@@ -1773,8 +1784,11 @@ void ViewCurve::drawCurve_stage_2(QPainter *painter, int w_width, int w_height, 
 	{
 		l_tmp = annot->onset - mainwindow->edfheaderlist[0]->starttime_offset;
 
-		if((l_tmp > (mainwindow->edfheaderlist[0]->viewtime - TIME_DIMENSION)) && (!annot->hidden) && (!annot->hidden_in_list))
+		if((l_tmp > (mainwindow->edfheaderlist[0]->viewtime - TIME_DIMENSION)) and (!annot->hidden) and (!annot->hidden_in_list))
 		{
+
+			if(annot->selected) painter->setPen(*epoch_marker_fat_pen);
+
 			if(l_tmp > (mainwindow->edfheaderlist[0]->viewtime + mainwindow->pagetime)) break;
 
 			l_tmp -= mainwindow->edfheaderlist[0]->viewtime;
@@ -1783,24 +1797,32 @@ void ViewCurve::drawCurve_stage_2(QPainter *painter, int w_width, int w_height, 
 
 			painter->drawLine(marker_x, 0, marker_x, h);
 
-			l_tmp = annot->onset - mainwindow->edfheaderlist[0]->starttime_offset;
+// Time Marker relative to beginning.
+//			l_tmp = annot->onset - mainwindow->edfheaderlist[0]->starttime_offset;
+//			if(l_tmp < 0LL)
+//			{
+//				snprintf(string, 32, "-%i:%02i:%02i.%04i",
+//						(int)(((-(l_tmp)) / TIME_DIMENSION)/ 3600LL),
+//						(int)((((-(l_tmp)) / TIME_DIMENSION) % 3600LL) / 60LL),
+//						(int)(((-(l_tmp)) / TIME_DIMENSION) % 60LL),
+//						(int)((((-(l_tmp)) % TIME_DIMENSION) / 1000LL)));
+//			}
+//			else
+//			{
+//				snprintf(string, 32, "%i:%02i:%02i.%04i",
+//						(int)((l_tmp / TIME_DIMENSION)/ 3600LL),
+//						(int)(((l_tmp / TIME_DIMENSION) % 3600LL) / 60LL),
+//						(int)((l_tmp / TIME_DIMENSION) % 60LL),
+//						(int)(((l_tmp % TIME_DIMENSION) / 1000LL)));
+//			}
 
-			if(l_tmp < 0LL)
-			{
-				snprintf(string, 32, "-%i:%02i:%02i.%04i",
-						(int)(((-(l_tmp)) / TIME_DIMENSION)/ 3600LL),
-						(int)((((-(l_tmp)) / TIME_DIMENSION) % 3600LL) / 60LL),
-						(int)(((-(l_tmp)) / TIME_DIMENSION) % 60LL),
-						(int)((((-(l_tmp)) % TIME_DIMENSION) / 1000LL)));
-			}
-			else
-			{
-				snprintf(string, 32, "%i:%02i:%02i.%04i",
-						(int)((l_tmp / TIME_DIMENSION)/ 3600LL),
-						(int)(((l_tmp / TIME_DIMENSION) % 3600LL) / 60LL),
-						(int)((l_tmp / TIME_DIMENSION) % 60LL),
-						(int)(((l_tmp % TIME_DIMENSION) / 1000LL)));
-			}
+// Marker absolute to beginning.
+			l_tmp = annot->onset + mainwindow->edfheaderlist[0]->l_starttime;
+			snprintf(string, 32, "%i:%02i:%02i.%04i",
+					(int)((l_tmp / TIME_DIMENSION)/ 3600LL),
+					(int)(((l_tmp / TIME_DIMENSION) % 3600LL) / 60LL),
+					(int)((l_tmp / TIME_DIMENSION) % 60LL),
+					(int)(((l_tmp % TIME_DIMENSION) / 1000LL)));
 
 			remove_trailing_zeros(string);
 
@@ -1821,6 +1843,7 @@ void ViewCurve::drawCurve_stage_2(QPainter *painter, int w_width, int w_height, 
 				active_markers->count++;
 			}
 			
+			if(annot->selected) painter->setPen(*epoch_marker_pen);
 		}
 	}
     }

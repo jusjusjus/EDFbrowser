@@ -166,8 +166,6 @@ void UI_Annotationswindow::delete_annotation()
 
 
 
-
-
 void UI_Annotationswindow::hide_all_NK_triggers(bool)
 {
   struct annotationblock *annot;
@@ -1042,9 +1040,9 @@ void UI_Annotationswindow::annotation_selected(QListWidgetItem * item)
 
 void UI_Annotationswindow::deselect()
 {
-	clearSelection();
-	clearFocus();
-	updateList();
+//	clearSelection();
+//	clearFocus();
+//	updateList();
 }
 
 

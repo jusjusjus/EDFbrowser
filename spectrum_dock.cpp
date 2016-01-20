@@ -501,7 +501,7 @@ void UI_SpectrumDockWindow::init(int signal_nr)
 
 void UI_SpectrumDockWindow::rescan()
 {
-  t1->start(100);
+  t1->start(0);
 }
 
 
