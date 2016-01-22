@@ -75,7 +75,7 @@ void UI_Epochswindow::setup()
 
 void UI_Epochswindow::fill_with_epochs()
 {
-	struct annotationblock* annotations;
+	struct annotationblock* annotation;
 	long long onset, end;
 	unsigned number_of_epochs;
 
@@ -84,17 +84,18 @@ void UI_Epochswindow::fill_with_epochs()
 
 	number_of_epochs = (end-onset)/epochlength;
 	
-	annotations = (struct annotationblock *)calloc(number_of_epochs, sizeof(struct annotationblock));
 
 	for(unsigned i=0; i<number_of_epochs; i++)
 	{
-		annotations[i].onset = onset;
-		snprintf(annotations[i].duration, 16, "%f", (double)epoch);
+		annotation = (struct annotationblock *)calloc(1, sizeof(struct annotationblock));	// One-by-one.  Also has to be removed that way.
+
+		annotation->onset = onset;
+		snprintf(annotation->duration, 16, "%f", (double)epoch);
 	
-		strncpy(annotations[i].annotation, "???", MAX_ANNOTATION_LEN);
-		annotations->annotation[MAX_ANNOTATION_LEN] = 0;
+		strncpy(annotation->annotation, "???", MAX_ANNOTATION_LEN);
+		annotation->annotation[MAX_ANNOTATION_LEN] = 0;
 	
-		edfplus_annotation_add_item(annotationlist, &(annotations[i]));
+		edfplus_annotation_add_item(annotationlist, annotation);
 
 		onset += epochlength;			// @i=0: onset = mainwindow->edfheaderlist[0]->starttime_offset + this->start_offset;
 	}	

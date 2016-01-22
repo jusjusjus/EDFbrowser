@@ -3905,7 +3905,7 @@ void UI_Mainwindow::import_epochs()
 		epochs_dock->docklist->hide();
 	}
 
-	if( ask_discard_annotationlist(epochlist) ) return;								// if check doesn't work, cancel the import.
+	if( ask_discard_annotationlist(epochlist) ) return;			// if check doesn't work, cancel the import.
 	UI_ImportAnnotationswindow importAnnotsDialog(this, epochs_dock, epochlist);
 	epochs_dock->updateList();
 }
@@ -3922,31 +3922,28 @@ void UI_Mainwindow::import_annotations()
 	}
 
 	if( ask_discard_annotationlist(annotationlist) ) return;
-	
 	UI_ImportAnnotationswindow importAnnotsDialog(this, annotations_dock[0], annotationlist);
-
 	annotations_dock[0]->updateList();
 }
 
 
 
-int UI_Mainwindow::ask_discard_annotationlist(struct annotationblock **annotationlist)
+int UI_Mainwindow::ask_discard_annotationlist(struct annotationblock **list)
 {
-	if( not (annotationlist[0] == NULL) )	// Active epochlist, which has to be removed before loading.
+	if(list[0] != NULL)	// Active list, which has to be removed before loading.
 	{
 		QMessageBox::StandardButton reply = QMessageBox::question(this, tr("Import annotations ..."), "Save current annotations?",
 	                                					QMessageBox::Yes | QMessageBox::No | QMessageBox::Cancel);
 		if (reply == QMessageBox::Yes)
 		{
-  			UI_ExportAnnotationswindow exportAnnotsDialog(this, &annotationlist[0]);	// Create dialog
-			if( exportAnnotsDialog.execute() == QDialog::Rejected ) return -2;		// Execute dialog and catch exceptions.
+  			UI_ExportAnnotationswindow exportAnnotsDialog(this, list);		// Create dialog
+			if( exportAnnotsDialog.execute() == QDialog::Rejected ) return -2;	// Execute dialog and catch exceptions.
 		}
 
-		else if (reply == QMessageBox::Cancel)
-			return -1;
+		else if(reply == QMessageBox::Cancel) return -1;
 
-		edfplus_annotation_delete_list(&annotationlist[0]);
-		annotationlist[0] = NULL;
+		edfplus_annotation_delete_list(list);
+		list[0] = NULL;
 	}
 	return 0;
 }
