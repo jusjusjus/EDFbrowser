@@ -275,26 +275,19 @@ void UI_ExportAnnotationswindow::ExportButtonClicked()
   include_end = 0;
 
 
-  if(CSVRadioButton->isChecked() == true)
-  {
-    if(asciiSecondsRadioButton->isChecked() == true)			csv_format = 1;
+	if(CSVRadioButton->isChecked() == true)
+	{
+	       	if(asciiSecondsRadioButton->isChecked() == true)		csv_format = 1;
+	       	if(asciiISOtimeRadioButton->isChecked() == true)		csv_format = 2;
+	       	if(asciiISOtimedateRadioButton->isChecked() == true)		csv_format = 3;
+	       	if(asciiISOtimeFractionRadioButton->isChecked() == true)	csv_format = 4;
+	       	if(asciiISOtimedateFractionRadioButton->isChecked() == true)	csv_format = 5;
+	       	if(asciiTimedateRadioButton->isChecked() == true)		csv_format = 6;
+	       	if(asciiTimedateFractionRadioButton->isChecked() == true)	csv_format = 7;
+	}
 
-    if(asciiISOtimeRadioButton->isChecked() == true)			csv_format = 2;
-
-    if(asciiISOtimedateRadioButton->isChecked() == true)		csv_format = 3;
-
-    if(asciiISOtimeFractionRadioButton->isChecked() == true)		csv_format = 4;
-
-    if(asciiISOtimedateFractionRadioButton->isChecked() == true)	csv_format = 5;
-
-    if(asciiTimedateRadioButton->isChecked() == true)			csv_format = 6;
-
-    if(asciiTimedateFractionRadioButton->isChecked() == true)		csv_format = 7;
-  }
-
-  if(EDFplusRadioButton->isChecked() == true)		csv_format = 0;
-
-  if(XMLRadioButton->isChecked() == true)		csv_format = 8;
+  if(EDFplusRadioButton->isChecked() == true)	csv_format = 0;
+  if(XMLRadioButton->isChecked() == true)	csv_format = 8;
 
    mainwindow->export_annotations_var->format = csv_format;
 
@@ -800,64 +793,13 @@ void UI_ExportAnnotationswindow::backup(const char* extension)
   struct date_time_struct tm, tm_end;
 
 
-  include_duration = 0;
-  include_end = 0;
 
 
-  if(CSVRadioButton->isChecked() == true)
-  {
-    if(asciiSecondsRadioButton->isChecked() == true)			csv_format = 1;
 
-    if(asciiISOtimeRadioButton->isChecked() == true)			csv_format = 2;
+// ### Construct filename ###
 
-    if(asciiISOtimedateRadioButton->isChecked() == true)		csv_format = 3;
-
-    if(asciiISOtimeFractionRadioButton->isChecked() == true)		csv_format = 4;
-
-    if(asciiISOtimedateFractionRadioButton->isChecked() == true)	csv_format = 5;
-
-    if(asciiTimedateRadioButton->isChecked() == true)			csv_format = 6;
-
-    if(asciiTimedateFractionRadioButton->isChecked() == true)		csv_format = 7;
-  }
-
-  if(EDFplusRadioButton->isChecked() == true)		csv_format = 0;
-
-  if(XMLRadioButton->isChecked() == true)		csv_format = 8;
-
-   mainwindow->export_annotations_var->format = csv_format;
-
-  if(separatorBox->currentIndex() == 0)
-  {
-    separator = ',';
-    mainwindow->export_annotations_var->separator = 0;
-  }
-  else
-  {
-    separator = '\t';
-    mainwindow->export_annotations_var->separator = 1;
-  }
-
-  if(durationCheckBox->checkState() == Qt::Checked)	include_duration = 1;
-  else if(endCheckBox->checkState() == Qt::Checked)	include_end = 1;
-
-  mainwindow->export_annotations_var->duration = include_duration;
-  mainwindow->export_annotations_var->end = include_end;
-
-  if(!mainwindow->files_open)
-  {
-    ExportAnnotsDialog->close();
-    return;
-  }
-
-  if(filelist->count() < 1)
-  {
-    ExportAnnotsDialog->close();
-    return;
-  }
-
-  ExportButton->setEnabled(false);
-  CloseButton->setEnabled(false);
+  if(!mainwindow->files_open)	{ ExportAnnotsDialog->close(); return; }
+  if(filelist->count() < 1)	{ ExportAnnotsDialog->close(); return; }
 
   for(i=0; i<mainwindow->files_open; i++)
   {
@@ -893,12 +835,14 @@ void UI_ExportAnnotationswindow::backup(const char* extension)
   remove_extension_from_filename(path);
  
  
-// ### Construct filename ###
 
-	csv_format = 5;			// asciiISOTimedateFractionRadioButton
-	separator = ',';		// 
-	include_duration = 1;		// Include duration.
-	include_end = 0;		// Don't include end.
+	csv_format = mainwindow->export_annotations_var->format;
+	if(mainwindow->export_annotations_var->separator == 0)
+		separator = ',';
+	else
+		separator = '\t';
+	include_duration = mainwindow->export_annotations_var->duration;
+	include_end = mainwindow->export_annotations_var->end;
 
   strcat(path, "_");
   strcat(path, extension);
