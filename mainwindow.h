@@ -351,6 +351,7 @@ private:
 
   char path[MAX_PATH_LENGTH],
        montagepath[MAX_PATH_LENGTH],
+       epochscorepath[MAX_PATH_LENGTH],
        recent_file_path[MAX_RECENTFILES][MAX_PATH_LENGTH];
 
   QAction  *former_page_Act,
@@ -532,7 +533,7 @@ private slots:
   void convert_fm_audio_to_edf();
   void import_annotations();
   void export_epochs();
-  void import_epochs();
+  void import_epochs(const char* filename=NULL);
   void set_start_of_epochs();
   void configure_epochs();
   void open_stream();

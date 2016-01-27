@@ -48,7 +48,7 @@
 
 
 
-UI_ImportAnnotationswindow::UI_ImportAnnotationswindow(QWidget *w_parent, UI_Annotationswindow *annotations_dock, struct annotationblock **annotationlist)
+UI_ImportAnnotationswindow::UI_ImportAnnotationswindow(QWidget *w_parent, UI_Annotationswindow *annotations_dock, struct annotationblock **annotationlist, const char* filename)
 {
   mainwindow = (UI_Mainwindow *)w_parent;
   this->annotations_dock = annotations_dock;
@@ -382,6 +382,12 @@ UI_ImportAnnotationswindow::UI_ImportAnnotationswindow(QWidget *w_parent, UI_Ann
   QObject::connect(DurationCheckBox,                SIGNAL(stateChanged(int)),        this,               SLOT(DurationCheckBoxChanged(int)));
 	QObject::connect(EndCheckBox, SIGNAL(stateChanged(int)), this, SLOT(EndCheckBoxChanged(int)));
   QObject::connect(tabholder,                       SIGNAL(currentChanged(int)),      this,               SLOT(TabChanged(int)));
+
+  if(filename != NULL)
+  {
+	  import_from_ascii(filename);
+	  return;
+  }
 
   ImportAnnotsDialog->exec();
 }
@@ -1223,6 +1229,477 @@ int UI_ImportAnnotationswindow::import_from_ascii(void)
 
   return(0);
 }
+
+
+
+int UI_ImportAnnotationswindow::import_from_ascii(const char *filename)
+{
+  int i, j,
+      temp,
+      column,
+      column_end,
+      str_start,
+      line_nr,
+      startline=1,
+      onset_column=1,
+      descr_column=2,
+      duration_column=3,
+      end_column=4,
+      onset_is_set,
+      descr_is_set,
+      duration_is_set,
+      end_is_set,
+      max_descr_length,
+      days=0,
+      ignore_consecutive=0,
+      use_duration=0,
+      use_end=0,
+      manualdescription;
+
+  char line[2048],
+       scratchpad[256],
+       str[2048],
+       separator=',',
+       description[256],
+       last_description[256],
+       duration[32];
+
+  long long onset=0LL,
+		end=0LL;
+
+  FILE *inputfile=NULL;
+
+  struct annotationblock *annotation;
+
+
+
+  max_descr_length = 20;
+
+  description[0] = 0;
+
+  duration[0] = 0;
+
+  last_description[0] = 0;
+
+  if(UseManualDescriptionRadioButton->isChecked() == true)
+  {
+    manualdescription = 1;
+
+    strcpy(description, DescriptionLineEdit->text().toLatin1().data());
+  }
+  else
+  {
+    manualdescription = 0;
+  }
+
+  strcpy(str, SeparatorLineEdit->text().toLatin1().data());
+
+  if(!strcmp(str, "tab")) separator = '\t';
+  else
+  {
+    if(strlen(str) != 1)
+    {
+      QMessageBox messagewindow(QMessageBox::Critical, "Invalid input", "Separator must be one character or \"tab\".");
+      messagewindow.exec();
+      return(1);
+    }
+
+    if( (str[0]<32) || (str[0]>126) )
+    {
+      QMessageBox messagewindow(QMessageBox::Critical, "Invalid input", "Separator character is not a valid ASCII character.");
+      messagewindow.exec();
+      return(1);
+    }
+
+    if(str[0]=='.')
+    {
+      QMessageBox messagewindow(QMessageBox::Critical, "Invalid input", "Separator character can not be a dot.");
+      messagewindow.exec();
+      return(1);
+    }
+
+    if( (str[0]>47) && (str[0]<58) )
+    {
+      QMessageBox messagewindow(QMessageBox::Critical, "Invalid input", "Separator character can not be a number.");
+      messagewindow.exec();
+      return(1);
+    }
+
+    separator = str[0];
+  }
+
+  strcpy(mainwindow->import_annotations_var->separator, str);
+
+  startline = DatastartSpinbox->value();
+
+  descr_column = DescriptionColumnSpinBox->value() - 1;
+
+  onset_column = OnsetColumnSpinBox->value() - 1;
+
+  duration_column = DurationColumnSpinBox->value() - 1;
+
+  end_column = EndColumnSpinBox->value() - 1;
+
+
+	use_duration = (int)(DurationCheckBox->checkState() == Qt::Checked);	// use_duration = 1 if checked.  Else: = 0.
+	use_end = (int)(EndCheckBox->checkState() == Qt::Checked);	// use_duration = 1 if checked.  Else: = 0.
+
+  if( (descr_column == onset_column) && (!manualdescription) )
+  {
+    QMessageBox messagewindow(QMessageBox::Critical, "Invalid input", "Onset and Description can not be in the same column.");
+    messagewindow.exec();
+    return(1);
+  }
+
+  if( (duration_column == onset_column) && use_duration )
+  {
+    QMessageBox messagewindow(QMessageBox::Critical, "Invalid input", "Onset and Duration can not be in the same column.");
+    messagewindow.exec();
+    return(1);
+  }
+
+  if( (end_column == onset_column) && use_end )
+  {
+    QMessageBox messagewindow(QMessageBox::Critical, "Invalid input", "Onset and End can not be in the same column.");
+    messagewindow.exec();
+    return(1);
+  }
+
+  if( (end_column == duration_column) && use_end && use_duration )
+  {
+    QMessageBox messagewindow(QMessageBox::Critical, "Invalid input", "Duration and End can not be in the same column.");
+    messagewindow.exec();
+    return(1);
+  }
+
+  if((descr_column == duration_column) && (!manualdescription) && use_duration)
+  {
+    QMessageBox messagewindow(QMessageBox::Critical, "Invalid input", "Duration and Description can not be in the same column.");
+    messagewindow.exec();
+    return(1);
+  }
+
+  if((descr_column == end_column) && (!manualdescription) && use_end)
+  {
+    QMessageBox messagewindow(QMessageBox::Critical, "Invalid input", "End and Description can not be in the same column.");
+    messagewindow.exec();
+    return(1);
+  }
+
+  mainwindow->import_annotations_var->onsettimeformat = RelativeTimeComboBox->currentIndex();
+  mainwindow->import_annotations_var->onsetcolumn = onset_column + 1;
+  mainwindow->import_annotations_var->descriptioncolumn = descr_column + 1;
+  mainwindow->import_annotations_var->durationcolumn = duration_column + 1;
+  mainwindow->import_annotations_var->endcolumn = end_column + 1;
+  mainwindow->import_annotations_var->useduration = use_duration;
+  mainwindow->import_annotations_var->datastartline = startline;
+  if(UseManualDescriptionRadioButton->isChecked() == true)
+  {
+    mainwindow->import_annotations_var->manualdescription = 1;
+  }
+  else
+  {
+    mainwindow->import_annotations_var->manualdescription = 0;
+  }
+  strcpy(mainwindow->import_annotations_var->description, DescriptionLineEdit->text().toLatin1().data());
+
+  if(IgnoreConsecutiveCheckBox->checkState() == Qt::Checked)
+  {
+    ignore_consecutive = 1;
+  }
+  else
+  {
+    ignore_consecutive = 0;
+  }
+
+  mainwindow->import_annotations_var->ignoreconsecutive = ignore_consecutive;
+
+
+  if(!strcmp(filename, ""))
+  {
+    return(1);
+  }
+
+  get_directory_from_path(mainwindow->recent_opendir, filename, MAX_PATH_LENGTH);
+
+  if(mainwindow->annotationlist_backup == NULL)
+  {
+    mainwindow->annotationlist_backup = edfplus_annotation_copy_list(annotationlist);
+  }
+
+  inputfile = fopeno(filename, "rb");
+  if(inputfile==NULL)
+  {
+    QMessageBox messagewindow(QMessageBox::Critical, "Error", "Can not open file for reading.");
+    messagewindow.exec();
+    return(1);
+  }
+
+  rewind(inputfile);
+
+  QApplication::setOverrideCursor(Qt::WaitCursor);
+
+  for(j=0; j<10; j++)  qApp->processEvents();
+
+  for(i=0; i<(startline-1);)	// checks whethere there are really startline lines in the file.
+  {
+    temp = fgetc(inputfile);
+
+    if(temp==EOF)
+    {
+      QApplication::restoreOverrideCursor();
+      QMessageBox messagewindow(QMessageBox::Critical, "Error", "File does not contain enough lines.");
+      messagewindow.exec();
+      fclose(inputfile);
+      return(1);
+    }
+
+    if(temp=='\n')
+    {
+      i++;
+    }
+  }
+
+  i = 0;
+
+  column = 0;
+
+  column_end = 1;
+
+  str_start = 0;
+
+  line_nr = startline;
+
+  onset_is_set = 0;
+  end_is_set = 0;
+
+  descr_is_set = 0;
+
+  duration_is_set = 0;
+
+  while(1)	// start reading the file.
+  {
+    temp = fgetc(inputfile);	// peak a char
+
+    if(temp==EOF) break;	// check EOF.  End file reading.
+
+    line[i] = temp;
+
+    if(line[i]=='\r') continue;			// Indicates a new line. (r: reset.  Carriage return.)
+
+		if(separator!=',')			// If ',' isn't a separator,
+			if(line[i]==',')		// ... and it shows up,
+				line[i] = '.';		// it should be replaced by '.'.  Euro -> US decimal point conversion.
+
+    if(line[i]==separator)
+    {
+      line[i] = 0;
+
+      if(!column_end)
+      {
+        if(column == onset_column)			// If column is the indicated onset column,
+		onset_is_set = read_datetime(line + str_start, onset);
+
+        if(use_end && (column == end_column) )			// If column is the indicated onset column,
+		end_is_set = read_datetime(line + str_start, end);
+
+        if((!manualdescription) && (column == descr_column))
+        {
+          strncpy(description, line + str_start, max_descr_length);
+          description[max_descr_length] = 0;
+          latin1_to_utf8(description, max_descr_length);
+          descr_is_set = 1;
+        }
+
+        if((use_duration) && (column == duration_column))
+        {
+          strncpy(duration, line + str_start, 16);
+          duration[15] = 0;
+
+          duration_is_set = 1;
+        }
+
+        column_end = 1;
+
+        column++;
+      }
+    }
+    else
+    {
+      if(line[i]!='\n')
+      {
+        if(column_end)
+        {
+          str_start = i;
+
+          column_end = 0;
+        }
+      }
+    }
+
+    if(line[i]=='\n')
+    {
+      line[i] = 0;
+
+      if(!column_end)
+      {
+        if(column == onset_column)
+        {
+		onset_is_set = read_datetime(line+str_start, onset);
+        }
+
+        if( use_end && (column == end_column) )
+        {
+		end_is_set = read_datetime(line+str_start, end);
+        }
+
+
+        if((!manualdescription) && (column == descr_column))
+        {
+          if(onset_is_set)
+          {
+            strncpy(description, line + str_start, max_descr_length);
+            description[max_descr_length] = 0;
+            latin1_to_utf8(description, max_descr_length);
+            descr_is_set = 1;
+          }
+        }
+
+        if( use_duration && (column == duration_column))
+        {
+          strncpy(duration, line + str_start, 15);
+          duration[15] = 0;
+
+          duration_is_set = 1;
+        }
+      }
+
+	if(end_is_set)
+	{
+		double Duration = (double)(end-onset)/(double)TIME_DIMENSION;
+		sprintf(duration, "%f", Duration);
+		use_duration = 1;
+		duration_is_set = 1;
+	}
+
+      if( ((!use_duration) || duration_is_set) && ((!use_end) || end_is_set) )
+      {
+        if(onset_is_set && descr_is_set && (!manualdescription))
+        {
+          if((!ignore_consecutive) || strcmp(description, last_description))
+          {
+            annotation = (struct annotationblock *)calloc(1, sizeof(struct annotationblock));
+            if(annotation == NULL)
+            {
+              QApplication::restoreOverrideCursor();
+              QMessageBox messagewindow(QMessageBox::Critical, "Error", "A memory allocation error occurred (annotation).");
+              messagewindow.exec();
+              fclose(inputfile);
+              return(1);
+            }
+            annotation->onset = onset + (86400LL * TIME_DIMENSION * days);
+            strncpy(annotation->annotation, description, MAX_ANNOTATION_LEN);
+            annotation->annotation[MAX_ANNOTATION_LEN] = 0;
+            if(use_duration)
+            {
+              if((!(is_number(duration))) && (duration[0] != '-'))
+              {
+                remove_trailing_zeros(duration);
+                if(duration[0] == '+')
+                {
+                  strcpy(annotation->duration, duration + 1);
+                }
+                else
+                {
+                  strcpy(annotation->duration, duration);
+                }
+              }
+            }
+            edfplus_annotation_add_item(annotationlist, annotation);
+
+            strcpy(last_description, description);
+          }
+        }
+
+        if(onset_is_set && manualdescription)
+        {
+          annotation = (struct annotationblock *)calloc(1, sizeof(struct annotationblock));
+          if(annotation == NULL)
+          {
+            QApplication::restoreOverrideCursor();
+            QMessageBox messagewindow(QMessageBox::Critical, "Error", "A memory allocation error occurred (annotation).");
+            messagewindow.exec();
+            fclose(inputfile);
+            return(1);
+          }
+          annotation->onset = onset + (86400LL * TIME_DIMENSION * days);
+          strncpy(annotation->annotation, description, MAX_ANNOTATION_LEN);
+          annotation->annotation[MAX_ANNOTATION_LEN] = 0;
+          if(use_duration)
+          {
+            if((!(is_number(duration))) && (duration[0] != '-'))
+            {
+              remove_trailing_zeros(duration);
+              if(duration[0] == '+')
+              {
+                strcpy(annotation->duration, duration + 1);
+              }
+              else
+              {
+                strcpy(annotation->duration, duration);
+              }
+            }
+          }
+          edfplus_annotation_add_item(annotationlist, annotation);
+        }
+      }
+
+      line_nr++;
+
+      str_start = 0;
+
+      i = 0;
+
+      column = 0;
+
+      column_end = 1;
+
+      onset_is_set = 0;
+
+      descr_is_set = 0;
+
+      duration_is_set = 0;
+
+      qApp->processEvents();
+
+      continue;
+    }
+
+    i++;
+
+    if(i>2046)
+    {
+      QApplication::restoreOverrideCursor();
+      snprintf(scratchpad, 256, "Error, line %i is too long.\n", line_nr);
+      QMessageBox messagewindow(QMessageBox::Critical, "Error", scratchpad);
+      messagewindow.exec();
+      fclose(inputfile);
+      return(1);
+    }
+  }
+
+  QApplication::restoreOverrideCursor();
+
+  if(fclose(inputfile))
+  {
+    QMessageBox messagewindow(QMessageBox::Critical, "Error", "An error occurred while closing inputfile.");
+    messagewindow.exec();
+    return(1);
+  }
+
+  return(0);
+}
+
 
 
 int UI_ImportAnnotationswindow::import_from_edfplus(void)

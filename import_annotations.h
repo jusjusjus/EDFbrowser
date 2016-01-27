@@ -115,7 +115,7 @@ class UI_ImportAnnotationswindow : public QObject
 public:
 
 // UI_ImportAnnotationswindow(QWidget *parent);
-	UI_ImportAnnotationswindow(QWidget *parent, UI_Annotationswindow *annotations_dock, struct annotationblock **annotationlist);
+	UI_ImportAnnotationswindow(QWidget *parent, UI_Annotationswindow *annotations_dock, struct annotationblock **annotationlist, const char *filename=NULL);
 
 	UI_Mainwindow  *mainwindow;
 
@@ -186,6 +186,7 @@ QPushButton    *CloseButton,
 
 int import_from_xml(void);
 int import_from_ascii(void);
+int import_from_ascii(const char *);
 int import_from_edfplus(void);
 int import_from_dcevent(void);
 	int read_datetime(char* line, long long& onset);

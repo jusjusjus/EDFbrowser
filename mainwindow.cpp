@@ -29,6 +29,7 @@
 UI_Mainwindow::UI_Mainwindow()
 {
   int i, j, k;
+  QStringList args;
 
 
   live_stream_timer = new QTimer;
@@ -794,30 +795,32 @@ UI_Mainwindow::UI_Mainwindow()
   setCorner(Qt::BottomLeftCorner, Qt::BottomDockWidgetArea);
   setCorner(Qt::BottomRightCorner, Qt::BottomDockWidgetArea);
 
-  if(QCoreApplication::arguments().size()>1)
+// COMMANDLINE ARGUMENTS
+	args = QCoreApplication::arguments();
+  if(args.size()>1)
   {
-    strcpy(path, QCoreApplication::arguments().at(1).toLocal8Bit().data());
+    strcpy(path, args.at(1).toLocal8Bit().data());
     cmdlineargument = 1;
 
-    if(QCoreApplication::arguments().size()>2)
+    if(args.size()>2)
     {
-      strcpy(montagepath, QCoreApplication::arguments().at(2).toLocal8Bit().data());
+      strcpy(montagepath, args.at(2).toLocal8Bit().data());
       cmdlineargument = 2;
+
+    	if(args.size()>3)
+    	{
+      		strcpy(epochscorepath, args.at(3).toLocal8Bit().data());
+      		cmdlineargument = 3;
+    	}
     }
   }
-  else
-  {
-    cmdlineargument = 0;
-  }
+  else cmdlineargument = 0;
 
   showMaximized();
 
   oldwindowheight = height();
 
-  if(cmdlineargument)
-  {
-    open_new_file();
-  }
+  if(cmdlineargument) open_new_file();
 
   if(QT_VERSION < MINIMUM_QT_VERSION)
   {
@@ -1933,7 +1936,7 @@ void UI_Mainwindow::open_new_file()
     get_directory_from_path(recent_opendir, path, MAX_PATH_LENGTH);
   }
 
-  if((cmdlineargument == 0) || (cmdlineargument == 1))
+  if((cmdlineargument == 0) or (cmdlineargument == 1))
   {
     montagepath[0] = 0;
   }
@@ -1948,10 +1951,8 @@ void UI_Mainwindow::open_new_file()
 
       position = i;
 
-      if(cmdlineargument!=2)
-      {
+      if(cmdlineargument < 2)	// no mtg-file provided at application call.
         strcpy(montagepath, &recent_file_mtg_path[i][0]);
-      }
 
       break;
     }
@@ -1981,10 +1982,8 @@ void UI_Mainwindow::open_new_file()
 
   for(i=0; i<MAX_RECENTFILES; i++)
   {
-    if(recent_file_path[i][0]==0)
-    {
-      break;
-    }
+    if(recent_file_path[i][0] == 0) break;
+
     recent_filesmenu->addAction(QString::fromLocal8Bit(&recent_file_path[i][0]));
   }
 
@@ -1995,7 +1994,6 @@ void UI_Mainwindow::open_new_file()
     if(!strcmp(edfheaderlist[i]->filename, path))
     {
       present = 1;
-
       break;
     }
   }
@@ -2005,11 +2003,11 @@ void UI_Mainwindow::open_new_file()
     len = strlen(path);
 
     if(   (strcmp(path + (len - 4), ".edf"))
-       && (strcmp(path + (len - 4), ".EDF"))
-       && (strcmp(path + (len - 4), ".rec"))
-       && (strcmp(path + (len - 4), ".REC"))
-       && (strcmp(path + (len - 4), ".bdf"))
-       && (strcmp(path + (len - 4), ".BDF")))
+       and (strcmp(path + (len - 4), ".EDF"))
+       and (strcmp(path + (len - 4), ".rec"))
+       and (strcmp(path + (len - 4), ".REC"))
+       and (strcmp(path + (len - 4), ".bdf"))
+       and (strcmp(path + (len - 4), ".BDF")))
     {
       snprintf(str, 2048, "File has an unknown extension:  \"%s\"", path + (len - 4));
 
@@ -2192,7 +2190,7 @@ void UI_Mainwindow::open_new_file()
     files_open++;
   }
 
-  if( (montagepath[0]!=0) && (cmdlineargument==2) )
+  if( (montagepath[0] != 0) and (cmdlineargument > 1) )	// Montagepath provided.
   {
     UI_LoadMontagewindow load_mtg(this, montagepath);
     strcpy(&recent_file_mtg_path[0][0], montagepath);
@@ -2231,7 +2229,13 @@ void UI_Mainwindow::open_new_file()
     }
   }
 
-  cmdlineargument = 0;
+  if( (epochscorepath[0] != 0) and (cmdlineargument > 2) )	// Epoch scorefile provided.
+	{
+		import_epochs(epochscorepath);
+		epoch_editor();
+	}
+
+//  cmdlineargument = 0; // I'm not sure what this is for.
 }
 
 
@@ -3896,7 +3900,7 @@ void UI_Mainwindow::export_annotations()
 
 
 
-void UI_Mainwindow::import_epochs()
+void UI_Mainwindow::import_epochs(const char* filename) // filename = NULL
 {
 	if(epochs_dock == NULL)
 	{
@@ -3906,7 +3910,7 @@ void UI_Mainwindow::import_epochs()
 	}
 
 	if( ask_discard_annotationlist(epochlist) ) return;			// if check doesn't work, cancel the import.
-	UI_ImportAnnotationswindow importAnnotsDialog(this, epochs_dock, epochlist);
+	UI_ImportAnnotationswindow importAnnotsDialog(this, epochs_dock, epochlist, filename);
 	epochs_dock->updateList();
 }
 
@@ -5811,7 +5815,7 @@ void UI_Mainwindow::recent_file_action_func(QAction *action)
 {
   strcpy(path, action->text().toLocal8Bit().data());
 
-  cmdlineargument = 1;
+//  cmdlineargument = 1;	// I don't know what this is for.
 
   open_new_file();
 }
