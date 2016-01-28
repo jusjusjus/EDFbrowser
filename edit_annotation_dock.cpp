@@ -106,10 +106,6 @@ void UI_AnnotationEditwindow::open_close_dock(bool set_visible)
 		if(mainwindow->annotationlist_backup == NULL)
 			mainwindow->annotationlist_backup = edfplus_annotation_copy_list(&mainwindow->annotationlist[0]);
 	}
-	else
-	{
-		mainwindow->show_annot_markers = 0;
-	}
 }
 
 

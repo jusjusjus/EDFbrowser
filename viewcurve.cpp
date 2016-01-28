@@ -1724,25 +1724,6 @@ void ViewCurve::drawCurve_stage_2(QPainter *painter, int w_width, int w_height, 
 
 			painter->drawLine(marker_x, 0, marker_x, h);
 
-// Time Marker relative to beginning.
-//			l_tmp = annot->onset - mainwindow->edfheaderlist[i]->starttime_offset;
-//			if(l_tmp < 0LL)
-//			{
-//				snprintf(string, 32, "-%i:%02i:%02i.%04i",
-//						(int)(((-(l_tmp)) / TIME_DIMENSION)/ 3600LL),
-//						(int)((((-(l_tmp)) / TIME_DIMENSION) % 3600LL) / 60LL),
-//						(int)(((-(l_tmp)) / TIME_DIMENSION) % 60LL),
-//						(int)((((-(l_tmp)) % TIME_DIMENSION) / 1000LL)));
-//			}
-//			else
-//			{
-//				snprintf(string, 32, "%i:%02i:%02i.%04i",
-//						(int)((l_tmp / TIME_DIMENSION)/ 3600LL),
-//						(int)(((l_tmp / TIME_DIMENSION) % 3600LL) / 60LL),
-//						(int)((l_tmp / TIME_DIMENSION) % 60LL),
-//						(int)(((l_tmp % TIME_DIMENSION) / 1000LL)));
-//			}
-
 // Marker absolute to beginning.
 			l_tmp = annot->onset + mainwindow->edfheaderlist[i]->l_starttime;
 			snprintf(string, 32, "%i:%02i:%02i.%04i",
@@ -1796,25 +1777,6 @@ void ViewCurve::drawCurve_stage_2(QPainter *painter, int w_width, int w_height, 
 			marker_x = (int)((((double)w) / mainwindow->pagetime) * l_tmp);
 
 			painter->drawLine(marker_x, 0, marker_x, h);
-
-// Time Marker relative to beginning.
-//			l_tmp = annot->onset - mainwindow->edfheaderlist[0]->starttime_offset;
-//			if(l_tmp < 0LL)
-//			{
-//				snprintf(string, 32, "-%i:%02i:%02i.%04i",
-//						(int)(((-(l_tmp)) / TIME_DIMENSION)/ 3600LL),
-//						(int)((((-(l_tmp)) / TIME_DIMENSION) % 3600LL) / 60LL),
-//						(int)(((-(l_tmp)) / TIME_DIMENSION) % 60LL),
-//						(int)((((-(l_tmp)) % TIME_DIMENSION) / 1000LL)));
-//			}
-//			else
-//			{
-//				snprintf(string, 32, "%i:%02i:%02i.%04i",
-//						(int)((l_tmp / TIME_DIMENSION)/ 3600LL),
-//						(int)(((l_tmp / TIME_DIMENSION) % 3600LL) / 60LL),
-//						(int)((l_tmp / TIME_DIMENSION) % 60LL),
-//						(int)(((l_tmp % TIME_DIMENSION) / 1000LL)));
-//			}
 
 // Marker absolute to beginning.
 			l_tmp = annot->onset + mainwindow->edfheaderlist[0]->l_starttime;
