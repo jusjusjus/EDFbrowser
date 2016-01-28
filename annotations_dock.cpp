@@ -104,21 +104,21 @@ UI_Annotationswindow::UI_Annotationswindow(int file_number, QWidget *w_parent, c
   updateList();
 
   QObject::connect(autosave,			SIGNAL(timeout()),			this, SLOT(backupAnnotations()));
-  QObject::connect(this,                       SIGNAL(itemPressed(QListWidgetItem *)), this, SLOT(annotation_selected(QListWidgetItem *)));
-  QObject::connect(this,                       SIGNAL(currentRowChanged(int)), this, SLOT(selectionChanged(int)));
-  QObject::connect(docklist,                   SIGNAL(visibilityChanged(bool)),        this, SLOT(show_editdock(bool)));
-  QObject::connect(hide_annot_act,             SIGNAL(triggered(bool)),                this, SLOT(hide_annot(bool)));
-  QObject::connect(unhide_annot_act,           SIGNAL(triggered(bool)),                this, SLOT(unhide_annot(bool)));
-  QObject::connect(hide_same_annots_act,       SIGNAL(triggered(bool)),                this, SLOT(hide_same_annots(bool)));
-  QObject::connect(unhide_same_annots_act,     SIGNAL(triggered(bool)),                this, SLOT(unhide_same_annots(bool)));
-  QObject::connect(unhide_all_annots_act,      SIGNAL(triggered(bool)),                this, SLOT(unhide_all_annots(bool)));
-  QObject::connect(average_annot_act,          SIGNAL(triggered(bool)),                this, SLOT(average_annot(bool)));
-  QObject::connect(show_between_act,           SIGNAL(triggered(bool)),                this, SLOT(show_between(bool)));
-  QObject::connect(hide_all_NK_triggers_act,   SIGNAL(triggered(bool)),                this, SLOT(hide_all_NK_triggers(bool)));
-  QObject::connect(hide_all_BS_triggers_act,   SIGNAL(triggered(bool)),                this, SLOT(hide_all_BS_triggers(bool)));
-  QObject::connect(unhide_all_NK_triggers_act, SIGNAL(triggered(bool)),                this, SLOT(unhide_all_NK_triggers(bool)));
-  QObject::connect(unhide_all_BS_triggers_act, SIGNAL(triggered(bool)),                this, SLOT(unhide_all_BS_triggers(bool)));
-  QObject::connect(lineSearch,                 SIGNAL(textEdited(const QString)),      this, SLOT(filter_edited(const QString)));
+  QObject::connect(this,                       SIGNAL(itemPressed(QListWidgetItem *)),	this, SLOT(annotation_selected(QListWidgetItem *)));
+  QObject::connect(this,                       SIGNAL(currentRowChanged(int)), 		this, SLOT(selectionChanged(int)));
+  QObject::connect(docklist,                   SIGNAL(visibilityChanged(bool)),		this, SLOT(show_editdock(bool)));
+  QObject::connect(hide_annot_act,             SIGNAL(triggered(bool)),			this, SLOT(hide_annot(bool)));
+  QObject::connect(unhide_annot_act,           SIGNAL(triggered(bool)),			this, SLOT(unhide_annot(bool)));
+  QObject::connect(hide_same_annots_act,       SIGNAL(triggered(bool)),			this, SLOT(hide_same_annots(bool)));
+  QObject::connect(unhide_same_annots_act,     SIGNAL(triggered(bool)),			this, SLOT(unhide_same_annots(bool)));
+  QObject::connect(unhide_all_annots_act,      SIGNAL(triggered(bool)),			this, SLOT(unhide_all_annots(bool)));
+  QObject::connect(average_annot_act,          SIGNAL(triggered(bool)),			this, SLOT(average_annot(bool)));
+  QObject::connect(show_between_act,           SIGNAL(triggered(bool)),			this, SLOT(show_between(bool)));
+  QObject::connect(hide_all_NK_triggers_act,   SIGNAL(triggered(bool)),			this, SLOT(hide_all_NK_triggers(bool)));
+  QObject::connect(hide_all_BS_triggers_act,   SIGNAL(triggered(bool)),			this, SLOT(hide_all_BS_triggers(bool)));
+  QObject::connect(unhide_all_NK_triggers_act, SIGNAL(triggered(bool)),			this, SLOT(unhide_all_NK_triggers(bool)));
+  QObject::connect(unhide_all_BS_triggers_act, SIGNAL(triggered(bool)),			this, SLOT(unhide_all_BS_triggers(bool)));
+  QObject::connect(lineSearch,                 SIGNAL(textEdited(const QString)),	this, SLOT(filter_edited(const QString)));
 
 	QObject::connect(Delete_act, SIGNAL(triggered()), this, SLOT(delete_annotation()));
 
