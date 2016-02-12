@@ -138,30 +138,33 @@ void UI_Annotationswindow::delete_annotation()
 {
 	int selected_annot;
 
-	if( (selected_annot = currentRow()) < 0)
+	selected_annot = currentRow();
+
+	if(selected_annot  < 0)				// If no annotation has been selected ..
 	{
-		QMessageBox messagewindow(QMessageBox::Critical, "Error", "delete_annotation(): No annotation selected.");
+		QMessageBox messagewindow(QMessageBox::Critical, "Error", "delete_annotation() : No annotation selected.");
 		messagewindow.exec();
 		return;
 	}
 
-	edfplus_annotation_delete( annotationlist, selected_annot );
+	edfplus_annotation_delete( annotationlist, selected_annot );	// Delete the selected annotation from annotationlist.
 
 	selected_annot--;			// Select previous annotation.
-	if(selected_annot >= 0 )
+
+	if(selected_annot >= 0)			// If there is a previous annotation ..
 	{
-		annotation = edfplus_annotation_item( annotationlist, selected_annot );
-  		if(annotation != NULL)
+		annotation = edfplus_annotation_item( annotationlist, selected_annot );	// .. get it ..
+  		if(annotation != NULL)							// 	.. and if it exists ..
   		{
-    			annotation->selected = 1;
+    			annotation->selected = 1;					//		.. jump to it.
     			annotation->jump = 1;
   		}
 	}
 
 	mainwindow->annotations_edited = 1;
 	mainwindow->save_act->setEnabled(true);
-	updateList();
-	mainwindow->maincurve->update();
+	updateList();					// Rehash annotationlist into a Qt list.
+	mainwindow->maincurve->update();		// Update the window to plot the result.
 }
 
 
@@ -744,24 +747,22 @@ void UI_Annotationswindow::updateList()
   selected = -1;
 
 
-  clear();
+  clear();					// Empty out the Qt list.
 
-  edfplus_annotation_sort(annotationlist);
+  edfplus_annotation_sort(annotationlist);	// Sort annotationlist.
 
-  annotation = *annotationlist;
+  annotation = *annotationlist;			// Get the first annotation.
 
-  while(annotation != NULL)
+  while(annotation != NULL)	// If it exists ..
   {
-    if(annotation->hidden_in_list)
+    if(annotation->hidden_in_list)	//	.. check if it's hidden ..
     {
-      annotation = annotation->next_annotation;	// Select the next annotation.
-      sequence_nr++;
-      continue;	// Hidden annotations are not shown.
+      annotation = annotation->next_annotation;	// Select the next annotation ..
+      sequence_nr++;				// 					(sequence_nr sets the hash of annotationlist.)
+      continue;					// 		.. and move back to the while loop.
     }
 
-
-    string = QString::fromUtf8(annotation->annotation);
-
+    string = QString::fromUtf8(annotation->annotation);	// Get a QString of the annotation.
 
     ba = string.toUtf8();
     str_tmp = ba.data();
@@ -857,16 +858,14 @@ void UI_Annotationswindow::updateList()
 
     listitem->setToolTip(string);
 
-//    std::cout << annotation->selected << " " << sequence_nr << std::endl;
     if(annotation->selected)
     {
       selected = sequence_nr;	// Remember the index of the selected annotation.
-
       annotation->selected = 0;
 
       if(annotation->jump)	// If the item commands to jump, ..
       {
-        jump = 1;		// the list is ordered a jump.
+        jump = 1;		// The list is ordered a jump.
         annotation->jump = 0;	// The command is deactivated.
       }
     }
@@ -874,26 +873,24 @@ void UI_Annotationswindow::updateList()
     annotation = annotation->next_annotation;
 
     sequence_nr++;
-  }
+  }	// while(annotation != NULL)
 
   if(mainwindow->annot_editor_active || mainwindow->epoch_editor_active)
   {
     if(selected >= 0)		// An annotation has been selected.
     {
-//	std::cout << "selected "<< selected << std::endl;
-      setCurrentRow(selected, QItemSelectionModel::ClearAndSelect);
+	QListWidget::setCurrentRow(selected, QItemSelectionModel::ClearAndSelect);	// setCurrentRow to selected item.
 
       mainwindow->annotationEditDock->set_selected_annotation(file_num, selected);
       mainwindow->epochEditDock->set_selected_annotation(selected); // this could possibly be done by class inheritance.
+      selected = -1;
 
       if(jump)
       {
         jump = 0;
-
         annotation_selected( currentItem() );
       }
 
-      selected = -1;
     }
 
     if(modified)
@@ -1051,6 +1048,8 @@ void UI_Annotationswindow::setCurrentRow(int row, QItemSelectionModel::Selection
 {
 	int current = currentRow();
 	int difference = row-current;
+
+	std::cout << "current selection" << " " << current << std::endl;
 
 	if(current < 0)
 	{
