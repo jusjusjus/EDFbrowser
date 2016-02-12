@@ -97,6 +97,7 @@ private:
 	QButtonGroup *stage_buttons;
 
 	void load_xml();
+	void load_default();
 
 
 public slots:

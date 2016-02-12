@@ -80,21 +80,21 @@ void UI_EpochEditwindow::load_xml() // load xml scoring information (here only p
 	configpath(cfg_path, "Epochsconfig.xml");
 	QFile file(cfg_path);
 	if(! file.open(QFile::ReadOnly | QFile::Text) )
-						{ QMessageBox::warning(mainwindow, tr("Epochsconfig"), tr("Cannot read file %1:\n%2.").arg(cfg_path).arg(file.errorString())); return; }
+						{ QMessageBox::warning(mainwindow, tr("Epochsconfig"), tr("Cannot read file %1:\n%2.").arg(cfg_path).arg(file.errorString())); load_default(); return; }
 
 	if(! domDocument.setContent(&file, true, &errorStr, &errorLine, &errorColumn) )
-						{ QMessageBox::information(mainwindow, tr("Epochsconfig"), tr("Parse error at line %1, column %2:\n%3").arg(errorLine).arg(errorColumn).arg(errorStr)); return; }
+						{ QMessageBox::information(mainwindow, tr("Epochsconfig"), tr("Parse error at line %1, column %2:\n%3").arg(errorLine).arg(errorColumn).arg(errorStr)); load_default(); return; }
 
 
 	root = domDocument.documentElement();
 	if( root.tagName() != "Epochsconfig" )
-						{ QMessageBox::information(mainwindow, tr("Epochsconfig"), tr("%1 is not a Epochsconfig.xml file.").arg(cfg_path) ); return; }
+						{ QMessageBox::information(mainwindow, tr("Epochsconfig"), tr("%1 is not a Epochsconfig.xml file.").arg(cfg_path) ); load_default(); return; }
 
 	else if( root.hasAttribute("version") && root.attribute("version") != "0.0.1" )
-						{ QMessageBox::information(mainwindow, tr("Epochsconfig"), tr("%1 is not Epochsconfig.xml version 0.0.1 file.").arg(cfg_path) ); return; }
+						{ QMessageBox::information(mainwindow, tr("Epochsconfig"), tr("%1 is not Epochsconfig.xml version 0.0.1 file.").arg(cfg_path) ); load_default(); return; }
 
 	root = root.firstChildElement("Epochtypes");
-	if( root.isNull() ) { QMessageBox::information(mainwindow, tr("Epochsconfig"), tr("No epochtypes defined in %1.").arg(cfg_path) ); return; }
+	if( root.isNull() ) { QMessageBox::information(mainwindow, tr("Epochsconfig"), tr("No epochtypes defined in %1.").arg(cfg_path) ); load_default(); return; }
 
 	for(child = root.firstChildElement("Epochtype"); not child.isNull(); child = child.nextSiblingElement("Epochtype"))
 	{
@@ -105,6 +105,26 @@ void UI_EpochEditwindow::load_xml() // load xml scoring information (here only p
 		else											// no shortcut
 			keys.push_back( NULL );
 	}
+}
+
+
+
+void UI_EpochEditwindow::load_default() // Loads some default epoch labels.
+{
+	stages.push_back( new QString("Wake") );
+	keys.push_back( new QKeySequence("W") );
+
+	stages.push_back( new QString("N1") );
+	keys.push_back( new QKeySequence("1") );
+
+	stages.push_back( new QString("N2") );
+	keys.push_back( new QKeySequence("2") );
+
+	stages.push_back( new QString("N3") );
+	keys.push_back( new QKeySequence("3") );
+
+	stages.push_back( new QString("R") );
+	keys.push_back( new QKeySequence("R") );
 }
 
 
