@@ -98,6 +98,8 @@ public:
 
 	void eventSelectionMenu(int, int, int);
 
+	Signaltypes *signaltypes;
+
 
 public slots:
 
@@ -107,8 +109,6 @@ public slots:
 
 
 private:
-
-	Signaltypes *signaltypes;
 
 	int signal_nr;
 

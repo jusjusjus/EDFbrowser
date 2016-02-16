@@ -69,9 +69,9 @@ class UI_Mainwindow;
 
 
 
-
-class UI_Signalswindow : public QObject
+class UI_Signalswindow : public QDialog
 {
+
   Q_OBJECT
 
 public:
@@ -81,7 +81,6 @@ public:
 
 private:
 
-  QDialog      *SignalsDialog;
 
   QListWidget  *filelist,
                *signallist,
@@ -114,6 +113,7 @@ private:
   double bitvalue;
 
   void strip_types_from_label(char *);
+
 
  private slots:
 

@@ -35,94 +35,92 @@
 
 
 
-UI_Signalswindow::UI_Signalswindow(QWidget *w_parent)
+UI_Signalswindow::UI_Signalswindow(QWidget *w_parent) : QDialog(w_parent)
 {
   int i;
 
   mainwindow = (UI_Mainwindow *)w_parent;
 
-  SignalsDialog = new QDialog;
+  setMinimumSize(800, 500);
+  setMaximumSize(800, 500);
+  setWindowTitle("Signals");
+  setModal(true);
+//  setAttribute(Qt::WA_DeleteOnClose, true);
 
-  SignalsDialog->setMinimumSize(800, 500);
-  SignalsDialog->setMaximumSize(800, 500);
-  SignalsDialog->setWindowTitle("Signals");
-  SignalsDialog->setModal(true);
-  SignalsDialog->setAttribute(Qt::WA_DeleteOnClose, true);
-
-  filelist = new QListWidget(SignalsDialog);
+  filelist = new QListWidget(this);
   filelist->setGeometry(10, 10, 780, 75);
   for(i=0; i<mainwindow->files_open; i++)
   {
     new QListWidgetItem(QString::fromLocal8Bit(mainwindow->edfheaderlist[i]->filename), filelist);
   }
 
-  label1 = new QLabel(SignalsDialog);
+  label1 = new QLabel(this);
   label1->setGeometry(10, 95, 760, 20);
 
-  label2 = new QLabel(SignalsDialog);
+  label2 = new QLabel(this);
   label2->setGeometry(10, 120, 760, 20);
 
-  label3 = new QLabel(SignalsDialog);
+  label3 = new QLabel(this);
   label3->setGeometry(10, 145, 250, 20);
 
-  label4 = new QLabel(SignalsDialog);
+  label4 = new QLabel(this);
   label4->setGeometry(270, 145, 250, 20);
 
-  label5 = new QLabel(SignalsDialog);
+  label5 = new QLabel(this);
   label5->setGeometry(10, 190, 120, 20);
   label5->setText("Signals in file");
 
-  label6 = new QLabel(SignalsDialog);
+  label6 = new QLabel(this);
   label6->setGeometry(430, 190, 120, 20);
   label6->setText("Signal Composition");
 
-  colorlabel = new QLabel(SignalsDialog);
+  colorlabel = new QLabel(this);
   colorlabel->setGeometry(320, 380, 100, 20);
   colorlabel->setText("   Color");
 
-  signallist = new QListWidget(SignalsDialog);
+  signallist = new QListWidget(this);
   signallist->setGeometry(10, 210, 300, 225);
   signallist->setFont(*mainwindow->monofont);
   signallist->setSelectionBehavior(QAbstractItemView::SelectRows);
   signallist->setSelectionMode(QAbstractItemView::ExtendedSelection);
 
-  CloseButton = new QPushButton(SignalsDialog);
+  CloseButton = new QPushButton(this);
   CloseButton->setGeometry(690, 455, 100, 25);
   CloseButton->setText("&Close");
 
-  SelectAllButton = new QPushButton(SignalsDialog);
+  SelectAllButton = new QPushButton(this);
   SelectAllButton->setGeometry(10, 455, 100, 25);
   SelectAllButton->setText("&Select All");
 
-  HelpButton = new QPushButton(SignalsDialog);
+  HelpButton = new QPushButton(this);
   HelpButton->setGeometry(690, 120, 100, 25);
   HelpButton->setText("&Help");
 
-  DisplayButton = new QPushButton(SignalsDialog);
+  DisplayButton = new QPushButton(this);
   DisplayButton->setGeometry(150, 455, 160, 25);
   DisplayButton->setText("&Add signal(s)");
 
-  DisplayCompButton = new QPushButton(SignalsDialog);
+  DisplayCompButton = new QPushButton(this);
   DisplayCompButton->setGeometry(430, 455, 160, 25);
   DisplayCompButton->setText("&Make derivation");
 
-  AddButton = new QPushButton(SignalsDialog);
+  AddButton = new QPushButton(this);
   AddButton->setGeometry(320, 250, 100, 25);
   AddButton->setText("Add->");
 
-  SubtractButton = new QPushButton(SignalsDialog);
+  SubtractButton = new QPushButton(this);
   SubtractButton->setGeometry(320, 285, 100, 25);
   SubtractButton->setText("Subtract->");
 
-  RemoveButton = new QPushButton(SignalsDialog);
+  RemoveButton = new QPushButton(this);
   RemoveButton->setGeometry(320, 320, 100, 25);
   RemoveButton->setText("Remove<-");
 
-  ColorButton = new SpecialButton(SignalsDialog);
+  ColorButton = new SpecialButton(this);
   ColorButton->setGeometry(320, 405, 100, 25);
   ColorButton->setColor((Qt::GlobalColor)mainwindow->maincurve->signal_color);
 
-  compositionlist = new QListWidget(SignalsDialog);
+  compositionlist = new QListWidget(this);
   compositionlist->setGeometry(430, 210, 360, 225);
   compositionlist->setFont(*mainwindow->monofont);
   compositionlist->setSelectionBehavior(QAbstractItemView::SelectRows);
@@ -130,16 +128,16 @@ UI_Signalswindow::UI_Signalswindow(QWidget *w_parent)
 
   smp_per_record = 0;
 
-  QObject::connect(CloseButton,       SIGNAL(clicked()),                SignalsDialog, SLOT(close()));
-  QObject::connect(SelectAllButton,   SIGNAL(clicked()),                this,          SLOT(SelectAllButtonClicked()));
-  QObject::connect(HelpButton,        SIGNAL(clicked()),                this,          SLOT(HelpButtonClicked()));
-  QObject::connect(DisplayButton,     SIGNAL(clicked()),                this,          SLOT(DisplayButtonClicked()));
-  QObject::connect(DisplayCompButton, SIGNAL(clicked()),                this,          SLOT(DisplayCompButtonClicked()));
-  QObject::connect(AddButton,         SIGNAL(clicked()),                this,          SLOT(AddButtonClicked()));
-  QObject::connect(SubtractButton,    SIGNAL(clicked()),                this,          SLOT(SubtractButtonClicked()));
-  QObject::connect(RemoveButton,      SIGNAL(clicked()),                this,          SLOT(RemoveButtonClicked()));
-  QObject::connect(ColorButton,       SIGNAL(clicked(SpecialButton *)), this,          SLOT(ColorButtonClicked(SpecialButton *)));
-  QObject::connect(filelist,          SIGNAL(currentRowChanged(int)),   this,          SLOT(show_signals(int)));
+  QObject::connect(CloseButton,       SIGNAL(clicked()),                this,		SLOT(close()));
+  QObject::connect(SelectAllButton,   SIGNAL(clicked()),                this,		SLOT(SelectAllButtonClicked()));
+  QObject::connect(HelpButton,        SIGNAL(clicked()),                this,		SLOT(HelpButtonClicked()));
+  QObject::connect(DisplayButton,     SIGNAL(clicked()),                this,		SLOT(DisplayButtonClicked()));
+  QObject::connect(DisplayCompButton, SIGNAL(clicked()),                this,		SLOT(DisplayCompButtonClicked()));
+  QObject::connect(AddButton,         SIGNAL(clicked()),                this,		SLOT(AddButtonClicked()));
+  QObject::connect(SubtractButton,    SIGNAL(clicked()),                this,		SLOT(SubtractButtonClicked()));
+  QObject::connect(RemoveButton,      SIGNAL(clicked()),                this,		SLOT(RemoveButtonClicked()));
+  QObject::connect(ColorButton,       SIGNAL(clicked(SpecialButton *)), this,		SLOT(ColorButtonClicked(SpecialButton *)));
+  QObject::connect(filelist,          SIGNAL(currentRowChanged(int)),   this,		SLOT(show_signals(int)));
 
   curve_color = mainwindow->maincurve->signal_color;
 
@@ -147,7 +145,7 @@ UI_Signalswindow::UI_Signalswindow(QWidget *w_parent)
 
   signallist->setFocus();
 
-  SignalsDialog->exec();
+  exec();
 }
 
 
@@ -190,7 +188,7 @@ void UI_Signalswindow::DisplayCompButtonClicked()
   {
     QMessageBox messagewindow(QMessageBox::Critical, "Error", "Internal error: Memory allocation error:\n\"new signal composition\"");
     messagewindow.exec();
-    SignalsDialog->close();
+    close();
     return;
   }
 
@@ -279,7 +277,7 @@ void UI_Signalswindow::DisplayButtonClicked()
 
   if(n == 0)			// This request is probably not necessary.
   {
-    SignalsDialog->close();
+    close();
     return;
   }
 
@@ -805,9 +803,6 @@ void UI_Signalswindow::strip_types_from_label(char *label)
     }
   }
 }
-
-
-
 
 
 

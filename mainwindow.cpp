@@ -2339,7 +2339,12 @@ void UI_Mainwindow::filterproperties_dialog()
 
 void UI_Mainwindow::add_signals_dialog()
 {
-  UI_Signalswindow signalwindow(this);
+	UI_Signalswindow signalwindow(this);
+	
+	if(annot_editor_active == 1)			// If the editor is active ..
+	{
+		annotationEditDock->signaltypes->registerSignaltypes();	// .. check the new signals for the types.
+	}
 }
 
 
