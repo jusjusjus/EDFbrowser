@@ -172,6 +172,7 @@ public:
                          crosshair_2;
 
   QColor backgroundcolor,
+	 highlightcolor,
          small_ruler_color,
          big_ruler_color,
          mouse_rect_color,

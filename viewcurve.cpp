@@ -65,6 +65,7 @@ ViewCurve::ViewCurve(QWidget *w_parent) : QWidget(w_parent)
   original_sensitivity = (double *)calloc(1, sizeof(double[MAXSIGNALS]));
 
   backgroundcolor = Qt::lightGray;
+  highlightcolor = QColor(180, 180, 180);
   small_ruler_color = Qt::black;
   big_ruler_color = Qt::darkGray;
   mouse_rect_color = Qt::black;
@@ -1275,16 +1276,20 @@ void ViewCurve::drawCurve_stage_2(QPainter *painter, int w_width, int w_height, 
       m_pagetime,
       vert_ruler_offset,
       vertical_distance,
-      marker_x;
+      marker_x,
+      marker_dur;
 
   char *viewbuf,
        string[256],
        str2[32];
 
+  double pagePerSecond;
+
   long long time_ppixel,
             ll_elapsed_time,
             l_time,
-            l_tmp;
+            l_tmp,
+	    d_tmp;
 
   struct signalcompblock **signalcomp;
 
@@ -1293,6 +1298,8 @@ void ViewCurve::drawCurve_stage_2(QPainter *painter, int w_width, int w_height, 
   QFont paintersfont;
 
   if(mainwindow->exit_in_progress) return;
+
+	pagePerSecond = (double)TIME_DIMENSION / (double)mainwindow->pagetime;
 
   signalcomps = mainwindow->signalcomps;
   signalcomp = mainwindow->signalcomp;
@@ -1336,7 +1343,36 @@ void ViewCurve::drawCurve_stage_2(QPainter *painter, int w_width, int w_height, 
     signalcomp[i]->sample_pixel_ratio = (double)signalcomp[i]->samples_on_screen / (double)w;
   }
 
-  painter->fillRect(0, 0, w, h, backgroundcolor);
+  painter->fillRect(0, 0, w, h, backgroundcolor);		// Color the background.
+
+  if(mainwindow->show_annot_markers)				// Color the annotated background a bit lighter.
+  {
+    for(i=0; i<mainwindow->files_open; i++)
+    {
+	for(annot=mainwindow->annotationlist[i], j=0; annot!=NULL; annot=annot->next_annotation, j++)	// For all annotations in the list
+	{
+		l_tmp = annot->onset - mainwindow->edfheaderlist[i]->starttime_offset;
+		d_tmp = (long long)(atof(annot->duration) * (double)TIME_DIMENSION);
+
+		if((l_tmp+d_tmp > (mainwindow->edfheaderlist[i]->viewtime - TIME_DIMENSION)) and	// start+duration  should be larger than  page_beginning.
+			(!annot->hidden) and (!annot->hidden_in_list)	)
+		{
+			if(l_tmp > (mainwindow->edfheaderlist[i]->viewtime + mainwindow->pagetime)) break;	// Too large.  All other will be too large as well.
+
+			l_tmp -= mainwindow->edfheaderlist[i]->viewtime;
+
+			marker_x = (int)(( ((double)w) / mainwindow->pagetime) * l_tmp);
+			marker_dur = marker_x + atof(annot->duration) * pagePerSecond * (double)w;
+
+			if(marker_x < 0)	marker_x = 0;
+			if(marker_dur > w)	marker_dur = w;
+
+  			painter->fillRect(marker_x, 0, marker_dur-marker_x, h, highlightcolor);
+		}
+
+	}
+    }
+  }
 
   m_pagetime = (int)(mainwindow->pagetime / TIME_DIMENSION);
 
@@ -1708,21 +1744,24 @@ void ViewCurve::drawCurve_stage_2(QPainter *painter, int w_width, int w_height, 
 
     painter->setPen(*annot_marker_pen);
 
+
+
     for(i=0; i<mainwindow->files_open; i++)
     {
 	for(annot=mainwindow->annotationlist[i], j=0; annot!=NULL; annot=annot->next_annotation, j++)	// For all annotations in the list
 	{
 		l_tmp = annot->onset - mainwindow->edfheaderlist[i]->starttime_offset;
 
-		if((l_tmp > (mainwindow->edfheaderlist[i]->viewtime - TIME_DIMENSION)) && (!annot->hidden) && (!annot->hidden_in_list))
+		if((l_tmp > (mainwindow->edfheaderlist[i]->viewtime - TIME_DIMENSION)) and (!annot->hidden) and (!annot->hidden_in_list))
 		{
 			if(l_tmp > (mainwindow->edfheaderlist[i]->viewtime + mainwindow->pagetime)) break;
 
 			l_tmp -= mainwindow->edfheaderlist[i]->viewtime;
 
-			marker_x = (int)((((double)w) / mainwindow->pagetime) * l_tmp);
+			marker_x = (int)(( ((double)w) / mainwindow->pagetime) * l_tmp);
+			marker_dur = marker_x + atof(annot->duration) * pagePerSecond * (double)w;
 
-			painter->drawLine(marker_x, 0, marker_x, h);
+			painter->drawLine(marker_x, 0, marker_x, h);					// Draw vertical mark for the annotation start.
 
 // Marker absolute to beginning.
 			l_tmp = annot->onset + mainwindow->edfheaderlist[i]->l_starttime;
@@ -1742,10 +1781,10 @@ void ViewCurve::drawCurve_stage_2(QPainter *painter, int w_width, int w_height, 
 
 			string[20] = 0;
 
-			if(printing)	painter->drawText(marker_x + (5	* printsize_x_factor), h - (40	* printsize_y_factor), QString::fromUtf8(string));
+			if(printing)	painter->drawText(marker_x + (5	* printsize_x_factor),	h - (40	* printsize_y_factor),	QString::fromUtf8(string));
 			else 		painter->drawText(marker_x + 5, 			h - 80 + ((j % 3) * 30),	QString::fromUtf8(string));
 
-			if(active_markers->count<MAX_ACTIVE_ANNOT_MARKERS)
+			if(active_markers->count < MAX_ACTIVE_ANNOT_MARKERS)
 			{
 				annot->x_pos = marker_x;
 				active_markers->list[active_markers->count] = annot;
