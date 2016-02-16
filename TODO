@@ -28,21 +28,4 @@ search, instead of calling that function.  However, something is fishy.
 
 ###
 
-Hilfslinien have to be drawn to distinguish amplitude variations above
-threshold, for example in Delta waves.
-
-###
-
-Epoch annotation should be shown somewhere in the figure.
-
-###
-
-Pfeiltasten
-
-###
-
 Statisch Verlinkung der Qt Bibliothek.
-
-###
-
-Whereto is it backuping up before first export of annotations?

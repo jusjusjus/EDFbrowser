@@ -1710,7 +1710,7 @@ void ViewCurve::drawCurve_stage_2(QPainter *painter, int w_width, int w_height, 
 
     for(i=0; i<mainwindow->files_open; i++)
     {
-	for(annot=mainwindow->annotationlist[i], j=0; annot!=NULL; annot=annot->next_annotation, j++)
+	for(annot=mainwindow->annotationlist[i], j=0; annot!=NULL; annot=annot->next_annotation, j++)	// For all annotations in the list
 	{
 		l_tmp = annot->onset - mainwindow->edfheaderlist[i]->starttime_offset;
 
