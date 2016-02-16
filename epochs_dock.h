@@ -37,41 +37,7 @@
 
 
 
-#include <QApplication>
-#include <QObject>
-#include <QDockWidget>
-#include <QListWidget>
-#include <QListWidgetItem>
-#include <QByteArray>
-#include <QPalette>
-#include <QTime>
-#include <QTimeEdit>
-#include <QString>
-#include <QDialog>
-#include <QVBoxLayout>
-#include <QCheckBox>
-#include <QAction>
-#include <QMessageBox>
-#include <QVariant>
-#include <QDomDocument>
-
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-
-#include "annotations_dock.h"	// defines UI_Annotationswindow
-
-#include "global.h"
-#include "mainwindow.h"
-#include "edit_annotation_dock.h"
-#include "viewcurve.h"
-#include "utils.h"
-#include "averager_dialog.h"
-#include "edf_annot_list.h"
-
-
-class UI_Mainwindow;
-
+#include "annotations_dock.h"	// class UI_Annotationswindow
 
 
 

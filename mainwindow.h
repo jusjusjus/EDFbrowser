@@ -30,8 +30,8 @@
 */
 
 
-#ifndef UI_VIEW_MAINFORM_H
-#define UI_VIEW_MAINFORM_H
+#ifndef UI_MAINWINDOW_H
+#define UI_MAINWINDOW_H
 
 #include <QApplication>
 #include <QMainWindow>
@@ -97,6 +97,8 @@
 #include <QMessageBox>
 #include <QProgressDialog>
 
+#include <iostream>
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -107,7 +109,6 @@
 #include "popup_messagewindow.h"
 #include "check_edf_file.h"
 #include "show_edf_hdr.h"
-#include "signals_dialog.h"
 #include "signal_chooser.h"
 #include "ascii_export.h"
 #include "edf_compat.h"
@@ -116,8 +117,6 @@
 #include "jump_dialog.h"
 #include "about_dialog.h"
 #include "edf_annotations.h"
-#include "annotations_dock.h"
-#include "options_dialog.h"
 #include "nk2edf.h"
 #include "xml.h"
 #include "save_montage_dialog.h"
@@ -165,9 +164,6 @@
 #include "unisens2edf.h"
 
 #include "third_party/fidlib/fidlib.h"
-
-#include <iostream>
-//#include <algorithm>	// std::min
 
 
 
@@ -322,6 +318,9 @@ public:
   void remove_crosshairs();
 
   int get_samples_on_screen(int signal_nr, long long &start, long long &end);
+
+  void add_signalcomp(struct signalcompblock *);
+
 
 protected:
   int ask_discard_annotationlist(struct annotationblock **);
@@ -544,8 +543,6 @@ private slots:
   void convert_binary_to_edf();
   void convert_manscan_to_edf();
   void convert_scpecg_to_edf();
-//  void search_pattern();
-
 };
 
 

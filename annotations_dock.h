@@ -32,45 +32,13 @@
 
 
 
-#ifndef ANNOTATIONSFORM1_H
-#define ANNOTATIONSFORM1_H
+#ifndef ANNOTATIONSWINDOW_H
+#define ANNOTATIONSWINDOW_H
 
 
 
-#include <QApplication>
-#include <QObject>
-#include <QDockWidget>
-#include <QListWidget>
-#include <QListWidgetItem>
-#include <QByteArray>
-#include <QPalette>
-#include <QTime>
-#include <QTimeEdit>
-#include <QString>
-#include <QVBoxLayout>
-#include <QCheckBox>
-#include <QAction>
-#include <QMessageBox>
-#include <QVariant>
-#include <QSize>
-// #include <QMenu>
-// #include <QMainWindow>
-
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-
-#include "global.h"
-#include "mainwindow.h"
-#include "edit_annotation_dock.h"
-#include "viewcurve.h"
-#include "utils.h"
-#include "averager_dialog.h"
-#include "edf_annot_list.h"
-
-
-class UI_Mainwindow;
-
+#include "mainwindow.h"		// class UI_Mainwindow;
+#include "averager_dialog.h"	// class UI_AveargerWindow;
 
 
 
@@ -157,6 +125,6 @@ private slots:
 
 
 
-#endif // ANNOTATIONSFORM1_H
+#endif // ANNOTATIONSWINDOW_H
 
 

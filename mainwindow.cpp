@@ -1,14 +1,11 @@
-/*
-***************************************************************************
-*
-*
-***************************************************************************
-*/
 
 
 
 #include "mainwindow.h"
+#include "annotations_dock.h"
 #include "epochs_dock.h"
+#include "options_dialog.h"
+#include "signals_dialog.h"
 
 
 #if defined(__APPLE__) || defined(__MACH__) || defined(__APPLE_CC__)
@@ -6641,6 +6638,17 @@ int UI_Mainwindow::get_samples_on_screen(int signal_nr, long long &start, long l
 
 
 
+void UI_Mainwindow::add_signalcomp(struct signalcompblock *newsignalcomp)
+{
+	if(signalcomps == MAXSIGNALS) 
+	{
+		QMessageBox messagewindow(QMessageBox::Critical, "Error", "add_signalcomp : Maximum number of signals reached.");
+		messagewindow.exec();
+		return;
+	}
+
+	signalcomp[signalcomps++] = newsignalcomp;
+}
 
 
 

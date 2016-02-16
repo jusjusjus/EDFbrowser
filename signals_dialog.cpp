@@ -249,8 +249,7 @@ void UI_Signalswindow::DisplayCompButtonClicked()
   strcpy(newsignalcomp->physdimension, newsignalcomp->edfhdr->edfparam[newsignalcomp->edfsignal[0]].physdimension);
   remove_trailing_spaces(newsignalcomp->physdimension);
 
-  mainwindow->signalcomp[mainwindow->signalcomps] = newsignalcomp;
-  mainwindow->signalcomps++;
+  mainwindow->add_signalcomp(newsignalcomp);
 
   while(compositionlist->count())
   {
@@ -278,7 +277,7 @@ void UI_Signalswindow::DisplayButtonClicked()
 
   n = selectedlist.size();
 
-  if(!n)
+  if(n == 0)			// This request is probably not necessary.
   {
     SignalsDialog->close();
     return;
@@ -287,11 +286,10 @@ void UI_Signalswindow::DisplayButtonClicked()
   for(i=0; i<n; i++)
   {
     newsignalcomp = (struct signalcompblock *)calloc(1, sizeof(struct signalcompblock));
-    if(newsignalcomp==NULL)
+    if(newsignalcomp == NULL)
     {
       QMessageBox messagewindow(QMessageBox::Critical, "Error", "Internal error: Memory allocation error:\n\"new signal composition\"");
       messagewindow.exec();
-      SignalsDialog->close();
       return;
     }
 
@@ -305,10 +303,10 @@ void UI_Signalswindow::DisplayButtonClicked()
     newsignalcomp->polarity = 1;
     newsignalcomp->type = -1; // undetermined default type
 
-    item = selectedlist.at(i);
-    s = item->data(Qt::UserRole).toInt();
-    newsignalcomp->edfsignal[0] = s;
-    newsignalcomp->factor[0] = 1;
+    item = selectedlist.at(i);				// Get the i-th selection.
+    s = item->data(Qt::UserRole).toInt();		// Get the index of the i-th selection ..
+    newsignalcomp->edfsignal[0] = s;							// .. and set it ..
+    newsignalcomp->factor[0] = 1;								// .. with factor 1.
     if(newsignalcomp->edfhdr->edfparam[s].bitvalue < 0.0)
     {
       newsignalcomp->voltpercm = -100.0;
@@ -326,11 +324,8 @@ void UI_Signalswindow::DisplayButtonClicked()
     strcpy(newsignalcomp->physdimension, newsignalcomp->edfhdr->edfparam[s].physdimension);
     remove_trailing_spaces(newsignalcomp->physdimension);
 
-    mainwindow->signalcomp[mainwindow->signalcomps] = newsignalcomp;
-    mainwindow->signalcomps++;
+    mainwindow->add_signalcomp(newsignalcomp);
   }
-
-  SignalsDialog->close();
 
   mainwindow->setup_viewbuf();
 }
