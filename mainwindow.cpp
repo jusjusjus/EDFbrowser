@@ -1819,7 +1819,7 @@ void UI_Mainwindow::show_annotations()
 
 	for(int i=0; i<files_open; i++)
 	{
-		if( edfheaderlist[i]->annots_not_read && (edfheaderlist[i]->edfplus || edfheaderlist[i]->bdfplus) )	// if the annotations have not been read yet, and the file contains annotations
+		if( edfheaderlist[i]->annots_not_read and (edfheaderlist[i]->edfplus or edfheaderlist[i]->bdfplus) )	// if the annotations have not been read yet, and the file contains annotations
 		{
 			try
 			{
@@ -1848,6 +1848,7 @@ int UI_Mainwindow::annotation_editor()
 	if(files_open == 1)
 	{
 		this->show_annotations();
+  		signalmenu->addAction("Signaltypes ..", annotationEditDock->signaltypes, SLOT(registerSignaltypes()));
 		return 0;
 	}
 	else

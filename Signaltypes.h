@@ -72,7 +72,7 @@ private:
 
 
 public slots:
-	void registerSignaltypes();
+	void registerSignaltypes(bool ask=true);
 	void exec(int, int, int);
 };
 

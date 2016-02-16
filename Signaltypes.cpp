@@ -63,6 +63,15 @@ void Signaltypes::default_types()
 	types.push_back(signaltype);
 
 	signaltype = new Signaltype(this, "EMG");
+	signaltype->addAction("Bruxism");
+	types.push_back(signaltype);
+
+	signaltype = new Signaltype(this, "EOG");
+	signaltype->addAction("Rapid eye movement");
+	types.push_back(signaltype);
+
+	signaltype = new Signaltype(this, "EKG");
+	signaltype->addAction("Ectopic beat");
 	types.push_back(signaltype);
 }
 
@@ -75,17 +84,16 @@ void Signaltypes::exec(int type_number, int x, int y)
 }
 
 
-void Signaltypes::registerSignaltypes()
+void Signaltypes::registerSignaltypes(bool ask)		// ask=true
 {
 	struct signalcompblock *signalcomp;
 	struct edfparamblock *edfparam;
 	unsigned signalcomps = parent->mainwindow->signalcomps;
-	bool ask=false;
 
 	for(unsigned i=0; i<signalcomps; i++)
 	{
 		signalcomp = parent->mainwindow->signalcomp[i];		// current signalcomp
-		if(signalcomp->type == -1)				// -1 : type default value
+		if(signalcomp->type < 1)				// -1 : type default value.  0 : Unspecified
 		{
 			edfparam   = signalcomp->edfhdr->edfparam;		// edfparam of signal composition.
 
@@ -95,7 +103,7 @@ void Signaltypes::registerSignaltypes()
 			{
 				if( signalcomp->type != get_type_from_label(edfparam[signalcomp->edfsignal[j]].label) )
 				{
-    					QMessageBox messagewindow(QMessageBox::Critical, "Error", "In Signaltypes::registerSignaltypes(): Your signal composition consists of incompatible types.  Setting to Unspecified.");
+    					QMessageBox messagewindow(QMessageBox::Critical, "Error", "In Signaltypes::registerSignaltypes() : Your signal composition consists of incompatible types.  Setting to Unspecified.");
     					messagewindow.exec();
 					signalcomp->type = 0;
 				}
@@ -116,14 +124,14 @@ int Signaltypes::get_type_from_label(char *label)
 	{
 		if( types[i]->isinstance(&qlabel) ) return (int)i;
 	}
-	return 0;	// No type?
+	return 0;	// Unspecified.
 }
 
 
 
 void Signaltypes::ask_for_types()
 {
-	UI_Signaltype_dialog win(this); // segmentation fault!!!
+	UI_Signaltype_dialog win(this);
 }
 
 
