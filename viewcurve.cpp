@@ -65,7 +65,6 @@ ViewCurve::ViewCurve(QWidget *w_parent) : QWidget(w_parent)
   original_sensitivity = (double *)calloc(1, sizeof(double[MAXSIGNALS]));
 
   backgroundcolor = Qt::lightGray;
-  highlightcolor = QColor(180, 180, 180);
   small_ruler_color = Qt::black;
   big_ruler_color = Qt::darkGray;
   mouse_rect_color = Qt::black;
@@ -1367,7 +1366,7 @@ void ViewCurve::drawCurve_stage_2(QPainter *painter, int w_width, int w_height, 
 			if(marker_x < 0)	marker_x = 0;
 			if(marker_dur > w)	marker_dur = w;
 
-  			painter->fillRect(marker_x, 0, marker_dur-marker_x, h, highlightcolor);
+  			painter->fillRect(marker_x, 0, marker_dur-marker_x, h, annot_marker_color);
 		}
 
 	}
@@ -1738,7 +1737,7 @@ void ViewCurve::drawCurve_stage_2(QPainter *painter, int w_width, int w_height, 
 
   if(mainwindow->show_annot_markers)
   {
-    annot_marker_pen->setColor(annot_marker_color);
+    annot_marker_pen->setColor(text_color);
 
     annot_marker_pen->setWidth(print_linewidth);
 

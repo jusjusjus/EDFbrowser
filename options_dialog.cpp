@@ -79,60 +79,46 @@ UI_OptionsDialog::UI_OptionsDialog(QWidget *w_parent, unsigned int tab_number) /
 
   tab1 = new QWidget;
 
-  label1 = new QLabel(tab1);
-  label1->setGeometry(QRect(20, 15, 200, 25));
-  label1->setText("Background color");
+  QVBoxLayout *vbox = new QVBoxLayout;
+  tab1->setLayout(vbox);
 
-  BgColorButton = new SpecialButton(tab1);
-  BgColorButton->setGeometry(QRect(240, 20, 60, 15));
+  QGridLayout *grid = new QGridLayout;
+  vbox->addLayout(grid);
+
+  label1 = new QLabel("Background color");
+
+  BgColorButton = new SpecialButton;
   BgColorButton->setColor(mainwindow->maincurve->backgroundcolor);
 
-  label2 = new QLabel(tab1);
-  label2->setGeometry(QRect(20, 55, 200, 25));
-  label2->setText("Small ruler color");
+  label2 = new QLabel("Small ruler color");
 
   SrColorButton = new SpecialButton(tab1);
-  SrColorButton->setGeometry(QRect(240, 60, 60, 15));
   SrColorButton->setColor(mainwindow->maincurve->small_ruler_color);
 
-  label3 = new QLabel(tab1);
-  label3->setGeometry(QRect(20, 95, 200, 25));
-  label3->setText("Big ruler color");
+  label3 = new QLabel("Big ruler color");
 
-  BrColorButton = new SpecialButton(tab1);
-  BrColorButton->setGeometry(QRect(240, 100, 60, 15));
+  BrColorButton = new SpecialButton;
   BrColorButton->setColor(mainwindow->maincurve->big_ruler_color);
 
-  label4 = new QLabel(tab1);
-  label4->setGeometry(QRect(20, 135, 200, 25));
-  label4->setText("Mouse rectangle color");
+  label4 = new QLabel("Mouse rectangle color");
 
-  MrColorButton = new SpecialButton(tab1);
-  MrColorButton->setGeometry(QRect(240, 140, 60, 15));
+  MrColorButton = new SpecialButton;
   MrColorButton->setColor(mainwindow->maincurve->mouse_rect_color);
 
-  label5 = new QLabel(tab1);
-  label5->setGeometry(QRect(20, 175, 200, 25));
-  label5->setText("Text color");
+  label5 = new QLabel("Text color");
 
-  TxtColorButton = new SpecialButton(tab1);
-  TxtColorButton->setGeometry(QRect(240, 180, 60, 15));
+  TxtColorButton = new SpecialButton;
   TxtColorButton->setColor(mainwindow->maincurve->text_color);
 
-  label6 = new QLabel(tab1);
-  label6->setGeometry(QRect(20, 215, 200, 25));
-  label6->setText("Signals color");
+  label6 = new QLabel("Signals color");
 
-  SigColorButton = new SpecialButton(tab1);
-  SigColorButton->setGeometry(QRect(240, 220, 60, 15));
+  SigColorButton = new SpecialButton;
   SigColorButton->setColor((Qt::GlobalColor)mainwindow->maincurve->signal_color);
 
-  label7 = new QLabel(tab1);
-  label7->setGeometry(QRect(20, 255, 200, 25));
-  label7->setText("Baseline color");
+  QHBoxLayout *label7_layout = new QHBoxLayout;
+  label7 = new QLabel("Baseline color");
 
-  checkbox3 = new QCheckBox(tab1);
-  checkbox3->setGeometry(QRect(200, 258, 20, 20));
+  checkbox3 = new QCheckBox;
   checkbox3->setTristate(false);
   if(mainwindow->show_baselines)
   {
@@ -143,40 +129,31 @@ UI_OptionsDialog::UI_OptionsDialog(QWidget *w_parent, unsigned int tab_number) /
     checkbox3->setCheckState(Qt::Unchecked);
   }
 
-  BaseColorButton = new SpecialButton(tab1);
-  BaseColorButton->setGeometry(QRect(240, 260, 60, 15));
+  label7_layout->addWidget(label7);
+  label7_layout->addWidget(checkbox3);
+
+  BaseColorButton = new SpecialButton;
   BaseColorButton->setColor(mainwindow->maincurve->baseline_color);
 
-  label8 = new QLabel(tab1);
-  label8->setGeometry(QRect(20, 295, 200, 25));
-  label8->setText("Crosshair color");
+  label8 = new QLabel("Crosshair color");
 
-  Crh1ColorButton = new SpecialButton(tab1);
-  Crh1ColorButton->setGeometry(QRect(240, 300, 60, 15));
+  Crh1ColorButton = new SpecialButton;
   Crh1ColorButton->setColor((Qt::GlobalColor)mainwindow->maincurve->crosshair_1.color);
 
-  label9 = new QLabel(tab1);
-  label9->setGeometry(QRect(20, 335, 200, 25));
-  label9->setText("2th Crosshair color");
+  label9 = new QLabel("2nd Crosshair color");
 
-  Crh2ColorButton = new SpecialButton(tab1);
-  Crh2ColorButton->setGeometry(QRect(240, 340, 60, 15));
+  Crh2ColorButton = new SpecialButton;
   Crh2ColorButton->setColor((Qt::GlobalColor)mainwindow->maincurve->crosshair_2.color);
 
-  label10 = new QLabel(tab1);
-  label10->setGeometry(QRect(20, 375, 200, 25));
-  label10->setText("Floating ruler color");
+  label10 = new QLabel("Floating ruler color");
 
-  FrColorButton = new SpecialButton(tab1);
-  FrColorButton->setGeometry(QRect(240, 380, 60, 15));
+  FrColorButton = new SpecialButton;
   FrColorButton->setColor((Qt::GlobalColor)mainwindow->maincurve->floating_ruler_color);
 
-  label12 = new QLabel(tab1);
-  label12->setGeometry(QRect(20, 415, 200, 25));
-  label12->setText("Annotation marker");
+  QHBoxLayout *label12_layout = new QHBoxLayout;
+  label12 = new QLabel("Annotation marker");
 
-  checkbox2 = new QCheckBox(tab1);
-  checkbox2->setGeometry(QRect(200, 418, 20, 20));
+  checkbox2 = new QCheckBox;
   checkbox2->setTristate(false);
   if(mainwindow->show_annot_markers)
   {
@@ -187,16 +164,15 @@ UI_OptionsDialog::UI_OptionsDialog(QWidget *w_parent, unsigned int tab_number) /
     checkbox2->setCheckState(Qt::Unchecked);
   }
 
+  label12_layout->addWidget(label12);
+  label12_layout->addWidget(checkbox2);
+
   AnnotMkrButton = new SpecialButton(tab1);
-  AnnotMkrButton->setGeometry(QRect(240, 420, 60, 15));
   AnnotMkrButton->setColor(mainwindow->maincurve->annot_marker_color);
 
-  label11 = new QLabel(tab1);
-  label11->setGeometry(QRect(20, 455, 200, 25));
-  label11->setText("Print in grayscale");
+  label11 = new QLabel("Print in grayscale");
 
-  checkbox1 = new QCheckBox(tab1);
-  checkbox1->setGeometry(QRect(200, 458, 20, 20));
+  checkbox1 = new QCheckBox;
   checkbox1->setTristate(false);
   if(mainwindow->maincurve->blackwhite_printing)
   {
@@ -207,12 +183,9 @@ UI_OptionsDialog::UI_OptionsDialog(QWidget *w_parent, unsigned int tab_number) /
     checkbox1->setCheckState(Qt::Unchecked);
   }
 
-  label13 = new QLabel(tab1);
-  label13->setGeometry(QRect(20, 495, 200, 25));
-  label13->setText("Clip signals to pane");
+  label13 = new QLabel("Clip signals to pane");
 
-  checkbox4 = new QCheckBox(tab1);
-  checkbox4->setGeometry(QRect(200, 498, 20, 20));
+  checkbox4 = new QCheckBox;
   checkbox4->setTristate(false);
   if(mainwindow->clip_to_pane)
   {
@@ -223,25 +196,49 @@ UI_OptionsDialog::UI_OptionsDialog(QWidget *w_parent, unsigned int tab_number) /
     checkbox4->setCheckState(Qt::Unchecked);
   }
 
-  colorSchema_Dark_Button = new QPushButton(tab1);
-  colorSchema_Dark_Button->setGeometry(QRect(140, 540, 140, 20));
-  colorSchema_Dark_Button->setText("Colorschema \"Dark\"");
 
-  colorSchema_NK_Button = new QPushButton(tab1);
-  colorSchema_NK_Button->setGeometry(QRect(140, 570, 140, 20));
-  colorSchema_NK_Button->setText("Colorschema \"NK\"");
+  grid->addWidget(label1, 0, 1);
+  grid->addWidget(BgColorButton, 0, 2);
+  grid->addWidget(label2, 1, 1);
+  grid->addWidget(SrColorButton, 1, 2);
+  grid->addWidget(label3, 2, 1);
+  grid->addWidget(BrColorButton, 2, 2);
+  grid->addWidget(label4, 3, 1);
+  grid->addWidget(MrColorButton, 3, 2);
+  grid->addWidget(label5, 4, 1);
+  grid->addWidget(TxtColorButton, 4, 2);
+  grid->addWidget(label6, 5, 1);
+  grid->addWidget(SigColorButton, 5, 2);
+  grid->addLayout(label7_layout, 6, 1);
+  grid->addWidget(BaseColorButton, 6, 2);
+  grid->addWidget(label8, 7, 1);
+  grid->addWidget(Crh1ColorButton, 7, 2);
+  grid->addWidget(label9, 8, 1);
+  grid->addWidget(Crh2ColorButton, 8, 2);
+  grid->addWidget(label10, 9, 1);
+  grid->addWidget(FrColorButton, 9, 2);
+  grid->addLayout(label12_layout, 10, 1);
+  grid->addWidget(AnnotMkrButton, 10, 2);
+  grid->addWidget(label11, 11, 1);
+  grid->addWidget(checkbox1, 11, 2);
+  grid->addWidget(label13, 12, 1);
+  grid->addWidget(checkbox4, 12, 2);
 
-  DefaultButton = new QPushButton(tab1);
-  DefaultButton->setGeometry(QRect(140, 600, 140, 20));
-  DefaultButton->setText("Default colorschema");
+  colorSchema_Dark_Button = new QPushButton("Color scheme \"Dark\"");
 
-  saveColorSchemaButton = new QPushButton(tab1);
-  saveColorSchemaButton->setGeometry(QRect(140, 630, 140, 20));
-  saveColorSchemaButton->setText("Save colorschema");
+  colorSchema_NK_Button = new QPushButton("Color scheme \"NK\"");
 
-  loadColorSchemaButton = new QPushButton(tab1);
-  loadColorSchemaButton->setGeometry(QRect(140, 660, 140, 20));
-  loadColorSchemaButton->setText("Load colorschema");
+  DefaultButton = new QPushButton("Default color scheme");
+
+  saveColorSchemaButton = new QPushButton("Save color scheme");
+
+  loadColorSchemaButton = new QPushButton("Load color scheme");
+
+  vbox->addWidget(colorSchema_Dark_Button);
+  vbox->addWidget(colorSchema_NK_Button);
+  vbox->addWidget(saveColorSchemaButton);
+  vbox->addWidget(loadColorSchemaButton);
+
 
   QObject::connect(BgColorButton,           SIGNAL(clicked(SpecialButton *)), this, SLOT(BgColorButtonClicked(SpecialButton *)));
   QObject::connect(SrColorButton,           SIGNAL(clicked(SpecialButton *)), this, SLOT(SrColorButtonClicked(SpecialButton *)));
@@ -1404,7 +1401,7 @@ void UI_OptionsDialog::saveColorSchemaButtonClicked()
   strcpy(path, mainwindow->recent_colordir);
   strcat(path, "/my_colorschema.color");
 
-  strcpy(path, QFileDialog::getSaveFileName(0, "Save colorschema", QString::fromLocal8Bit(path), "Colorschema files (*.color *.COLOR)").toLocal8Bit().data());
+  strcpy(path, QFileDialog::getSaveFileName(0, "Save color scheme", QString::fromLocal8Bit(path), "Color scheme files (*.color *.COLOR)").toLocal8Bit().data());
 
   if(!strcmp(path, ""))
   {
