@@ -1282,7 +1282,8 @@ void ViewCurve::drawCurve_stage_2(QPainter *painter, int w_width, int w_height, 
        string[256],
        str2[32];
 
-  double pagePerSecond;
+  double pagePerSecond,
+	 duration;
 
   long long time_ppixel,
             ll_elapsed_time,
@@ -1344,14 +1345,17 @@ void ViewCurve::drawCurve_stage_2(QPainter *painter, int w_width, int w_height, 
 
   painter->fillRect(0, 0, w, h, backgroundcolor);		// Color the background.
 
-  if(mainwindow->show_annot_markers)				// Color the annotated background a bit lighter.
+// Color the background of annotations:
+  if(mainwindow->show_annot_markers)
   {
     for(i=0; i<mainwindow->files_open; i++)
     {
 	for(annot=mainwindow->annotationlist[i], j=0; annot!=NULL; annot=annot->next_annotation, j++)	// For all annotations in the list
 	{
+		if((duration = strtod(annot->duration, NULL)) <= 0.0) continue;
+
 		l_tmp = annot->onset - mainwindow->edfheaderlist[i]->starttime_offset;
-		d_tmp = (long long)(atof(annot->duration) * (double)TIME_DIMENSION);
+		d_tmp = (long long)(duration * (double)TIME_DIMENSION);
 
 		if((l_tmp+d_tmp > (mainwindow->edfheaderlist[i]->viewtime - TIME_DIMENSION)) and	// start+duration  should be larger than  page_beginning.
 			(!annot->hidden) and (!annot->hidden_in_list)	)
@@ -1361,7 +1365,7 @@ void ViewCurve::drawCurve_stage_2(QPainter *painter, int w_width, int w_height, 
 			l_tmp -= mainwindow->edfheaderlist[i]->viewtime;
 
 			marker_x = (int)(( ((double)w) / mainwindow->pagetime) * l_tmp);
-			marker_dur = marker_x + atof(annot->duration) * pagePerSecond * (double)w;
+			marker_dur = marker_x + duration * pagePerSecond * (double)w;
 
 			if(marker_x < 0)	marker_x = 0;
 			if(marker_dur > w)	marker_dur = w;
@@ -1758,7 +1762,6 @@ void ViewCurve::drawCurve_stage_2(QPainter *painter, int w_width, int w_height, 
 			l_tmp -= mainwindow->edfheaderlist[i]->viewtime;
 
 			marker_x = (int)(( ((double)w) / mainwindow->pagetime) * l_tmp);
-			marker_dur = marker_x + atof(annot->duration) * pagePerSecond * (double)w;
 
 			painter->drawLine(marker_x, 0, marker_x, h);					// Draw vertical mark for the annotation start.
 
