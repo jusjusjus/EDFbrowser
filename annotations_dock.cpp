@@ -906,26 +906,38 @@ void UI_Annotationswindow::updateList()
 void UI_Annotationswindow::selectionChanged(int currentRow)
 {
 //	std::cout << "selectionChanged to " << currentRow << std::endl;
-	int n;
 	long long new_viewtime;
-	double fraction, fraction_2, duration, window_length;
+	double fraction,
+	       fraction_2,
+	       duration,
+	       window_length;
 
 	if(currentRow < 0) return;				// No annotation selected.
 
-	// select the right annotation:
+// select the right annotation:
 	annotation = *annotationlist;						// first annotation in the list.  What is file_num?
-	n = currentRow;					// yields the annotation number.
+
+	while(annotation->hidden_in_list)				// If the current annotation is hidden ..
+		annotation = annotation->next_annotation;		// 			.. select the next annotation.
+
+	if(annotation == NULL) return;					// If all annotations are hidden, return.
 
 	//annotation = edfplus_annotation_item(annotationlist, n);		// why doesn't this work?
 	//if(annotation == NULL) return;								// ... ???
 
   	if(mainwindow->annot_editor_active)
-		mainwindow->annotationEditDock->set_selected_annotation(file_num, n);	//   ...(int file_nr, int annot_nr)
+		mainwindow->annotationEditDock->set_selected_annotation(file_num, currentRow);	//   ...(int file_nr, int annot_nr)
 
-	while(n--) annotation = annotation->next_annotation;				// Linear list seek starting from the first annotation, until number n.
+	while(currentRow--)
+	{
+		while(annotation->next_annotation->hidden_in_list)		// If the current annotation is hidden ..
+			annotation = annotation->next_annotation;               // 			.. select the next annotation.
+
+		annotation = annotation->next_annotation;				// Linear list seek starting from the first annotation, until number n.
+	}
 
 
-	// find fraction so that left and right margin to the annotation (duration) are equal.
+// find fraction so that left and right margin to the annotation (duration) are equal.
 	duration = atof(annotation->duration);
 	window_length = (double)mainwindow->pagetime/(double)TIME_DIMENSION;
 	fraction = 0.5 * (1. - duration / window_length);
@@ -936,7 +948,7 @@ void UI_Annotationswindow::selectionChanged(int currentRow)
 		fraction_2 = 0.99;
 	}
 
-	// set the new viewtime
+// set the new viewtime
 	new_viewtime = annotation->onset - mainwindow->edfheaderlist[file_num]->starttime_offset - (long long)(mainwindow->pagetime * fraction); // new time:  onset - start - fraction * page;
 
 	if(mainwindow->viewtime_sync == VIEWTIME_SYNCED_OFFSET)

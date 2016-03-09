@@ -104,25 +104,37 @@ void UI_Epochswindow::fill_with_epochs()
 
 void UI_Epochswindow::selectionChanged(int currentRow)
 {
-//	std::cout << "selectionChanged to " << currentRow << std::endl;
+	// std::cout << "selectionChanged to " << currentRow << std::endl;
 	int n;
-	long long new_viewtime, epochstart;
+	long long	new_viewtime,
+	     		epochstart;
 
 	if(currentRow < 0) return;				// No annotation selected.
 
-	// select the right annotation:
+// select the right annotation:
 	annotation = *annotationlist;						// first annotation in the list.  What is file_num?
-	n = currentRow;					// yields the annotation number.
+
+	while(annotation->hidden_in_list)				// If the current annotation is hidden ..
+		annotation = annotation->next_annotation;		// 			.. select the next annotation.
+
+	if(annotation == NULL) return;					// If all annotations are hidden, return.
 
 	//annotation = edfplus_annotation_item(annotationlist, n);		// why doesn't this work?
 	//if(annotation == NULL) return;								// ... ???
 
   	if(mainwindow->annot_editor_active)
-		mainwindow->annotationEditDock->set_selected_annotation(file_num, n);	//   ...(int file_nr, int annot_nr)
+		mainwindow->annotationEditDock->set_selected_annotation(file_num, currentRow);	//   ...(int file_nr, int annot_nr)
 
-	while(n--) annotation = annotation->next_annotation;				// Linear list seek starting from the first annotation, until number n.
+	while(currentRow--)
+	{
+		while(annotation->next_annotation->hidden_in_list)		// If the current annotation is hidden ..
+			annotation = annotation->next_annotation;               // 			.. select the next annotation.
+
+		annotation = annotation->next_annotation;				// Linear list seek starting from the first annotation, until number n.
+	}
 
 
+// Set the epoch:
 	n = page/epoch;
 
 	new_viewtime = annotation->onset - mainwindow->edfheaderlist[0]->starttime_offset - (long long)(n/2) * epochlength; // new time:	onset - start; the beginning of the epoch.
