@@ -533,18 +533,27 @@ void ViewCurve::mouseReleaseEvent(QMouseEvent *release_event)
   m_x = release_event->x();
   m_y = release_event->y();
 
-  if(release_event->button()==Qt::LeftButton)
+  if(release_event->button() == Qt::LeftButton)
   {
-    if(crosshair_1.moving)
+    if(crosshair_1.active)
     {
 	mainwindow->annotationEditDock->annotEditSetOnset(crosshair_1.time_relative);
-	if(crosshair_2.active) mainwindow->annotationEditDock->annotEditSetDuration(crosshair_2.time_relative - crosshair_1.time_relative);
+    }
+    if(crosshair_2.active)
+    {
+	mainwindow->annotationEditDock->annotEditSetDuration(crosshair_2.time_relative - crosshair_1.time_relative);
     }
 
-    if(crosshair_2.moving)
-    {
-      mainwindow->annotationEditDock->annotEditSetDuration(crosshair_2.time_relative - crosshair_1.time_relative);
-    }
+//    if(crosshair_1.moving)
+//    {
+//	mainwindow->annotationEditDock->annotEditSetOnset(crosshair_1.time_relative);
+//	if(crosshair_2.active) mainwindow->annotationEditDock->annotEditSetDuration(crosshair_2.time_relative - crosshair_1.time_relative);
+//    }
+//
+//    if(crosshair_2.moving)
+//    {
+//      mainwindow->annotationEditDock->annotEditSetDuration(crosshair_2.time_relative - crosshair_1.time_relative);
+//    }
 
     ruler_moving = 0;
     crosshair_1.moving = 0;
@@ -1955,8 +1964,8 @@ void ViewCurve::drawCurve_stage_2(QPainter *painter, int w_width, int w_height, 
         }
         painter->setPen((Qt::GlobalColor)signalcomp[i]->color);
 
-        mainwindow->annotationEditDock->annotEditSetOnset(crosshair_1.time_relative);
-	if(crosshair_2.active) mainwindow->annotationEditDock->annotEditSetDuration(crosshair_2.time_relative - crosshair_1.time_relative);
+        //mainwindow->annotationEditDock->annotEditSetOnset(crosshair_1.time_relative);
+	//if(crosshair_2.active) mainwindow->annotationEditDock->annotEditSetDuration(crosshair_2.time_relative - crosshair_1.time_relative);
       }
     }
 
