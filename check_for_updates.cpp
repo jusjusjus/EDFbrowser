@@ -70,8 +70,8 @@ void Check_for_updates::replyFinished()
 
 	char buf[128];
 
-	int this_version,
-			latest_version;
+	int	this_version,
+		latest_version;
 
 	QNetworkReply *reply = qobject_cast<QNetworkReply *>(sender());
 

@@ -40,14 +40,18 @@ UI_Signaltype_dialog::UI_Signaltype_dialog(Signaltypes *theparent)
 	{
 		signalcomp = mainwindow->signalcomp[i];
 
-		QString str("");
-		for(int j=0; j<signalcomp->num_of_signals; j++)
+		QString str(signalcomp->edfhdr->edfparam[signalcomp->edfsignal[0]].label);
+
+		for(int j=1; j<signalcomp->num_of_signals; j++)
 		{
-			str += " ";
+			if(signalcomp->factor[j]>0)
+				str += " + ";
+			else
+				str += " - ";
+
 			str += signalcomp->edfhdr->edfparam[signalcomp->edfsignal[j]].label;
-			str += ";";
 		}
-		label = new QLabel(str);
+		label = new QLabel( str.simplified() );
 		layout->addWidget(label, i, 0);
 
 		choices = new QComboBox;
