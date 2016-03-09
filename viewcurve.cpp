@@ -438,7 +438,7 @@ void ViewCurve::mousePressEvent(QMouseEvent *press_event)
 
     if( (!pressed_on_label) && (!ruler_moving) && (!crosshair_1.moving) && (!crosshair_2.moving) )
     {
-      draw_zoom_rectangle = 1;
+      // draw_zoom_rectangle = 1;	We don't want to be able to zoom.  There's no way back!
 
       mouse_x = m_x;
       mouse_y = m_y;
