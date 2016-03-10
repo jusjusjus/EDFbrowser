@@ -192,19 +192,19 @@ void edfplus_annotation_delete_list(struct annotationblock **list)
 
 struct annotationblock * edfplus_annotation_item(struct annotationblock **list, int n)
 {
-  struct annotationblock *annotlist;
+  struct annotationblock *annotation;
 
-  annotlist = *list;
+  annotation = *list;
 
-  if(annotlist == NULL) return NULL;
+  if(annotation == NULL) return NULL;
 
   while(n--)
   {
-    if(annotlist->next_annotation == NULL) return NULL;
-    annotlist = annotlist->next_annotation;
+    if(annotation->next_annotation == NULL) return NULL;
+    annotation = annotation->next_annotation;
   }
 
-  return annotlist;
+  return annotation;
 }
 
 

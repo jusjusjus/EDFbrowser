@@ -136,24 +136,24 @@ UI_Annotationswindow::UI_Annotationswindow(int file_number, QWidget *w_parent, c
 
 void UI_Annotationswindow::delete_annotation()
 {
-	int selected_annot;
+	int selected_row;
 
-	selected_annot = currentRow();
+	selected_row = currentRow();
 
-	if(selected_annot  < 0)				// If no annotation has been selected ..
+	if(selected_row  < 0)				// If no annotation has been selected ..
 	{
 		QMessageBox messagewindow(QMessageBox::Critical, "Error", "delete_annotation() : No annotation selected.");
 		messagewindow.exec();
 		return;
 	}
 
-	edfplus_annotation_delete( annotationlist, selected_annot );	// Delete the selected annotation from annotationlist.
+	edfplus_annotation_delete( annotationlist, selected_row );	// Delete the selected annotation from annotationlist.
 
-	selected_annot--;			// Select previous annotation.
+	selected_row--;			// Select previous annotation.
 
-	if(selected_annot >= 0)			// If there is a previous annotation ..
+	if(selected_row >= 0)			// If there is a previous annotation ..
 	{
-		annotation = edfplus_annotation_item( annotationlist, selected_annot );	// .. get it ..
+		annotation = edfplus_annotation_item( annotationlist, selected_row );	// .. get it ..
   		if(annotation != NULL)							// 	.. and if it exists ..
   		{
     			annotation->selected = 1;					//		.. jump to it.
