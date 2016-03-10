@@ -535,25 +535,9 @@ void ViewCurve::mouseReleaseEvent(QMouseEvent *release_event)
 
   if(release_event->button() == Qt::LeftButton)
   {
-    if(crosshair_1.active)
-    {
-	mainwindow->annotationEditDock->annotEditSetOnset(crosshair_1.time_relative);
-    }
-    if(crosshair_2.active)
-    {
-	mainwindow->annotationEditDock->annotEditSetDuration(crosshair_2.time_relative - crosshair_1.time_relative);
-    }
+    if(crosshair_1.active) mainwindow->annotationEditDock->annotEditSetOnset(crosshair_1.time_relative);
 
-//    if(crosshair_1.moving)
-//    {
-//	mainwindow->annotationEditDock->annotEditSetOnset(crosshair_1.time_relative);
-//	if(crosshair_2.active) mainwindow->annotationEditDock->annotEditSetDuration(crosshair_2.time_relative - crosshair_1.time_relative);
-//    }
-//
-//    if(crosshair_2.moving)
-//    {
-//      mainwindow->annotationEditDock->annotEditSetDuration(crosshair_2.time_relative - crosshair_1.time_relative);
-//    }
+    if(crosshair_2.active) mainwindow->annotationEditDock->annotEditSetDuration(crosshair_2.time_relative - crosshair_1.time_relative);
 
     ruler_moving = 0;
     crosshair_1.moving = 0;
@@ -650,6 +634,22 @@ void ViewCurve::mouseReleaseEvent(QMouseEvent *release_event)
         }
       }
     }
+
+	if(spanning)	// If spanning, that is: annotation markers have been set by button-pressed mouse movement.
+	{
+		QPoint cursorPosition = QCursor::pos();
+		if(mainwindow->annot_editor_active)
+			mainwindow->annotationEditDock->eventSelectionMenu(signalcomp[signal_nr]->type, cursorPosition.x(), cursorPosition.y());
+ 
+		crosshair_1.active = 0;					// Deactivate crosshairs after the annotation
+		crosshair_2.active = 0;					// ... has (not) been set.
+		mainwindow->signalcomp[signal_nr]->hascursor1 = 0;	// Remove cursors 
+		mainwindow->signalcomp[signal_nr]->hascursor2 = 0;	// ... from the signal.
+
+		spanning = 0;		// End spanning.
+	}
+
+
   }
 
   if(release_event->button()==Qt::RightButton)
@@ -667,18 +667,6 @@ void ViewCurve::mouseReleaseEvent(QMouseEvent *release_event)
   }
 
   pressed_on_label = 0;
-	if(spanning)	// end spanning.
-	{
-		if(mainwindow->annot_editor_active)
-			mainwindow->annotationEditDock->eventSelectionMenu(signalcomp[signal_nr]->type, m_x, m_y);
- 
-		crosshair_1.active = 0;					// Deactivate crosshairs after the annotation
-		crosshair_2.active = 0;					// ... has (not) been set.
-		mainwindow->signalcomp[signal_nr]->hascursor1 = 0;	// Remove cursors 
-		mainwindow->signalcomp[signal_nr]->hascursor2 = 0;	// ... from the signal.
-
-		spanning = 0;
-	}
 }
 
 
