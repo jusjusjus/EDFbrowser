@@ -456,19 +456,13 @@ void UI_Annotationswindow::hide_annot(bool)
   struct annotationblock *annot;
 
 
-  if(count() < 1)
-  {
-    return;
-  }
+  if(count() < 1) return;
 
   annot = *annotationlist;
 
   n = currentRow();
 
-  while(n--)
-  {
-    annot = annot->next_annotation;
-  }
+  while(n--) annot = annot->next_annotation;
 
   annot->hidden_in_list = 1;
 
@@ -485,19 +479,13 @@ void UI_Annotationswindow::unhide_annot(bool)
   struct annotationblock *annot;
 
 
-  if(count() < 1)
-  {
-    return;
-  }
+  if(count() < 1) return;
 
   annot = *annotationlist;
 
   n = currentRow();
 
-  while(n--)
-  {
-    annot = annot->next_annotation;
-  }
+  while(n--) annot = annot->next_annotation;
 
   annot->hidden_in_list = 0;
 
@@ -517,19 +505,13 @@ void UI_Annotationswindow::hide_same_annots(bool)
   struct annotationblock *annot;
 
 
-  if(count() < 1)
-  {
-    return;
-  }
+  if(count() < 1) return;
 
   annot = *annotationlist;
 
   n = currentRow();
 
-  while(n--)
-  {
-    annot = annot->next_annotation;
-  }
+  while(n--) annot = annot->next_annotation;
 
   strcpy(str1, annot->annotation);
 
@@ -571,19 +553,13 @@ void UI_Annotationswindow::unhide_same_annots(bool)
   struct annotationblock *annot;
 
 
-  if(count() < 1)
-  {
-    return;
-  }
+  if(count() < 1) return;
 
   annot = *annotationlist;
 
   n = currentRow();
 
-  while(n--)
-  {
-    annot = annot->next_annotation;
-  }
+  while(n--) annot = annot->next_annotation;
 
   strcpy(str1, annot->annotation);
 
@@ -615,12 +591,13 @@ void UI_Annotationswindow::unhide_same_annots(bool)
 }
 
 
+
 void UI_Annotationswindow::unhide_all_annots(bool)
 {
   struct annotationblock *annot;
 
   annot = *annotationlist;
-
+// for(annot = *annotationlist; annot != NULL; annot = annot->next_annotation)
   while(annot != NULL)
   {
     annot->hidden = 0;
@@ -637,10 +614,7 @@ void UI_Annotationswindow::unhide_all_annots(bool)
 
 void UI_Annotationswindow::average_annot(bool)
 {
-  if(mainwindow->files_open != 1)
-  {
-    return;
-  }
+  if(mainwindow->files_open != 1) return;
 
   if(!mainwindow->signalcomps)
   {
