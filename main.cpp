@@ -26,7 +26,8 @@ int main(int argc, char *argv[])
 //
 //  qApp->processEvents();
 
-  class UI_Mainwindow MainWindow;
+  class UI_Mainwindow MainWindow(app);
+//  MainWindow.parse_commandLineOptions(app);
 
   return app.exec();
 }

@@ -96,6 +96,7 @@
 #include <QLocale>
 #include <QMessageBox>
 #include <QProgressDialog>
+#include <QCommandLineParser>
 
 #include <iostream>
 
@@ -185,7 +186,7 @@ class UI_Mainwindow : public QMainWindow
   Q_OBJECT
 
 public:
-  UI_Mainwindow();
+  UI_Mainwindow(QApplication &app);
   ~UI_Mainwindow();
 
   int files_open,
@@ -321,6 +322,8 @@ public:
 
   void add_signalcomp(struct signalcompblock *);
 
+//  void parse_commandLineOptions(QApplication&);
+
 
 protected:
   int ask_discard_annotationlist(struct annotationblock **);
@@ -351,7 +354,15 @@ private:
   char path[MAX_PATH_LENGTH],
        montagepath[MAX_PATH_LENGTH],
        epochscorepath[MAX_PATH_LENGTH],
+       eventscorepath[MAX_PATH_LENGTH],
        recent_file_path[MAX_RECENTFILES][MAX_PATH_LENGTH];
+
+	QString montagefilename,
+		datafilename,
+		epochfilename,
+		eventfilename;
+
+	bool showSpectrum;
 
   QAction  *former_page_Act,
            *shift_page_left_Act,

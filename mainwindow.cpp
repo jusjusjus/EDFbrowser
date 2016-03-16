@@ -23,7 +23,7 @@
 
 
 
-UI_Mainwindow::UI_Mainwindow()
+UI_Mainwindow::UI_Mainwindow(QApplication &app)
 {
   int i, j, k;
   QStringList args;
@@ -792,32 +792,90 @@ UI_Mainwindow::UI_Mainwindow()
   setCorner(Qt::BottomLeftCorner, Qt::BottomDockWidgetArea);
   setCorner(Qt::BottomRightCorner, Qt::BottomDockWidgetArea);
 
+
+
 // COMMANDLINE ARGUMENTS
-	args = QCoreApplication::arguments();
-  if(args.size()>1)
-  {
-    strcpy(path, args.at(1).toLocal8Bit().data());
-    cmdlineargument = 1;
+ 
+	QCommandLineParser parser;
+	parser.setApplicationDescription("Test helper");
+	parser.addHelpOption();
+	parser.addVersionOption();
+	parser.addPositionalArgument("filename",
+					QCoreApplication::translate("main", "edf/bdf file, you plan to open."));
 
-    if(args.size()>2)
-    {
-      strcpy(montagepath, args.at(2).toLocal8Bit().data());
-      cmdlineargument = 2;
+	// A boolean option with a single name (-s, --spectrum)
+	QCommandLineOption spectrumOption(QStringList() << "s" << "spectrum",
+						QCoreApplication::translate("main", "Open spectrum tool."));
+	parser.addOption(spectrumOption);
 
-    	if(args.size()>3)
-    	{
-      		strcpy(epochscorepath, args.at(3).toLocal8Bit().data());
-      		cmdlineargument = 3;
-    	}
-    }
-  }
-  else cmdlineargument = 0;
+	// An option with a value
+	QCommandLineOption eventfileOption(QStringList() << "e" << "events",
+	        					QCoreApplication::translate("main", "Open file <directory> containing events."),
+	        					QCoreApplication::translate("main", "directory"));
+	parser.addOption(eventfileOption);
+	
+	QCommandLineOption epochfileOption(QStringList() << "E" << "epochs",
+	        					QCoreApplication::translate("main", "Open file <directory> containing epochs."),
+	        					QCoreApplication::translate("main", "directory"));
+	parser.addOption(epochfileOption);
+
+	QCommandLineOption montagefileOption(QStringList() << "m" << "montage",
+	        					QCoreApplication::translate("main", "Open montage file <directory>."),
+	        					QCoreApplication::translate("main", "directory"));
+	parser.addOption(montagefileOption);
+
+	// Process the actual command line arguments given by the user
+	parser.process(app);
+
+	showSpectrum = parser.isSet(spectrumOption);
+	eventfilename = parser.value(eventfileOption);
+	epochfilename = parser.value(epochfileOption);
+	montagefilename = parser.value(montagefileOption);
+
+	const QStringList qarglist = parser.positionalArguments();
+	if(qarglist.size() > 0) datafilename = qarglist.at(0);
+
+	if(datafilename.size() > 0)
+	{
+		strcpy(path, datafilename.toLocal8Bit().data());
+		cmdlineargument = 1;
+
+		if(montagefilename.size() > 0)
+		{
+			strcpy(montagepath, montagefilename.toLocal8Bit().data());
+			cmdlineargument = 2;
+		}
+
+		if(epochfilename.size() > 0)
+		{
+			strcpy(epochscorepath, epochfilename.toLocal8Bit().data());
+			cmdlineargument = 3;
+		}
+
+		if(eventfilename.size() > 0)
+		{
+			strcpy(eventscorepath, eventfilename.toLocal8Bit().data());
+			cmdlineargument = 4;
+		}
+	}
+	else cmdlineargument = 0;
+
+// COMMANDLINE ARGUMENTS
+ 
+
+
+
+
+
 
   showMaximized();
 
   oldwindowheight = height();
 
   if(cmdlineargument) open_new_file();
+
+	if(showSpectrum) show_spectrum_dock();
+  	
 
   if(QT_VERSION < MINIMUM_QT_VERSION)
   {
