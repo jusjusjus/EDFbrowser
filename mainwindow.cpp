@@ -2285,11 +2285,18 @@ void UI_Mainwindow::open_new_file()
     }
   }
 
-  if( (epochscorepath[0] != 0) and (cmdlineargument > 2) )	// Epoch scorefile provided.
+	if( (epochscorepath[0] != 0) and (cmdlineargument > 2) )	// Epoch scorefile provided.
 	{
 		import_epochs(epochscorepath);
 		epoch_editor();
 	}
+
+	if( (eventscorepath[0] != 0) and (cmdlineargument > 3) )	// Epoch scorefile provided.
+	{
+		import_annotations(eventscorepath);
+		annotation_editor();
+	}
+
 
 //  cmdlineargument = 0; // I'm not sure what this is for.
 }
@@ -3977,7 +3984,7 @@ void UI_Mainwindow::import_epochs(const char* filename) // filename = NULL
 
 
 
-void UI_Mainwindow::import_annotations()
+void UI_Mainwindow::import_annotations(const char* filename) // filename = NULL
 {
 	if(annotations_dock[0] == NULL)
 	{
@@ -3986,8 +3993,8 @@ void UI_Mainwindow::import_annotations()
 		annotations_dock[0]->docklist->hide();		// Hide the dock.
 	}
 
-	if( ask_discard_annotationlist(annotationlist) ) return;
-	UI_ImportAnnotationswindow importAnnotsDialog(this, annotations_dock[0], annotationlist);
+	if( (filename == NULL) and ask_discard_annotationlist(annotationlist) ) return;
+	UI_ImportAnnotationswindow importAnnotsDialog(this, annotations_dock[0], annotationlist, filename);
 	annotations_dock[0]->updateList();
 }
 

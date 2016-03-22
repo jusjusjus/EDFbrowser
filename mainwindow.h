@@ -541,7 +541,7 @@ private slots:
   void edit_header();
   void biosemi2bdfplus_converter();
   void convert_fm_audio_to_edf();
-  void import_annotations();
+  void import_annotations(const char* filename=NULL);
   void export_epochs();
   void import_epochs(const char* filename=NULL);
   void set_start_of_epochs();
