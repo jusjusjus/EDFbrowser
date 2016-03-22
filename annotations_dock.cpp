@@ -1035,8 +1035,6 @@ void UI_Annotationswindow::setCurrentRow(int row, QItemSelectionModel::Selection
 	int current = currentRow();
 	int difference = row-current;
 
-	std::cout << "current selection" << " " << current << std::endl;
-
 	if(current < 0)
 	{
 		annotation = annotationlist[0];
