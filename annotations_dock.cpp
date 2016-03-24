@@ -279,7 +279,7 @@ void UI_Annotationswindow::unhide_all_BS_triggers(bool)
 
 void UI_Annotationswindow::filter_edited(const QString text)
 {
-  int i, cnt, n, len;
+  int i, number_of_annots, n, len;
 
   char filter_str[32];
 
@@ -288,21 +288,19 @@ void UI_Annotationswindow::filter_edited(const QString text)
 
   annot = *annotationlist;
 
-  cnt = edfplus_annotation_count(&annot);
+  number_of_annots = edfplus_annotation_count(&annot);
 
-  if(cnt < 1)
-  {
-    return;
-  }
+  if(number_of_annots < 1) return;
 
   if(text.length() < 1)
   {
+	  // for(annot=*annotationlist; annot!=NULL; annot=annot->next_annotation)
     while(annot != NULL)
     {
-      if(!(((annot->ident & (1 << ANNOT_ID_NK_TRIGGER)) && hide_nk_triggers) || ((annot->ident & (1 << ANNOT_ID_BS_TRIGGER)) && hide_bs_triggers)))
+      if(not (	((annot->ident & (1 << ANNOT_ID_NK_TRIGGER)) and hide_nk_triggers) or
+		((annot->ident & (1 << ANNOT_ID_BS_TRIGGER)) and hide_bs_triggers)  ))
       {
         annot->hidden_in_list = 0;
-
         annot->hidden = 0;
       }
 
@@ -322,6 +320,7 @@ void UI_Annotationswindow::filter_edited(const QString text)
 
   if(invert_filter == 0)
   {
+	  // for(annot=*annotationlist; annot!=NULL; annot=annot->next_annotation)
     while(annot != NULL)
     {
       if(!(((annot->ident & (1 << ANNOT_ID_NK_TRIGGER)) && hide_nk_triggers) || ((annot->ident & (1 << ANNOT_ID_BS_TRIGGER)) && hide_bs_triggers)))
@@ -348,9 +347,11 @@ void UI_Annotationswindow::filter_edited(const QString text)
   }
   else
   {
+	  // for(annot=*annotationlist; annot!=NULL; annot=annot->next_annotation)
     while(annot != NULL)
     {
-      if(!(((annot->ident & (1 << ANNOT_ID_NK_TRIGGER)) && hide_nk_triggers) || ((annot->ident & (1 << ANNOT_ID_BS_TRIGGER)) && hide_bs_triggers)))
+      if(not (	((annot->ident & (1 << ANNOT_ID_NK_TRIGGER)) and hide_nk_triggers) or
+		((annot->ident & (1 << ANNOT_ID_BS_TRIGGER)) and hide_bs_triggers)  ))
       {
         annot->hidden_in_list = 0;
 
@@ -361,7 +362,6 @@ void UI_Annotationswindow::filter_edited(const QString text)
           if(!(strncmp(filter_str, annot->annotation + i, len)))
           {
             annot->hidden_in_list = 1;
-
             annot->hidden = 1;
 
             break;
@@ -449,6 +449,7 @@ void UI_Annotationswindow::show_between(bool)
 }
 
 
+
 void UI_Annotationswindow::hide_annot(bool)
 {
   int n;
@@ -472,6 +473,7 @@ void UI_Annotationswindow::hide_annot(bool)
 }
 
 
+
 void UI_Annotationswindow::unhide_annot(bool)
 {
   int n;
@@ -493,6 +495,7 @@ void UI_Annotationswindow::unhide_annot(bool)
 
   mainwindow->maincurve->update();
 }
+
 
 
 void UI_Annotationswindow::hide_same_annots(bool)
@@ -541,6 +544,7 @@ void UI_Annotationswindow::hide_same_annots(bool)
 
   mainwindow->maincurve->update();
 }
+
 
 
 void UI_Annotationswindow::unhide_same_annots(bool)
