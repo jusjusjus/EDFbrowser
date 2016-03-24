@@ -64,7 +64,7 @@ void UI_EpochEditwindow::setup() // load xml scoring information (here only pres
 	QGridLayout* grid = new QGridLayout(annot_edit_widget);
 	grid->addLayout(stage_layout, 0, 0);
 
-	QObject::connect(stage_buttons, SIGNAL(buttonClicked(int)), this, SLOT(stage_selected(int)));	// 
+	QObject::connect(stage_buttons, SIGNAL(buttonClicked(int)), this, SLOT(button_pressed(int)));	// 
 }
 
 
@@ -129,10 +129,13 @@ void UI_EpochEditwindow::load_default() // Loads some default epoch labels.
 
 
 
-void UI_EpochEditwindow::stage_selected(int id) 		// id: the identity of the pushed button.  (stages[id])->toLatin1().data(): nullterminated char* naming the stage that was selected.
+void UI_EpochEditwindow::button_pressed(int id) 		// id: the identity of the pushed button.  (stages[id])->toLatin1().data(): nullterminated char* naming the stage that was selected.
 {
 	mainwindow->epochs_dock->setSelectedText(*stages[id]);
 	mainwindow->epochs_dock->setCurrentRow(mainwindow->epochs_dock->currentRow()+1);
+	int currentRow = mainwindow->epochs_dock->currentRow();
+	
+	if(currentRow == -1) deselect();
 }
 
 

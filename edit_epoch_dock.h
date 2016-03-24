@@ -109,7 +109,7 @@ public slots:
 
 private slots:
 
-	void stage_selected(int);
+	void button_pressed(int);
 };
 
 

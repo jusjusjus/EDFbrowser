@@ -2,9 +2,11 @@
 
 #include "epochs_dock.h"
 
+#define DEFAULT_EPOCHLENGTH	30
 
 
-UI_Epochswindow::UI_Epochswindow(QWidget *w_parent) : UI_Annotationswindow(0, w_parent, "Epochs"), epoch(30), page(epoch), epochlength((long long)epoch*TIME_DIMENSION), pagelength(epochlength), start_offset(0LL)
+
+UI_Epochswindow::UI_Epochswindow(QWidget *w_parent) : UI_Annotationswindow(0, w_parent, "Epochs"), epoch(DEFAULT_EPOCHLENGTH), page(epoch), epochlength((long long)epoch*TIME_DIMENSION), pagelength(epochlength), start_offset(0LL)
 {
 	annotationlist = &(mainwindow->epochlist[0]);
 	load_epochinfo();
@@ -17,7 +19,7 @@ void UI_Epochswindow::load_epochinfo()
 {
 	char cfg_path[MAX_PATH_LENGTH];
 	QString errorStr;
-	int errorLine,
+	int	errorLine,
 		errorColumn;
 	QDomDocument domDocument;
 	QDomElement root, child;
