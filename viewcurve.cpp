@@ -4222,15 +4222,15 @@ void ViewCurve::strip_types_from_label(char *label)
     return;
   }
 
-  if((!(strncmp(label, "EEG ", 4)))	// Electrencephalogram
-   ||(!(strncmp(label, "ECG ", 4)))	// Electrocardiogram
-   ||(!(strncmp(label, "EOG ", 4)))	// Electrookulogram
-   ||(!(strncmp(label, "ERG ", 4)))	// Electroretinogramm
-   ||(!(strncmp(label, "EMG ", 4)))	// Electromuogram
-   ||(!(strncmp(label, "MEG ", 4)))	// Magnetencephalogram
-   ||(!(strncmp(label, "MCG ", 4))))	// Magnetokardiogram??
+  if( (not strncmp(label, "EEG ", 4))	// Electrencephalogram
+   or (not strncmp(label, "ECG ", 4))	// Electrocardiogram
+   or (not strncmp(label, "EOG ", 4))	// Electrookulogram
+   or (not strncmp(label, "ERG ", 4))	// Electroretinogramm
+   or (not strncmp(label, "EMG ", 4))	// Electromuogram
+   or (not strncmp(label, "MEG ", 4))	// Magnetencephalogram
+   or (not strncmp(label, "MCG ", 4)) )	// Magnetokardiogram??
   {
-    if(label[4]!=' ')
+    if(label[4] != ' ')
     {
       for(i=0; i<(len-4); i++)
       {
