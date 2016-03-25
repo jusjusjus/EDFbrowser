@@ -797,7 +797,7 @@ UI_Mainwindow::UI_Mainwindow(QApplication &app)
 // COMMANDLINE ARGUMENTS
  
 	QCommandLineParser parser;
-	parser.setApplicationDescription("Test helper");
+	parser.setApplicationDescription("edfView");
 	parser.addHelpOption();
 	parser.addVersionOption();
 	parser.addPositionalArgument("filename",
