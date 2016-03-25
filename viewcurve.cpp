@@ -1752,7 +1752,9 @@ void ViewCurve::drawCurve_stage_2(QPainter *painter, int w_width, int w_height, 
 	{
 		l_tmp = annot->onset - mainwindow->edfheaderlist[i]->starttime_offset;
 
-		if((l_tmp > (mainwindow->edfheaderlist[i]->viewtime - TIME_DIMENSION)) and (!annot->hidden) and (!annot->hidden_in_list))
+		if( (l_tmp > (mainwindow->edfheaderlist[i]->viewtime - TIME_DIMENSION)) and
+		   (!annot->hidden) and
+		   (!annot->hidden_in_list) )
 		{
 			if(l_tmp > (mainwindow->edfheaderlist[i]->viewtime + mainwindow->pagetime)) break;
 
@@ -1765,7 +1767,7 @@ void ViewCurve::drawCurve_stage_2(QPainter *painter, int w_width, int w_height, 
 // Marker absolute to beginning.
 			l_tmp = annot->onset + mainwindow->edfheaderlist[i]->l_starttime;
 			snprintf(string, 32, "%i:%02i:%02i.%04i",
-					(int)((l_tmp / TIME_DIMENSION)/ 3600LL),
+				       ((int)((l_tmp / TIME_DIMENSION)/ 3600LL)) % 24,
 					(int)(((l_tmp / TIME_DIMENSION) % 3600LL) / 60LL),
 					(int)((l_tmp / TIME_DIMENSION) % 60LL),
 					(int)(((l_tmp % TIME_DIMENSION) / 1000LL)));
@@ -1819,7 +1821,7 @@ void ViewCurve::drawCurve_stage_2(QPainter *painter, int w_width, int w_height, 
 // Marker absolute to beginning.
 			l_tmp = annot->onset + mainwindow->edfheaderlist[0]->l_starttime;
 			snprintf(string, 32, "%i:%02i:%02i.%04i",
-					(int)((l_tmp / TIME_DIMENSION)/ 3600LL),
+				       ((int)((l_tmp / TIME_DIMENSION)/ 3600LL)) % 24,
 					(int)(((l_tmp / TIME_DIMENSION) % 3600LL) / 60LL),
 					(int)((l_tmp / TIME_DIMENSION) % 60LL),
 					(int)(((l_tmp % TIME_DIMENSION) / 1000LL)));
