@@ -67,6 +67,7 @@ private:
 
 	int get_type_from_label(char *label);
 	void load_types(void);
+	void save_types(void);
 	void default_types(void);
 	void ask_for_types();
 

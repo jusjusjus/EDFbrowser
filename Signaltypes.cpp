@@ -26,19 +26,20 @@ void Signaltypes::load_types()
 	QString errorStr;
 	int	errorLine,
 		errorColumn;
-	QDomDocument domDocument;
+	QDomDocument document;
 
 	types.push_back( new Signaltype(this, "Unspecified") );			// Include the default type.
 
 	configpath(cfg_path, "Signaltypes.xml");
 	QFile file(cfg_path);
-	if(! file.open(QFile::ReadOnly | QFile::Text) )
+	if(not file.open(QFile::ReadOnly | QFile::Text) )
 						{ QMessageBox::warning(parent->mainwindow, tr("Signaltypes"), tr("Cannot read file %1:\n%2.").arg(cfg_path).arg(file.errorString())); default_types(); return; }
 
-	if(! domDocument.setContent(&file, true, &errorStr, &errorLine, &errorColumn) )
-						{ QMessageBox::information(parent->mainwindow, tr("Signaltypes"), tr("Parse error at line %1, column %2:\n%3").arg(errorLine).arg(errorColumn).arg(errorStr)); default_types(); return; }
+	if(not document.setContent(&file, true, &errorStr, &errorLine, &errorColumn) )
+						{ QMessageBox::information(parent->mainwindow, tr("Signaltypes"), tr("Parse error at line %1, column %2:\n%3").arg(errorLine).arg(errorColumn).arg(errorStr)); default_types(); file.close(); return; }
+	file.close();
 
-	QDomElement root = domDocument.documentElement();
+	QDomElement root = document.documentElement();
 	if( root.tagName() != "Signaltypes" )
 						{ QMessageBox::information(parent->mainwindow, tr("Signaltypes"), tr("%1 is not a Signaltypes.xml file.").arg(cfg_path) ); default_types(); return; }
 
@@ -51,6 +52,39 @@ void Signaltypes::load_types()
 	{
 		types.push_back( new Signaltype(this, &child) );
 	}
+}
+
+
+
+void Signaltypes::save_types()
+{
+	char cfg_path[MAX_PATH_LENGTH];
+	bool success;
+	QDomDocument document;
+
+	// Creating xml-document part
+	QDomElement root = document.createElement("Signaltypes");
+	root.setAttribute("version", "0.0.1");
+
+	for(unsigned i=0; i<types.size(); i++)
+	{
+		//QDomElement type = document.importNode( types[i].toQDomElement(), true );	// true : Import the whole tree.
+		//root.appendChild(type);
+	}
+
+
+	// Writing-to-file part
+	configpath(cfg_path, "Signaltypes.xml");
+	QFile file(cfg_path);
+	success = file.open( QIODevice::WriteOnly | QIODevice::Text );
+
+	if(not success) { QMessageBox::warning(parent->mainwindow, tr("Signaltypes"), tr("Cannot write file %1:\n%2.").arg(cfg_path).arg(file.errorString())); default_types(); return; }
+
+	QTextStream stream( &file );
+	
+	stream << document.toString();
+
+	file.close();
 }
 
 
