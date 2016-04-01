@@ -24,7 +24,7 @@ void Signaltypes::load_types()
 {
 	char cfg_path[MAX_PATH_LENGTH];
 	QString errorStr;
-	int errorLine,
+	int	errorLine,
 		errorColumn;
 	QDomDocument domDocument;
 
@@ -38,7 +38,6 @@ void Signaltypes::load_types()
 	if(! domDocument.setContent(&file, true, &errorStr, &errorLine, &errorColumn) )
 						{ QMessageBox::information(parent->mainwindow, tr("Signaltypes"), tr("Parse error at line %1, column %2:\n%3").arg(errorLine).arg(errorColumn).arg(errorStr)); default_types(); return; }
 
-
 	QDomElement root = domDocument.documentElement();
 	if( root.tagName() != "Signaltypes" )
 						{ QMessageBox::information(parent->mainwindow, tr("Signaltypes"), tr("%1 is not a Signaltypes.xml file.").arg(cfg_path) ); default_types(); return; }
@@ -46,10 +45,12 @@ void Signaltypes::load_types()
 	else if( root.hasAttribute("version") && root.attribute("version") != "0.0.1" )
 						{ QMessageBox::information(parent->mainwindow, tr("Signaltypes"), tr("%1 is not Signaltypes.xml version 0.0.1 file.").arg(cfg_path) ); default_types(); return; }
 
-
-	for(QDomElement child = root.firstChildElement("Signaltype"); not child.isNull(); child = child.nextSiblingElement("Signaltype"))
+	for(QDomElement child = root.firstChildElement("Signaltype");
+			not child.isNull();
+			child = child.nextSiblingElement("Signaltype"))
+	{
 		types.push_back( new Signaltype(this, &child) );
-
+	}
 }
 
 

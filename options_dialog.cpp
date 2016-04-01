@@ -1399,7 +1399,7 @@ void UI_OptionsDialog::saveColorSchemaButtonClicked()
   FILE *colorfile;
 
   strcpy(path, mainwindow->recent_colordir);
-  strcat(path, "/my_colorschema.color");
+  strcat(path, "/my_colorscheme.color");
 
   strcpy(path, QFileDialog::getSaveFileName(0, "Save color scheme", QString::fromLocal8Bit(path), "Color scheme files (*.color *.COLOR)").toLocal8Bit().data());
 
@@ -1410,16 +1410,16 @@ void UI_OptionsDialog::saveColorSchemaButtonClicked()
 
   if(strlen(path) > 4)
   {
-    if(strcmp(path + strlen(path) - 6, ".color"))
+    if(strcmp(path + strlen(path) - 6, ".color"))	// check if the ending is '.color'
     {
-      strcat(path, ".color");
+      strcat(path, ".color");				// if not : append it to the string.
     }
   }
 
   get_directory_from_path(mainwindow->recent_colordir, path, MAX_PATH_LENGTH);
 
   colorfile = fopen(path, "wb");
-  if(colorfile==NULL)
+  if(colorfile == NULL)
   {
     QMessageBox messagewindow(QMessageBox::Critical, "Error", "Can not open file for writing.");
     messagewindow.exec();

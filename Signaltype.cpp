@@ -30,11 +30,12 @@ Signaltype::Signaltype(QObject* theparent, QDomElement *signaltype) : name("Unsp
 	QObject::connect(customevent, SIGNAL(triggered()), parent->parent, SLOT(annotEditSetAnnotation()));
 	QObject::connect(events, SIGNAL(triggered(QAction*)), parent->parent, SLOT(annotEditSetAnnotation(QAction*)));
 
-
 	if ( not signaltype->hasAttribute("Name") ) { QMessageBox::information(parent->parent->mainwindow, tr("Signaltype"), tr("%1 has no Name attribute.").arg(signaltype->tagName()) ); return; }
 	name = signaltype->attribute("Name");
 
-	for(QDomElement child = signaltype->firstChildElement("Event"); not child.isNull(); child = child.nextSiblingElement("Event"))
+	for(QDomElement child = signaltype->firstChildElement("Event");
+			not child.isNull();
+			child = child.nextSiblingElement("Event"))
 	{
 		if ( not child.hasAttribute("Name") ) { QMessageBox::information(parent->parent->mainwindow, tr("Signaltype"), tr("%1 has no Name attribute.").arg(child.tagName()) ); continue; }
 
@@ -45,7 +46,10 @@ Signaltype::Signaltype(QObject* theparent, QDomElement *signaltype) : name("Unsp
 			else
 				addAction( child.attribute("Name").toLatin1().data(), atof(child.attribute("min").toLatin1().data()) );
 		}
-		else addAction( child.attribute("Name").toLatin1().data() );
+		else
+		{
+			addAction( child.attribute("Name").toLatin1().data() );
+		}
 	}
 }
 
