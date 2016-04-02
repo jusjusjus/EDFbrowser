@@ -76,8 +76,7 @@ void Signaltypes::save_types()
 	// Writing-to-file part
 	configpath(cfg_path, "Signaltypes.xml");
 	QFile file(cfg_path);
-	success = file.open( QIODevice::WriteOnly | QIODevice::Text );
-
+	success = file.open( QIODevice::WriteOnly | QIODevice::Text ); 
 	if(not success) { QMessageBox::warning(parent->mainwindow, tr("Signaltypes"), tr("Cannot write file %1:\n%2.").arg(cfg_path).arg(file.errorString())); default_types(); return; }
 
 	QTextStream stream( &file );

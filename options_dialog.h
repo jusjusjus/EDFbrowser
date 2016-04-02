@@ -70,6 +70,8 @@
 #include "colordialog.h"
 #include "special_button.h"
 #include "signalcurve.h"
+#include "color_options.h"
+#include "signaltype_options.h"
 
 
 
@@ -99,10 +101,12 @@ QGridLayout    *scrolllayout;
 
 QTabWidget     *tabholder;
 
-QWidget        *tab1,
-               *tab2,
+	QWidget	*tab2,
                *tab3,
                *tab4;
+
+	ColorOptions		*colorOptions;
+	SignaltypeOptions	*signaltypeOptions;
 
 QVBoxLayout    *mainLayout;
 
@@ -196,17 +200,17 @@ void update_interface(void);
 
 private slots:
 
-void BgColorButtonClicked(SpecialButton *);
-void SrColorButtonClicked(SpecialButton *);
-void BrColorButtonClicked(SpecialButton *);
-void MrColorButtonClicked(SpecialButton *);
-void TxtColorButtonClicked(SpecialButton *);
+//void BgColorButtonClicked(SpecialButton *);
+//void SrColorButtonClicked(SpecialButton *);
+//void BrColorButtonClicked(SpecialButton *);
+//void MrColorButtonClicked(SpecialButton *);
+//void TxtColorButtonClicked(SpecialButton *);
 void SigColorButtonClicked(SpecialButton *);
-void BaseColorButtonClicked(SpecialButton *);
+//void BaseColorButtonClicked(SpecialButton *);
 void Crh1ColorButtonClicked(SpecialButton *);
 void Crh2ColorButtonClicked(SpecialButton *);
 void FrColorButtonClicked(SpecialButton *);
-void AnnotMkrButtonClicked(SpecialButton *);
+//void AnnotMkrButtonClicked(SpecialButton *);
 void checkbox1Clicked(int);
 void checkbox2Clicked(int);
 void checkbox3Clicked(int);
