@@ -67,6 +67,7 @@ public:
 	void exec(QPoint&);
 
 	QString name;			// Names the types.  E.g.: "EEG"
+	QDomDocument toQDom();
 
 private: 
 	Event* customevent;

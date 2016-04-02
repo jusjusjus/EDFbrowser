@@ -55,6 +55,27 @@ Signaltype::Signaltype(QObject* theparent, QDomElement *signaltype) : name("Unsp
 
 
 
+QDomDocument Signaltype::toQDom()
+{
+	QDomDocument tree;
+	QDomElement type = tree.createElement("Signaltype");
+	type.setAttribute("Name", name);
+
+	QList<QAction*> actions = events->actions();
+	QList<QAction*>::iterator action;
+
+	for(action=actions.begin(); action!=actions.end(); action++)
+	{
+		QDomElement act = tree.createElement("Event");
+		act.setAttribute( "Name", (*action)->text() );
+		type.appendChild(act);
+	}
+
+	return tree;
+}
+
+
+
 void Signaltype::addAction(const char* name, double min, double max)
 {
 	Event *newevent = new Event(name, this, min, max);

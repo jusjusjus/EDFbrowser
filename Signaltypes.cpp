@@ -68,8 +68,8 @@ void Signaltypes::save_types()
 
 	for(unsigned i=0; i<types.size(); i++)
 	{
-		//QDomElement type = document.importNode( types[i].toQDomElement(), true );	// true : Import the whole tree.
-		//root.appendChild(type);
+		QDomNode type = document.importNode( types[i]->toQDom(), true );	// true : Import the whole tree.
+		root.appendChild(type);
 	}
 
 
