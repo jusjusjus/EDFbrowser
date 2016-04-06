@@ -52,19 +52,19 @@ UI_OptionsDialog::UI_OptionsDialog(QWidget *w_parent, unsigned int tab_number) /
   if(showminimized)
   {
     optionsdialog->setMinimumSize(480, 500);
-    optionsdialog->setMaximumSize(480, 820);
+    //optionsdialog->setMaximumSize(480, 820);
 
     scrollarea = new QScrollArea;
     scrollarea->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
 
     frame = new QFrame;
     frame->setMinimumSize(440, 780);
-    frame->setMaximumSize(440, 780);
+    //frame->setMaximumSize(440, 780);
   }
   else
   {
     optionsdialog->setMinimumSize(440, 780);
-    optionsdialog->setMaximumSize(440, 780);
+    //optionsdialog->setMaximumSize(440, 780);
   }
   optionsdialog->setWindowTitle("Settings");
   optionsdialog->setModal(true);

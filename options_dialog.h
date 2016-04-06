@@ -73,6 +73,13 @@
 #include "color_options.h"
 #include "signaltype_options.h"
 
+#ifndef OPTIONS_COLORS
+#define	OPTIONS_COLORS		0
+#define	OPTIONS_SIGNALTYPE	1
+#define	OPTIONS_CALIBRATION	2
+#define	OPTIONS_POWERSPECT	3
+#define	OPTIONS_OTHER		4
+#endif
 
 
 class UI_Mainwindow;

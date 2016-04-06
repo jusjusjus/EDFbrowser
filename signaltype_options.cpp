@@ -5,7 +5,7 @@
 
 
 
-SignaltypeOptions::SignaltypeOptions(QWidget *w_parent) : QWidget() // tab_number=0
+SignaltypeOptions::SignaltypeOptions(QWidget *w_parent) : QWidget()
 {
 	mainwindow = (UI_Mainwindow *)w_parent;
 
@@ -61,25 +61,24 @@ void SignaltypeOptions::save_xml()
 	char cfg_path[MAX_PATH_LENGTH];
 	bool success;
 
-	success = this->check_xml();
+	if( check_xml() )	// If text has xml integrity.. (save to file)
+	{
+		// Writing-to-file part
+		configpath(cfg_path, "Signaltypes.xml");
+		QFile file(cfg_path);
 
-	if(not success) return;
-
-	// Writing-to-file part
-	configpath(cfg_path, "Signaltypes.xml");
-	QFile file(cfg_path);
-	success = file.open( QIODevice::WriteOnly | QIODevice::Text ); 
-	if(not success) { QMessageBox::warning(mainwindow, tr("SignaltypeOptions"), tr("Cannot write file %1:\n%2.").arg(cfg_path).arg(file.errorString())); return; } 
-	QTextStream stream( &file );
+		success = file.open( QIODevice::WriteOnly | QIODevice::Text ); 
+		if(not success) { QMessageBox::warning(mainwindow, tr("SignaltypeOptions"), tr("Cannot write file %1:\n%2.").arg(cfg_path).arg(file.errorString())); return; } 
+		
+		QTextStream stream( &file );
+		stream << document->toPlainText();
 	
-	stream << document->toPlainText();
+		file.close();
 
-	file.close();
+		// Reload the annotation editor
+		mainwindow->annotationEditDock->signaltypes->reload_types();
+	}
 
-//	if(mainwindow->annotation_editor_active)
-//	{
-//		mainwindow->annotationEditWindow
-//	}
 }
 
 
@@ -90,9 +89,20 @@ bool SignaltypeOptions::check_xml()
 	int	errorLine,
 		errorColumn;
 	QDomDocument xmlDoc;
+	bool success;
 
-	if(not xmlDoc.setContent( document->toPlainText(), true, &errorStr, &errorLine, &errorColumn) )
-						{ QMessageBox::information(mainwindow, tr("SignaltypeOptions"), tr("Parse error at line %1, column %2:\n%3").arg(errorLine).arg(errorColumn).arg(errorStr)); return false; }
+	success = xmlDoc.setContent( document->toPlainText(), true, &errorStr, &errorLine, &errorColumn);
+
+	if(not success)
+	{
+		QMessageBox::information(mainwindow,
+				tr("SignaltypeOptions"),
+				tr("Parse error at line %1, column %2:\n%3").arg(errorLine).arg(errorColumn).arg(errorStr));
+		return false;
+	}
 
 	return true;
 }
+
+
+
