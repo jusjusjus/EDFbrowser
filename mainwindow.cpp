@@ -601,10 +601,11 @@ UI_Mainwindow::UI_Mainwindow(QApplication &app)
 	settingsmenu = new QMenu(this);
 	settingsmenu->setTitle("Preferences");
 
-	settingsmenu->addAction("Colors")->setData(0);
-	settingsmenu->addAction("Calibration")->setData(1);
-	settingsmenu->addAction("Power spectrum")->setData(2);
-	settingsmenu->addAction("Other")->setData(3);
+	settingsmenu->addAction("Colors")->setData(OPTIONS_COLORS);
+	settingsmenu->addAction("Signaltype")->setData(OPTIONS_SIGNALTYPE);
+	settingsmenu->addAction("Calibration")->setData(OPTIONS_CALIBRATION);
+	settingsmenu->addAction("Power spectrum")->setData(OPTIONS_POWERSPECT);
+	settingsmenu->addAction("Other")->setData(OPTIONS_OTHER);
 
 	connect(settingsmenu, SIGNAL(triggered(QAction *)),
 			this, SLOT(show_options_dialog(QAction *)), Qt::UniqueConnection);	// if the "Settings"-menu is triggered, it will call show_options_dialog at specific tab.

@@ -63,13 +63,17 @@ public:
 
 	std::vector<Signaltype*> types;
 
+	void reload_types(void);
+
 private:
 
-	int get_type_from_label(char *label);
+	QDomElement* getRootElement();
 	void load_types(void);
+	int get_type_from_label(char *label);
 	void save_types(void);
 	void default_types(void);
 	void ask_for_types();
+	void reset();
 
 
 public slots:
