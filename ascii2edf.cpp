@@ -1687,7 +1687,7 @@ int UI_ASCII2EDFapp::check_input(void)
 
         for(k=0; k<len; k++)
         {
-          if((str[k]<32)||(str[k]>126))
+          if( (str[k]<32) || (str[k]>126) )
           {
             snprintf(big_str, ASCII_MAX_LINE_LEN,
             "Character %i in %s field of row %i is not a valid ASCII character.",
