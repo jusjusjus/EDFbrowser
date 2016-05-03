@@ -173,8 +173,8 @@ void UI_AnnotationEditwindow::createButtonClicked()
 	strncpy(annotation->annotation, annot_descript_lineEdit->text().toUtf8().data(), MAX_ANNOTATION_LEN);
 	annotation->annotation[MAX_ANNOTATION_LEN] = 0;
 
-	annotation->former_annotation = NULL;
-	annotation->next_annotation = NULL;
+	annotation->former_annotation = 0;
+	annotation->next_annotation   = 0;
 
 	annotation->modified = 1;
 

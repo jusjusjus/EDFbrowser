@@ -130,65 +130,54 @@ int edfplus_annotation_count(struct annotationblock **list)
 
 
 
-void edfplus_annotation_delete1(struct annotationblock *annotation)
+void edfplus_annotation_delete(struct annotationblock **list, int n)
 {
-	if(annotation == 0) return;
+	struct annotationblock *annotation;
 
-	if(annotation->former_annotation != 0)
+	annotation = *list;
+
+	if(annotation==NULL)
+	{
+		return;
+	}
+
+	while(n)
+	{
+		if(annotation->next_annotation==NULL)
+		{
+			return;
+		}
+
+		annotation = annotation->next_annotation;
+
+		n--;
+	}
+
+	edfplus_annotation_do_delete(list, annotation);
+}
+
+
+
+void edfplus_annotation_do_delete(struct annotationblock **list, struct annotationblock *annotation)
+{
+	if(annotation->former_annotation!=NULL)
 	{
 		annotation->former_annotation->next_annotation = annotation->next_annotation;
 	}
 
-	if(annotation->next_annotation != 0)
+	if(annotation->next_annotation!=NULL)
 	{
 		annotation->next_annotation->former_annotation = annotation->former_annotation;
+	}
+
+	if(annotation->former_annotation == NULL)
+	{
+		*list = annotation->next_annotation;
 	}
 
 	free(annotation);
 }
 
-
-
-void edfplus_annotation_delete(struct annotationblock **list, int n)
-{
-  struct annotationblock *annotlist;
-
-  annotlist = *list;
-
-  if(annotlist==NULL)
-  {
-    return;
-  }
-
-  while(n)
-  {
-    if(annotlist->next_annotation==NULL)
-    {
-      return;
-    }
-
-    annotlist = annotlist->next_annotation;
-
-    n--;
-  }
-
-  if(annotlist->former_annotation!=NULL)
-  {
-    annotlist->former_annotation->next_annotation = annotlist->next_annotation;
-  }
-
-  if(annotlist->next_annotation!=NULL)
-  {
-    annotlist->next_annotation->former_annotation = annotlist->former_annotation;
-  }
-
-  if(annotlist->former_annotation==NULL)
-  {
-    *list = annotlist->next_annotation;
-  }
-
-  free(annotlist);
-}
 
 
 void edfplus_annotation_delete_list(struct annotationblock **list)

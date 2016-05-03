@@ -136,14 +136,20 @@ UI_Annotationswindow::UI_Annotationswindow(int file_number, QWidget *w_parent, c
 
 void UI_Annotationswindow::delete_annotation()
 {
+// Declaration
 	int selected_row;
 
 	annotationblock *annotation;
 
+	QListWidgetItem *item;
 
+
+// Initialization
 	selected_row = currentRow(); // check if row is selected.
 
-	if(selected_row  < 0)				// If no annotation has been selected ..
+	item = currentItem();
+
+	if(item  == 0)			// If no annotation has been selected ..
 	{
 		QMessageBox messagewindow(QMessageBox::Critical, "Error", "delete_annotation() : No annotation selected.");
 		messagewindow.exec();
@@ -151,16 +157,23 @@ void UI_Annotationswindow::delete_annotation()
 	}
 
 
-	annotation = (annotationblock*) currentItem()->data(Qt::UserRole).value<void*>();
+	annotation = (annotationblock*) item->data(Qt::UserRole).value<void*>();
 
-	edfplus_annotation_delete1( annotation );	// Delete the selected annotation.
+	if(annotation == 0)
+	{
+		QMessageBox messagewindow(QMessageBox::Critical, "Error", "delete_annotation() : annotation is NULL pointer.");
+		messagewindow.exec();
+		return;
+	}
 
-	selected_row--;			// Select previous annotation.
+	edfplus_annotation_do_delete( annotationlist, annotation );	// Delete the selected annotation.
+
+	selected_row--;					// Select previous annotation.
+
+	setCurrentRow(selected_row);
 
 	if(selected_row >= 0)			// If there is a previous annotation ..
 	{
-		setCurrentRow(selected_row);
-
 		annotation = (annotationblock*) currentItem()->data(Qt::UserRole).value<void*>();
 
   		if(annotation != 0)							// 	.. and if it exists ..
@@ -690,178 +703,176 @@ void UI_Annotationswindow::updateList(annotationblock*, int)	// updates a single
 
 void UI_Annotationswindow::updateList()
 {
-  char str[MAX_ANNOTATION_LEN + 32],	// this contains the final string?
-       *str_tmp;
+	char str[MAX_ANNOTATION_LEN + 32],	// this contains the final string?
+	     *str_tmp;
 
-  int i,
-      len,
-      sequence_nr=0,
-      jump=0,
-      modified=0;
+	int i,
+	    len,
+	    sequence_nr=0,
+	    jump=0,
+	    modified=0;
 
-  QListWidgetItem *listitem;
+	QListWidgetItem *listitem;
 
-  QString string;
+	QString string;
 
-  QByteArray ba;
+	QByteArray ba;
 
+	selected = -1;
 
-  selected = -1;
+	clear();					// Empty out the Qt list.
 
+	edfplus_annotation_sort(annotationlist);	// Sort annotationlist.
 
-  clear();					// Empty out the Qt list.
+	annotation = *annotationlist;			// Get the first annotation.
 
-  edfplus_annotation_sort(annotationlist);	// Sort annotationlist.
+	while(annotation != NULL)	// If it exists ..
+	{
+		if(annotation->hidden_in_list)	//	.. check if it's hidden ..
+		{
+			annotation = annotation->next_annotation;	// Select the next annotation ..
+			sequence_nr++;				// 					(sequence_nr sets the hash of annotationlist.)
+			continue;					// 		.. and move back to the while loop.
+		}
 
-  annotation = *annotationlist;			// Get the first annotation.
+		string = QString::fromUtf8(annotation->annotation);	// Get a QString of the annotation.
 
-  while(annotation != NULL)	// If it exists ..
-  {
-    if(annotation->hidden_in_list)	//	.. check if it's hidden ..
-    {
-      annotation = annotation->next_annotation;	// Select the next annotation ..
-      sequence_nr++;				// 					(sequence_nr sets the hash of annotationlist.)
-      continue;					// 		.. and move back to the while loop.
-    }
+		ba = string.toUtf8();
+		str_tmp = ba.data();
 
-    string = QString::fromUtf8(annotation->annotation);	// Get a QString of the annotation.
+		len = 0;
+		for(i=0; ; i++)
+		{
+			if(str_tmp[i] == 0)	break;
 
-    ba = string.toUtf8();
-    str_tmp = ba.data();
+			if(((( (unsigned char *) str_tmp)[i])&224) == 192)	len++;
+		}
 
-    len = 0;
-    for(i=0; ; i++)
-    {
-      if(str_tmp[i] == 0)  break;
-
-      if(((( (unsigned char *) str_tmp)[i])&224) == 192)  len++;
-    }
-
-    for(i=0; i<len; i++)  string.append(' ');
+		for(i=0; i<len; i++)	string.append(' ');
 
 	// print the date into str, starting at MAX_ANNOTATION_LEN?
-    if(relative)	// time relative to start.
-    {
-      if((annotation->onset - mainwindow->edfheaderlist[file_num]->starttime_offset) < 0LL)	// before onset
-      {
-        snprintf(str, (MAX_ANNOTATION_LEN + 32) / 2, "  -%2i:%02i:%02i",//.%04i",
-                (int)((-(annotation->onset - mainwindow->edfheaderlist[file_num]->starttime_offset) / TIME_DIMENSION)/ 3600),
-                (int)(((-(annotation->onset - mainwindow->edfheaderlist[file_num]->starttime_offset) / TIME_DIMENSION) % 3600) / 60),
-                (int)((-(annotation->onset - mainwindow->edfheaderlist[file_num]->starttime_offset) / TIME_DIMENSION) % 60));//,
-//                (int)((-(annotation->onset - mainwindow->edfheaderlist[file_num]->starttime_offset) % TIME_DIMENSION) / 1000LL));
-      }
-      else											// after onset
-      {
-        snprintf(str, (MAX_ANNOTATION_LEN + 32) / 2, "  %3i:%02i:%02i",//.%04i",
-                (int)(((annotation->onset - mainwindow->edfheaderlist[file_num]->starttime_offset) / TIME_DIMENSION)/ 3600),
-                (int)((((annotation->onset - mainwindow->edfheaderlist[file_num]->starttime_offset) / TIME_DIMENSION) % 3600) / 60),
-                (int)(((annotation->onset - mainwindow->edfheaderlist[file_num]->starttime_offset) / TIME_DIMENSION) % 60));//,
-//                (int)(((annotation->onset - mainwindow->edfheaderlist[file_num]->starttime_offset) % TIME_DIMENSION) / 1000LL));
-      }
-    }
-    else		// if time not relative to start, but absolute time.
-    {
-      snprintf(str, MAX_ANNOTATION_LEN + 32, "  %3i:%02i:%02i",//.%04i",
-              (int)((((annotation->onset + mainwindow->edfheaderlist[file_num]->l_starttime) / TIME_DIMENSION)/ 3600) % 24),
-              (int)((((annotation->onset + mainwindow->edfheaderlist[file_num]->l_starttime) / TIME_DIMENSION) % 3600) / 60),
-              (int)(((annotation->onset + mainwindow->edfheaderlist[file_num]->l_starttime) / TIME_DIMENSION) % 60));//,
-//              (int)(((annotation->onset + mainwindow->edfheaderlist[file_num]->l_starttime) % TIME_DIMENSION) / 1000LL));
-    }
+		if(relative)	// time relative to start.
+		{
+			if((annotation->onset - mainwindow->edfheaderlist[file_num]->starttime_offset) < 0LL)	// before onset
+			{
+				snprintf(str, (MAX_ANNOTATION_LEN + 32) / 2, "	-%2i:%02i:%02i",//.%04i",
+								(int)((-(annotation->onset - mainwindow->edfheaderlist[file_num]->starttime_offset) / TIME_DIMENSION)/ 3600),
+								(int)(((-(annotation->onset - mainwindow->edfheaderlist[file_num]->starttime_offset) / TIME_DIMENSION) % 3600) / 60),
+								(int)((-(annotation->onset - mainwindow->edfheaderlist[file_num]->starttime_offset) / TIME_DIMENSION) % 60));//,
+//								(int)((-(annotation->onset - mainwindow->edfheaderlist[file_num]->starttime_offset) % TIME_DIMENSION) / 1000LL));
+			}
+			else											// after onset
+			{
+				snprintf(str, (MAX_ANNOTATION_LEN + 32) / 2, "	%3i:%02i:%02i",//.%04i",
+								(int)(((annotation->onset - mainwindow->edfheaderlist[file_num]->starttime_offset) / TIME_DIMENSION)/ 3600),
+								(int)((((annotation->onset - mainwindow->edfheaderlist[file_num]->starttime_offset) / TIME_DIMENSION) % 3600) / 60),
+								(int)(((annotation->onset - mainwindow->edfheaderlist[file_num]->starttime_offset) / TIME_DIMENSION) % 60));//,
+//								(int)(((annotation->onset - mainwindow->edfheaderlist[file_num]->starttime_offset) % TIME_DIMENSION) / 1000LL));
+			}
+		}
+		else		// if time not relative to start, but absolute time.
+		{
+			snprintf(str, MAX_ANNOTATION_LEN + 32, "	%3i:%02i:%02i",//.%04i",
+							(int)((((annotation->onset + mainwindow->edfheaderlist[file_num]->l_starttime) / TIME_DIMENSION)/ 3600) % 24),
+							(int)((((annotation->onset + mainwindow->edfheaderlist[file_num]->l_starttime) / TIME_DIMENSION) % 3600) / 60),
+							(int)(((annotation->onset + mainwindow->edfheaderlist[file_num]->l_starttime) / TIME_DIMENSION) % 60));//,
+//							(int)(((annotation->onset + mainwindow->edfheaderlist[file_num]->l_starttime) % TIME_DIMENSION) / 1000LL));
+		}
 
-    str[MAX_ANNOTATION_LEN + 31] = 0;
+		str[MAX_ANNOTATION_LEN + 31] = 0;
 
-    remove_trailing_zeros(str);
+		remove_trailing_zeros(str);
 
-    string.append(QString::fromLatin1(str));
+		string.append(QString::fromLatin1(str));
 
-    listitem = new QListWidgetItem(string, this);
+		listitem = new QListWidgetItem(string, this);
 
 	QVariant annotVar = qVariantFromValue( (void*) annotation);
 	listitem->setData(Qt::UserRole, annotVar);	// Store a pointer to th annotation.
 
-    if(annotation->modified == 1)	// if modified, change font of this listitem.
-    {
-      listitem->setFont(specialfont);
-      listitem->setForeground(Qt::red);
-      modified = 1;
-    }
+		if(annotation->modified == 1)	// if modified, change font of this listitem.
+		{
+			listitem->setFont(specialfont);
+			listitem->setForeground(Qt::red);
+			modified = 1;
+		}
 
-    // Set the tool tip of this annotation:  (That's when you hover over the item with the mouse.)
-    if((annotation->onset - mainwindow->edfheaderlist[file_num]->starttime_offset) < 0LL)
-    {
-      snprintf(str, (MAX_ANNOTATION_LEN + 32) / 2, "onset: -%i:%02i:%02i.%04i",
-              (int)((-(annotation->onset - mainwindow->edfheaderlist[file_num]->starttime_offset) / TIME_DIMENSION)/ 3600),
-              (int)(((-(annotation->onset - mainwindow->edfheaderlist[file_num]->starttime_offset) / TIME_DIMENSION) % 3600) / 60),
-              (int)((-(annotation->onset - mainwindow->edfheaderlist[file_num]->starttime_offset) / TIME_DIMENSION) % 60),
-              (int)((-(annotation->onset - mainwindow->edfheaderlist[file_num]->starttime_offset) % TIME_DIMENSION) / 1000LL));
-    }
-    else
-    {
-      snprintf(str, (MAX_ANNOTATION_LEN + 32) / 2, "onset: %2i:%02i:%02i.%04i",
-              (int)(((annotation->onset - mainwindow->edfheaderlist[file_num]->starttime_offset) / TIME_DIMENSION)/ 3600),
-              (int)((((annotation->onset - mainwindow->edfheaderlist[file_num]->starttime_offset) / TIME_DIMENSION) % 3600) / 60),
-              (int)(((annotation->onset - mainwindow->edfheaderlist[file_num]->starttime_offset) / TIME_DIMENSION) % 60),
-              (int)(((annotation->onset - mainwindow->edfheaderlist[file_num]->starttime_offset) % TIME_DIMENSION) / 1000LL));
-    }
+		// Set the tool tip of this annotation:	(That's when you hover over the item with the mouse.)
+		if((annotation->onset - mainwindow->edfheaderlist[file_num]->starttime_offset) < 0LL)
+		{
+			snprintf(str, (MAX_ANNOTATION_LEN + 32) / 2, "onset: -%i:%02i:%02i.%04i",
+							(int)((-(annotation->onset - mainwindow->edfheaderlist[file_num]->starttime_offset) / TIME_DIMENSION)/ 3600),
+							(int)(((-(annotation->onset - mainwindow->edfheaderlist[file_num]->starttime_offset) / TIME_DIMENSION) % 3600) / 60),
+							(int)((-(annotation->onset - mainwindow->edfheaderlist[file_num]->starttime_offset) / TIME_DIMENSION) % 60),
+							(int)((-(annotation->onset - mainwindow->edfheaderlist[file_num]->starttime_offset) % TIME_DIMENSION) / 1000LL));
+		}
+		else
+		{
+			snprintf(str, (MAX_ANNOTATION_LEN + 32) / 2, "onset: %2i:%02i:%02i.%04i",
+							(int)(((annotation->onset - mainwindow->edfheaderlist[file_num]->starttime_offset) / TIME_DIMENSION)/ 3600),
+							(int)((((annotation->onset - mainwindow->edfheaderlist[file_num]->starttime_offset) / TIME_DIMENSION) % 3600) / 60),
+							(int)(((annotation->onset - mainwindow->edfheaderlist[file_num]->starttime_offset) / TIME_DIMENSION) % 60),
+							(int)(((annotation->onset - mainwindow->edfheaderlist[file_num]->starttime_offset) % TIME_DIMENSION) / 1000LL));
+		}
 
-    if(annotation->duration[0] != 0)
-    {
-      snprintf(str + strlen(str), (MAX_ANNOTATION_LEN + 32) / 2, "\nduration: %s",annotation->duration);
-    }
+		if(annotation->duration[0] != 0)
+		{
+			snprintf(str + strlen(str), (MAX_ANNOTATION_LEN + 32) / 2, "\nduration: %s",annotation->duration);
+		}
 
-    str[MAX_ANNOTATION_LEN + 31] = 0;
+		str[MAX_ANNOTATION_LEN + 31] = 0;
 
-    remove_trailing_zeros(str);
+		remove_trailing_zeros(str);
 
-    strcat(str, "\n\n");
+		strcat(str, "\n\n");
 
-    string = QString::fromLatin1(str);
+		string = QString::fromLatin1(str);
 
-    string.append(QString::fromUtf8(annotation->annotation));
+		string.append(QString::fromUtf8(annotation->annotation));
 
-    listitem->setToolTip(string);
+		listitem->setToolTip(string);
 
-    if(annotation->selected)
-    {
-      selected = sequence_nr;	// Remember the index of the selected annotation.
-      annotation->selected = 0;
+		if(annotation->selected)
+		{
+			selected = sequence_nr;	// Remember the index of the selected annotation.
+			annotation->selected = 0;
 
-      if(annotation->jump)	// If the item commands to jump, ..
-      {
-        jump = 1;		// The list is ordered a jump.
-        annotation->jump = 0;	// The command is deactivated.
-      }
-    }
+			if(annotation->jump)	// If the item commands to jump, ..
+			{
+				jump = 1;		// The list is ordered a jump.
+				annotation->jump = 0;	// The command is deactivated.
+			}
+		}
 
-    annotation = annotation->next_annotation;
+		annotation = annotation->next_annotation;
 
-    sequence_nr++;
-  }	// while(annotation != NULL)
+		sequence_nr++;
+	}	// while(annotation != NULL)
 
-  if(mainwindow->annot_editor_active || mainwindow->epoch_editor_active)
-  {
-    if(selected >= 0)		// An annotation has been selected.
-    {
+	if(mainwindow->annot_editor_active || mainwindow->epoch_editor_active)
+	{
+		if(selected >= 0)		// An annotation has been selected.
+		{
 	QListWidget::setCurrentRow(selected, QItemSelectionModel::ClearAndSelect);	// setCurrentRow to selected item.
 
-      mainwindow->annotationEditDock->set_selected_annotation(file_num, selected);
-      mainwindow->epochEditDock->set_selected_annotation(selected); // this could possibly be done by class inheritance.
-      selected = -1;
+			mainwindow->annotationEditDock->set_selected_annotation(file_num, selected);
+			mainwindow->epochEditDock->set_selected_annotation(selected); // this could possibly be done by class inheritance.
+			selected = -1;
 
-      if(jump)
-      {
-        jump = 0;
-        annotation_selected( currentItem() );
-      }
+			if(jump)
+			{
+				jump = 0;
+				annotation_selected( currentItem() );
+			}
 
-    }
+		}
 
-    if(modified)
-    {
-      mainwindow->annotations_edited = 1;
-      mainwindow->save_act->setEnabled(true);	// ask to save before closing.
-    }
-  }
+		if(modified)
+		{
+			mainwindow->annotations_edited = 1;
+			mainwindow->save_act->setEnabled(true);	// ask to save before closing.
+		}
+	}
 }
 
 
@@ -869,17 +880,37 @@ void UI_Annotationswindow::updateList()
 void UI_Annotationswindow::selectionChanged(int currentRow)
 {
 //	std::cout << "selectionChanged to " << currentRow << std::endl;
+// Declaration
 	long long new_viewtime;
+
 	double fraction,
 	       fraction_2,
 	       duration,
 	       window_length;
+	
+	QListWidgetItem *item;
 
+// Parameter check
 	if(currentRow < 0) return;				// No annotation selected.
 
-	annotation = (annotationblock*) currentItem()->data(Qt::UserRole).value<void*>();
+// Initialization
+	item = currentItem();	
 
-	if(annotation == NULL) return;					// If all annotations are hidden, return.
+	if(item == 0)			// If no annotation has been selected ..
+	{
+		QMessageBox messagewindow(QMessageBox::Critical, "Error", "selectionChanged() : No annotation selected.");
+		messagewindow.exec();
+		return;
+	}
+
+	annotation = (annotationblock*) item->data(Qt::UserRole).value<void*>();
+
+	if(annotation == 0)			// If no annotation has been selected ..
+	{
+		QMessageBox messagewindow(QMessageBox::Critical, "Error", "selectionChanged() : Annotation is NULL pointer.");
+		messagewindow.exec();
+		return;
+	}
 
   	if(mainwindow->annot_editor_active)
 		mainwindow->annotationEditDock->set_selected_annotation(annotation);	//   ...(annotationblock *annotation)
@@ -994,18 +1025,32 @@ void UI_Annotationswindow::deselect()
 
 void UI_Annotationswindow::setCurrentRow(int row, QItemSelectionModel::SelectionFlags command)
 {
-	int current = currentRow();
+	QListWidgetItem *item;
 
-	if(current < 0)
+	void *annot;
+
+	if(row < 0)
 	{
-		annotation = annotationlist[0];
 		QListWidget::setCurrentRow(0, command);
+	}
+	else
+	{
+		QListWidget::setCurrentRow(row, command);	// Sets the row in the QList
+	}
+
+	item = currentItem();
+	annot = item->data(Qt::UserRole).value<void*>();
+
+	if(item == 0 || annot == 0)
+	{
+		QListWidget::setCurrentRow(-1, command);	// Sets the row in the QList
+		annotation = 0;
+		QMessageBox messagewindow(QMessageBox::Critical, "Error", "setCurrentRow() : Annotation is NULL pointer.");
+		messagewindow.exec();
 		return;
 	}
 
-	QListWidget::setCurrentRow(row, command);	// Sets the row in the QList
-
-	annotation = (annotationblock*) currentItem()->data(Qt::UserRole).value<void*>();
+	annotation = (annotationblock*) annot;
 }
 
 
