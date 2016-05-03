@@ -6438,7 +6438,7 @@ void UI_Mainwindow::edfplus_annotation_remove_duplicates()
   {
     list = &annotationlist[k];
 
-    if(*list==NULL)
+    if(*list == NULL)
     {
       continue;
     }
@@ -6455,16 +6455,13 @@ void UI_Mainwindow::edfplus_annotation_remove_duplicates()
 
       qApp->processEvents();
 
-      if(progress.wasCanceled() == true)
-      {
-        break;
-      }
+      if(progress.wasCanceled() == true) break;
 
       annot_cmp = edfplus_annotation_item(list, j);
 
       for(i=j; i<list_size; i++)
       {
-        if(i!=j)
+        if(i != j)
         {
           annot = edfplus_annotation_item(list, i);
 

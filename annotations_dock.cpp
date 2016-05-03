@@ -138,7 +138,10 @@ void UI_Annotationswindow::delete_annotation()
 {
 	int selected_row;
 
-	selected_row = currentRow();
+	annotationblock *annotation;
+
+
+	selected_row = currentRow(); // check if row is selected.
 
 	if(selected_row  < 0)				// If no annotation has been selected ..
 	{
@@ -147,14 +150,20 @@ void UI_Annotationswindow::delete_annotation()
 		return;
 	}
 
-	edfplus_annotation_delete( annotationlist, selected_row );	// Delete the selected annotation from annotationlist.
+
+	annotation = (annotationblock*) currentItem()->data(Qt::UserRole).value<void*>();
+
+	edfplus_annotation_delete1( annotation );	// Delete the selected annotation.
 
 	selected_row--;			// Select previous annotation.
 
 	if(selected_row >= 0)			// If there is a previous annotation ..
 	{
-		annotation = edfplus_annotation_item( annotationlist, selected_row );	// .. get it ..
-  		if(annotation != NULL)							// 	.. and if it exists ..
+		setCurrentRow(selected_row);
+
+		annotation = (annotationblock*) currentItem()->data(Qt::UserRole).value<void*>();
+
+  		if(annotation != 0)							// 	.. and if it exists ..
   		{
     			annotation->selected = 1;					//		.. jump to it.
     			annotation->jump = 1;
@@ -378,42 +387,6 @@ void UI_Annotationswindow::filter_edited(const QString text)
   mainwindow->maincurve->update();
 }
 
-
-
-//void UI_Annotationswindow::checkboxInv_clicked(int state)
-//{
-//  int cnt, changed=0;
-//
-//  struct annotationblock *annot;
-//
-//
-//  annot = *annotationlist;
-//
-//  cnt = edfplus_annotation_count(&annot);
-//
-//  if(cnt < 1)
-//  {
-//    return;
-//  }
-//
-//  if(state == Qt::Checked)
-//  {
-//    if(invert_filter == 0)  changed = 1;
-//
-//    invert_filter = 1;
-//  }
-//
-//  if(state == Qt::Unchecked)
-//  {
-//    if(invert_filter == 1)  changed = 1;
-//
-//    invert_filter = 0;
-//  }
-//
-//  if(changed == 0)  return;
-//
-//  filter_edited(lineSearch->text());
-//}
 
 
 void UI_Annotationswindow::show_between(bool)
@@ -656,43 +629,54 @@ void UI_Annotationswindow::show_editdock(bool visible)
 
 void UI_Annotationswindow::setSelectedText(QString& annot)
 {
+// Declaration
 	QString annotationText("%1\t %2:%3:%4");
-	int hour, minute, second, row;
+
+	int hour,
+	    minute,
+	    second,
+	    row;
+
 	QListWidgetItem *item;
 
 
-	hour = (int)((((annotation->onset + mainwindow->edfheaderlist[0]->l_starttime) / TIME_DIMENSION)/ 3600) % 24);
-	minute = (int)((((annotation->onset + mainwindow->edfheaderlist[0]->l_starttime) / TIME_DIMENSION) % 3600) / 60);
-	second = (int)(((annotation->onset + mainwindow->edfheaderlist[0]->l_starttime) / TIME_DIMENSION) % 60);
-	annotationText = annotationText.arg(annot).arg(hour).arg(minute, 2, 10, QChar('0')).arg(second, 2, 10, QChar('0')); 
-	item = currentItem();
-	item->setText(annotationText);
-	item->setToolTip(annotationText);
-	item->setFont(specialfont);
-	item->setForeground(Qt::red);
+// Initialization
+	row = currentRow();
 
-
-	if( (row = currentRow()) < 0)
+	if(row < 0)
 	{
 		QMessageBox messagewindow(QMessageBox::Critical, "Error", "setSelectedText(): No annotation selected.");
 		messagewindow.exec();
 		return;
 	}
-	annotation = edfplus_annotation_item(annotationlist, row);
-	if(annotation != NULL)
-	{
-		strncpy(annotation->annotation, annot.toLatin1().data(), MAX_ANNOTATION_LEN);
-		annotation->annotation[MAX_ANNOTATION_LEN] = 0;
-		annotation->modified = 1;
-	}
-	else
+
+	item = currentItem();
+
+
+	annotation = (annotationblock*) item->data(Qt::UserRole).value<void*>();
+
+	if(annotation == 0)
 	{
 		QMessageBox messagewindow(QMessageBox::Critical, "Error", "setSelectedText(): annotation is NULL pointer.");
 		messagewindow.exec();
 	}
 
+	hour = (int)((((annotation->onset + mainwindow->edfheaderlist[0]->l_starttime) / TIME_DIMENSION)/ 3600) % 24);
+	minute = (int)((((annotation->onset + mainwindow->edfheaderlist[0]->l_starttime) / TIME_DIMENSION) % 3600) / 60);
+	second = (int)(((annotation->onset + mainwindow->edfheaderlist[0]->l_starttime) / TIME_DIMENSION) % 60);
+	annotationText = annotationText.arg(annot).arg(hour).arg(minute, 2, 10, QChar('0')).arg(second, 2, 10, QChar('0')); 
 
 
+// Text
+	item->setText(annotationText);
+	item->setToolTip(annotationText);
+	item->setFont(specialfont);
+	item->setForeground(Qt::red);
+
+	strncpy(annotation->annotation, annot.toLatin1().data(), MAX_ANNOTATION_LEN);
+	annotation->annotation[MAX_ANNOTATION_LEN] = 0;
+	annotation->modified = 1;
+	
 	mainwindow->annotations_edited = 1;
 	mainwindow->save_act->setEnabled(true);
 }
@@ -792,7 +776,8 @@ void UI_Annotationswindow::updateList()
 
     listitem = new QListWidgetItem(string, this);
 
-    listitem->setData(Qt::UserRole, QVariant(sequence_nr));
+	QVariant annotVar = qVariantFromValue( (void*) annotation);
+	listitem->setData(Qt::UserRole, annotVar);	// Store a pointer to th annotation.
 
     if(annotation->modified == 1)	// if modified, change font of this listitem.
     {
@@ -892,27 +877,12 @@ void UI_Annotationswindow::selectionChanged(int currentRow)
 
 	if(currentRow < 0) return;				// No annotation selected.
 
-// select the right annotation:
-	annotation = *annotationlist;						// first annotation in the list.  What is file_num?
-
-	while(annotation->hidden_in_list)				// If the current annotation is hidden ..
-		annotation = annotation->next_annotation;		// 			.. select the next annotation.
+	annotation = (annotationblock*) currentItem()->data(Qt::UserRole).value<void*>();
 
 	if(annotation == NULL) return;					// If all annotations are hidden, return.
 
-	//annotation = edfplus_annotation_item(annotationlist, n);		// why doesn't this work?
-	//if(annotation == NULL) return;								// ... ???
-
   	if(mainwindow->annot_editor_active)
-		mainwindow->annotationEditDock->set_selected_annotation(file_num, currentRow);	//   ...(int file_nr, int annot_nr)
-
-	while(currentRow--)
-	{
-		while(annotation->next_annotation->hidden_in_list)		// If the current annotation is hidden ..
-			annotation = annotation->next_annotation;               // 			.. select the next annotation.
-
-		annotation = annotation->next_annotation;				// Linear list seek starting from the first annotation, until number n.
-	}
+		mainwindow->annotationEditDock->set_selected_annotation(annotation);	//   ...(annotationblock *annotation)
 
 
 // find fraction so that left and right margin to the annotation (duration) are equal.
@@ -959,25 +929,13 @@ void UI_Annotationswindow::selectionChanged(int currentRow)
 
 
 
-void UI_Annotationswindow::annotation_selected(QListWidgetItem * item)
+void UI_Annotationswindow::annotation_selected(QListWidgetItem *item)
 {
-	int n;
 	long long new_viewtime;
 	double fraction, fraction_2, duration, window_length;
 
 	// select the right annotation:
-	annotation = *annotationlist;						// First annotation in the list.  What is file_num?
-	n = item->data(Qt::UserRole).toInt();					// This yields the annotation number.
-
-//	std::cout << "item->data " << n << std::endl;
-
-	//annotation = edfplus_annotation_item(annotationlist, n);		// why doesn't this work?
-	//if(annotation == NULL) return;								// ... ???
-
-  	if(mainwindow->annot_editor_active)
-		mainwindow->annotationEditDock->set_selected_annotation(file_num, n);	//   ...(int file_nr, int annot_nr)
-
-	while(n--) annotation = annotation->next_annotation;				// Linear list seek starting from the first annotation, until number n.
+	annotation = (annotationblock*) item->data(Qt::UserRole).value<void*>();
 
 
 	// find fraction so that left and right margin to the annotation (duration) are equal.
@@ -1037,7 +995,6 @@ void UI_Annotationswindow::deselect()
 void UI_Annotationswindow::setCurrentRow(int row, QItemSelectionModel::SelectionFlags command)
 {
 	int current = currentRow();
-	int difference = row-current;
 
 	if(current < 0)
 	{
@@ -1046,19 +1003,9 @@ void UI_Annotationswindow::setCurrentRow(int row, QItemSelectionModel::Selection
 		return;
 	}
 
-	while(difference > 0 and annotation->next_annotation != NULL)
-	{
-		annotation = annotation->next_annotation;
-		difference--;
-	}
+	QListWidget::setCurrentRow(row, command);	// Sets the row in the QList
 
-	while(difference < 0 and annotation->former_annotation != NULL)
-	{
-		annotation = annotation->former_annotation;
-		difference++;
-	}
-
-	QListWidget::setCurrentRow(row, command);
+	annotation = (annotationblock*) currentItem()->data(Qt::UserRole).value<void*>();
 }
 
 

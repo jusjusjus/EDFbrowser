@@ -125,6 +125,8 @@ void Check_for_updates::replyFinished()
 
 	this_version = atoi(buf + 1);
 
+	this_version = this_version;	// Prevents unused var warning.
+
 	//if(this_version >= latest_version)
 	if(true)
 	{

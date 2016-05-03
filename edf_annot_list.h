@@ -48,6 +48,7 @@ extern "C" {
 void edfplus_annotation_add_item(struct annotationblock **, struct annotationblock *);
 void edfplus_annotation_add_copy(struct annotationblock **, struct annotationblock *);
 int edfplus_annotation_count(struct annotationblock **);
+void edfplus_annotation_delete1(struct annotationblock*);
 void edfplus_annotation_delete(struct annotationblock **, int);
 void edfplus_annotation_delete_list(struct annotationblock **);
 struct annotationblock * edfplus_annotation_item(struct annotationblock **, int);

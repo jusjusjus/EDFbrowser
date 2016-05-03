@@ -108,32 +108,18 @@ void UI_Epochswindow::selectionChanged(int currentRow)
 {
 	// std::cout << "selectionChanged to " << currentRow << std::endl;
 	int n;
-	long long	new_viewtime,
-	     		epochstart;
+
+	long long new_viewtime,
+	          epochstart;
 
 	if(currentRow < 0) return;				// No annotation selected.
 
-// select the right annotation:
-	annotation = *annotationlist;						// first annotation in the list.  What is file_num?
-
-	while(annotation->hidden_in_list)				// If the current annotation is hidden ..
-		annotation = annotation->next_annotation;		// 			.. select the next annotation.
+	annotation = (annotationblock*) currentItem()->data(Qt::UserRole).value<void*>();
 
 	if(annotation == NULL) return;					// If all annotations are hidden, return.
 
-	//annotation = edfplus_annotation_item(annotationlist, n);		// why doesn't this work?
-	//if(annotation == NULL) return;								// ... ???
-
-  	if(mainwindow->annot_editor_active)
-		mainwindow->annotationEditDock->set_selected_annotation(file_num, currentRow);	//   ...(int file_nr, int annot_nr)
-
-	while(currentRow--)
-	{
-		while(annotation->next_annotation->hidden_in_list)		// If the current annotation is hidden ..
-			annotation = annotation->next_annotation;               // 			.. select the next annotation.
-
-		annotation = annotation->next_annotation;				// Linear list seek starting from the first annotation, until number n.
-	}
+  	if(mainwindow->epoch_editor_active)
+		mainwindow->epochEditDock->set_selected_annotation(annotation);	//   ...(int file_nr, int annot_nr)
 
 
 // Set the epoch:
@@ -170,27 +156,33 @@ void UI_Epochswindow::selectionChanged(int currentRow)
 	mainwindow->set_pagetime(pagelength, 2, epochlength);
 
 //	if(annotation->former_annotation->former_annotation != NULL) annotation->former_annotation->former_annotation->selected = 0;
-	if(annotation->former_annotation != NULL) annotation->former_annotation->selected = 0;
-	if(annotation != NULL) annotation->selected = 1;
-	if(annotation->next_annotation != NULL) annotation->next_annotation->selected = 0;
+	if(annotation != NULL)
+	{
+		annotation->selected = 1;	// select the current annotation
+
+		if(annotation->former_annotation != NULL)
+		{
+			annotation->former_annotation->selected = 0;	// deselect the last
+		}
+		if(annotation->next_annotation != NULL)
+		{
+			annotation->next_annotation->selected = 0;	// deselect the next (if present)
+		}
+	}
 //	if(annotation->next_annotation->next_annotation != NULL) annotation->next_annotation->next_annotation->selected = 0;
 }
 
 
 
-void UI_Epochswindow::annotation_selected(QListWidgetItem * item)
+void UI_Epochswindow::annotation_selected(QListWidgetItem *item)
 {
 	int n;
 	long long new_viewtime, epochstart;
 
-	annotation = *annotationlist;				// first annotation in the list.	What is file_num?
-	n = item->data(Qt::UserRole).toInt();						// yields the annotation number.
+	annotation = (annotationblock*) item->data(Qt::UserRole).value<void*>();
 
-	if(mainwindow->epoch_editor_active)
-		mainwindow->epochEditDock->set_selected_annotation(n);	//	 ...(int file_nr, int annot_nr)
-
-	while(n--) annotation = annotation->next_annotation;				// Linear list seek starting from the first annotation, until number n.
-
+  	if(mainwindow->epoch_editor_active)
+		mainwindow->epochEditDock->set_selected_annotation(annotation);	//   ...(int file_nr, int annot_nr)
 
 	n = page/epoch;
 
@@ -297,7 +289,8 @@ void UI_Epochswindow::updateList(annotationblock *annotation, int jump)	// updat
 
 	listitem = new QListWidgetItem(string, this);
 
-	listitem->setData(Qt::UserRole, QVariant(sequence_nr));
+	QVariant annotVar = qVariantFromValue( (void*) annotation);
+	listitem->setData(Qt::UserRole, annotVar);	// Store a pointer to th annotation.
 
 	if(annotation->modified == 1)	// if modified, change font of this listitem.
 	{
@@ -462,7 +455,8 @@ void UI_Epochswindow::updateList(void)
 
 		listitem = new QListWidgetItem(string, this);
 
-		listitem->setData(Qt::UserRole, QVariant(sequence_nr));
+		QVariant annotVar = qVariantFromValue( (void*) annotation);
+		listitem->setData(Qt::UserRole, annotVar);	// Store a pointer to th annotation.
 
 		if(annotation->modified == 1)	// if modified, change font of this listitem.
 		{

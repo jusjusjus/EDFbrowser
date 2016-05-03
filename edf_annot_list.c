@@ -129,6 +129,26 @@ int edfplus_annotation_count(struct annotationblock **list)
 }
 
 
+
+void edfplus_annotation_delete1(struct annotationblock *annotation)
+{
+	if(annotation == 0) return;
+
+	if(annotation->former_annotation != 0)
+	{
+		annotation->former_annotation->next_annotation = annotation->next_annotation;
+	}
+
+	if(annotation->next_annotation != 0)
+	{
+		annotation->next_annotation->former_annotation = annotation->former_annotation;
+	}
+
+	free(annotation);
+}
+
+
+
 void edfplus_annotation_delete(struct annotationblock **list, int n)
 {
   struct annotationblock *annotlist;
