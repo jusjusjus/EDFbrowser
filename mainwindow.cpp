@@ -1907,7 +1907,7 @@ int UI_Mainwindow::annotation_editor()
 	if(files_open == 1)
 	{
 		this->show_annotations();
-  		signalmenu->addAction("Signaltypes ..", annotationEditDock->signaltypes, SLOT(registerSignaltypes()));
+  		signalmenu->addAction("Signaltypes ..", annotationEditDock->signaltypes, SLOT(registerSignaltypes())); // ask = true
 		return 0;
 	}
 	else
@@ -2410,7 +2410,7 @@ void UI_Mainwindow::add_signals_dialog()
 	
 	if(annot_editor_active == 1)			// If the editor is active ..
 	{
-		annotationEditDock->signaltypes->registerSignaltypes();	// .. check the new signals for the types.
+		annotationEditDock->signaltypes->registerSignaltypes(true);	// ask = false.  (Check the new signals for the types.)
 	}
 }
 

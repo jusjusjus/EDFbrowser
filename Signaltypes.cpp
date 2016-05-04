@@ -218,6 +218,7 @@ void Signaltypes::registerSignaltypes(bool ask)		// ask=true
 	struct edfparamblock *edfparam;
 	unsigned signalcomps = parent->mainwindow->signalcomps;
 
+
 	for(unsigned i=0; i<signalcomps; i++)
 	{
 		signalcomp = parent->mainwindow->signalcomp[i];		// current signalcomp
@@ -237,10 +238,13 @@ void Signaltypes::registerSignaltypes(bool ask)		// ask=true
 					signalcomp->type = 0;
 				}
 			}
-			if(signalcomp->type == 0) ask = true;
+			//if(signalcomp->type == 0) ask = true;
 		}
 	}
-	if(ask) ask_for_types();		// if not all types were determined, fire up the user interface.
+	if(ask)
+	{
+	       	ask_for_types();		// if not all types were determined, fire up the user interface.
+	}
 }
 
 

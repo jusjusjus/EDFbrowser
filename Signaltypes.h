@@ -66,7 +66,6 @@ public:
 	void reload_types(void);
 
 private:
-
 	QDomElement* getRootElement();
 	void load_types(void);
 	int get_type_from_label(char *label);
@@ -77,7 +76,7 @@ private:
 
 
 public slots:
-	void registerSignaltypes(bool ask=true);
+	void registerSignaltypes(bool ask=true);	// Don't pop-up a window or program may crash.
 	void exec(int, int, int);
 };
 
