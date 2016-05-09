@@ -129,13 +129,13 @@ UI_ExportAnnotationswindow::UI_ExportAnnotationswindow(QWidget *w_parent, struct
   durationCheckBox->setTristate(false);
   durationCheckBox->setCheckState(Qt::Unchecked);
 
-  endCheckBox = new QCheckBox("End column", ExportAnnotsDialog);
-  endCheckBox->setTristate(false);
-  endCheckBox->setCheckState(Qt::Unchecked);
+  //endCheckBox = new QCheckBox("End column", ExportAnnotsDialog);
+  //endCheckBox->setTristate(false);
+  //endCheckBox->setCheckState(Qt::Unchecked);
 
 	durationGroup = new QButtonGroup(ExportAnnotsDialog);
 	durationGroup->addButton(durationCheckBox);
-	durationGroup->addButton(endCheckBox);
+	//durationGroup->addButton(endCheckBox);
 	durationGroup->setExclusive(false);
 
   asciiSettingsHBoxLayout = new QHBoxLayout;
@@ -152,7 +152,7 @@ UI_ExportAnnotationswindow::UI_ExportAnnotationswindow(QWidget *w_parent, struct
   asciiSettingsVBoxLayout->addWidget(asciiTimedateRadioButton);
   asciiSettingsVBoxLayout->addWidget(asciiTimedateFractionRadioButton);
   asciiSettingsVBoxLayout->addWidget(durationCheckBox);
-  asciiSettingsVBoxLayout->addWidget(endCheckBox);
+  //asciiSettingsVBoxLayout->addWidget(endCheckBox);
   asciiSettingsGroupBox->setLayout(asciiSettingsVBoxLayout);
 
   ExportButton = new QPushButton(ExportAnnotsDialog);
@@ -209,7 +209,7 @@ UI_ExportAnnotationswindow::UI_ExportAnnotationswindow(QWidget *w_parent, struct
   QObject::connect(CSVRadioButton, SIGNAL(toggled(bool)), this,               SLOT(outputformatRadioButtonClicked(bool)));
 
 	QObject::connect(durationCheckBox, SIGNAL(stateChanged(int)), this, SLOT(DurationCheckBoxChanged(int)));
-	QObject::connect(endCheckBox, SIGNAL(stateChanged(int)), this, SLOT(EndCheckBoxChanged(int)));
+	//QObject::connect(endCheckBox, SIGNAL(stateChanged(int)), this, SLOT(EndCheckBoxChanged(int)));
 
   filelist->setCurrentRow(mainwindow->files_open - 1);
 }
@@ -303,7 +303,7 @@ void UI_ExportAnnotationswindow::ExportButtonClicked()
   }
 
   if(durationCheckBox->checkState() == Qt::Checked)	include_duration = 1;
-  else if(endCheckBox->checkState() == Qt::Checked)	include_end = 1;
+  //else if(endCheckBox->checkState() == Qt::Checked)	include_end = 1;
 
   mainwindow->export_annotations_var->duration = include_duration;
   mainwindow->export_annotations_var->end = include_end;
@@ -748,18 +748,18 @@ void UI_ExportAnnotationswindow::ExportButtonClicked()
 
 void UI_ExportAnnotationswindow::DurationCheckBoxChanged(int state)
 {
-	bool checked = state == Qt::Checked;
-	if(checked) endCheckBox->setCheckState(Qt::Unchecked);
+//	bool checked = state == Qt::Checked;
+//	if(checked) endCheckBox->setCheckState(Qt::Unchecked);
 
 }
 
 
 
-void UI_ExportAnnotationswindow::EndCheckBoxChanged(int state)
-{
-	bool checked = state == Qt::Checked;
-	if(checked) durationCheckBox->setCheckState(Qt::Unchecked);
-}
+//void UI_ExportAnnotationswindow::EndCheckBoxChanged(int state)
+//{
+//	bool checked = state == Qt::Checked;
+//	if(checked) durationCheckBox->setCheckState(Qt::Unchecked);
+//}
 
 
 

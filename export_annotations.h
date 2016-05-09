@@ -148,7 +148,7 @@ public slots:
   void ExportButtonClicked();
   void outputformatRadioButtonClicked(bool);
   void DurationCheckBoxChanged(int);
-  void EndCheckBoxChanged(int);
+  //void EndCheckBoxChanged(int);
 
 };
 
