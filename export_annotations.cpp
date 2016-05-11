@@ -748,6 +748,7 @@ void UI_ExportAnnotationswindow::ExportButtonClicked()
 
 void UI_ExportAnnotationswindow::DurationCheckBoxChanged(int state)
 {
+	state = state;
 //	bool checked = state == Qt::Checked;
 //	if(checked) endCheckBox->setCheckState(Qt::Unchecked);
 

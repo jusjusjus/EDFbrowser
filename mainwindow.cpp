@@ -163,7 +163,7 @@ UI_Mainwindow::UI_Mainwindow(QApplication &app)
   export_annotations_var = (export_annotations_var_block *)calloc(1, sizeof(struct export_annotations_var_block));
   export_annotations_var->separator = 0;
   export_annotations_var->format = 1;
-  export_annotations_var->duration = 0;
+  export_annotations_var->duration = 1;
   export_annotations_var->end = 0;
 
   average_period = 0.3;
@@ -248,7 +248,7 @@ UI_Mainwindow::UI_Mainwindow(QApplication &app)
   save_act = new QAction("Save as", this);
   save_act->setShortcut(QKeySequence::Save);
   save_act->setEnabled(false);
-  connect(save_act, SIGNAL(triggered()), this, SLOT(save_file()));
+  connect( save_act, SIGNAL(triggered()), this, SLOT(save_file()) );
 
   filemenu = new QMenu(this);
   filemenu->setTitle("&File");
@@ -465,12 +465,24 @@ UI_Mainwindow::UI_Mainwindow(QApplication &app)
   amp_plus = new QAction("Amplitude x 2", this);
   amp_plus->setShortcut(Qt::Key_Minus);
   connect(amp_plus, SIGNAL(triggered()), this, SLOT(set_amplitude_mult2()));
-  amplitudemenu->addAction(amp_plus);
+  maincurve->addAction(amp_plus);
 
   amp_minus = new QAction("Amplitude / 2", this);
   amp_minus->setShortcut(Qt::Key_Plus);
   connect(amp_minus, SIGNAL(triggered()), this, SLOT(set_amplitude_div2()));
-  amplitudemenu->addAction(amp_minus);
+  maincurve->addAction(amp_minus);
+
+
+  former_page_Act = new QAction(this);
+  former_page_Act->setShortcut(Qt::Key_PageUp);
+  connect(former_page_Act, SIGNAL(triggered()), this, SLOT(last_page()));
+  maincurve->addAction(former_page_Act);
+
+
+  next_page_Act = new QAction(this);
+  next_page_Act->setShortcut(Qt::Key_PageDown);
+  connect(next_page_Act, SIGNAL(triggered()), this, SLOT(next_page()));
+  maincurve->addAction(next_page_Act);
 
 
   AmplitudeGroup = new QActionGroup(this);
@@ -1058,10 +1070,8 @@ void UI_Mainwindow::open_stream()
 	annotationsmenu->setEnabled(false);
     timemenu->setEnabled(false);
     modemenu->setEnabled(false);
-    //former_page_Act->setEnabled(false);
     //shift_page_left_Act->setEnabled(false);
     //shift_page_right_Act->setEnabled(false);
-    //next_page_Act->setEnabled(false);
     //shift_page_up_Act->setEnabled(false);
     //shift_page_down_Act->setEnabled(false);
     printmenu->setEnabled(false);
@@ -1692,7 +1702,7 @@ void UI_Mainwindow::zoomback()
 
   for(i=0; i<files_open; i++)
   {
-    zoomhistory->viewtime[zoomhistory->pntr][i] = edfheaderlist[i]->viewtime;
+  	zoomhistory->viewtime[zoomhistory->pntr][i] = edfheaderlist[i]->viewtime;
   }
   zoomhistory->pagetime[zoomhistory->pntr] = pagetime;
   for(i=0; i<signalcomps; i++)
@@ -1766,7 +1776,7 @@ void UI_Mainwindow::forward()
 
 
 
-void UI_Mainwindow::former_page()
+void UI_Mainwindow::last_page()
 {
   if((viewtime_sync==VIEWTIME_SYNCED_OFFSET)||(viewtime_sync==VIEWTIME_SYNCED_ABSOLUT)||(viewtime_sync==VIEWTIME_USER_DEF_SYNCED))
   {
@@ -1836,7 +1846,7 @@ void UI_Mainwindow::next_page()
     }
   }
 
-  if(viewtime_sync==VIEWTIME_UNSYNCED)
+  if(viewtime_sync == VIEWTIME_UNSYNCED)
   {
     edfheaderlist[sel_viewtime]->viewtime += pagetime;
   }

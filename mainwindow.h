@@ -480,7 +480,7 @@ private slots:
   void set_amplitude_mult2();
   void fit_signals_to_pane();
   void fit_signals_dc_offset();
-  void former_page();
+  void last_page();
   void shift_page_left();
   void shift_page_right();
   void next_page();
