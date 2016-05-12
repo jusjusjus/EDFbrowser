@@ -370,7 +370,8 @@ void ViewCurve::mousePressEvent(QMouseEvent *press_event)
       }
 	else	// if crosshair_1.active == 0
 	{
-		if( (m_x>110) && (signal_nr=ymouseOverSignal(m_y, -15, 15)) != -1 )	// If not daneben geklickt ...
+		signal_nr = ymouseOverSignal(m_y, -30, 30);
+		if( (m_x>110) && signal_nr != -1 )	// If not daneben geklickt ...
 		{
 			crosshair_1.value = 0.;					// ???
 			crosshair_1.active = 1;					// first crosshair active.
@@ -500,10 +501,12 @@ void ViewCurve::mousePressEvent(QMouseEvent *press_event)
 int ViewCurve::ymouseOverSignal(int m_y, int ymin, int ymax)	// returns which signal.  ymin,ymax:  distances from baseline of signal.
 {
 	int baseline;
+
 	for(int i=0; i<mainwindow->signalcomps; i++)
 	{
 		baseline = (i + 1) * h / (mainwindow->signalcomps + 1);
-		if( (m_y<baseline-ymin) && (m_y>baseline-ymax) )
+
+		if( (m_y<baseline-ymin) and (m_y>baseline-ymax) )
 		{
 			return i;
 		}
