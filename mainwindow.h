@@ -269,7 +269,7 @@ public:
 
   struct annotationblock *epochlist[1];
 
-  struct annotationblock *annotationlist_backup;
+//  struct annotationblock *annotationlist_backup;
 
   struct spectrum_markersblock *spectrum_colorbar;
 

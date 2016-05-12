@@ -732,7 +732,7 @@ UI_Mainwindow::UI_Mainwindow(QApplication &app)
 	epochlist[0] = NULL;
 	epochs_dock = NULL;
 
-  annotationlist_backup = NULL;
+//  annotationlist_backup = NULL;
 
   zoomhistory = (struct zoomhistoryblock *)calloc(1, sizeof(struct zoomhistoryblock));
 
@@ -784,8 +784,8 @@ UI_Mainwindow::UI_Mainwindow(QApplication &app)
     }
   }
 
-  annotationEditDock = new UI_AnnotationEditwindow(files_open, this);
-  annotationEditDock->setup();
+	annotationEditDock = new UI_AnnotationEditwindow(files_open, this);
+	annotationEditDock->setup();
 	annotationEditDock->open_close_dock(false);
 
 
@@ -1231,9 +1231,9 @@ void UI_Mainwindow::save_file()
 
   annot = annotationlist[0];
 
-  annotationlist[0] = annotationlist_backup;
+//  annotationlist[0] = annotationlist_backup;
 
-  annotationlist_backup = NULL;
+//  annotationlist_backup = NULL;
 
   edfplus_annotation_delete_list(&annot);
 
@@ -1935,7 +1935,7 @@ void UI_Mainwindow::epoch_editor()	// sets sleep scoring mode
 	if(annotation_editor() != 0)
 		return;
 
-	if(epochs_dock == NULL)
+	if(epochs_dock == 0)
 	{
 		epochs_dock = new UI_Epochswindow(this);
 		addDockWidget(Qt::RightDockWidgetArea, epochs_dock->docklist, Qt::Vertical);
@@ -1966,7 +1966,7 @@ void UI_Mainwindow::open_new_file()
 
   struct edfhdrblock *edfhdr=NULL;
 
-  if((annot_editor_active || epoch_editor_active) && files_open)
+  if( (annot_editor_active || epoch_editor_active) && files_open)
   {
     QMessageBox messagewindow(QMessageBox::Critical, "Error", "You can not open multiple files when editing annotations.\n"
                                                               "Close the annotation edit window first.");
@@ -2605,7 +2605,7 @@ void UI_Mainwindow::close_all_files()
   		epochs_dock = NULL;
 	}
 
-  edfplus_annotation_delete_list(&annotationlist_backup);
+//  edfplus_annotation_delete_list(&annotationlist_backup);
 
   sel_viewtime = 0;
 

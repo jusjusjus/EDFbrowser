@@ -116,7 +116,7 @@ void UI_Epochswindow::selectionChanged(int currentRow)
 
 	annotation = (annotationblock*) currentItem()->data(Qt::UserRole).value<void*>();
 
-	if(annotation == NULL) return;					// If all annotations are hidden, return.
+	if(annotation == 0) return;					// If all annotations are hidden, return.
 
   	if(mainwindow->epoch_editor_active)
 		mainwindow->epochEditDock->set_selected_annotation(annotation);	//   ...(int file_nr, int annot_nr)

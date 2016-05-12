@@ -99,12 +99,12 @@ void UI_AnnotationEditwindow::setup()
 
 void UI_AnnotationEditwindow::open_close_dock(bool set_visible)
 {
-	if(set_visible)
+	if(set_visible == true)
 	{
 		signaltypes->registerSignaltypes(false);	// ask = false
 		mainwindow->show_annot_markers = 1;
-		if(mainwindow->annotationlist_backup == NULL)
-			mainwindow->annotationlist_backup = edfplus_annotation_copy_list(&mainwindow->annotationlist[0]);
+//		if(mainwindow->annotationlist_backup == NULL)
+//			mainwindow->annotationlist_backup = edfplus_annotation_copy_list(&mainwindow->annotationlist[0]);
 	}
 }
 

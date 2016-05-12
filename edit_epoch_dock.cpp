@@ -144,9 +144,10 @@ void UI_EpochEditwindow::open_close_dock(bool visible)
 {
 	if(visible)
 	{
+		mainwindow->epoch_editor_active = 1;
 		mainwindow->show_annot_markers = 1;
-		if(mainwindow->annotationlist_backup == NULL)			// create backup annotation list.
-			mainwindow->annotationlist_backup = edfplus_annotation_copy_list( &mainwindow->epochlist[0] );
+//		if(mainwindow->annotationlist_backup == 0)			// create backup annotation list.
+//			mainwindow->annotationlist_backup = edfplus_annotation_copy_list( &mainwindow->epochlist[0] );
 	}
 	else
 	{
@@ -169,7 +170,7 @@ void UI_EpochEditwindow::set_selected_annotation(int annot_nr)
 
 void UI_EpochEditwindow::set_selected_annotation(struct annotationblock *annot)
 {
-	if(annot == NULL) return;	// if it is not a good annotation. don't continue
+	if(annot == 0) return;	// if it is not a good annotation. don't continue
 	annotation = annot;
 
 	QList<QAbstractButton*> buttons = stage_buttons->buttons();
@@ -183,7 +184,7 @@ void UI_EpochEditwindow::set_selected_annotation(struct annotationblock *annot)
 
 void UI_EpochEditwindow::deselect()
 {
-	annotation = NULL;
+	annotation = 0;
 
 	QList<QAbstractButton*> buttons = stage_buttons->buttons();
 	for(int i=0; i<buttons.size(); i++)

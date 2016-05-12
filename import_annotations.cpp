@@ -585,8 +585,8 @@ int UI_ImportAnnotationswindow::import_from_xml(void)
 
   get_directory_from_path(mainwindow->recent_opendir, path, MAX_PATH_LENGTH);
 
-	if(mainwindow->annotationlist_backup==NULL)									// if not yet done, ...
-		mainwindow->annotationlist_backup = edfplus_annotation_copy_list(annotationlist);			// create a backup list.
+//	if(mainwindow->annotationlist_backup==NULL)									// if not yet done, ...
+//		mainwindow->annotationlist_backup = edfplus_annotation_copy_list(annotationlist);			// create a backup list.
 
   xml_hdl = xml_get_handle(path);
   if(xml_hdl==NULL)
@@ -952,10 +952,8 @@ int UI_ImportAnnotationswindow::import_from_ascii(void)
 
   get_directory_from_path(mainwindow->recent_opendir, path, MAX_PATH_LENGTH);
 
-  if(mainwindow->annotationlist_backup == NULL)
-  {
-    mainwindow->annotationlist_backup = edfplus_annotation_copy_list(annotationlist);
-  }
+//  if(mainwindow->annotationlist_backup == NULL)
+//    mainwindow->annotationlist_backup = edfplus_annotation_copy_list(annotationlist);
 
   inputfile = fopeno(path, "rb");
   if(inputfile==NULL)
@@ -1422,10 +1420,8 @@ int UI_ImportAnnotationswindow::import_from_ascii(const char *filename)
 
   get_directory_from_path(mainwindow->recent_opendir, filename, MAX_PATH_LENGTH);
 
-  if(mainwindow->annotationlist_backup == NULL)
-  {
-    mainwindow->annotationlist_backup = edfplus_annotation_copy_list(annotationlist);
-  }
+//  if(mainwindow->annotationlist_backup == NULL)
+//    mainwindow->annotationlist_backup = edfplus_annotation_copy_list(annotationlist);
 
   inputfile = fopeno(filename, "rb");
   if(inputfile==NULL)
@@ -1730,10 +1726,8 @@ int UI_ImportAnnotationswindow::import_from_edfplus(void)
 
   get_directory_from_path(mainwindow->recent_opendir, path, MAX_PATH_LENGTH);
 
-  if(mainwindow->annotationlist_backup==NULL)
-  {
-    mainwindow->annotationlist_backup = edfplus_annotation_copy_list(annotationlist);
-  }
+//  if(mainwindow->annotationlist_backup==NULL)
+//    mainwindow->annotationlist_backup = edfplus_annotation_copy_list(annotationlist);
 
   inputfile = fopeno(path, "rb");
   if(inputfile==NULL)
