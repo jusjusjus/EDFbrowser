@@ -139,6 +139,7 @@ UI_ImportAnnotationswindow::UI_ImportAnnotationswindow(QWidget *w_parent, UI_Ann
   RelativeTimeComboBox->addItem("yyyy-mm-ddThh:mm:ss");
   RelativeTimeComboBox->addItem("yyyy-mm-ddThh:mm:ss.xxx");
   RelativeTimeComboBox->addItem("mm/dd/yyyy hh:mm:ss");
+  RelativeTimeComboBox->addItem("mm/dd/yyyy hh:mm:ss.xxx");
   RelativeTimeComboBox->setMinimumSize(200, 25);
 
   DescriptionColumnRadioButton = new QRadioButton("Description column");
@@ -2165,7 +2166,7 @@ int UI_ImportAnnotationswindow::read_datetime(char *line, long long &timestamp)
 
 	if(time_coding == 0)				// in seconds relative to start of file.
 	{
-		timestamp = atoll_x(scratchpad, TIME_DIMENSION);
+		timestamp  = atoll_x(scratchpad, TIME_DIMENSION);
 		timestamp += mainwindow->edfheaderlist[0]->starttime_offset;
 
 		is_set = 1;
@@ -2203,11 +2204,11 @@ int UI_ImportAnnotationswindow::read_datetime(char *line, long long &timestamp)
 		}
 	}
 
-	if(time_coding == 2)				// hh:mm:ss.xxx
+	if(time_coding == 2) // hh:mm:ss.xxx
 	{
-		if(strlen(scratchpad) > 8)
+		if(strlen(scratchpad) > 8) // hh:mm:ss.xxx
 		{
-			if((scratchpad[2] == ':') && (scratchpad[5] == ':') && ((scratchpad[8] == '.') || (scratchpad[8] == ',')))
+			if((scratchpad[2] == ':') and (scratchpad[5] == ':') and ((scratchpad[8] == '.') or (scratchpad[8] == ',')))
 			{
 				for(digits=0; digits<32; digits++)
 				{
@@ -2235,9 +2236,9 @@ int UI_ImportAnnotationswindow::read_datetime(char *line, long long &timestamp)
 				is_set = 1;
 			}
 		}
-		if(strlen(scratchpad) > 7)
+		if(strlen(scratchpad) > 7) // h:mm:ss.xxx
 		{
-			if((scratchpad[1] == ':') && (scratchpad[4] == ':') && ((scratchpad[7] == '.') || (scratchpad[7] == ',')))
+			if((scratchpad[1] == ':') and (scratchpad[4] == ':') and ((scratchpad[7] == '.') or (scratchpad[7] == ',')))
 			{
 				for(digits=0; digits<32; digits++)
 				{
@@ -2267,19 +2268,22 @@ int UI_ImportAnnotationswindow::read_datetime(char *line, long long &timestamp)
 		}
 	}
 
-	if(time_coding == 3)				// yyyy-mm-ddThh:mm:ss
+	if(time_coding == 3) // yyyy-mm-ddThh:mm:ss
 	{
 		if(strlen(scratchpad) > 17)
 		{
 			if((scratchpad[4] == '-') && (scratchpad[7] == '-') && (scratchpad[13] == ':') && (scratchpad[16] == ':'))
 			{
 				scratchpad[19] = 0;
+
 				date_time.year = atoi(scratchpad);
 				date_time.month = atoi(scratchpad + 5);
 				date_time.day = atoi(scratchpad + 8);
+
 				date_time.hour = atoi(scratchpad + 11);
 				date_time.minute = atoi(scratchpad + 14);
 				date_time.second = atoi(scratchpad + 17);
+
 				date_time_to_utc(&utc_time, date_time);
 				timestamp = utc_time - mainwindow->edfheaderlist[0]->utc_starttime;
 				timestamp *= TIME_DIMENSION;
@@ -2288,15 +2292,15 @@ int UI_ImportAnnotationswindow::read_datetime(char *line, long long &timestamp)
 		}
 	}
 
-	if(time_coding == 4)				// yyyy-mm-ddThh:mm:ss.xxx
+	if(time_coding == 4) // yyyy-mm-ddThh:mm:ss.xxx
 	{
 		if(strlen(scratchpad) > 19)
 		{
-			if((scratchpad[4] == '-') && (scratchpad[7] == '-') && (scratchpad[13] == ':') && (scratchpad[16] == ':') && ((scratchpad[19] == ',') || (scratchpad[19] == '.')))
+			if((scratchpad[4] == '-') and (scratchpad[7] == '-') and (scratchpad[13] == ':') and (scratchpad[16] == ':') and ((scratchpad[19] == ',') or (scratchpad[19] == '.')))
 			{
-				for(digits=0; digits<32; digits++)
+				for(digits=0; digits<32; digits++)// maximally 32 decimal digits.
 				{
-					if((scratchpad[20 + digits] < '0') || (scratchpad[20 + digits] > '9'))
+					if( (scratchpad[20 + digits] < '0') or (scratchpad[20 + digits] > '9') )	// if not a number
 					{
 						break;
 					}
@@ -2305,15 +2309,17 @@ int UI_ImportAnnotationswindow::read_datetime(char *line, long long &timestamp)
 				date_time.year = atoi(scratchpad);
 				date_time.month = atoi(scratchpad + 5);
 				date_time.day = atoi(scratchpad + 8);
+
 				date_time.hour = atoi(scratchpad + 11);
 				date_time.minute = atoi(scratchpad + 14);
 				date_time.second = atoi(scratchpad + 17);
+
 				date_time_to_utc(&utc_time, date_time);
-				timestamp = utc_time - mainwindow->edfheaderlist[0]->utc_starttime;
-				timestamp *= TIME_DIMENSION;
+				timestamp  = utc_time - mainwindow->edfheaderlist[0]->utc_starttime;	// in seconds.
+				timestamp *= TIME_DIMENSION;						// in units.
 				if(digits)
 				{
-					l_temp = (atoi(scratchpad + 20) * TIME_DIMENSION);
+					l_temp = atoi(scratchpad + 20) * TIME_DIMENSION;
 					for(; digits>0; digits--)
 					{
 						l_temp /= 10LL;
@@ -2344,6 +2350,45 @@ int UI_ImportAnnotationswindow::read_datetime(char *line, long long &timestamp)
 				date_time_to_utc(&utc_time, date_time);
 				timestamp = utc_time - mainwindow->edfheaderlist[0]->utc_starttime;
 				timestamp *= TIME_DIMENSION;
+				is_set = 1;
+			}
+		}
+	}
+
+	if(time_coding == 6)				// "mm/dd/yyyy hh:mm:ss"
+	{
+		if(strlen(scratchpad) > 19)
+		{
+			if( (scratchpad[2] == '/') and (scratchpad[5] == '/') and (scratchpad[10] == ' ') and (scratchpad[13] == ':') and (scratchpad[16] == ':') and ((scratchpad[19] == ',') or (scratchpad[19] == '.')) )
+			{
+				for(digits=0; digits<32; digits++)// maximally 32 decimal digits.
+				{
+					if( (scratchpad[20 + digits] < '0') or (scratchpad[20 + digits] > '9') )
+					{
+						break;
+					}
+				}
+				scratchpad[20 + digits] = 0;
+				date_time.month = atoi(scratchpad);
+				date_time.day = atoi(scratchpad + 3);
+				date_time.year = atoi(scratchpad + 6);
+
+				date_time.hour = atoi(scratchpad + 11);
+				date_time.minute = atoi(scratchpad + 14);
+				date_time.second = atoi(scratchpad + 17);
+
+				date_time_to_utc(&utc_time, date_time);
+				timestamp = utc_time - mainwindow->edfheaderlist[0]->utc_starttime;
+				timestamp *= TIME_DIMENSION;
+				if(digits)
+				{
+					l_temp = atoi(scratchpad + 20) * TIME_DIMENSION;
+					for(; digits>0; digits--)
+					{
+						l_temp /= 10LL;
+					}
+					timestamp += l_temp;
+				}
 				is_set = 1;
 			}
 		}
