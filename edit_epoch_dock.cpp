@@ -131,9 +131,12 @@ void UI_EpochEditwindow::load_default() // Loads some default epoch labels.
 
 void UI_EpochEditwindow::button_pressed(int id) 		// id: the identity of the pushed button.  (stages[id])->toLatin1().data(): nullterminated char* naming the stage that was selected.
 {
+	int currentRow;
+
 	mainwindow->epochs_dock->setSelectedText(*stages[id]);
 	mainwindow->epochs_dock->setCurrentRow(mainwindow->epochs_dock->currentRow()+1);
-	int currentRow = mainwindow->epochs_dock->currentRow();
+
+	currentRow = mainwindow->epochs_dock->currentRow();
 	
 	if(currentRow == -1) deselect();
 }

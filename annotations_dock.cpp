@@ -672,6 +672,7 @@ void UI_Annotationswindow::setSelectedText(QString& annot)
 	{
 		QMessageBox messagewindow(QMessageBox::Critical, "Error", "setSelectedText(): annotation is NULL pointer.");
 		messagewindow.exec();
+		return;
 	}
 
 	hour = (int)((((annotation->onset + mainwindow->edfheaderlist[0]->l_starttime) / TIME_DIMENSION)/ 3600) % 24);
@@ -1039,13 +1040,22 @@ void UI_Annotationswindow::setCurrentRow(int row, QItemSelectionModel::Selection
 	}
 
 	item = currentItem();
-	annot = item->data(Qt::UserRole).value<void*>();
 
-	if(item == 0 || annot == 0)
+	if(item == 0)	// Invalid item selected.
 	{
 		QListWidget::setCurrentRow(-1, command);	// Sets the row in the QList
 		annotation = 0;
-		QMessageBox messagewindow(QMessageBox::Critical, "Error", "setCurrentRow() : Annotation is NULL pointer.");
+		this->deselect();
+		return;
+	}
+
+	annot = item->data(Qt::UserRole).value<void*>();
+
+	if(annot == 0)
+	{
+		QListWidget::setCurrentRow(-1, command);	// Sets the row in the QList
+		annotation = 0;
+		QMessageBox messagewindow(QMessageBox::Critical, "Error", "setCurrentRow() : Selected annotation is NULL pointer.");
 		messagewindow.exec();
 		return;
 	}
