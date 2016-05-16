@@ -550,7 +550,7 @@ void UI_Epochswindow::delete_annotation()
 {	
 	QString str("???");
 	setSelectedText( str );
-	setCurrentRow(currentRow()-1);
+	setCurrentRow( currentRow()-1 );
 	mainwindow->maincurve->update();
 }
 

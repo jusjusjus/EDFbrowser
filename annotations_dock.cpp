@@ -713,6 +713,9 @@ void UI_Annotationswindow::updateList()
 	    jump=0,
 	    modified=0;
 
+	annotationblock *selected_annotation;
+
+
 	QListWidgetItem *listitem;
 
 	QString string;
@@ -721,13 +724,15 @@ void UI_Annotationswindow::updateList()
 
 	selected = -1;
 
+	selected_annotation = 0;
+
 	clear();					// Empty out the Qt list.
 
 	edfplus_annotation_sort(annotationlist);	// Sort annotationlist.
 
 	annotation = *annotationlist;			// Get the first annotation.
 
-	while(annotation != NULL)	// If it exists ..
+	while(annotation != 0)	// If it exists ..
 	{
 		if(annotation->hidden_in_list)	//	.. check if it's hidden ..
 		{
@@ -788,8 +793,8 @@ void UI_Annotationswindow::updateList()
 
 		listitem = new QListWidgetItem(string, this);
 
-	QVariant annotVar = qVariantFromValue( (void*) annotation);
-	listitem->setData(Qt::UserRole, annotVar);	// Store a pointer to th annotation.
+		QVariant annotVar = qVariantFromValue( (void*) annotation );
+		listitem->setData(Qt::UserRole, annotVar);	// Store a pointer to th annotation.
 
 		if(annotation->modified == 1)	// if modified, change font of this listitem.
 		{
@@ -836,6 +841,7 @@ void UI_Annotationswindow::updateList()
 		if(annotation->selected)
 		{
 			selected = sequence_nr;	// Remember the index of the selected annotation.
+			selected_annotation = annotation;
 			annotation->selected = 0;
 
 			if(annotation->jump)	// If the item commands to jump, ..
@@ -850,14 +856,13 @@ void UI_Annotationswindow::updateList()
 		sequence_nr++;
 	}	// while(annotation != NULL)
 
-	if(mainwindow->annot_editor_active || mainwindow->epoch_editor_active)
+	if( mainwindow->annot_editor_active or mainwindow->epoch_editor_active )
 	{
 		if(selected >= 0)		// An annotation has been selected.
 		{
-	QListWidget::setCurrentRow(selected, QItemSelectionModel::ClearAndSelect);	// setCurrentRow to selected item.
+			QListWidget::setCurrentRow(selected, QItemSelectionModel::ClearAndSelect);	// setCurrentRow to selected item.
 
-			mainwindow->annotationEditDock->set_selected_annotation(file_num, selected);
-			mainwindow->epochEditDock->set_selected_annotation(selected); // this could possibly be done by class inheritance.
+			mainwindow->annotationEditDock->set_selected_annotation( selected_annotation );
 			selected = -1;
 
 			if(jump)
@@ -963,11 +968,19 @@ void UI_Annotationswindow::selectionChanged(int currentRow)
 
 void UI_Annotationswindow::annotation_selected(QListWidgetItem *item)
 {
+	if( item == 0 ) return;
+
 	long long new_viewtime;
-	double fraction, fraction_2, duration, window_length;
+
+	double fraction,
+	       fraction_2,
+	       duration,
+	       window_length;
 
 	// select the right annotation:
 	annotation = (annotationblock*) item->data(Qt::UserRole).value<void*>();
+
+	if( annotation == 0 ) return;
 
 
 	// find fraction so that left and right margin to the annotation (duration) are equal.
@@ -975,6 +988,7 @@ void UI_Annotationswindow::annotation_selected(QListWidgetItem *item)
 	window_length = (double)mainwindow->pagetime/(double)TIME_DIMENSION;
 	fraction = 0.5 * (1. - duration / window_length);
 	fraction_2 = 1.-fraction;
+
 	if(fraction < 0.)		// if not possible, center everything.
 	{
 		fraction = 0.5;
@@ -1017,9 +1031,8 @@ void UI_Annotationswindow::annotation_selected(QListWidgetItem *item)
 
 void UI_Annotationswindow::deselect()
 {
-//	clearSelection();
-//	clearFocus();
-//	updateList();
+	QListWidget::setCurrentRow(-1, QItemSelectionModel::Clear);	// Sets the row in the QList
+	annotation = 0;
 }
 
 
@@ -1032,7 +1045,8 @@ void UI_Annotationswindow::setCurrentRow(int row, QItemSelectionModel::Selection
 
 	if(row < 0)
 	{
-		QListWidget::setCurrentRow(0, command);
+		deselect();
+		return;
 	}
 	else
 	{
@@ -1043,9 +1057,7 @@ void UI_Annotationswindow::setCurrentRow(int row, QItemSelectionModel::Selection
 
 	if(item == 0)	// Invalid item selected.
 	{
-		QListWidget::setCurrentRow(-1, command);	// Sets the row in the QList
-		annotation = 0;
-		this->deselect();
+		deselect();
 		return;
 	}
 
@@ -1053,8 +1065,7 @@ void UI_Annotationswindow::setCurrentRow(int row, QItemSelectionModel::Selection
 
 	if(annot == 0)
 	{
-		QListWidget::setCurrentRow(-1, command);	// Sets the row in the QList
-		annotation = 0;
+		deselect();
 		QMessageBox messagewindow(QMessageBox::Critical, "Error", "setCurrentRow() : Selected annotation is NULL pointer.");
 		messagewindow.exec();
 		return;
