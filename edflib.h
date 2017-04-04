@@ -612,6 +612,7 @@ int edf_set_number_of_annotation_signals(int handle, int annot_signals);
 /* this function to increase the storage space for annotations */
 /* Minimum is 1, maximum is 64 */
 
+void edflib_latin1_to_ascii(char*, int);
 
 #ifdef __cplusplus
 } /* extern "C" */

@@ -1923,18 +1923,19 @@ struct edfhdrblock * edflib_check_edf_file(FILE *inputfile, int *edf_error)
 
   for(i=0; i<edfhdr->edfsignals; i++)
   {
-    strncpy(scratchpad, edf_hdr + 256 + (edfhdr->edfsignals * 96) + (i * 8), 8);
-    for(j=0; j<8; j++)
-    {
-      if((scratchpad[j]<32)||(scratchpad[j]>126))
-      {
-        *edf_error = EDFLIB_FILE_CONTAINS_FORMAT_ERRORS;
-        free(edf_hdr);
-        free(edfhdr->edfparam);
-        free(edfhdr);
-        return(NULL);
-      }
-    }
+    /* strncpy(scratchpad, edf_hdr + 256 + (edfhdr->edfsignals * 96) + (i * 8), 8); */
+    /* for(j=0; j<8; j++) */
+    /* { */
+    /*   if((scratchpad[j]<32)||(scratchpad[j]>126)) */
+    /*   { */
+    /*     *edf_error = EDFLIB_FILE_CONTAINS_FORMAT_ERRORS; */
+    /*     free(edf_hdr); */
+    /*     free(edfhdr->edfparam); */
+    /*     free(edfhdr); */
+    /*     return(NULL); */
+    /*   } */
+    /* } */
+	edflib_latin1_to_ascii(edf_hdr + 256 + (edfhdr->edfsignals * 96) + (i * 8), 8);
     strncpy(edfhdr->edfparam[i].physdimension, edf_hdr + 256 + (edfhdr->edfsignals * 96) + (i * 8), 8);
     edfhdr->edfparam[i].physdimension[8] = 0;
   }

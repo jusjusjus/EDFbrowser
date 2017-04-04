@@ -32,6 +32,7 @@
 
 
 #include "check_edf_file.h"
+#include "edflib.h"
 
 
 
@@ -756,20 +757,21 @@ struct edfhdrblock * EDFfileCheck::check_edf_file(FILE *inputfile, char *txt_str
   for(i=0; i<edfhdr->edfsignals; i++)
   {
     strncpy(scratchpad, edf_hdr + 256 + (edfhdr->edfsignals * 96) + (i * 8), 8);
-    for(j=0; j<8; j++)
-    {
-      if((scratchpad[j]<32)||(scratchpad[j]>126))
-      {
-        sprintf(txt_string, "Error, %ith character of physical dimension field of signal %i is not a valid 7-bit ASCII character.\n"
-                            "Use the header editor to fix your file. Look at the manual for the details.",
-        j + 1,
-        i + 1);
-        free(edf_hdr);
-        free(edfhdr->edfparam);
-        free(edfhdr);
-        return(NULL);
-      }
-    }
+    // for(j=0; j<8; j++)
+    // {
+    //   if((scratchpad[j]<32)||(scratchpad[j]>126))
+    //   {
+    //     sprintf(txt_string, "Error, %ith character of physical dimension field of signal %i is not a valid 7-bit ASCII character.\n"
+    //                         "Use the header editor to fix your file. Look at the manual for the details.",
+    //     j + 1,
+    //     i + 1);
+    //     free(edf_hdr);
+    //     free(edfhdr->edfparam);
+    //     free(edfhdr);
+    //     return(NULL);
+    //   }
+    // }
+    edflib_latin1_to_ascii(edf_hdr + 256 + (edfhdr->edfsignals * 96) + (i * 8), 8);
     strncpy(edfhdr->edfparam[i].physdimension, edf_hdr + 256 + (edfhdr->edfsignals * 96) + (i * 8), 8);
     edfhdr->edfparam[i].physdimension[8] = 0;
   }
