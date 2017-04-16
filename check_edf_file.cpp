@@ -155,6 +155,7 @@ struct edfhdrblock * EDFfileCheck::check_edf_file(FILE *inputfile, char *txt_str
 
 /********************* PATIENTNAME *********************************************/
 
+    edflib_latin1_to_ascii(edf_hdr + 8, 80);
   strncpy(scratchpad, edf_hdr + 8, 80);
   scratchpad[80] = 0;
   for(i=0; i<80; i++)
