@@ -14,6 +14,12 @@ EDFView is a Qt4 application and uses qmake as part of the build
 process.  qmake is part of your Qt4 installation.
 
 
+edfView.pro is the one that compiles (not edfbrowser.pro). 
+ To compile in a Windows machine: ( I used QT 5.9.1 minggw 32bit to compile this project)
+ --Make sure the environment variables and path are set correctly
+ --Open this project and make sure to select the correct compiler for configuration
+ --Go to Sources/main.cpp in QT creator and build this porject
+
 
 Build and run without "installing"
 ==================================
