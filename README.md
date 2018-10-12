@@ -1,6 +1,6 @@
 
 # *edfView*
-===
+---
 
 *edfView* is a Qt5 application to view and annotate signal data in .edf/.bdf(+)
 format.  It's a fork of Teunis van Beelen's infamous *EDFBrowser*.
