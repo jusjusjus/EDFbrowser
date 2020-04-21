@@ -27,13 +27,12 @@ To compile in a Windows machine: ( I used QT 5.9.1 minggw 32bit to compile this 
 ## Ubuntu
 
 To install *edfView* on ubuntu>=16.04 you need to first install `qt5-default`:
-using the command `> apt-get install qt5-default`.  The qt compilation tool
-`qmake` relies on the environment variable `QT_SELECT`.  You need to point it
-to `qt5`.  Enter `> export QT_SELECT=qt5`, and before make sure that `qt5`
-shows up in the list returned by `> qtchooser -l`.
+using the command `$ apt-get install qt5-default`.  Now, run the installation.
 
-Now, run through the installation procedure:
+```bash
+$ qmake
+$ make
 ```
-> qmake
-> make
-```
+
+If all went well, the executable `program `edfView` appears, with which you can
+view and score your .edf sleep records.
