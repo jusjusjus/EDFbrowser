@@ -81,43 +81,43 @@ public:
 
 private:
 
-QDialog     *averager_dialog;
+  QDialog     *averager_dialog;
 
-QLabel      *annotLabel,
-            *annotNameLabel,
-            *signalLabel,
-            *ratioLabel,
-            *bufsizeLabel,
-            *time1Label,
-            *time2Label;
+  QLabel      *annotLabel,
+              *annotNameLabel,
+              *signalLabel,
+              *ratioLabel,
+              *bufsizeLabel,
+              *time1Label,
+              *time2Label;
 
-QPushButton *CloseButton,
-            *StartButton;
+  QPushButton *CloseButton,
+              *StartButton;
 
-QListWidget *list;
+  QListWidget *list;
 
-QComboBox   *ratioBox;
+  QComboBox   *ratioBox;
 
-QTimeEdit    *timeEdit1,
-             *timeEdit2;
+  QTimeEdit    *timeEdit1,
+               *timeEdit2;
 
-QTime        time1,
-             time2;
+  QTime        time1,
+               time2;
 
-QDoubleSpinBox *avg_periodspinbox;
+  QDoubleSpinBox *avg_periodspinbox;
 
-char annot_str[MAX_ANNOTATION_LEN + 1];
+  char annot_str[MAX_ANNOTATION_LEN + 1];
 
-int signal_nr;
+  int signal_nr;
 
-double *avgbuf;
+  double *avgbuf;
 
 
-void process_avg(struct signalcompblock *);
+  void process_avg(struct signalcompblock *);
 
 private slots:
 
-void startButtonClicked();
+  void startButtonClicked();
 
 };
 

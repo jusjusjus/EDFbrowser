@@ -37,13 +37,13 @@
 
 #if defined(__APPLE__) || defined(__MACH__) || defined(__APPLE_CC__)
 
-#define fopeno fopen
+  #define fopeno fopen
 
 #else
 
-#define fseeko fseeko64
-#define ftello ftello64
-#define fopeno fopen64
+  #define fseeko fseeko64
+  #define ftello ftello64
+  #define fopeno fopen64
 
 #endif
 
@@ -104,9 +104,9 @@ UI_NK2EDFwindow::UI_NK2EDFwindow(char *recent_dir)
 void UI_NK2EDFwindow::SelectFileButton()
 {
   FILE *inputfile=NULL,
-       *outputfile=NULL,
-       *logfile=NULL,
-       *pntfile=NULL;
+        *outputfile=NULL,
+         *logfile=NULL,
+          *pntfile=NULL;
 
   int i, j, k,
       error,
@@ -129,8 +129,8 @@ void UI_NK2EDFwindow::SelectFileButton()
        logfilepath[MAX_PATH_LENGTH],
        pntfilepath[MAX_PATH_LENGTH],
        *log_buf=NULL,
-       *sublog_buf=NULL,
-       scratchpad[256];
+        *sublog_buf=NULL,
+         scratchpad[256];
 
 
   pushButton1->setEnabled(false);
@@ -158,7 +158,7 @@ void UI_NK2EDFwindow::SelectFileButton()
     return;
   }
 
-/***************** check if the EEG file is valid ******************************/
+  /***************** check if the EEG file is valid ******************************/
 
   rewind(inputfile);
   if(fread(scratchpad, 16, 1, inputfile)!=1)
@@ -204,7 +204,7 @@ void UI_NK2EDFwindow::SelectFileButton()
     return;
   }
 
-/************************* read logs **********************************************/
+  /************************* read logs **********************************************/
 
   if(edfplus)
   {
@@ -220,8 +220,8 @@ void UI_NK2EDFwindow::SelectFileButton()
       if(logfile==NULL)
       {
         snprintf(txt_string, 2048, "Can not open file %s for reading,\n"
-                            "if there is no .log file you can try to create an EDF file instead of EDF+.\n",
-                            logfilepath);
+                 "if there is no .log file you can try to create an EDF file instead of EDF+.\n",
+                 logfilepath);
         textEdit1->append(QString::fromLocal8Bit(txt_string));
         fclose(inputfile);
         pushButton1->setEnabled(true);
@@ -304,7 +304,7 @@ void UI_NK2EDFwindow::SelectFileButton()
 
       if(read_subevents)
       {
-        if(fseeko(logfile, 0x0092LL + ((i + 22) * 20) , SEEK_SET))
+        if(fseeko(logfile, 0x0092LL + ((i + 22) * 20), SEEK_SET))
         {
           read_subevents = 0;
         }
@@ -364,7 +364,7 @@ void UI_NK2EDFwindow::SelectFileButton()
       }
     }
 
-/************************* check pntfile **********************************************/
+    /************************* check pntfile **********************************************/
 
     strncpy(pntfilepath, path, MAX_PATH_LENGTH);
     remove_extension_from_filename(logfilepath);
@@ -378,8 +378,8 @@ void UI_NK2EDFwindow::SelectFileButton()
       if(pntfile==NULL)
       {
         snprintf(txt_string, 2048, "Can not open file %s for reading,\n"
-                            "if there is no .pnt file you can try to create an EDF file instead of EDF+.\n",
-                            pntfilepath);
+                 "if there is no .pnt file you can try to create an EDF file instead of EDF+.\n",
+                 pntfilepath);
         textEdit1->append(QString::fromLocal8Bit(txt_string));
         fclose(logfile);
         fclose(inputfile);
@@ -417,7 +417,7 @@ void UI_NK2EDFwindow::SelectFileButton()
     }
   }
 
-/***************** initialize labels **************************************/
+  /***************** initialize labels **************************************/
 
   for(i=0; i<256; i++)
   {
@@ -483,7 +483,7 @@ void UI_NK2EDFwindow::SelectFileButton()
     textEdit1->append("Can not open *.21e file, converter will use default electrode names.");
   }
 
-/***************** start conversion **************************************/
+  /***************** start conversion **************************************/
 
   total_blocks = 0;
 
@@ -556,7 +556,7 @@ void UI_NK2EDFwindow::SelectFileButton()
         return;
       }
 
-   /********************************************************************/
+      /********************************************************************/
 
       strcpy(outputpath, path);
       if(edfplus)  sprintf(outputpath + strlen(path) - 4, "_%u-%u+.edf", i + 1, j + 1);
@@ -672,7 +672,7 @@ int UI_NK2EDFwindow::convert_nk2edf(FILE *inputfile, FILE *outputfile, FILE *pnt
        *annotations,
        scratchpad[48];
 
-/************************* filter events ******************************************/
+  /************************* filter events ******************************************/
 
   for(i=0; i<n_logs; i++)
   {
@@ -687,7 +687,7 @@ int UI_NK2EDFwindow::convert_nk2edf(FILE *inputfile, FILE *outputfile, FILE *pnt
   log_buf += i * 45;
   n_logs -= i;
 
-/************************* write EDF-header ***************************************/
+  /************************* write EDF-header ***************************************/
 
   rewind(outputfile);
 
@@ -824,33 +824,46 @@ int UI_NK2EDFwindow::convert_nk2edf(FILE *inputfile, FILE *outputfile, FILE *pnt
       temp = atoi(scratchpad);
       switch(temp)
       {
-        case  1 : strcpy(scratchpad, "JAN");
-                  break;
-        case  2 : strcpy(scratchpad, "FEB");
-                  break;
-        case  3 : strcpy(scratchpad, "MAR");
-                  break;
-        case  4 : strcpy(scratchpad, "APR");
-                  break;
-        case  5 : strcpy(scratchpad, "MAY");
-                  break;
-        case  6 : strcpy(scratchpad, "JUN");
-                  break;
-        case  7 : strcpy(scratchpad, "JUL");
-                  break;
-        case  8 : strcpy(scratchpad, "AUG");
-                  break;
-        case  9 : strcpy(scratchpad, "SEP");
-                  break;
-        case 10 : strcpy(scratchpad, "OCT");
-                  break;
-        case 11 : strcpy(scratchpad, "NOV");
-                  break;
-        case 12 : strcpy(scratchpad, "DEC");
-                  break;
-        default : strcpy(scratchpad, "JAN");
-                  error = 1;
-                  break;
+      case  1 :
+        strcpy(scratchpad, "JAN");
+        break;
+      case  2 :
+        strcpy(scratchpad, "FEB");
+        break;
+      case  3 :
+        strcpy(scratchpad, "MAR");
+        break;
+      case  4 :
+        strcpy(scratchpad, "APR");
+        break;
+      case  5 :
+        strcpy(scratchpad, "MAY");
+        break;
+      case  6 :
+        strcpy(scratchpad, "JUN");
+        break;
+      case  7 :
+        strcpy(scratchpad, "JUL");
+        break;
+      case  8 :
+        strcpy(scratchpad, "AUG");
+        break;
+      case  9 :
+        strcpy(scratchpad, "SEP");
+        break;
+      case 10 :
+        strcpy(scratchpad, "OCT");
+        break;
+      case 11 :
+        strcpy(scratchpad, "NOV");
+        break;
+      case 12 :
+        strcpy(scratchpad, "DEC");
+        break;
+      default :
+        strcpy(scratchpad, "JAN");
+        error = 1;
+        break;
       }
       if(fwrite(scratchpad, 3, 1, outputfile)!=1)
       {
@@ -1002,32 +1015,45 @@ int UI_NK2EDFwindow::convert_nk2edf(FILE *inputfile, FILE *outputfile, FILE *pnt
       temp = atoi(scratchpad);
       switch(temp)
       {
-        case  1 : strcpy(scratchpad, "JAN");
-                  break;
-        case  2 : strcpy(scratchpad, "FEB");
-                  break;
-        case  3 : strcpy(scratchpad, "MAR");
-                  break;
-        case  4 : strcpy(scratchpad, "APR");
-                  break;
-        case  5 : strcpy(scratchpad, "MAY");
-                  break;
-        case  6 : strcpy(scratchpad, "JUN");
-                  break;
-        case  7 : strcpy(scratchpad, "JUL");
-                  break;
-        case  8 : strcpy(scratchpad, "AUG");
-                  break;
-        case  9 : strcpy(scratchpad, "SEP");
-                  break;
-        case 10 : strcpy(scratchpad, "OCT");
-                  break;
-        case 11 : strcpy(scratchpad, "NOV");
-                  break;
-        case 12 : strcpy(scratchpad, "DEC");
-                  break;
-        default : strcpy(scratchpad, "JAN");
-                  break;
+      case  1 :
+        strcpy(scratchpad, "JAN");
+        break;
+      case  2 :
+        strcpy(scratchpad, "FEB");
+        break;
+      case  3 :
+        strcpy(scratchpad, "MAR");
+        break;
+      case  4 :
+        strcpy(scratchpad, "APR");
+        break;
+      case  5 :
+        strcpy(scratchpad, "MAY");
+        break;
+      case  6 :
+        strcpy(scratchpad, "JUN");
+        break;
+      case  7 :
+        strcpy(scratchpad, "JUL");
+        break;
+      case  8 :
+        strcpy(scratchpad, "AUG");
+        break;
+      case  9 :
+        strcpy(scratchpad, "SEP");
+        break;
+      case 10 :
+        strcpy(scratchpad, "OCT");
+        break;
+      case 11 :
+        strcpy(scratchpad, "NOV");
+        break;
+      case 12 :
+        strcpy(scratchpad, "DEC");
+        break;
+      default :
+        strcpy(scratchpad, "JAN");
+        break;
       }
       if(fwrite(scratchpad, 3, 1, outputfile)!=1)
       {
@@ -1302,7 +1328,7 @@ int UI_NK2EDFwindow::convert_nk2edf(FILE *inputfile, FILE *outputfile, FILE *pnt
   for(i=0; i<(channels * 32); i++)  fputc(' ', outputfile);
   if(edfplus)  for(i=0; i<32; i++)  fputc(' ', outputfile);
 
-/************************* write data ****************************************************/
+  /************************* write data ****************************************************/
 
   bufsize = 4194304;
   buf = (char *)calloc(1, bufsize);
@@ -1372,7 +1398,7 @@ int UI_NK2EDFwindow::convert_nk2edf(FILE *inputfile, FILE *outputfile, FILE *pnt
         p = sprintf(annotations, "%+i.%i", seconds, deci_seconds);
         annotations[p++] = 20;
         annotations[p++] = 20;
-        for( ;n_log_processed < n_logs; n_log_processed++)
+        for( ; n_log_processed < n_logs; n_log_processed++)
         {
           elapsed_time = 36000 * (log_buf[(n_log_processed * 45) + 20] - 48);
           elapsed_time += 3600 * (log_buf[(n_log_processed * 45) + 21] - 48);

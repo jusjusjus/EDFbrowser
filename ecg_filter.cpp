@@ -274,7 +274,7 @@ double run_ecg_filter(double new_sample, struct ecg_filter_settings *settings)
          result;
 
 
-/* running average filter 1 */
+  /* running average filter 1 */
 
   settings->avgfilter_50_buf[settings->avgfilter_50_idx] = new_sample;
 
@@ -294,7 +294,7 @@ double run_ecg_filter(double new_sample, struct ecg_filter_settings *settings)
 
   settings->avgfilter_50_mean /= settings->avgfilter_50_size;
 
-/* running average filter 2 */
+  /* running average filter 2 */
 
   settings->avgfilter_35_buf[settings->avgfilter_35_idx] = settings->avgfilter_50_mean;
 
@@ -314,7 +314,7 @@ double run_ecg_filter(double new_sample, struct ecg_filter_settings *settings)
 
   settings->avgfilter_35_mean /= settings->avgfilter_35_size;
 
-/* running average filter 3 */
+  /* running average filter 3 */
 
   settings->avgfilter_25_buf[settings->avgfilter_25_idx] = settings->avgfilter_35_mean;
 
@@ -338,7 +338,7 @@ double run_ecg_filter(double new_sample, struct ecg_filter_settings *settings)
 
 // if(signalcompnr == 1)  return(settings->avgfilter_25_mean);  // debug
 
-/* spatial velocity filter */
+  /* spatial velocity filter */
 
   settings->SV[settings->SV_idx] = settings->avgfilter_25_mean;
 
@@ -422,11 +422,11 @@ double run_ecg_filter(double new_sample, struct ecg_filter_settings *settings)
 
       settings->smpl_n = settings->M_startslope;
 
-#ifdef ECG_FILTER_DEBUG_ACTIVE
+      #ifdef ECG_FILTER_DEBUG_ACTIVE
       printf("->   settings->drain is %f\n", settings->drain);
 
       printf("->   settings->M_avg is %f\n", settings->M_avg);
-#endif
+      #endif
     }
 
     settings->runin--;
@@ -462,9 +462,9 @@ double run_ecg_filter(double new_sample, struct ecg_filter_settings *settings)
     {
       settings->top = new_input;
 
-#ifdef ECG_FILTER_DEBUG_ACTIVE
+      #ifdef ECG_FILTER_DEBUG_ACTIVE
       printf("new_input is %f\n", new_input);
-#endif
+      #endif
     }
 
     settings->sample_cntr++;
@@ -477,9 +477,9 @@ double run_ecg_filter(double new_sample, struct ecg_filter_settings *settings)
     {
       settings->top *= 0.6;
 
-#ifdef ECG_FILTER_DEBUG_ACTIVE
+      #ifdef ECG_FILTER_DEBUG_ACTIVE
       printf("settings->top is %f\n", settings->top);
-#endif
+      #endif
       if(settings->top > (1.5 * settings->M[settings->M_idx]))
       {
         settings->top = 1.1 * settings->M[settings->M_idx];
@@ -493,17 +493,17 @@ double run_ecg_filter(double new_sample, struct ecg_filter_settings *settings)
 
       settings->drain = settings->M_avg * 0.4 / settings->sf;
 
-#ifdef ECG_FILTER_DEBUG_ACTIVE
+      #ifdef ECG_FILTER_DEBUG_ACTIVE
       printf("settings->top is %f\n", settings->top);
 
       printf("settings->M_avg is %f\n", settings->M_avg);
 
       printf("settings->drain is %f\n", settings->drain);
-#endif
+      #endif
     }
 
     if((new_input > (settings->M_avg + settings->F_value + settings->R_value))  // beat detected?
-      && (new_input > (settings->T_peak_avg / 2.0)))
+        && (new_input > (settings->T_peak_avg / 2.0)))
 //    if(new_input > (settings->M_avg + settings->F_value + settings->R_value))  // beat detected?
 //    if(new_input > (settings->M_avg + settings->R_value))  // beat detected?  // debug
 //    if(new_input > (settings->M_avg))  // debug
@@ -512,11 +512,11 @@ double run_ecg_filter(double new_sample, struct ecg_filter_settings *settings)
 
       settings->R[settings->R_idx++] = settings->smpl_n;
 
-#ifdef ECG_FILTER_DEBUG_ACTIVE
+      #ifdef ECG_FILTER_DEBUG_ACTIVE
       printf("beat detected: settings->top is %f\n", settings->top);
 
       printf("beat detected: settings->smpl_n is %i\n", settings->smpl_n);
-#endif
+      #endif
       settings->R_idx %= 5;
 
       settings->R_avg = (settings->R[0] + settings->R[1] + settings->R[2] + settings->R[3] + settings->R[4]) / 5;

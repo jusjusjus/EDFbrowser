@@ -35,12 +35,12 @@
 
 
 #if defined(__APPLE__) || defined(__MACH__) || defined(__APPLE_CC__)
-	#define fopeno fopen
+  #define fopeno fopen
 
 #else
-	#define fseeko fseeko64
-	#define ftello ftello64
-	#define fopeno fopen64
+  #define fseeko fseeko64
+  #define ftello ftello64
+  #define fopeno fopen64
 
 #endif
 
@@ -117,10 +117,10 @@ UI_ImportAnnotationswindow::UI_ImportAnnotationswindow(QWidget *w_parent, UI_Ann
   DurationColumnSpinBox->setValue(3);
   DurationColumnSpinBox->setMinimumSize(80, 25);
 
-	EndColumnSpinBox = new QSpinBox(ImportAnnotsDialog);
-	EndColumnSpinBox->setRange(1,256);
-	EndColumnSpinBox->setValue(3);
-	EndColumnSpinBox->setMinimumSize(80, 25);
+  EndColumnSpinBox = new QSpinBox(ImportAnnotsDialog);
+  EndColumnSpinBox->setRange(1,256);
+  EndColumnSpinBox->setValue(3);
+  EndColumnSpinBox->setMinimumSize(80, 25);
 
   DescriptionColumnSpinBox = new QSpinBox(ImportAnnotsDialog);
   DescriptionColumnSpinBox->setRange(1,256);
@@ -154,15 +154,15 @@ UI_ImportAnnotationswindow::UI_ImportAnnotationswindow(QWidget *w_parent, UI_Ann
   DurationCheckBox->setCheckState(Qt::Unchecked);
   DurationCheckBox->setMinimumSize(198, 25);
 
-	EndCheckBox = new QCheckBox(" End column", ImportAnnotsDialog);
-	EndCheckBox->setTristate(false);
-	EndCheckBox->setCheckState(Qt::Unchecked);
-	EndCheckBox->setMinimumSize(198, 25);
+  EndCheckBox = new QCheckBox(" End column", ImportAnnotsDialog);
+  EndCheckBox->setTristate(false);
+  EndCheckBox->setCheckState(Qt::Unchecked);
+  EndCheckBox->setMinimumSize(198, 25);
 
-	durationGroup = new QButtonGroup(ImportAnnotsDialog);
-	durationGroup->addButton(DurationCheckBox);
-	durationGroup->addButton(EndCheckBox);
-	durationGroup->setExclusive(false);
+  durationGroup = new QButtonGroup(ImportAnnotsDialog);
+  durationGroup->addButton(DurationCheckBox);
+  durationGroup->addButton(EndCheckBox);
+  durationGroup->setExclusive(false);
 
 
   asciiSettingsHBoxLayout1 = new QHBoxLayout;
@@ -190,10 +190,10 @@ UI_ImportAnnotationswindow::UI_ImportAnnotationswindow(QWidget *w_parent, UI_Ann
   asciiSettingsHBoxLayout7->addWidget(DurationColumnSpinBox);
   asciiSettingsHBoxLayout7->addStretch(100);
 
-	asciiSettingsHBoxLayout8 = new QHBoxLayout;
-	asciiSettingsHBoxLayout8->addWidget(EndCheckBox);
-	asciiSettingsHBoxLayout8->addWidget(EndColumnSpinBox);
-	asciiSettingsHBoxLayout8->addStretch(100);
+  asciiSettingsHBoxLayout8 = new QHBoxLayout;
+  asciiSettingsHBoxLayout8->addWidget(EndCheckBox);
+  asciiSettingsHBoxLayout8->addWidget(EndColumnSpinBox);
+  asciiSettingsHBoxLayout8->addStretch(100);
 
   asciiSettingsHBoxLayout5 = new QHBoxLayout;
   asciiSettingsHBoxLayout5->addWidget(DatastartLabel);
@@ -314,7 +314,7 @@ UI_ImportAnnotationswindow::UI_ImportAnnotationswindow(QWidget *w_parent, UI_Ann
   DescriptionColumnSpinBox->setValue(mainwindow->import_annotations_var->descriptioncolumn);
   DescriptionLineEdit->setText(mainwindow->import_annotations_var->description);
   DurationColumnSpinBox->setValue(mainwindow->import_annotations_var->durationcolumn);
-	EndColumnSpinBox->setValue(mainwindow->import_annotations_var->endcolumn);
+  EndColumnSpinBox->setValue(mainwindow->import_annotations_var->endcolumn);
   DatastartSpinbox->setValue(mainwindow->import_annotations_var->datastartline);
   RelativeTimeComboBox->setCurrentIndex(mainwindow->import_annotations_var->onsettimeformat);
   BitTimeSpinbox->setValue(mainwindow->import_annotations_var->dceventbittime);
@@ -348,16 +348,16 @@ UI_ImportAnnotationswindow::UI_ImportAnnotationswindow(QWidget *w_parent, UI_Ann
     DurationColumnSpinBox->setEnabled(false);
   }
 
-	if(mainwindow->import_annotations_var->useend == 1)
-	{
-		EndCheckBox->setCheckState(Qt::Checked);
-		EndColumnSpinBox->setEnabled(true);
-	}
-	else
-	{
-		EndCheckBox->setCheckState(Qt::Unchecked);
-		EndColumnSpinBox->setEnabled(false);
-	}
+  if(mainwindow->import_annotations_var->useend == 1)
+  {
+    EndCheckBox->setCheckState(Qt::Checked);
+    EndColumnSpinBox->setEnabled(true);
+  }
+  else
+  {
+    EndCheckBox->setCheckState(Qt::Unchecked);
+    EndColumnSpinBox->setEnabled(false);
+  }
 
   if(mainwindow->import_annotations_var->ignoreconsecutive == 1)
   {
@@ -381,13 +381,13 @@ UI_ImportAnnotationswindow::UI_ImportAnnotationswindow(QWidget *w_parent, UI_Ann
   QObject::connect(DescriptionColumnRadioButton,    SIGNAL(toggled(bool)),            this,               SLOT(descriptionRadioButtonClicked(bool)));
   QObject::connect(UseManualDescriptionRadioButton, SIGNAL(toggled(bool)),            this,               SLOT(descriptionRadioButtonClicked(bool)));
   QObject::connect(DurationCheckBox,                SIGNAL(stateChanged(int)),        this,               SLOT(DurationCheckBoxChanged(int)));
-	QObject::connect(EndCheckBox, SIGNAL(stateChanged(int)), this, SLOT(EndCheckBoxChanged(int)));
+  QObject::connect(EndCheckBox, SIGNAL(stateChanged(int)), this, SLOT(EndCheckBoxChanged(int)));
   QObject::connect(tabholder,                       SIGNAL(currentChanged(int)),      this,               SLOT(TabChanged(int)));
 
   if(filename != NULL)
   {
-	  import_from_ascii(filename);
-	  return;
+    import_from_ascii(filename);
+    return;
   }
 
   ImportAnnotsDialog->exec();
@@ -397,9 +397,9 @@ UI_ImportAnnotationswindow::UI_ImportAnnotationswindow(QWidget *w_parent, UI_Ann
 
 void UI_ImportAnnotationswindow::DurationCheckBoxChanged(int state)
 {
-	bool checked = state == Qt::Checked;
-	DurationColumnSpinBox->setEnabled(checked);
-	if(checked) EndCheckBox->setCheckState(Qt::Unchecked);
+  bool checked = state == Qt::Checked;
+  DurationColumnSpinBox->setEnabled(checked);
+  if(checked) EndCheckBox->setCheckState(Qt::Unchecked);
 
 }
 
@@ -407,9 +407,9 @@ void UI_ImportAnnotationswindow::DurationCheckBoxChanged(int state)
 
 void UI_ImportAnnotationswindow::EndCheckBoxChanged(int state)
 {
-	bool checked = state == Qt::Checked;
-	EndColumnSpinBox->setEnabled(checked);
-	if(checked) DurationCheckBox->setCheckState(Qt::Unchecked);
+  bool checked = state == Qt::Checked;
+  EndColumnSpinBox->setEnabled(checked);
+  if(checked) DurationCheckBox->setCheckState(Qt::Unchecked);
 }
 
 
@@ -435,15 +435,15 @@ void UI_ImportAnnotationswindow::descriptionRadioButtonClicked(bool)
 
 void UI_ImportAnnotationswindow::TabChanged(int index)
 {
-	if((index == tab_index_array[XML_FORMAT]) || (index == tab_index_array[DCEVENT_FORMAT]))	IgnoreConsecutiveCheckBox->setEnabled(true);
+  if((index == tab_index_array[XML_FORMAT]) || (index == tab_index_array[DCEVENT_FORMAT]))  IgnoreConsecutiveCheckBox->setEnabled(true);
 
-	if(index == tab_index_array[EDFPLUS_FORMAT])							IgnoreConsecutiveCheckBox->setEnabled(false);
+  if(index == tab_index_array[EDFPLUS_FORMAT])              IgnoreConsecutiveCheckBox->setEnabled(false);
 
-	if(index == tab_index_array[ASCIICSV_FORMAT])
-	{
-		if(UseManualDescriptionRadioButton->isChecked() == true)	IgnoreConsecutiveCheckBox->setEnabled(false);
-		else								IgnoreConsecutiveCheckBox->setEnabled(true);
-	}
+  if(index == tab_index_array[ASCIICSV_FORMAT])
+  {
+    if(UseManualDescriptionRadioButton->isChecked() == true)  IgnoreConsecutiveCheckBox->setEnabled(false);
+    else                IgnoreConsecutiveCheckBox->setEnabled(true);
+  }
 }
 
 
@@ -516,12 +516,12 @@ void UI_ImportAnnotationswindow::ImportButtonClicked()
     error = import_from_ascii();
   }
 
-  if(annotationlist[0])					// if annotationslist is not empty,
+  if(annotationlist[0])         // if annotationslist is not empty,
   {
-	annotations_dock->docklist->show();		// ...show the dock,
-	mainwindow->annotations_edited = 1;		// ...call that you edited it,
-	annotations_dock->updateList();			// ...update the list,
-	mainwindow->save_act->setEnabled(true);		// ...ask before quitting.
+    annotations_dock->docklist->show();   // ...show the dock,
+    mainwindow->annotations_edited = 1;   // ...call that you edited it,
+    annotations_dock->updateList();     // ...update the list,
+    mainwindow->save_act->setEnabled(true);   // ...ask before quitting.
   }
 
   mainwindow->maincurve->update();
@@ -586,8 +586,8 @@ int UI_ImportAnnotationswindow::import_from_xml(void)
 
   get_directory_from_path(mainwindow->recent_opendir, path, MAX_PATH_LENGTH);
 
-//	if(mainwindow->annotationlist_backup==NULL)									// if not yet done, ...
-//		mainwindow->annotationlist_backup = edfplus_annotation_copy_list(annotationlist);			// create a backup list.
+//  if(mainwindow->annotationlist_backup==NULL)                 // if not yet done, ...
+//    mainwindow->annotationlist_backup = edfplus_annotation_copy_list(annotationlist);     // create a backup list.
 
   xml_hdl = xml_get_handle(path);
   if(xml_hdl==NULL)
@@ -795,7 +795,7 @@ int UI_ImportAnnotationswindow::import_from_ascii(void)
        duration[32];
 
   long long onset=0LL,
-		end=0LL;
+            end=0LL;
 
   FILE *inputfile=NULL;
 
@@ -871,8 +871,8 @@ int UI_ImportAnnotationswindow::import_from_ascii(void)
   end_column = EndColumnSpinBox->value() - 1;
 
 
-	use_duration = (int)(DurationCheckBox->checkState() == Qt::Checked);	// use_duration = 1 if checked.  Else: = 0.
-	use_end = (int)(EndCheckBox->checkState() == Qt::Checked);	// use_duration = 1 if checked.  Else: = 0.
+  use_duration = (int)(DurationCheckBox->checkState() == Qt::Checked);  // use_duration = 1 if checked.  Else: = 0.
+  use_end = (int)(EndCheckBox->checkState() == Qt::Checked);  // use_duration = 1 if checked.  Else: = 0.
 
   if( (descr_column == onset_column) && (!manualdescription) )
   {
@@ -970,7 +970,7 @@ int UI_ImportAnnotationswindow::import_from_ascii(void)
 
   for(j=0; j<10; j++)  qApp->processEvents();
 
-  for(i=0; i<(startline-1);)	// checks whethere there are really startline lines in the file.
+  for(i=0; i<(startline-1);)  // checks whethere there are really startline lines in the file.
   {
     temp = fgetc(inputfile);
 
@@ -1006,19 +1006,19 @@ int UI_ImportAnnotationswindow::import_from_ascii(void)
 
   duration_is_set = 0;
 
-  while(1)	// start reading the file.
+  while(1)  // start reading the file.
   {
-    temp = fgetc(inputfile);	// peak a char
+    temp = fgetc(inputfile);  // peak a char
 
-    if(temp==EOF) break;	// check EOF.  End file reading.
+    if(temp==EOF) break;  // check EOF.  End file reading.
 
     line[i] = temp;
 
-    if(line[i]=='\r') continue;			// Indicates a new line. (r: reset.  Carriage return.)
+    if(line[i]=='\r') continue;     // Indicates a new line. (r: reset.  Carriage return.)
 
-		if(separator!=',')			// If ',' isn't a separator,
-			if(line[i]==',')		// ... and it shows up,
-				line[i] = '.';		// it should be replaced by '.'.  Euro -> US decimal point conversion.
+    if(separator!=',')      // If ',' isn't a separator,
+      if(line[i]==',')    // ... and it shows up,
+        line[i] = '.';    // it should be replaced by '.'.  Euro -> US decimal point conversion.
 
     if(line[i]==separator)
     {
@@ -1026,11 +1026,11 @@ int UI_ImportAnnotationswindow::import_from_ascii(void)
 
       if(!column_end)
       {
-        if(column == onset_column)			// If column is the indicated onset column,
-		onset_is_set = read_datetime(line + str_start, onset);
+        if(column == onset_column)      // If column is the indicated onset column,
+          onset_is_set = read_datetime(line + str_start, onset);
 
-        if(use_end && (column == end_column) )			// If column is the indicated onset column,
-		end_is_set = read_datetime(line + str_start, end);
+        if(use_end && (column == end_column) )      // If column is the indicated onset column,
+          end_is_set = read_datetime(line + str_start, end);
 
         if((!manualdescription) && (column == descr_column))
         {
@@ -1074,12 +1074,12 @@ int UI_ImportAnnotationswindow::import_from_ascii(void)
       {
         if(column == onset_column)
         {
-		onset_is_set = read_datetime(line+str_start, onset);
+          onset_is_set = read_datetime(line+str_start, onset);
         }
 
         if( use_end && (column == end_column) )
         {
-		end_is_set = read_datetime(line+str_start, end);
+          end_is_set = read_datetime(line+str_start, end);
         }
 
 
@@ -1103,13 +1103,13 @@ int UI_ImportAnnotationswindow::import_from_ascii(void)
         }
       }
 
-	if(end_is_set)
-	{
-		double Duration = (double)(end-onset)/(double)TIME_DIMENSION;
-		sprintf(duration, "%f", Duration);
-		use_duration = 1;
-		duration_is_set = 1;
-	}
+      if(end_is_set)
+      {
+        double Duration = (double)(end-onset)/(double)TIME_DIMENSION;
+        sprintf(duration, "%f", Duration);
+        use_duration = 1;
+        duration_is_set = 1;
+      }
 
       if( ((!use_duration) || duration_is_set) && ((!use_end) || end_is_set) )
       {
@@ -1264,7 +1264,7 @@ int UI_ImportAnnotationswindow::import_from_ascii(const char *filename)
        duration[32];
 
   long long onset=0LL,
-		end=0LL;
+            end=0LL;
 
   FILE *inputfile=NULL;
 
@@ -1340,8 +1340,8 @@ int UI_ImportAnnotationswindow::import_from_ascii(const char *filename)
   end_column = EndColumnSpinBox->value() - 1;
 
 
-	use_duration = (int)(DurationCheckBox->checkState() == Qt::Checked);	// use_duration = 1 if checked.  Else: = 0.
-	use_end = (int)(EndCheckBox->checkState() == Qt::Checked);	// use_duration = 1 if checked.  Else: = 0.
+  use_duration = (int)(DurationCheckBox->checkState() == Qt::Checked);  // use_duration = 1 if checked.  Else: = 0.
+  use_end = (int)(EndCheckBox->checkState() == Qt::Checked);  // use_duration = 1 if checked.  Else: = 0.
 
   if( (descr_column == onset_column) && (!manualdescription) )
   {
@@ -1438,7 +1438,7 @@ int UI_ImportAnnotationswindow::import_from_ascii(const char *filename)
 
   for(j=0; j<10; j++)  qApp->processEvents();
 
-  for(i=0; i<(startline-1);)	// checks whethere there are really startline lines in the file.
+  for(i=0; i<(startline-1);)  // checks whethere there are really startline lines in the file.
   {
     temp = fgetc(inputfile);
 
@@ -1474,19 +1474,19 @@ int UI_ImportAnnotationswindow::import_from_ascii(const char *filename)
 
   duration_is_set = 0;
 
-  while(1)	// start reading the file.
+  while(1)  // start reading the file.
   {
-    temp = fgetc(inputfile);	// peak a char
+    temp = fgetc(inputfile);  // peak a char
 
-    if(temp==EOF) break;	// check EOF.  End file reading.
+    if(temp==EOF) break;  // check EOF.  End file reading.
 
     line[i] = temp;
 
-    if(line[i]=='\r') continue;			// Indicates a new line. (r: reset.  Carriage return.)
+    if(line[i]=='\r') continue;     // Indicates a new line. (r: reset.  Carriage return.)
 
-		if(separator!=',')			// If ',' isn't a separator,
-			if(line[i]==',')		// ... and it shows up,
-				line[i] = '.';		// it should be replaced by '.'.  Euro -> US decimal point conversion.
+    if(separator!=',')      // If ',' isn't a separator,
+      if(line[i]==',')    // ... and it shows up,
+        line[i] = '.';    // it should be replaced by '.'.  Euro -> US decimal point conversion.
 
     if(line[i]==separator)
     {
@@ -1494,11 +1494,11 @@ int UI_ImportAnnotationswindow::import_from_ascii(const char *filename)
 
       if(!column_end)
       {
-        if(column == onset_column)			// If column is the indicated onset column,
-		onset_is_set = read_datetime(line + str_start, onset);
+        if(column == onset_column)      // If column is the indicated onset column,
+          onset_is_set = read_datetime(line + str_start, onset);
 
-        if(use_end && (column == end_column) )			// If column is the indicated onset column,
-		end_is_set = read_datetime(line + str_start, end);
+        if(use_end && (column == end_column) )      // If column is the indicated onset column,
+          end_is_set = read_datetime(line + str_start, end);
 
         if((!manualdescription) && (column == descr_column))
         {
@@ -1542,12 +1542,12 @@ int UI_ImportAnnotationswindow::import_from_ascii(const char *filename)
       {
         if(column == onset_column)
         {
-		onset_is_set = read_datetime(line+str_start, onset);
+          onset_is_set = read_datetime(line+str_start, onset);
         }
 
         if( use_end && (column == end_column) )
         {
-		end_is_set = read_datetime(line+str_start, end);
+          end_is_set = read_datetime(line+str_start, end);
         }
 
 
@@ -1571,13 +1571,13 @@ int UI_ImportAnnotationswindow::import_from_ascii(const char *filename)
         }
       }
 
-	if(end_is_set)
-	{
-		double Duration = (double)(end-onset)/(double)TIME_DIMENSION;
-		sprintf(duration, "%f", Duration);
-		use_duration = 1;
-		duration_is_set = 1;
-	}
+      if(end_is_set)
+      {
+        double Duration = (double)(end-onset)/(double)TIME_DIMENSION;
+        sprintf(duration, "%f", Duration);
+        use_duration = 1;
+        duration_is_set = 1;
+      }
 
       if( ((!use_duration) || duration_is_set) && ((!use_end) || end_is_set) )
       {
@@ -1844,17 +1844,18 @@ int UI_ImportAnnotationswindow::import_from_dcevent(void)
        *buf;
 
   long long datrecs,
-            trigger_datrec,
-            time_per_sample,
-            progress_steps;
+       trigger_datrec,
+       time_per_sample,
+       progress_steps;
 
-  union {
-          unsigned int one;
-          signed int one_signed;
-          unsigned short two[2];
-          signed short two_signed[2];
-          unsigned char four[4];
-        } var;
+  union
+  {
+    unsigned int one;
+    signed int one_signed;
+    unsigned short two[2];
+    signed short two_signed[2];
+    unsigned char four[4];
+  } var;
 
   FILE *inputfile=NULL;
 
@@ -1977,15 +1978,15 @@ int UI_ImportAnnotationswindow::import_from_dcevent(void)
     progress_steps = 1LL;
   }
 
-/*  BITPOSITION:
-  0  nothing (idle)
-  1  rising edge of startbit found
-  2  middle of startbit found
-  3  middle of bit 0 found
-  ........................
-  10 middle of bit 7 found
-  11 middle of stopbit found
-*/
+  /*  BITPOSITION:
+    0  nothing (idle)
+    1  rising edge of startbit found
+    2  middle of startbit found
+    3  middle of bit 0 found
+    ........................
+    10 middle of bit 7 found
+    11 middle of stopbit found
+  */
 
   bitposition = 0;
 
@@ -2089,11 +2090,11 @@ int UI_ImportAnnotationswindow::import_from_dcevent(void)
                   annotation = (struct annotationblock *)calloc(1, sizeof(struct annotationblock));
                   if(annotation == NULL)
                   {
-                  	progress.reset();
-                  	QMessageBox messagewindow(QMessageBox::Critical, "Error", "A memory allocation error occurred (annotation).");
-                  	messagewindow.exec();
-                  	free(buf);
-                  	return(1);
+                    progress.reset();
+                    QMessageBox messagewindow(QMessageBox::Critical, "Error", "A memory allocation error occurred (annotation).");
+                    messagewindow.exec();
+                    free(buf);
+                    return(1);
                   }
                   annotation->onset = ((trigger_datrec * signalcomp->edfhdr->long_data_record_duration) + (trigger_sample * time_per_sample));
                   annotation->onset += signalcomp->edfhdr->starttime_offset;
@@ -2150,250 +2151,250 @@ int UI_ImportAnnotationswindow::import_from_dcevent(void)
 
 int UI_ImportAnnotationswindow::read_datetime(char *line, long long &timestamp)
 {
-	int time_coding,
-	    is_set,
-	    digits;
-	long long l_temp,
-	     	utc_time;
-	struct date_time_struct date_time;
-	char scratchpad[256];
+  int time_coding,
+      is_set,
+      digits;
+  long long l_temp,
+       utc_time;
+  struct date_time_struct date_time;
+  char scratchpad[256];
 
-	timestamp = 0LL;
-	is_set = 0;
-	strncpy(scratchpad, line, 30);		// char* strncpy(char* dest, const char *src, size_t n)
-	scratchpad[30] = 0;
-	time_coding = RelativeTimeComboBox->currentIndex();
+  timestamp = 0LL;
+  is_set = 0;
+  strncpy(scratchpad, line, 30);    // char* strncpy(char* dest, const char *src, size_t n)
+  scratchpad[30] = 0;
+  time_coding = RelativeTimeComboBox->currentIndex();
 
-	if(time_coding == 0)				// in seconds relative to start of file.
-	{
-		timestamp  = atoll_x(scratchpad, TIME_DIMENSION);
-		timestamp += mainwindow->edfheaderlist[0]->starttime_offset;
+  if(time_coding == 0)        // in seconds relative to start of file.
+  {
+    timestamp  = atoll_x(scratchpad, TIME_DIMENSION);
+    timestamp += mainwindow->edfheaderlist[0]->starttime_offset;
 
-		is_set = 1;
-	}
+    is_set = 1;
+  }
 
-	if(time_coding == 1)				// hh:mm:ss
-	{
-		if(strlen(scratchpad) > 6)
-		{
-			if((scratchpad[2] == ':') && (scratchpad[5] == ':'))
-			{
-				scratchpad[8] = 0;
-				timestamp = atoi(scratchpad) * 3600LL;
-				timestamp += (atoi(scratchpad + 3) * 60LL);
-				timestamp += (long long)(atoi(scratchpad + 6));
-				timestamp *= TIME_DIMENSION;
-				timestamp -= mainwindow->edfheaderlist[0]->l_starttime;
+  if(time_coding == 1)        // hh:mm:ss
+  {
+    if(strlen(scratchpad) > 6)
+    {
+      if((scratchpad[2] == ':') && (scratchpad[5] == ':'))
+      {
+        scratchpad[8] = 0;
+        timestamp = atoi(scratchpad) * 3600LL;
+        timestamp += (atoi(scratchpad + 3) * 60LL);
+        timestamp += (long long)(atoi(scratchpad + 6));
+        timestamp *= TIME_DIMENSION;
+        timestamp -= mainwindow->edfheaderlist[0]->l_starttime;
 
-				is_set = 1;
-			}
-		}
-		if(strlen(scratchpad) > 5)
-		{
-			if((scratchpad[1] == ':') && (scratchpad[4] == ':'))
-			{
-				scratchpad[7] = 0;
-				timestamp = atoi(scratchpad) * 3600LL;
-				timestamp += (atoi(scratchpad + 2) * 60LL);
-				timestamp += (long long)(atoi(scratchpad + 5));
-				timestamp *= TIME_DIMENSION;
-				timestamp -= mainwindow->edfheaderlist[0]->l_starttime;
+        is_set = 1;
+      }
+    }
+    if(strlen(scratchpad) > 5)
+    {
+      if((scratchpad[1] == ':') && (scratchpad[4] == ':'))
+      {
+        scratchpad[7] = 0;
+        timestamp = atoi(scratchpad) * 3600LL;
+        timestamp += (atoi(scratchpad + 2) * 60LL);
+        timestamp += (long long)(atoi(scratchpad + 5));
+        timestamp *= TIME_DIMENSION;
+        timestamp -= mainwindow->edfheaderlist[0]->l_starttime;
 
-				is_set = 1;
-			}
-		}
-	}
+        is_set = 1;
+      }
+    }
+  }
 
-	if(time_coding == 2) // hh:mm:ss.xxx
-	{
-		if(strlen(scratchpad) > 8) // hh:mm:ss.xxx
-		{
-			if((scratchpad[2] == ':') and (scratchpad[5] == ':') and ((scratchpad[8] == '.') or (scratchpad[8] == ',')))
-			{
-				for(digits=0; digits<32; digits++)
-				{
-					if((scratchpad[9 + digits] < '0') || (scratchpad[9 + digits] > '9'))
-					{
-						break;
-					}
-				}
-				scratchpad[9 + digits] = 0;
-				timestamp = atoi(scratchpad) * 3600LL;
-				timestamp += (atoi(scratchpad + 3) * 60LL);
-				timestamp += (long long)(atoi(scratchpad + 6));
-				timestamp *= TIME_DIMENSION;
-				if(digits)
-				{
-					l_temp = (atoi(scratchpad + 9) * TIME_DIMENSION);
-					for(; digits>0; digits--)
-					{
-						l_temp /= 10LL;
-					}
-					timestamp += l_temp;
-				}
-				timestamp -= mainwindow->edfheaderlist[0]->l_starttime;
+  if(time_coding == 2) // hh:mm:ss.xxx
+  {
+    if(strlen(scratchpad) > 8) // hh:mm:ss.xxx
+    {
+      if((scratchpad[2] == ':') and (scratchpad[5] == ':') and ((scratchpad[8] == '.') or (scratchpad[8] == ',')))
+      {
+        for(digits=0; digits<32; digits++)
+        {
+          if((scratchpad[9 + digits] < '0') || (scratchpad[9 + digits] > '9'))
+          {
+            break;
+          }
+        }
+        scratchpad[9 + digits] = 0;
+        timestamp = atoi(scratchpad) * 3600LL;
+        timestamp += (atoi(scratchpad + 3) * 60LL);
+        timestamp += (long long)(atoi(scratchpad + 6));
+        timestamp *= TIME_DIMENSION;
+        if(digits)
+        {
+          l_temp = (atoi(scratchpad + 9) * TIME_DIMENSION);
+          for(; digits>0; digits--)
+          {
+            l_temp /= 10LL;
+          }
+          timestamp += l_temp;
+        }
+        timestamp -= mainwindow->edfheaderlist[0]->l_starttime;
 
-				is_set = 1;
-			}
-		}
-		if(strlen(scratchpad) > 7) // h:mm:ss.xxx
-		{
-			if((scratchpad[1] == ':') and (scratchpad[4] == ':') and ((scratchpad[7] == '.') or (scratchpad[7] == ',')))
-			{
-				for(digits=0; digits<32; digits++)
-				{
-					if((scratchpad[8 + digits] < '0') || (scratchpad[8 + digits] > '9'))
-					{
-						break;
-					}
-				}
-				scratchpad[8 + digits] = 0;
-				timestamp = atoi(scratchpad) * 3600LL;
-				timestamp += (atoi(scratchpad + 2) * 60LL);
-				timestamp += (long long)(atoi(scratchpad + 5));
-				timestamp *= TIME_DIMENSION;
-				if(digits)
-				{
-					l_temp = (atoi(scratchpad + 8) * TIME_DIMENSION);
-					for(; digits>0; digits--)
-					{
-						l_temp /= 10LL;
-					}
-					timestamp += l_temp;
-				}
-				timestamp -= mainwindow->edfheaderlist[0]->l_starttime;
+        is_set = 1;
+      }
+    }
+    if(strlen(scratchpad) > 7) // h:mm:ss.xxx
+    {
+      if((scratchpad[1] == ':') and (scratchpad[4] == ':') and ((scratchpad[7] == '.') or (scratchpad[7] == ',')))
+      {
+        for(digits=0; digits<32; digits++)
+        {
+          if((scratchpad[8 + digits] < '0') || (scratchpad[8 + digits] > '9'))
+          {
+            break;
+          }
+        }
+        scratchpad[8 + digits] = 0;
+        timestamp = atoi(scratchpad) * 3600LL;
+        timestamp += (atoi(scratchpad + 2) * 60LL);
+        timestamp += (long long)(atoi(scratchpad + 5));
+        timestamp *= TIME_DIMENSION;
+        if(digits)
+        {
+          l_temp = (atoi(scratchpad + 8) * TIME_DIMENSION);
+          for(; digits>0; digits--)
+          {
+            l_temp /= 10LL;
+          }
+          timestamp += l_temp;
+        }
+        timestamp -= mainwindow->edfheaderlist[0]->l_starttime;
 
-				is_set = 1;
-			}
-		}
-	}
+        is_set = 1;
+      }
+    }
+  }
 
-	if(time_coding == 3) // yyyy-mm-ddThh:mm:ss
-	{
-		if(strlen(scratchpad) > 17)
-		{
-			if((scratchpad[4] == '-') && (scratchpad[7] == '-') && (scratchpad[13] == ':') && (scratchpad[16] == ':'))
-			{
-				scratchpad[19] = 0;
+  if(time_coding == 3) // yyyy-mm-ddThh:mm:ss
+  {
+    if(strlen(scratchpad) > 17)
+    {
+      if((scratchpad[4] == '-') && (scratchpad[7] == '-') && (scratchpad[13] == ':') && (scratchpad[16] == ':'))
+      {
+        scratchpad[19] = 0;
 
-				date_time.year = atoi(scratchpad);
-				date_time.month = atoi(scratchpad + 5);
-				date_time.day = atoi(scratchpad + 8);
+        date_time.year = atoi(scratchpad);
+        date_time.month = atoi(scratchpad + 5);
+        date_time.day = atoi(scratchpad + 8);
 
-				date_time.hour = atoi(scratchpad + 11);
-				date_time.minute = atoi(scratchpad + 14);
-				date_time.second = atoi(scratchpad + 17);
+        date_time.hour = atoi(scratchpad + 11);
+        date_time.minute = atoi(scratchpad + 14);
+        date_time.second = atoi(scratchpad + 17);
 
-				date_time_to_utc(&utc_time, date_time);
-				timestamp = utc_time - mainwindow->edfheaderlist[0]->utc_starttime;
-				timestamp *= TIME_DIMENSION;
-				is_set = 1;
-			}
-		}
-	}
+        date_time_to_utc(&utc_time, date_time);
+        timestamp = utc_time - mainwindow->edfheaderlist[0]->utc_starttime;
+        timestamp *= TIME_DIMENSION;
+        is_set = 1;
+      }
+    }
+  }
 
-	if(time_coding == 4) // yyyy-mm-ddThh:mm:ss.xxx
-	{
-		if(strlen(scratchpad) > 19)
-		{
-			if((scratchpad[4] == '-') and (scratchpad[7] == '-') and (scratchpad[13] == ':') and (scratchpad[16] == ':') and ((scratchpad[19] == ',') or (scratchpad[19] == '.')))
-			{
-				for(digits=0; digits<32; digits++)// maximally 32 decimal digits.
-				{
-					if( (scratchpad[20 + digits] < '0') or (scratchpad[20 + digits] > '9') )	// if not a number
-					{
-						break;
-					}
-				}
-				scratchpad[20 + digits] = 0;
-				date_time.year = atoi(scratchpad);
-				date_time.month = atoi(scratchpad + 5);
-				date_time.day = atoi(scratchpad + 8);
+  if(time_coding == 4) // yyyy-mm-ddThh:mm:ss.xxx
+  {
+    if(strlen(scratchpad) > 19)
+    {
+      if((scratchpad[4] == '-') and (scratchpad[7] == '-') and (scratchpad[13] == ':') and (scratchpad[16] == ':') and ((scratchpad[19] == ',') or (scratchpad[19] == '.')))
+      {
+        for(digits=0; digits<32; digits++)// maximally 32 decimal digits.
+        {
+          if( (scratchpad[20 + digits] < '0') or (scratchpad[20 + digits] > '9') )  // if not a number
+          {
+            break;
+          }
+        }
+        scratchpad[20 + digits] = 0;
+        date_time.year = atoi(scratchpad);
+        date_time.month = atoi(scratchpad + 5);
+        date_time.day = atoi(scratchpad + 8);
 
-				date_time.hour = atoi(scratchpad + 11);
-				date_time.minute = atoi(scratchpad + 14);
-				date_time.second = atoi(scratchpad + 17);
+        date_time.hour = atoi(scratchpad + 11);
+        date_time.minute = atoi(scratchpad + 14);
+        date_time.second = atoi(scratchpad + 17);
 
-				date_time_to_utc(&utc_time, date_time);
-				timestamp  = utc_time - mainwindow->edfheaderlist[0]->utc_starttime;	// in seconds.
-				timestamp *= TIME_DIMENSION;						// in units.
-				if(digits)
-				{
-					l_temp = atoi(scratchpad + 20) * TIME_DIMENSION;
-					for(; digits>0; digits--)
-					{
-						l_temp /= 10LL;
-					}
-					timestamp += l_temp;
-				}
+        date_time_to_utc(&utc_time, date_time);
+        timestamp  = utc_time - mainwindow->edfheaderlist[0]->utc_starttime;  // in seconds.
+        timestamp *= TIME_DIMENSION;            // in units.
+        if(digits)
+        {
+          l_temp = atoi(scratchpad + 20) * TIME_DIMENSION;
+          for(; digits>0; digits--)
+          {
+            l_temp /= 10LL;
+          }
+          timestamp += l_temp;
+        }
 
-				is_set = 1;
-			}
-		}
-	}
+        is_set = 1;
+      }
+    }
+  }
 
-	if(time_coding == 5)				// "mm/dd/yyyy hh:mm:ss"
-	{
-		if(strlen(scratchpad) > 17)
-		{
-			if( (scratchpad[2] == '/') && (scratchpad[5] == '/') && (scratchpad[10] == ' ') && (scratchpad[13] == ':') && (scratchpad[16] == ':') )
-			{
-				scratchpad[19] = 0;
-				date_time.month = atoi(scratchpad);
-				date_time.day = atoi(scratchpad + 3);
-				date_time.year = atoi(scratchpad + 6);
+  if(time_coding == 5)        // "mm/dd/yyyy hh:mm:ss"
+  {
+    if(strlen(scratchpad) > 17)
+    {
+      if( (scratchpad[2] == '/') && (scratchpad[5] == '/') && (scratchpad[10] == ' ') && (scratchpad[13] == ':') && (scratchpad[16] == ':') )
+      {
+        scratchpad[19] = 0;
+        date_time.month = atoi(scratchpad);
+        date_time.day = atoi(scratchpad + 3);
+        date_time.year = atoi(scratchpad + 6);
 
-				date_time.hour = atoi(scratchpad + 11);
-				date_time.minute = atoi(scratchpad + 14);
-				date_time.second = atoi(scratchpad + 17);
+        date_time.hour = atoi(scratchpad + 11);
+        date_time.minute = atoi(scratchpad + 14);
+        date_time.second = atoi(scratchpad + 17);
 
-				date_time_to_utc(&utc_time, date_time);
-				timestamp = utc_time - mainwindow->edfheaderlist[0]->utc_starttime;
-				timestamp *= TIME_DIMENSION;
-				is_set = 1;
-			}
-		}
-	}
+        date_time_to_utc(&utc_time, date_time);
+        timestamp = utc_time - mainwindow->edfheaderlist[0]->utc_starttime;
+        timestamp *= TIME_DIMENSION;
+        is_set = 1;
+      }
+    }
+  }
 
-	if(time_coding == 6)				// "mm/dd/yyyy hh:mm:ss"
-	{
-		if(strlen(scratchpad) > 19)
-		{
-			if( (scratchpad[2] == '/') and (scratchpad[5] == '/') and (scratchpad[10] == ' ') and (scratchpad[13] == ':') and (scratchpad[16] == ':') and ((scratchpad[19] == ',') or (scratchpad[19] == '.')) )
-			{
-				for(digits=0; digits<32; digits++)// maximally 32 decimal digits.
-				{
-					if( (scratchpad[20 + digits] < '0') or (scratchpad[20 + digits] > '9') )
-					{
-						break;
-					}
-				}
-				scratchpad[20 + digits] = 0;
-				date_time.month = atoi(scratchpad);
-				date_time.day = atoi(scratchpad + 3);
-				date_time.year = atoi(scratchpad + 6);
+  if(time_coding == 6)        // "mm/dd/yyyy hh:mm:ss"
+  {
+    if(strlen(scratchpad) > 19)
+    {
+      if( (scratchpad[2] == '/') and (scratchpad[5] == '/') and (scratchpad[10] == ' ') and (scratchpad[13] == ':') and (scratchpad[16] == ':') and ((scratchpad[19] == ',') or (scratchpad[19] == '.')) )
+      {
+        for(digits=0; digits<32; digits++)// maximally 32 decimal digits.
+        {
+          if( (scratchpad[20 + digits] < '0') or (scratchpad[20 + digits] > '9') )
+          {
+            break;
+          }
+        }
+        scratchpad[20 + digits] = 0;
+        date_time.month = atoi(scratchpad);
+        date_time.day = atoi(scratchpad + 3);
+        date_time.year = atoi(scratchpad + 6);
 
-				date_time.hour = atoi(scratchpad + 11);
-				date_time.minute = atoi(scratchpad + 14);
-				date_time.second = atoi(scratchpad + 17);
+        date_time.hour = atoi(scratchpad + 11);
+        date_time.minute = atoi(scratchpad + 14);
+        date_time.second = atoi(scratchpad + 17);
 
-				date_time_to_utc(&utc_time, date_time);
-				timestamp = utc_time - mainwindow->edfheaderlist[0]->utc_starttime;
-				timestamp *= TIME_DIMENSION;
-				if(digits)
-				{
-					l_temp = atoi(scratchpad + 20) * TIME_DIMENSION;
-					for(; digits>0; digits--)
-					{
-						l_temp /= 10LL;
-					}
-					timestamp += l_temp;
-				}
-				is_set = 1;
-			}
-		}
-	}
-	return is_set;
+        date_time_to_utc(&utc_time, date_time);
+        timestamp = utc_time - mainwindow->edfheaderlist[0]->utc_starttime;
+        timestamp *= TIME_DIMENSION;
+        if(digits)
+        {
+          l_temp = atoi(scratchpad + 20) * TIME_DIMENSION;
+          for(; digits>0; digits--)
+          {
+            l_temp /= 10LL;
+          }
+          timestamp += l_temp;
+        }
+        is_set = 1;
+      }
+    }
+  }
+  return is_set;
 }
 
 

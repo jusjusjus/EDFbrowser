@@ -62,52 +62,52 @@
 
 class UI_FMaudio2EDFwindow : public QObject
 {
-	Q_OBJECT
+  Q_OBJECT
 
 
 public:
-	UI_FMaudio2EDFwindow(char *recent_dir=NULL, char *save_dir=NULL);
+  UI_FMaudio2EDFwindow(char *recent_dir=NULL, char *save_dir=NULL);
 
 
 private:
-	QDialog       *myobjectDialog;
+  QDialog       *myobjectDialog;
 
-	QPushButton   *pushButton1,
-              	*pushButton2;
+  QPushButton   *pushButton1,
+                *pushButton2;
 
-	QLabel        *PatientnameLabel,
-              	*RecordingLabel,
-              	*DatetimeLabel;
+  QLabel        *PatientnameLabel,
+                *RecordingLabel,
+                *DatetimeLabel;
 
-	QLineEdit     *PatientnameLineEdit,
-        	      *RecordingLineEdit;
+  QLineEdit     *PatientnameLineEdit,
+                *RecordingLineEdit;
 
-	QDateTimeEdit *StartDatetimeedit;
+  QDateTimeEdit *StartDatetimeedit;
 
-	char 	*recent_opendir,
-     		*recent_savedir;
+  char  *recent_opendir,
+        *recent_savedir;
 
-	struct ravg_filter_settings 	*hpf44,
-                            		*lpf9a,
-                            		*lpf9b,
-                            		*lpf9c,
-                            		*lpf9d,
-                            		*lpf9e,
-                            		*lpf200a,
-                            		*lpf200b,
-                            		*lpf200c,
-                            		*lpf200d,
-                            		*lpf200e;
+  struct ravg_filter_settings   *hpf44,
+           *lpf9a,
+           *lpf9b,
+           *lpf9c,
+           *lpf9d,
+           *lpf9e,
+           *lpf200a,
+           *lpf200b,
+           *lpf200c,
+           *lpf200d,
+           *lpf200e;
 
-	void enable_widgets(bool);
+  void enable_widgets(bool);
 
-	bool allocateFilters(int, int, int);
-	void deleteFilters(void);
+  bool allocateFilters(int, int, int);
+  void deleteFilters(void);
 
 
 private slots:
 
-	void SelectFileButton();
+  void SelectFileButton();
 
 };
 

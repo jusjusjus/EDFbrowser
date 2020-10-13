@@ -36,13 +36,13 @@
 
 #if defined(__APPLE__) || defined(__MACH__) || defined(__APPLE_CC__)
 
-#define fopeno fopen
+  #define fopeno fopen
 
 #else
 
-#define fseeko fseeko64
-#define ftello ftello64
-#define fopeno fopen64
+  #define fseeko fseeko64
+  #define ftello ftello64
+  #define fopeno fopen64
 
 #endif
 
@@ -265,11 +265,11 @@ void UI_SaveMontagewindow::SaveButtonClicked()
     }
   }
 
-#ifdef Q_OS_WIN32
+  #ifdef Q_OS_WIN32
   __mingw_fprintf(mtgfile, "  <pagetime>%lli</pagetime>\n", mainwindow->pagetime);
-#else
+  #else
   fprintf(mtgfile, "  <pagetime>%lli</pagetime>\n", mainwindow->pagetime);
-#endif
+  #endif
 
   fprintf(mtgfile, "</" PROGRAM_NAME "_montage>\n");
 

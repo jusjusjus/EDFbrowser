@@ -134,7 +134,7 @@ double get_filter_factor(double cutoff_frequency, double sample_frequency)
   t = (cutoff_frequency * 2.0 * M_PI) / sample_frequency;
   t = exp(-t);
   t = 1.0 - t; // now t will be in the range 0.001 (at high sample-frequency and low cut-off)
-               // to 0.999 (at low sample-frequency and high cut-off)
+  // to 0.999 (at low sample-frequency and high cut-off)
 
   return(t);
 }

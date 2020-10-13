@@ -41,9 +41,9 @@
 #include <QPainterPath>
 #include <QPushButton>
 #if QT_VERSION < 0x050000
-#include <QPrinter>
+  #include <QPrinter>
 #else
-#include <QtPrintSupport>
+  #include <QtPrintSupport>
 #endif
 #include <QPrintDialog>
 #include <QFileDialog>
@@ -61,14 +61,15 @@
 #define SC_MAX_PATH_LEN 1024
 
 
-struct spectrum_markersblock{
-        int items;
-        double freq[MAXSPECTRUMMARKERS];
-        int color[MAXSPECTRUMMARKERS];
-        char label[MAXSPECTRUMMARKERS][17];
-        double value[MAXSPECTRUMMARKERS];
-        int method;
-       };
+struct spectrum_markersblock
+{
+  int items;
+  double freq[MAXSPECTRUMMARKERS];
+  int color[MAXSPECTRUMMARKERS];
+  char label[MAXSPECTRUMMARKERS][17];
+  double value[MAXSPECTRUMMARKERS];
+  int method;
+};
 
 
 
@@ -81,8 +82,14 @@ class SignalCurve: public QWidget
 public:
   SignalCurve(QWidget *parent=0);
 
-  QSize sizeHint() const {return minimumSizeHint(); }
-  QSize minimumSizeHint() const {return QSize(30,10); }
+  QSize sizeHint() const
+  {
+    return minimumSizeHint();
+  }
+  QSize minimumSizeHint() const
+  {
+    return QSize(30,10);
+  }
 
   void setSignalColor(QColor);
   void setTraceWidth(int);
@@ -97,9 +104,9 @@ public:
   void setUpperLabel1(const char *);
   void setUpperLabel2(const char *);
   void setLowerLabel(const char *);
-  void drawCurve(double *, int , double , double );
-  void drawCurve(int *, int , double , double );
-  void drawCurve( float *, int , double , double );
+  void drawCurve(double *, int, double, double );
+  void drawCurve(int *, int, double, double );
+  void drawCurve( float *, int, double, double );
   void drawLine(int, double, int, double, QColor);
   void setLineEnabled(bool);
   void create_button(const char *);
@@ -139,9 +146,9 @@ signals:
 
 private slots:
   void exec_sidemenu();
-#if QT_VERSION < 0x050000
+  #if QT_VERSION < 0x050000
   void print_to_postscript();
-#endif
+  #endif
   void print_to_pdf();
   void print_to_image();
   void print_to_printer();
@@ -152,9 +159,9 @@ private:
   QDialog     *sidemenu;
 
   QPushButton *sidemenuButton1,
-#if QT_VERSION < 0x050000
+              #if QT_VERSION < 0x050000
               *sidemenuButton2,
-#endif
+              #endif
               *sidemenuButton3,
               *sidemenuButton4,
               *sidemenuButton5,

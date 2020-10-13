@@ -135,40 +135,57 @@ UI_ShowActualMontagewindow::UI_ShowActualMontagewindow(QWidget *w_parent)
 
     switch(mainwindow->signalcomp[i]->color)
     {
-      case Qt::white       : strcat(txtbuf, "white");
-                             break;
-      case Qt::black       : strcat(txtbuf, "black");
-                             break;
-      case Qt::red         : strcat(txtbuf, "red");
-                             break;
-      case Qt::darkRed     : strcat(txtbuf, "dark red");
-                             break;
-      case Qt::green       : strcat(txtbuf, "green");
-                             break;
-      case Qt::darkGreen   : strcat(txtbuf, "dark green");
-                             break;
-      case Qt::blue        : strcat(txtbuf, "blue");
-                             break;
-      case Qt::darkBlue    : strcat(txtbuf, "dark blue");
-                             break;
-      case Qt::cyan        : strcat(txtbuf, "cyan");
-                             break;
-      case Qt::darkCyan    : strcat(txtbuf, "dark cyan");
-                             break;
-      case Qt::magenta     : strcat(txtbuf, "magenta");
-                             break;
-      case Qt::darkMagenta : strcat(txtbuf, "dark magenta");
-                             break;
-      case Qt::yellow      : strcat(txtbuf, "yellow");
-                             break;
-      case Qt::darkYellow  : strcat(txtbuf, "dark yellow");
-                             break;
-      case Qt::gray        : strcat(txtbuf, "gray");
-                             break;
-      case Qt::darkGray    : strcat(txtbuf, "dark gray");
-                             break;
-      case Qt::lightGray   : strcat(txtbuf, "light gray");
-                             break;
+    case Qt::white       :
+      strcat(txtbuf, "white");
+      break;
+    case Qt::black       :
+      strcat(txtbuf, "black");
+      break;
+    case Qt::red         :
+      strcat(txtbuf, "red");
+      break;
+    case Qt::darkRed     :
+      strcat(txtbuf, "dark red");
+      break;
+    case Qt::green       :
+      strcat(txtbuf, "green");
+      break;
+    case Qt::darkGreen   :
+      strcat(txtbuf, "dark green");
+      break;
+    case Qt::blue        :
+      strcat(txtbuf, "blue");
+      break;
+    case Qt::darkBlue    :
+      strcat(txtbuf, "dark blue");
+      break;
+    case Qt::cyan        :
+      strcat(txtbuf, "cyan");
+      break;
+    case Qt::darkCyan    :
+      strcat(txtbuf, "dark cyan");
+      break;
+    case Qt::magenta     :
+      strcat(txtbuf, "magenta");
+      break;
+    case Qt::darkMagenta :
+      strcat(txtbuf, "dark magenta");
+      break;
+    case Qt::yellow      :
+      strcat(txtbuf, "yellow");
+      break;
+    case Qt::darkYellow  :
+      strcat(txtbuf, "dark yellow");
+      break;
+    case Qt::gray        :
+      strcat(txtbuf, "gray");
+      break;
+    case Qt::darkGray    :
+      strcat(txtbuf, "dark gray");
+      break;
+    case Qt::lightGray   :
+      strcat(txtbuf, "light gray");
+      break;
     }
 
     signalItem->appendRow(new QStandardItem(txtbuf));

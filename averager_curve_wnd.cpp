@@ -37,15 +37,15 @@
 
 
 UI_AverageCurveWindow::UI_AverageCurveWindow(struct signalcompblock *signal_comp, QWidget *w_parent, int number,
-                                             double *abuf,
-                                             double maxvalue,
-                                             double minvalue,
-                                             long long apagetime,
-                                             long long samples_on_screen,
-                                             int acnt,
-                                             int trigger_position,
-                                             char *annotation,
-                                             double avg__period)
+    double *abuf,
+    double maxvalue,
+    double minvalue,
+    long long apagetime,
+    long long samples_on_screen,
+    int acnt,
+    int trigger_position,
+    char *annotation,
+    double avg__period)
 {
   char str[1024];
 

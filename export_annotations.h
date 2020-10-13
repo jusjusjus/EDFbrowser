@@ -91,14 +91,14 @@ public:
   UI_ExportAnnotationswindow(QWidget *parent, struct annotationblock **annotationlist);
 
   UI_Mainwindow *mainwindow;
-  	int execute();
+  int execute();
 
   void backup(const char* extension="annotations");
 
 
 protected:
-	struct annotationblock **annotationlist;
-	void check_list();
+  struct annotationblock **annotationlist;
+  void check_list();
 
 
 private:
@@ -138,7 +138,7 @@ private:
   QLabel       *separatorLabel;
 
   QCheckBox    *durationCheckBox,
-	       *endCheckBox;
+               *endCheckBox;
 
   QButtonGroup *durationGroup;
 

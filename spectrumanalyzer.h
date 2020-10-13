@@ -149,11 +149,11 @@ private:
 
 private slots:
 
-void update_curve();
-void sliderMoved(int);
-void SpectrumDialogDestroyed(QObject *);
-void print_to_txt();
-void update_flywheel(int);
+  void update_curve();
+  void sliderMoved(int);
+  void SpectrumDialogDestroyed(QObject *);
+  void print_to_txt();
+  void update_flywheel(int);
 
 };
 

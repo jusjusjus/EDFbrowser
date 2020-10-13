@@ -204,8 +204,8 @@ void UI_LoadMontagewindow::LoadButtonClicked()
 
       if(mainwindow->signalcomp[k]->hascursor2)
       {
-/*        crosshair_2_active = 0;
-        crosshair_2_moving = 0;*/
+        /*        crosshair_2_active = 0;
+                crosshair_2_moving = 0;*/
       }
 
       if(mainwindow->signalcomp[k]->hascursor1)
@@ -557,7 +557,7 @@ void UI_LoadMontagewindow::LoadButtonClicked()
       if(signals_read)
       {
         if(newsignalcomp->edfhdr->edfparam[newsignalcomp->edfsignal[signals_read]].smp_per_record
-          != newsignalcomp->edfhdr->edfparam[newsignalcomp->edfsignal[0]].smp_per_record)
+            != newsignalcomp->edfhdr->edfparam[newsignalcomp->edfsignal[0]].smp_per_record)
         {
           free(newsignalcomp);
           skip = 1;
@@ -659,8 +659,8 @@ void UI_LoadMontagewindow::LoadButtonClicked()
       }
 
       if(frequency >= ((newsignalcomp->edfhdr->edfparam[newsignalcomp->edfsignal[0]].smp_per_record
-                      / newsignalcomp->edfhdr->data_record_duration)
-                      / 2.0))
+                        / newsignalcomp->edfhdr->data_record_duration)
+                       / 2.0))
       {
         QMessageBox messagewindow(QMessageBox::Critical, "Error", "The frequency of the filter(s) must be less than: samplerate / 2");
         messagewindow.exec();
@@ -696,7 +696,7 @@ void UI_LoadMontagewindow::LoadButtonClicked()
       }
 
       newsignalcomp->fid_run[filters_read] = fid_run_new(newsignalcomp->fidfilter[filters_read],
-                                                                         &newsignalcomp->fidfuncp[filters_read]);
+                                             &newsignalcomp->fidfuncp[filters_read]);
 
       newsignalcomp->fidbuf[filters_read] = fid_run_newbuf(newsignalcomp->fid_run[filters_read]);
       newsignalcomp->fidbuf2[filters_read] = fid_run_newbuf(newsignalcomp->fid_run[filters_read]);
@@ -875,10 +875,10 @@ void UI_LoadMontagewindow::LoadButtonClicked()
       free(result);
 
       if((model  < 0)         || (model  >   2)       ||
-         (order  < 1)         || (order  > 100)       ||
-         (type   < 0)         || (type   >   4)       ||
-         (ripple < (-6.0))    || (ripple > (-0.1))    ||
-         (frequency < 0.0001) || (frequency2 < 0.0001))
+          (order  < 1)         || (order  > 100)       ||
+          (type   < 0)         || (type   >   4)       ||
+          (ripple < (-6.0))    || (ripple > (-0.1))    ||
+          (frequency < 0.0001) || (frequency2 < 0.0001))
       {
         QMessageBox messagewindow(QMessageBox::Critical, "Error", "There seems to be an error in this montage file. (fidfilter values)");
         messagewindow.exec();
@@ -888,8 +888,8 @@ void UI_LoadMontagewindow::LoadButtonClicked()
       }
 
       if(frequency >= ((newsignalcomp->edfhdr->edfparam[newsignalcomp->edfsignal[0]].smp_per_record
-                      / newsignalcomp->edfhdr->data_record_duration)
-                      / 2.0))
+                        / newsignalcomp->edfhdr->data_record_duration)
+                       / 2.0))
       {
         QMessageBox messagewindow(QMessageBox::Critical, "Error", "The frequency of the filter(s) must be less than: samplerate / 2");
         messagewindow.exec();
@@ -901,8 +901,8 @@ void UI_LoadMontagewindow::LoadButtonClicked()
       if(type > 2)
       {
         if(frequency2 >= ((newsignalcomp->edfhdr->edfparam[newsignalcomp->edfsignal[0]].smp_per_record
-                        / newsignalcomp->edfhdr->data_record_duration)
-                        / 2.0))
+                           / newsignalcomp->edfhdr->data_record_duration)
+                          / 2.0))
         {
           QMessageBox messagewindow(QMessageBox::Critical, "Error", "The frequency of the filter(s) must be less than: samplerate / 2");
           messagewindow.exec();
@@ -1045,7 +1045,7 @@ void UI_LoadMontagewindow::LoadButtonClicked()
       }
 
       newsignalcomp->fid_run[filters_read] = fid_run_new(newsignalcomp->fidfilter[filters_read],
-                                                                         &newsignalcomp->fidfuncp[filters_read]);
+                                             &newsignalcomp->fidfuncp[filters_read]);
 
       newsignalcomp->fidbuf[filters_read] = fid_run_newbuf(newsignalcomp->fid_run[filters_read]);
       newsignalcomp->fidbuf2[filters_read] = fid_run_newbuf(newsignalcomp->fid_run[filters_read]);
@@ -1087,9 +1087,9 @@ void UI_LoadMontagewindow::LoadButtonClicked()
       if(type == 1)
       {
         newsignalcomp->ecg_filter = create_ecg_filter(newsignalcomp->edfhdr->edfparam[newsignalcomp->edfsignal[0]].smp_per_record /
-                                                      newsignalcomp->edfhdr->data_record_duration,
-                                                      newsignalcomp->edfhdr->edfparam[newsignalcomp->edfsignal[0]].bitvalue,
-                                                      mainwindow->powerlinefreq);
+                                    newsignalcomp->edfhdr->data_record_duration,
+                                    newsignalcomp->edfhdr->edfparam[newsignalcomp->edfsignal[0]].bitvalue,
+                                    mainwindow->powerlinefreq);
         if(newsignalcomp->ecg_filter == NULL)
         {
           QMessageBox messagewindow(QMessageBox::Critical, "Error", "A memory allocation error occurred when creating an ECG filter.");
@@ -1149,9 +1149,9 @@ void UI_LoadMontagewindow::LoadButtonClicked()
           }
 
           newsignalcomp->zratio_filter = create_zratio_filter(newsignalcomp->edfhdr->edfparam[newsignalcomp->edfsignal[0]].smp_per_record,
-                                                              newsignalcomp->edfhdr->long_data_record_duration,
-                                                              newsignalcomp->zratio_crossoverfreq,
-            newsignalcomp->edfhdr->edfparam[newsignalcomp->edfsignal[0]].bitvalue);
+                                         newsignalcomp->edfhdr->long_data_record_duration,
+                                         newsignalcomp->zratio_crossoverfreq,
+                                         newsignalcomp->edfhdr->edfparam[newsignalcomp->edfsignal[0]].bitvalue);
 
           if(newsignalcomp->zratio_filter == NULL)
           {
@@ -1295,12 +1295,15 @@ void UI_LoadMontagewindow::LoadButtonClicked()
 
     switch(tmp)
     {
-      case 10 : amp_cat[0]++;
-                break;
-      case 20 : amp_cat[1]++;
-                break;
-      case 50 : amp_cat[2]++;
-                break;
+    case 10 :
+      amp_cat[0]++;
+      break;
+    case 20 :
+      amp_cat[1]++;
+      break;
+    case 50 :
+      amp_cat[2]++;
+      break;
     }
   }
 
@@ -1338,12 +1341,12 @@ void UI_LoadMontagewindow::strip_types_from_label(char *label)
   }
 
   if((!(strncmp(label, "EEG ", 4)))
-   ||(!(strncmp(label, "ECG ", 4)))
-   ||(!(strncmp(label, "EOG ", 4)))
-   ||(!(strncmp(label, "ERG ", 4)))
-   ||(!(strncmp(label, "EMG ", 4)))
-   ||(!(strncmp(label, "MEG ", 4)))
-   ||(!(strncmp(label, "MCG ", 4))))
+      ||(!(strncmp(label, "ECG ", 4)))
+      ||(!(strncmp(label, "EOG ", 4)))
+      ||(!(strncmp(label, "ERG ", 4)))
+      ||(!(strncmp(label, "EMG ", 4)))
+      ||(!(strncmp(label, "MEG ", 4)))
+      ||(!(strncmp(label, "MCG ", 4))))
   {
     if(label[4]!=' ')
     {

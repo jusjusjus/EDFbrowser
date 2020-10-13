@@ -43,8 +43,8 @@
 #include <QCursor>
 #include <QStyle>
 #if QT_VERSION < 0x050000
-#include <QPlastiqueStyle>
-#include <QWindowsStyle>
+  #include <QPlastiqueStyle>
+  #include <QWindowsStyle>
 #endif
 #include <QProgressDialog>
 #include <QString>
@@ -71,87 +71,91 @@ public:
 private:
 
 
-QPushButton  *pushButton1,
-             *pushButton2;
+  QPushButton  *pushButton1,
+               *pushButton2;
 
-QTextEdit    *textEdit1;
+  QTextEdit    *textEdit1;
 
-QDialog      *myobjectDialog;
+  QDialog      *myobjectDialog;
 
-char  *recent_opendir,
-      *recent_savedir;
+  char  *recent_opendir,
+        *recent_savedir;
 
-unsigned short crc_ccitt_table[256];
+  unsigned short crc_ccitt_table[256];
 
-struct section_prop_struct{
-        int present;
-        long long file_offset;
-        unsigned short crc;
-        int section_id;
-        int section_length;
-        int section_version;
-        int section_protocol_version;
-        char reserved[6];
-        } sp[12];
+  struct section_prop_struct
+  {
+    int present;
+    long long file_offset;
+    unsigned short crc;
+    int section_id;
+    int section_length;
+    int section_version;
+    int section_protocol_version;
+    char reserved[6];
+  } sp[12];
 
-struct lead_prop_struct{
-        int start;
-        int end;
-        int samples;
-        int bytes;
-        unsigned char label;
-        } lp[256];
+  struct lead_prop_struct
+  {
+    int start;
+    int end;
+    int samples;
+    int bytes;
+    unsigned char label;
+  } lp[256];
 
-struct huffmantable_struct{
-        int h_tables_cnt;
-        int code_structs_cnt;
-        int prefix_bits;
-        int total_bits;
-        int table_mode_switch;
-        int base_value;
-        int base_code;
-        } ht;
+  struct huffmantable_struct
+  {
+    int h_tables_cnt;
+    int code_structs_cnt;
+    int prefix_bits;
+    int total_bits;
+    int table_mode_switch;
+    int base_value;
+    int base_code;
+  } ht;
 
-struct patient_data_struct{
-        char pat_id[21];
-        int startdate_year;
-        int startdate_month;
-        int startdate_day;
-        int starttime_hour;
-        int starttime_minute;
-        int starttime_second;
-        char last_name[21];
-        char first_name[21];
-        int birthdate_year;
-        int birthdate_month;
-        int birthdate_day;
-        int sex;
-        char device_model[6];
-        char device_serial[49];
-        char device_ident[49];
-        char manufacturer[49];
-        unsigned char lang_code;
-        } pat_dat;
+  struct patient_data_struct
+  {
+    char pat_id[21];
+    int startdate_year;
+    int startdate_month;
+    int startdate_day;
+    int starttime_hour;
+    int starttime_minute;
+    int starttime_second;
+    char last_name[21];
+    char first_name[21];
+    int birthdate_year;
+    int birthdate_month;
+    int birthdate_day;
+    int sex;
+    char device_model[6];
+    char device_serial[49];
+    char device_ident[49];
+    char manufacturer[49];
+    unsigned char lang_code;
+  } pat_dat;
 
-int read_data_section_zero(FILE *, char *, long long);
+  int read_data_section_zero(FILE *, char *, long long);
 
-int read_section_header(int, FILE *, long long, char *);
+  int read_section_header(int, FILE *, long long, char *);
 
-int check_crc(FILE *, long long, long long, unsigned short, char *);
+  int check_crc(FILE *, long long, long long, unsigned short, char *);
 
-void crc_ccitt_init(void);
+  void crc_ccitt_init(void);
 
-unsigned short crc_ccitt(const unsigned char *, int, unsigned short);
+  unsigned short crc_ccitt(const unsigned char *, int, unsigned short);
 
-inline unsigned char reverse_bitorder(unsigned char);
+  inline unsigned char reverse_bitorder(unsigned char);
 
-void lead_label_lookup(unsigned char, char *);
+  void lead_label_lookup(unsigned char, char *);
 
-int get_patient_data(FILE *);
+  int get_patient_data(FILE *);
 
 private slots:
 
-void SelectFileButton();
+  void SelectFileButton();
 
 };
 

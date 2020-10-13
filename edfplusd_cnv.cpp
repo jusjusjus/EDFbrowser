@@ -37,13 +37,13 @@
 
 #if defined(__APPLE__) || defined(__MACH__) || defined(__APPLE_CC__)
 
-#define fopeno fopen
+  #define fopeno fopen
 
 #else
 
-#define fseeko fseeko64
-#define ftello ftello64
-#define fopeno fopen64
+  #define fseeko fseeko64
+  #define ftello ftello64
+  #define fopeno fopen64
 
 #endif
 
@@ -93,7 +93,7 @@ UI_EDFDwindow::UI_EDFDwindow(char *recent_ope_dir, char *recent_sav_dir)
 void UI_EDFDwindow::SelectFileButton()
 {
   FILE *inputfile=NULL,
-       *outputfile=NULL;
+        *outputfile=NULL;
 
   int i,
       file_number,
@@ -112,10 +112,10 @@ void UI_EDFDwindow::SelectFileButton()
       progress_steps;
 
   long long former_timestamp,
-            next_timestamp,
-            new_hdr_timestamp,
-            chunk_starttime,
-            chunk_endtime;
+       next_timestamp,
+       new_hdr_timestamp,
+       chunk_starttime,
+       chunk_endtime;
 
   char txt_string[2048],
        inputpath[MAX_PATH_LENGTH],
@@ -125,7 +125,7 @@ void UI_EDFDwindow::SelectFileButton()
        *tal;
 
   struct annotationblock *annotationlist[1],
-                         *annotblock;
+           *annotblock;
 
   struct edfhdrblock *edfhdr=NULL;
 
@@ -154,7 +154,7 @@ void UI_EDFDwindow::SelectFileButton()
   snprintf(txt_string, 2048, "Processing file %s", inputpath);
   textEdit1->append(txt_string);
 
-/***************** check if the file is valid ******************************/
+  /***************** check if the file is valid ******************************/
 
   EDFfileCheck EDFfilechecker;
 
@@ -177,7 +177,7 @@ void UI_EDFDwindow::SelectFileButton()
     return;
   }
 
-/****************** get annotations ******************************/
+  /****************** get annotations ******************************/
 
   edfhdr->file_hdl = inputfile;
 
@@ -209,7 +209,7 @@ void UI_EDFDwindow::SelectFileButton()
 
   annotblock = annotationlist[0];
 
-/***************** start conversion ******************************/
+  /***************** start conversion ******************************/
 
   datarecords = edfhdr->datarecords;
 
@@ -413,8 +413,8 @@ void UI_EDFDwindow::SelectFileButton()
         while(annotblock!=NULL)
         {
           if(((annotblock->onset>=chunk_starttime)||(file_number==1))
-             &&(annotblock->onset<chunk_endtime)
-             &&(annots_written<datarecords_written))
+              &&(annotblock->onset<chunk_endtime)
+              &&(annots_written<datarecords_written))
           {
             fseeko(outputfile, (long long)(edfhdr->hdrsize + (annots_written * edfhdr->recordsize) + offset), SEEK_SET);
 
@@ -458,11 +458,11 @@ void UI_EDFDwindow::SelectFileButton()
 
             for(i = 0; i < (annot_signal_size - cnt - 2); i++)
             {
-             if(annotblock->annotation[i]==0)  break;
+              if(annotblock->annotation[i]==0)  break;
 
-             fputc(annotblock->annotation[i], outputfile);
+              fputc(annotblock->annotation[i], outputfile);
 
-             cnt++;
+              cnt++;
             }
 
             fputc(20, outputfile);
@@ -748,16 +748,16 @@ long long UI_EDFDwindow::get_datarecord_timestamp(char *str)
 
     for(i=dotposition-1; i>=1; i--)
     {
-        value += ((long long)(str[i] - 48)) * radix;
-        radix *= 10;
+      value += ((long long)(str[i] - 48)) * radix;
+      radix *= 10;
     }
 
     radix = TIME_DIMENSION / 10;
 
     for(i=dotposition+1; i<len; i++)
     {
-        value += ((long long)(str[i] - 48)) * radix;
-        radix /= 10;
+      value += ((long long)(str[i] - 48)) * radix;
+      radix /= 10;
     }
   }
   else
@@ -766,8 +766,8 @@ long long UI_EDFDwindow::get_datarecord_timestamp(char *str)
 
     for(i=len-1; i>=1; i--)
     {
-        value += ((long long)(str[i] - 48)) * radix;
-        radix *= 10;
+      value += ((long long)(str[i] - 48)) * radix;
+      radix *= 10;
     }
   }
 

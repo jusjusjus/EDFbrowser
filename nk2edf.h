@@ -44,8 +44,8 @@
 #include <QCursor>
 #include <QStyle>
 #if QT_VERSION < 0x050000
-#include <QPlastiqueStyle>
-#include <QWindowsStyle>
+  #include <QPlastiqueStyle>
+  #include <QWindowsStyle>
 #endif
 #include <QProgressDialog>
 #include <QString>
@@ -70,28 +70,28 @@ public:
 private:
 
 
-QPushButton  *pushButton1,
-             *pushButton2;
+  QPushButton  *pushButton1,
+               *pushButton2;
 
-QTextEdit    *textEdit1;
+  QTextEdit    *textEdit1;
 
-QDialog      *myobjectDialog;
+  QDialog      *myobjectDialog;
 
-QCheckBox    *checkBox1;
+  QCheckBox    *checkBox1;
 
-int total_elapsed_time;
+  int total_elapsed_time;
 
-char  *recent_opendir,
-      labels[256][17];
+  char  *recent_opendir,
+        labels[256][17];
 
-int check_device(char *);
+  int check_device(char *);
 
-int read_21e_file(char *);
+  int read_21e_file(char *);
 
 private slots:
 
-void SelectFileButton();
-int convert_nk2edf(FILE *, FILE *, FILE *, int, int, int, char *, int);
+  void SelectFileButton();
+  int convert_nk2edf(FILE *, FILE *, FILE *, int, int, int, char *, int);
 
 };
 

@@ -37,13 +37,13 @@
 
 #if defined(__APPLE__) || defined(__MACH__) || defined(__APPLE_CC__)
 
-#define fopeno fopen
+  #define fopeno fopen
 
 #else
 
-#define fseeko fseeko64
-#define ftello ftello64
-#define fopeno fopen64
+  #define fseeko fseeko64
+  #define ftello ftello64
+  #define fopeno fopen64
 
 #endif
 
@@ -132,9 +132,9 @@ void UI_ECGExport::Export_RR_intervals()
          *buf;
 
   long long *beat_onset_list,
-            datrecs,
-            smpls_left,
-            l_time=0LL;
+       datrecs,
+       smpls_left,
+       l_time=0LL;
 
   struct signalcompblock *signalcomp;
 

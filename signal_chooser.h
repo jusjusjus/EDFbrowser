@@ -73,30 +73,30 @@ public:
 
 private:
 
-QDialog      *signalchooser_dialog;
+  QDialog      *signalchooser_dialog;
 
-QPushButton  *CloseButton,
-             *UpButton,
-             *DownButton,
-             *DeleteButton,
-             *InvertButton;
+  QPushButton  *CloseButton,
+               *UpButton,
+               *DownButton,
+               *DeleteButton,
+               *InvertButton;
 
-QListWidget  *list;
+  QListWidget  *list;
 
-int task,
-    *signal_nr;
+  int task,
+      *signal_nr;
 
-void strip_types_from_label(char *);
+  void strip_types_from_label(char *);
 
-void load_signalcomps(void);
+  void load_signalcomps(void);
 
 private slots:
 
-void call_sidemenu(QListWidgetItem *);
-void signalUp();
-void signalDown();
-void signalDelete();
-void signalInvert();
+  void call_sidemenu(QListWidgetItem *);
+  void signalUp();
+  void signalDown();
+  void signalDelete();
+  void signalInvert();
 
 };
 

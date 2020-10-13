@@ -43,8 +43,8 @@
 #include <QCursor>
 #include <QStyle>
 #if QT_VERSION < 0x050000
-#include <QPlastiqueStyle>
-#include <QWindowsStyle>
+  #include <QPlastiqueStyle>
+  #include <QWindowsStyle>
 #endif
 #include <QProgressDialog>
 #include <QString>
@@ -71,34 +71,34 @@ public:
 private:
 
 
-QPushButton  *pushButton1,
-             *pushButton2;
+  QPushButton  *pushButton1,
+               *pushButton2;
 
-QTextEdit    *textEdit1;
+  QTextEdit    *textEdit1;
 
-QDialog      *myobjectDialog;
+  QDialog      *myobjectDialog;
 
-char  *recent_opendir,
-      *recent_savedir;
+  char  *recent_opendir,
+        *recent_savedir;
 
 
-int get_worddatafile(struct segment_prop_struct *, int, FILE *);
-int get_channel_gain(struct segment_prop_struct *, int, FILE *);
-int get_start_date(struct segment_prop_struct *, int, FILE *);
-int get_sample_rate(struct segment_prop_struct *, int, FILE *);
-int get_filter_settings(struct segment_prop_struct *, int, FILE *);
-int get_recorder_version(struct segment_prop_struct *, int, FILE *);
-int get_starttime_offset(struct segment_prop_struct *, int, FILE *);
-int get_events(struct segment_prop_struct *, int, FILE *);
-int get_number_of_segments(FILE *);
-char * fgetline(char *, int, FILE *);
-long long get_long_time(const char *);
+  int get_worddatafile(struct segment_prop_struct *, int, FILE *);
+  int get_channel_gain(struct segment_prop_struct *, int, FILE *);
+  int get_start_date(struct segment_prop_struct *, int, FILE *);
+  int get_sample_rate(struct segment_prop_struct *, int, FILE *);
+  int get_filter_settings(struct segment_prop_struct *, int, FILE *);
+  int get_recorder_version(struct segment_prop_struct *, int, FILE *);
+  int get_starttime_offset(struct segment_prop_struct *, int, FILE *);
+  int get_events(struct segment_prop_struct *, int, FILE *);
+  int get_number_of_segments(FILE *);
+  char * fgetline(char *, int, FILE *);
+  long long get_long_time(const char *);
 
 
 
 private slots:
 
-void SelectFileButton();
+  void SelectFileButton();
 
 };
 

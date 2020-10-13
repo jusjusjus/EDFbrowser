@@ -478,12 +478,12 @@ void UI_SignalChooser::strip_types_from_label(char *label)
   }
 
   if((!(strncmp(label, "EEG ", 4)))
-   ||(!(strncmp(label, "ECG ", 4)))
-   ||(!(strncmp(label, "EOG ", 4)))
-   ||(!(strncmp(label, "ERG ", 4)))
-   ||(!(strncmp(label, "EMG ", 4)))
-   ||(!(strncmp(label, "MEG ", 4)))
-   ||(!(strncmp(label, "MCG ", 4))))
+      ||(!(strncmp(label, "ECG ", 4)))
+      ||(!(strncmp(label, "EOG ", 4)))
+      ||(!(strncmp(label, "ERG ", 4)))
+      ||(!(strncmp(label, "EMG ", 4)))
+      ||(!(strncmp(label, "MEG ", 4)))
+      ||(!(strncmp(label, "MCG ", 4))))
   {
     if(label[4]!=' ')
     {

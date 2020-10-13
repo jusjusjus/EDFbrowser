@@ -37,13 +37,13 @@
 
 #if defined(__APPLE__) || defined(__MACH__) || defined(__APPLE_CC__)
 
-#define fopeno fopen
+  #define fopeno fopen
 
 #else
 
-#define fseeko fseeko64
-#define ftello ftello64
-#define fopeno fopen64
+  #define fseeko fseeko64
+  #define ftello ftello64
+  #define fopeno fopen64
 
 #endif
 
@@ -64,10 +64,10 @@ int BDF_triggers::get_triggers(struct edfhdrblock *hdr, struct annotationblock *
   char *buf;
 
   long long datarecords,
-            long_data_record_duration,
-            records_read,
-            status_sample_duration,
-            progress_steps;
+       long_data_record_duration,
+       records_read,
+       status_sample_duration,
+       progress_steps;
 
   FILE *inputfile;
 
@@ -110,26 +110,36 @@ int BDF_triggers::get_triggers(struct edfhdrblock *hdr, struct annotationblock *
 
   switch(sf)
   {
-    case 16384 : error = 0;
-                 break;
-    case  8192 : error = 0;
-                 break;
-    case  4096 : error = 0;
-                 break;
-    case  2048 : error = 0;
-                 break;
-    case  1024 : error = 0;
-                 break;
-    case   512 : error = 0;
-                 break;
-    case   256 : error = 0;
-                 break;
-    case   128 : error = 0;
-                 break;
-    case    64 : error = 0;
-                 break;
-    case    32 : error = 0;
-                 break;
+  case 16384 :
+    error = 0;
+    break;
+  case  8192 :
+    error = 0;
+    break;
+  case  4096 :
+    error = 0;
+    break;
+  case  2048 :
+    error = 0;
+    break;
+  case  1024 :
+    error = 0;
+    break;
+  case   512 :
+    error = 0;
+    break;
+  case   256 :
+    error = 0;
+    break;
+  case   128 :
+    error = 0;
+    break;
+  case    64 :
+    error = 0;
+    break;
+  case    32 :
+    error = 0;
+    break;
   }
 
   if(error)

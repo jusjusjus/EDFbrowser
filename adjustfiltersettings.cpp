@@ -447,9 +447,9 @@ void AdjustFilterSettings::filterboxchanged(int i)
 void AdjustFilterSettings::update_filter()
 {
   char *filter_spec,
-      spec_str_1[256],
-      spec_str_2[256],
-      *err=NULL;
+       spec_str_1[256],
+       spec_str_2[256],
+       *err=NULL;
 
 
   filter_nr = filterbox->currentIndex();
@@ -468,12 +468,12 @@ void AdjustFilterSettings::update_filter()
     if(type < 3)
     {
       if(frequency1 >= ((signalcomp->edfhdr->edfparam[signalcomp->edfsignal[0]].smp_per_record
-                      / signalcomp->edfhdr->data_record_duration)
-                      / 2.0))
+                         / signalcomp->edfhdr->data_record_duration)
+                        / 2.0))
       {
         frequency1 = (signalcomp->edfhdr->edfparam[signalcomp->edfsignal[0]].smp_per_record
                       / signalcomp->edfhdr->data_record_duration)
-                      / 2.0;
+                     / 2.0;
 
         frequency1 -= freq1box->singleStep();
 
@@ -483,12 +483,12 @@ void AdjustFilterSettings::update_filter()
     else
     {
       if(frequency2 >= ((signalcomp->edfhdr->edfparam[signalcomp->edfsignal[0]].smp_per_record
-                      / signalcomp->edfhdr->data_record_duration)
-                      / 2.0))
+                         / signalcomp->edfhdr->data_record_duration)
+                        / 2.0))
       {
         frequency2 = (signalcomp->edfhdr->edfparam[signalcomp->edfsignal[0]].smp_per_record
                       / signalcomp->edfhdr->data_record_duration)
-                      / 2.0;
+                     / 2.0;
 
         frequency2 -= freq2box->singleStep();
 
@@ -506,8 +506,8 @@ void AdjustFilterSettings::update_filter()
     if(type < 3)
     {
       if(frequency1 >= ((signalcomp->edfhdr->edfparam[signalcomp->edfsignal[0]].smp_per_record
-                      / signalcomp->edfhdr->data_record_duration)
-                      / 2.0))
+                         / signalcomp->edfhdr->data_record_duration)
+                        / 2.0))
       {
         UI_Messagewindow errormessage("Error", "The frequency must be less than: samplerate / 2");
         return;
@@ -516,8 +516,8 @@ void AdjustFilterSettings::update_filter()
     else
     {
       if(frequency2 >= ((signalcomp->edfhdr->edfparam[signalcomp->edfsignal[0]].smp_per_record
-                      / signalcomp->edfhdr->data_record_duration)
-                      / 2.0))
+                         / signalcomp->edfhdr->data_record_duration)
+                        / 2.0))
       {
         UI_Messagewindow errormessage("Error", "The frequency must be less than: samplerate / 2");
         return;
@@ -670,21 +670,26 @@ void AdjustFilterSettings::stepsizeboxchanged(int index)
   {
     switch(index)
     {
-      case 0: freq1box->setSingleStep(0.01);
-              freq2box->setSingleStep(0.01);
-              break;
-      case 1: freq1box->setSingleStep(0.1);
-              freq2box->setSingleStep(0.1);
-              break;
-      case 2: freq1box->setSingleStep(1.0);
-              freq2box->setSingleStep(1.0);
-              break;
-      case 3: freq1box->setSingleStep(10.0);
-              freq2box->setSingleStep(10.0);
-              break;
-      case 4: freq1box->setSingleStep(100.0);
-              freq2box->setSingleStep(100.0);
-              break;
+    case 0:
+      freq1box->setSingleStep(0.01);
+      freq2box->setSingleStep(0.01);
+      break;
+    case 1:
+      freq1box->setSingleStep(0.1);
+      freq2box->setSingleStep(0.1);
+      break;
+    case 2:
+      freq1box->setSingleStep(1.0);
+      freq2box->setSingleStep(1.0);
+      break;
+    case 3:
+      freq1box->setSingleStep(10.0);
+      freq2box->setSingleStep(10.0);
+      break;
+    case 4:
+      freq1box->setSingleStep(100.0);
+      freq2box->setSingleStep(100.0);
+      break;
     }
   }
 
@@ -692,14 +697,18 @@ void AdjustFilterSettings::stepsizeboxchanged(int index)
   {
     switch(index)
     {
-      case 0: orderbox->setSingleStep(1);
-              break;
-      case 1: orderbox->setSingleStep(10);
-              break;
-      case 2: orderbox->setSingleStep(100);
-              break;
-      case 3: orderbox->setSingleStep(1000);
-              break;
+    case 0:
+      orderbox->setSingleStep(1);
+      break;
+    case 1:
+      orderbox->setSingleStep(10);
+      break;
+    case 2:
+      orderbox->setSingleStep(100);
+      break;
+    case 3:
+      orderbox->setSingleStep(1000);
+      break;
     }
   }
 }

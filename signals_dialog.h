@@ -115,7 +115,7 @@ private:
   void strip_types_from_label(char *);
 
 
- private slots:
+private slots:
 
   void show_signals(int);
   void SelectAllButtonClicked();

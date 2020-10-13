@@ -63,21 +63,21 @@ public:
 
 private:
 
-QDialog      *chooserDialog;
+  QDialog      *chooserDialog;
 
-QPushButton  *okButton,
-             *cancelButton;
+  QPushButton  *okButton,
+               *cancelButton;
 
-QListWidget  *filelist;
+  QListWidget  *filelist;
 
-int *file_num;
+  int *file_num;
 
-UI_Mainwindow *mainwindow;
+  UI_Mainwindow *mainwindow;
 
 
 private slots:
 
-void okButtonClicked();
+  void okButtonClicked();
 
 };
 

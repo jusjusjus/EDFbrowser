@@ -350,7 +350,7 @@ void UI_ZScoreWindow::addTraceButtonClicked()
   struct edfhdrblock *hdr;
 
   struct signalcompblock *signalcomp,
-                         *original_signalcomp;
+           *original_signalcomp;
 
   original_signalcomp = mainwindow->signalcomp[signalnr];
 
@@ -375,9 +375,9 @@ void UI_ZScoreWindow::addTraceButtonClicked()
   }
 
   signalcomp->zratio_filter = create_zratio_filter(hdr->edfparam[signalcomp->edfsignal[0]].smp_per_record,
-                                                   hdr->long_data_record_duration,
-                                                   crossoverSpinbox->value(),
-    signalcomp->edfhdr->edfparam[signalcomp->edfsignal[0]].bitvalue);
+                              hdr->long_data_record_duration,
+                              crossoverSpinbox->value(),
+                              signalcomp->edfhdr->edfparam[signalcomp->edfsignal[0]].bitvalue);
 
   if(signalcomp->zratio_filter == NULL)
   {
@@ -931,8 +931,8 @@ void UI_ZScoreWindow::startButtonClicked()
         if(zscore_sleepstage_buf[zscore_pages - 1] == 0)
         {
 
-  // printf("if(zscore_sleepstage_buf[zscore_pages - 1] == 0) : %f  <  %f  +  %f\n",
-  //        zscore_epoch_buf[i], z_threshold, z_hysteresis);
+          // printf("if(zscore_sleepstage_buf[zscore_pages - 1] == 0) : %f  <  %f  +  %f\n",
+          //        zscore_epoch_buf[i], z_threshold, z_hysteresis);
 
           if(zscore_epoch_buf[i] < (z_threshold + z_hysteresis))
           {
@@ -950,8 +950,8 @@ void UI_ZScoreWindow::startButtonClicked()
         else
         {
 
-  // printf("else : %f  <  %f  +  %f\n",
-  //        zscore_epoch_buf[i], z_threshold, z_hysteresis);
+          // printf("else : %f  <  %f  +  %f\n",
+          //        zscore_epoch_buf[i], z_threshold, z_hysteresis);
 
           if(zscore_epoch_buf[i] < (z_threshold - z_hysteresis))
           {
@@ -1106,7 +1106,7 @@ void UI_ZScoreWindow::get_annotationsButtonClicked()
     mainwindow->save_act->setEnabled(true);
   }
 
-   mainwindow->maincurve->update();
+  mainwindow->maincurve->update();
 }
 
 

@@ -37,13 +37,13 @@
 
 #if defined(__APPLE__) || defined(__MACH__) || defined(__APPLE_CC__)
 
-#define fopeno fopen
+  #define fopeno fopen
 
 #else
 
-#define fseeko fseeko64
-#define ftello ftello64
-#define fopeno fopen64
+  #define fseeko fseeko64
+  #define ftello ftello64
+  #define fopeno fopen64
 
 #endif
 
@@ -94,8 +94,8 @@ UI_EMSA2EDFwindow::UI_EMSA2EDFwindow(char *recent_dir, char *save_dir)
 void UI_EMSA2EDFwindow::SelectFileButton()
 {
   FILE *inputfile=NULL,
-       *outputfile=NULL,
-       *logfile=NULL;
+        *outputfile=NULL,
+         *logfile=NULL;
 
   int i, j, k,
       channels,
@@ -144,10 +144,11 @@ void UI_EMSA2EDFwindow::SelectFileButton()
        txt_string[2048],
        outputfilename[MAX_PATH_LENGTH];
 
-  union{
-         int number;
-         char str[4];
-       } var;
+  union
+  {
+    int number;
+    char str[4];
+  } var;
 
 
   pushButton1->setEnabled(false);
@@ -162,7 +163,7 @@ void UI_EMSA2EDFwindow::SelectFileButton()
 
   get_directory_from_path(recent_opendir, path, MAX_PATH_LENGTH);
 
-/***************** check header ******************************/
+  /***************** check header ******************************/
 
   inputfile = fopeno(path, "rb");
   if(inputfile==NULL)
@@ -313,32 +314,45 @@ void UI_EMSA2EDFwindow::SelectFileButton()
   i = atoi(date+3);
   switch(i)
   {
-    case  1 : strcpy(month, "JAN");
-              break;
-    case  2 : strcpy(month, "FEB");
-              break;
-    case  3 : strcpy(month, "MAR");
-              break;
-    case  4 : strcpy(month, "APR");
-              break;
-    case  5 : strcpy(month, "MAY");
-              break;
-    case  6 : strcpy(month, "JUN");
-              break;
-    case  7 : strcpy(month, "JUL");
-              break;
-    case  8 : strcpy(month, "AUG");
-              break;
-    case  9 : strcpy(month, "SEP");
-              break;
-    case 10 : strcpy(month, "OCT");
-              break;
-    case 11 : strcpy(month, "NOV");
-              break;
-    case 12 : strcpy(month, "DEC");
-              break;
-    default : strcpy(month, "ERR");
-              break;
+  case  1 :
+    strcpy(month, "JAN");
+    break;
+  case  2 :
+    strcpy(month, "FEB");
+    break;
+  case  3 :
+    strcpy(month, "MAR");
+    break;
+  case  4 :
+    strcpy(month, "APR");
+    break;
+  case  5 :
+    strcpy(month, "MAY");
+    break;
+  case  6 :
+    strcpy(month, "JUN");
+    break;
+  case  7 :
+    strcpy(month, "JUL");
+    break;
+  case  8 :
+    strcpy(month, "AUG");
+    break;
+  case  9 :
+    strcpy(month, "SEP");
+    break;
+  case 10 :
+    strcpy(month, "OCT");
+    break;
+  case 11 :
+    strcpy(month, "NOV");
+    break;
+  case 12 :
+    strcpy(month, "DEC");
+    break;
+  default :
+    strcpy(month, "ERR");
+    break;
   }
 
   if(get_string(scratchpad, inputfile, 169, 32)!=8)
@@ -360,32 +374,45 @@ void UI_EMSA2EDFwindow::SelectFileButton()
     if((i<1)||(i>12))  error = 1;
     switch(i)
     {
-      case  1 : strcpy(b_month, "JAN");
-                break;
-      case  2 : strcpy(b_month, "FEB");
-                break;
-      case  3 : strcpy(b_month, "MAR");
-                break;
-      case  4 : strcpy(b_month, "APR");
-                break;
-      case  5 : strcpy(b_month, "MAY");
-                break;
-      case  6 : strcpy(b_month, "JUN");
-                break;
-      case  7 : strcpy(b_month, "JUL");
-                break;
-      case  8 : strcpy(b_month, "AUG");
-                break;
-      case  9 : strcpy(b_month, "SEP");
-                break;
-      case 10 : strcpy(b_month, "OCT");
-                break;
-      case 11 : strcpy(b_month, "NOV");
-                break;
-      case 12 : strcpy(b_month, "DEC");
-                break;
-      default : strcpy(b_month, "ERR");
-                break;
+    case  1 :
+      strcpy(b_month, "JAN");
+      break;
+    case  2 :
+      strcpy(b_month, "FEB");
+      break;
+    case  3 :
+      strcpy(b_month, "MAR");
+      break;
+    case  4 :
+      strcpy(b_month, "APR");
+      break;
+    case  5 :
+      strcpy(b_month, "MAY");
+      break;
+    case  6 :
+      strcpy(b_month, "JUN");
+      break;
+    case  7 :
+      strcpy(b_month, "JUL");
+      break;
+    case  8 :
+      strcpy(b_month, "AUG");
+      break;
+    case  9 :
+      strcpy(b_month, "SEP");
+      break;
+    case 10 :
+      strcpy(b_month, "OCT");
+      break;
+    case 11 :
+      strcpy(b_month, "NOV");
+      break;
+    case 12 :
+      strcpy(b_month, "DEC");
+      break;
+    default :
+      strcpy(b_month, "ERR");
+      break;
     }
     scratchpad[4] = 0;
     b_year = atoi(scratchpad);
@@ -445,9 +472,15 @@ void UI_EMSA2EDFwindow::SelectFileButton()
   len = fgetc(inputfile);
   switch(len)
   {
-    case 'E' : strcpy(handedness, " lefthanded");  break;
-    case 'D' : strcpy(handedness, " righthanded");  break;
-    default  : handedness[0] = 0;  break;
+  case 'E' :
+    strcpy(handedness, " lefthanded");
+    break;
+  case 'D' :
+    strcpy(handedness, " righthanded");
+    break;
+  default  :
+    handedness[0] = 0;
+    break;
   }
 
   len = get_string(weight + 1, inputfile, 351, 6);
@@ -502,7 +535,7 @@ void UI_EMSA2EDFwindow::SelectFileButton()
 
   data_records = (filesize - hdrsize) / record_size;
 
-/***************** read logfile *****************************************/
+  /***************** read logfile *****************************************/
 
   remove_extension_from_filename(path);
   strcat(path, ".LBK");
@@ -684,7 +717,7 @@ void UI_EMSA2EDFwindow::SelectFileButton()
     tallen++;
   }
 
-/***************** write header *****************************************/
+  /***************** write header *****************************************/
 
   get_filename_from_path(outputfilename, path, MAX_PATH_LENGTH);
   remove_extension_from_filename(outputfilename);
@@ -724,24 +757,24 @@ void UI_EMSA2EDFwindow::SelectFileButton()
   fprintf(outputfile, "0       ");
 
   i = fprintf(outputfile, "%05i %c %s %s%s%s",
-                          patientcode,
-                          gender,
-                          birthdate,
-                          patientname,
-                          handedness,
-                          weight);
+              patientcode,
+              gender,
+              birthdate,
+              patientname,
+              handedness,
+              weight);
   for(; i<80; i++)
   {
     fputc(' ', outputfile);
   }
 
   i = fprintf(outputfile, "Startdate %02i-%s-%04i %05i%02i X %s",
-                          atoi(date),
-                          month,
-                          year,
-                          patientcode,
-                          seq_nr,
-                          equipment);
+              atoi(date),
+              month,
+              year,
+              patientcode,
+              seq_nr,
+              equipment);
   for(; i<80; i++)
   {
     fputc(' ', outputfile);
@@ -879,7 +912,7 @@ void UI_EMSA2EDFwindow::SelectFileButton()
     fputc(' ', outputfile);
   }
 
-/****************** start conversion *****************/
+  /****************** start conversion *****************/
 
   seconds = 0;
 

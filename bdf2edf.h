@@ -45,8 +45,8 @@
 #include <QCursor>
 #include <QStyle>
 #if QT_VERSION < 0x050000
-#include <QPlastiqueStyle>
-#include <QWindowsStyle>
+  #include <QPlastiqueStyle>
+  #include <QWindowsStyle>
 #endif
 #include <QString>
 #include <QStringList>
@@ -84,52 +84,52 @@ public:
 
 private:
 
-QLabel       *label1,
-             *label2,
-             *label3;
+  QLabel       *label1,
+               *label2,
+               *label3;
 
-QPushButton  *pushButton1,
-             *pushButton2,
-             *pushButton3,
-             *pushButton4,
-             *pushButton5;
+  QPushButton  *pushButton1,
+               *pushButton2,
+               *pushButton3,
+               *pushButton4,
+               *pushButton5;
 
-QDoubleSpinBox *spinBox1,
-               *spinBox2;
+  QDoubleSpinBox *spinBox1,
+                 *spinBox2;
 
-QTableWidget *SignalsTablewidget;
+  QTableWidget *SignalsTablewidget;
 
-QDialog      *myobjectDialog;
+  QDialog      *myobjectDialog;
 
-int  signalslist[MAXSIGNALS],
-     annotlist[MAXSIGNALS];
+  int  signalslist[MAXSIGNALS],
+       annotlist[MAXSIGNALS];
 
 
-char  inputpath[MAX_PATH_LENGTH],
-      outputpath[MAX_PATH_LENGTH],
-      *recent_opendir,
-      *recent_savedir;
+  char  inputpath[MAX_PATH_LENGTH],
+        outputpath[MAX_PATH_LENGTH],
+        *recent_opendir,
+        *recent_savedir;
 
-double dividerlist[MAXSIGNALS];
+  double dividerlist[MAXSIGNALS];
 
-FILE *inputfile,
-     *outputfile;
+  FILE *inputfile,
+       *outputfile;
 
-struct edfhdrblock *edfhdr;
+  struct edfhdrblock *edfhdr;
 
-struct filter_settings *filterlist[MAXSIGNALS];
+  struct filter_settings *filterlist[MAXSIGNALS];
 
-void showpopupmessage(const char *, const char *);
+  void showpopupmessage(const char *, const char *);
 
 private slots:
 
-void SelectFileButton();
-void StartConversion();
-void spinbox1_changed(double);
-void spinbox2_changed(double);
-void Select_all_signals();
-void Deselect_all_signals();
-void free_edfheader();
+  void SelectFileButton();
+  void StartConversion();
+  void spinbox1_changed(double);
+  void spinbox2_changed(double);
+  void Select_all_signals();
+  void Deselect_all_signals();
+  void free_edfheader();
 
 };
 

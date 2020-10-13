@@ -53,30 +53,30 @@ class Event;
 
 class Signaltype : public QObject
 {
-	Q_OBJECT
+  Q_OBJECT
 
 public:
-	Signaltype(QObject *theparent);
-	Signaltype(QObject *theparent, const char* name);
-	Signaltype(QObject *theparent, QDomElement*);
-	Signaltype();
+  Signaltype(QObject *theparent);
+  Signaltype(QObject *theparent, const char* name);
+  Signaltype(QObject *theparent, QDomElement*);
+  Signaltype();
 
-	Signaltypes *parent;
+  Signaltypes *parent;
 
-	void addAction(const char*, double min=0., double max=1.e8);	
-	void exec(QPoint&);
+  void addAction(const char*, double min=0., double max=1.e8);
+  void exec(QPoint&);
 
-	QString name;			// Names the types.  E.g.: "EEG"
-	QDomDocument toQDom();
+  QString name;     // Names the types.  E.g.: "EEG"
+  QDomDocument toQDom();
 
-private: 
-	Event* customevent;
-	QMenu* contextmenu;		// context menus for type.
-	QActionGroup* events;
+private:
+  Event* customevent;
+  QMenu* contextmenu;   // context menus for type.
+  QActionGroup* events;
 
 
 public slots:
-	bool isinstance(QString*);
+  bool isinstance(QString*);
 };
 
 #endif

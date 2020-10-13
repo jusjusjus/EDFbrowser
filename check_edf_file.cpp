@@ -38,13 +38,13 @@
 
 #if defined(__APPLE__) || defined(__MACH__) || defined(__APPLE_CC__)
 
-#define fopeno fopen
+  #define fopeno fopen
 
 #else
 
-#define fseeko fseeko64
-#define ftello ftello64
-#define fopeno fopen64
+  #define fseeko fseeko64
+  #define ftello ftello64
+  #define fopeno fopen64
 
 #endif
 
@@ -54,19 +54,19 @@
 struct edfhdrblock * EDFfileCheck::check_edf_file(FILE *inputfile, char *txt_string, int live_stream)
 {
   int i, j, p, r=0, n,
-      dotposition,
-      error;
+               dotposition,
+               error;
 
   char *edf_hdr,
        scratchpad[128],
        scratchpad2[64];
 
   long long l_tmp,
-            l_tmp2;
+       l_tmp2;
 
   struct date_time_struct date_time;
 
-/***************** check header ******************************/
+  /***************** check header ******************************/
 
   edf_hdr = (char *)calloc(1, 256);
   if(edf_hdr==NULL)
@@ -91,7 +91,7 @@ struct edfhdrblock * EDFfileCheck::check_edf_file(FILE *inputfile, char *txt_str
     return(NULL);
   }
 
-/**************************** VERSION ***************************************/
+  /**************************** VERSION ***************************************/
 
   strncpy(scratchpad, edf_hdr, 8);
   scratchpad[8] = 0;
@@ -103,7 +103,7 @@ struct edfhdrblock * EDFfileCheck::check_edf_file(FILE *inputfile, char *txt_str
       if((scratchpad[i]<32)||(scratchpad[i]>126))
       {
         sprintf(txt_string, "Error, %ith character of version field is not a valid 7-bit ASCII character.",
-        i + 1);
+                i + 1);
         free(edf_hdr);
         free(edfhdr);
         return(NULL);
@@ -113,8 +113,8 @@ struct edfhdrblock * EDFfileCheck::check_edf_file(FILE *inputfile, char *txt_str
     if(strcmp(scratchpad + 1, "BIOSEMI"))
     {
       sprintf(txt_string, "Error, header has unknown version: \".%s\",\n"
-            "expected \".BIOSEMI\"",
-            scratchpad + 1);
+              "expected \".BIOSEMI\"",
+              scratchpad + 1);
       free(edf_hdr);
       free(edfhdr);
       return(NULL);
@@ -129,7 +129,7 @@ struct edfhdrblock * EDFfileCheck::check_edf_file(FILE *inputfile, char *txt_str
       if((scratchpad[i]<32)||(scratchpad[i]>126))
       {
         sprintf(txt_string, "Error, %ith character of version field is not a valid 7-bit ASCII character.",
-        i + 1);
+                i + 1);
         free(edf_hdr);
         free(edfhdr);
         return(NULL);
@@ -139,8 +139,8 @@ struct edfhdrblock * EDFfileCheck::check_edf_file(FILE *inputfile, char *txt_str
     if(strcmp(scratchpad, "0       "))
     {
       sprintf(txt_string, "Error, header has unknown version: \"%s\",\n"
-            "expected \"0       \"",
-            scratchpad);
+              "expected \"0       \"",
+              scratchpad);
       free(edf_hdr);
       free(edfhdr);
       return(NULL);
@@ -153,9 +153,9 @@ struct edfhdrblock * EDFfileCheck::check_edf_file(FILE *inputfile, char *txt_str
   edfhdr->version[8] = 0;
   if(edfhdr->bdf)  edfhdr->version[0] = '.';
 
-/********************* PATIENTNAME *********************************************/
+  /********************* PATIENTNAME *********************************************/
 
-    edflib_latin1_to_ascii(edf_hdr + 8, 80);
+  edflib_latin1_to_ascii(edf_hdr + 8, 80);
   strncpy(scratchpad, edf_hdr + 8, 80);
   scratchpad[80] = 0;
   for(i=0; i<80; i++)
@@ -163,8 +163,8 @@ struct edfhdrblock * EDFfileCheck::check_edf_file(FILE *inputfile, char *txt_str
     if((((unsigned char *)scratchpad)[i]<32)||(((unsigned char *)scratchpad)[i]>126))
     {
       sprintf(txt_string, "Error, %ith character of local patient identification field is not a valid 7-bit ASCII character.\n"
-                          "Use the header editor to fix your file. Look at the manual for the details.",
-      i + 1);
+              "Use the header editor to fix your file. Look at the manual for the details.",
+              i + 1);
       free(edf_hdr);
       free(edfhdr);
       return(NULL);
@@ -174,7 +174,7 @@ struct edfhdrblock * EDFfileCheck::check_edf_file(FILE *inputfile, char *txt_str
   strncpy(edfhdr->patient, edf_hdr + 8, 80);
   edfhdr->patient[80] = 0;
 
-/********************* RECORDING *********************************************/
+  /********************* RECORDING *********************************************/
 
   strncpy(scratchpad, edf_hdr + 88, 80);
   scratchpad[80] = 0;
@@ -183,8 +183,8 @@ struct edfhdrblock * EDFfileCheck::check_edf_file(FILE *inputfile, char *txt_str
     if((((unsigned char *)scratchpad)[i]<32)||(((unsigned char *)scratchpad)[i]>126))
     {
       sprintf(txt_string, "Error, %ith character of local recording identification field is not a valid 7-bit ASCII character.\n"
-                          "Use the header editor to fix your file. Look at the manual for the details.",
-      i + 1);
+              "Use the header editor to fix your file. Look at the manual for the details.",
+              i + 1);
       free(edf_hdr);
       free(edfhdr);
       return(NULL);
@@ -194,7 +194,7 @@ struct edfhdrblock * EDFfileCheck::check_edf_file(FILE *inputfile, char *txt_str
   strncpy(edfhdr->recording, edf_hdr + 88, 80);
   edfhdr->recording[80] = 0;
 
-/********************* STARTDATE *********************************************/
+  /********************* STARTDATE *********************************************/
 
   strncpy(scratchpad, edf_hdr + 168, 8);
   scratchpad[8] = 0;
@@ -203,7 +203,7 @@ struct edfhdrblock * EDFfileCheck::check_edf_file(FILE *inputfile, char *txt_str
     if((scratchpad[i]<32)||(scratchpad[i]>126))
     {
       sprintf(txt_string, "Error, %ith character of startdate field is not a valid 7-bit ASCII character.",
-      i + 1);
+              i + 1);
       free(edf_hdr);
       free(edfhdr);
       return(NULL);
@@ -215,7 +215,7 @@ struct edfhdrblock * EDFfileCheck::check_edf_file(FILE *inputfile, char *txt_str
   if((edf_hdr[170]!='.')||(edf_hdr[173]!='.'))
   {
     sprintf(txt_string, "Error, separator character of startdate is not a dot.\n"
-                        "You can fix this problem with the header editor, check the manual for details.");
+            "You can fix this problem with the header editor, check the manual for details.");
     free(edf_hdr);
     free(edfhdr);
     return(NULL);
@@ -233,8 +233,8 @@ struct edfhdrblock * EDFfileCheck::check_edf_file(FILE *inputfile, char *txt_str
   {
     scratchpad[8] = 0;
     sprintf(txt_string, "Error, startdate of recording is invalid: \"%s\",\n"
-           "expected \"dd.mm.yy\"",
-           scratchpad);
+            "expected \"dd.mm.yy\"",
+            scratchpad);
     free(edf_hdr);
     return(NULL);
   }
@@ -248,8 +248,8 @@ struct edfhdrblock * EDFfileCheck::check_edf_file(FILE *inputfile, char *txt_str
     strncpy(scratchpad, edf_hdr + 168, 8);
     scratchpad[8] = 0;
     sprintf(txt_string, "Error, startdate of recording is invalid: \"%s\",\n"
-           "expected \"dd.mm.yy\" where \"dd\" should be more than 00 and less than 32",
-           scratchpad);
+            "expected \"dd.mm.yy\" where \"dd\" should be more than 00 and less than 32",
+            scratchpad);
     free(edf_hdr);
     return(NULL);
   }
@@ -259,8 +259,8 @@ struct edfhdrblock * EDFfileCheck::check_edf_file(FILE *inputfile, char *txt_str
     strncpy(scratchpad, edf_hdr + 168, 8);
     scratchpad[8] = 0;
     sprintf(txt_string, "Error, startdate of recording is invalid: \"%s\",\n"
-           "expected \"dd.mm.yy\" where \"mm\" should be more than 00 and less than 13",
-           scratchpad);
+            "expected \"dd.mm.yy\" where \"mm\" should be more than 00 and less than 13",
+            scratchpad);
     free(edf_hdr);
     free(edfhdr);
     return(NULL);
@@ -278,7 +278,7 @@ struct edfhdrblock * EDFfileCheck::check_edf_file(FILE *inputfile, char *txt_str
     date_time.year += 2000;
   }
 
-/********************* STARTTIME *********************************************/
+  /********************* STARTTIME *********************************************/
 
   strncpy(scratchpad, edf_hdr + 176, 8);
   scratchpad[8] = 0;
@@ -287,7 +287,7 @@ struct edfhdrblock * EDFfileCheck::check_edf_file(FILE *inputfile, char *txt_str
     if((scratchpad[i]<32)||(scratchpad[i]>126))
     {
       sprintf(txt_string, "Error, %ith character of starttime field is not a valid 7-bit ASCII character.",
-      i + 1);
+              i + 1);
       free(edf_hdr);
       free(edfhdr);
       return(NULL);
@@ -299,7 +299,7 @@ struct edfhdrblock * EDFfileCheck::check_edf_file(FILE *inputfile, char *txt_str
   if((edf_hdr[178]!='.')||(edf_hdr[181]!='.'))
   {
     sprintf(txt_string, "Error, separator character of starttime is not a dot.\n"
-                        "You can fix this problem with the header editor, check the manual for details.");
+            "You can fix this problem with the header editor, check the manual for details.");
     free(edf_hdr);
     free(edfhdr);
     return(NULL);
@@ -319,8 +319,8 @@ struct edfhdrblock * EDFfileCheck::check_edf_file(FILE *inputfile, char *txt_str
     strncpy(scratchpad, edf_hdr + 176, 8);
     scratchpad[8] = 0;
     sprintf(txt_string, "Error, starttime of recording is invalid: \"%s\",\n"
-           "expected \"hh.mm.ss\"",
-           scratchpad);
+            "expected \"hh.mm.ss\"",
+            scratchpad);
     free(edf_hdr);
     free(edfhdr);
     return(NULL);
@@ -335,8 +335,8 @@ struct edfhdrblock * EDFfileCheck::check_edf_file(FILE *inputfile, char *txt_str
     strncpy(scratchpad, edf_hdr + 176, 8);
     scratchpad[8] = 0;
     sprintf(txt_string, "Error, starttime of recording is invalid: \"%s\",\n"
-           "expected \"hh.mm.ss\" where \"hh\" should be less than 24",
-           scratchpad);
+            "expected \"hh.mm.ss\" where \"hh\" should be less than 24",
+            scratchpad);
     free(edf_hdr);
     free(edfhdr);
     return(NULL);
@@ -347,8 +347,8 @@ struct edfhdrblock * EDFfileCheck::check_edf_file(FILE *inputfile, char *txt_str
     strncpy(scratchpad, edf_hdr + 176, 8);
     scratchpad[8] = 0;
     sprintf(txt_string, "Error, starttime of recording is invalid: \"%s\",\n"
-           "expected \"hh.mm.ss\" where \"mm\" should be less than 60",
-           scratchpad);
+            "expected \"hh.mm.ss\" where \"mm\" should be less than 60",
+            scratchpad);
     free(edf_hdr);
     free(edfhdr);
     return(NULL);
@@ -359,8 +359,8 @@ struct edfhdrblock * EDFfileCheck::check_edf_file(FILE *inputfile, char *txt_str
     strncpy(scratchpad, edf_hdr + 176, 8);
     scratchpad[8] = 0;
     sprintf(txt_string, "Error, starttime of recording is invalid: \"%s\",\n"
-           "expected \"hh.mm.ss\" where \"ss\" should be less than 60",
-           scratchpad);
+            "expected \"hh.mm.ss\" where \"ss\" should be less than 60",
+            scratchpad);
     free(edf_hdr);
     free(edfhdr);
     return(NULL);
@@ -378,7 +378,7 @@ struct edfhdrblock * EDFfileCheck::check_edf_file(FILE *inputfile, char *txt_str
 
   edfhdr->l_starttime *= TIME_DIMENSION;
 
-/***************** NUMBER OF SIGNALS IN HEADER *******************************/
+  /***************** NUMBER OF SIGNALS IN HEADER *******************************/
 
   strncpy(scratchpad, edf_hdr + 252, 4);
   scratchpad[4] = 0;
@@ -387,7 +387,7 @@ struct edfhdrblock * EDFfileCheck::check_edf_file(FILE *inputfile, char *txt_str
     if((scratchpad[i]<32)||(scratchpad[i]>126))
     {
       sprintf(txt_string, "Error, %ith character of number of signals field is not a valid 7-bit ASCII character.",
-      i + 1);
+              i + 1);
       free(edf_hdr);
       free(edfhdr);
       return(NULL);
@@ -397,7 +397,7 @@ struct edfhdrblock * EDFfileCheck::check_edf_file(FILE *inputfile, char *txt_str
   if(is_integer_number(scratchpad))
   {
     sprintf(txt_string, "Error, number of signals field is invalid: \"%s\".",
-           scratchpad);
+            scratchpad);
     free(edf_hdr);
     free(edfhdr);
     return(NULL);
@@ -406,7 +406,7 @@ struct edfhdrblock * EDFfileCheck::check_edf_file(FILE *inputfile, char *txt_str
   if(edfhdr->edfsignals<1)
   {
     sprintf(txt_string, "Error, number of signals is %i, expected >0.",
-           edfhdr->edfsignals);
+            edfhdr->edfsignals);
     free(edf_hdr);
     free(edfhdr);
     return(NULL);
@@ -415,14 +415,14 @@ struct edfhdrblock * EDFfileCheck::check_edf_file(FILE *inputfile, char *txt_str
   if(edfhdr->edfsignals>MAXSIGNALS)
   {
     sprintf(txt_string, "Error, number of signals in file is %i, can not support more than %i signals.",
-           edfhdr->edfsignals,
-           MAXSIGNALS);
+            edfhdr->edfsignals,
+            MAXSIGNALS);
     free(edf_hdr);
     free(edfhdr);
     return(NULL);
   }
 
-/***************** NUMBER OF BYTES IN HEADER *******************************/
+  /***************** NUMBER OF BYTES IN HEADER *******************************/
 
   strncpy(scratchpad, edf_hdr + 184, 8);
   scratchpad[8] = 0;
@@ -432,7 +432,7 @@ struct edfhdrblock * EDFfileCheck::check_edf_file(FILE *inputfile, char *txt_str
     if((scratchpad[i]<32)||(scratchpad[i]>126))
     {
       sprintf(txt_string, "Error, %ith character of number of bytes in header field is not a valid 7-bit ASCII character.",
-      i + 1);
+              i + 1);
       free(edf_hdr);
       free(edfhdr);
       return(NULL);
@@ -442,7 +442,7 @@ struct edfhdrblock * EDFfileCheck::check_edf_file(FILE *inputfile, char *txt_str
   if(is_integer_number(scratchpad))
   {
     sprintf(txt_string, "Error, number of bytes in header field is invalid: \"%s\".",
-           scratchpad);
+            scratchpad);
     free(edf_hdr);
     free(edfhdr);
     return(NULL);
@@ -452,14 +452,14 @@ struct edfhdrblock * EDFfileCheck::check_edf_file(FILE *inputfile, char *txt_str
   if((edfhdr->edfsignals * 256 + 256)!=n)
   {
     sprintf(txt_string, "Error, number of bytes in header does not match: %i,\n"
-           "expected %i signals * 256 + 256 = %i bytes.",
-           n, edfhdr->edfsignals, edfhdr->edfsignals * 256 + 256);
+            "expected %i signals * 256 + 256 = %i bytes.",
+            n, edfhdr->edfsignals, edfhdr->edfsignals * 256 + 256);
     free(edf_hdr);
     free(edfhdr);
     return(NULL);
   }
 
-/********************* RESERVED FIELD *************************************/
+  /********************* RESERVED FIELD *************************************/
 
   edfhdr->edfplus = 0;
   edfhdr->discontinuous = 0;
@@ -471,7 +471,7 @@ struct edfhdrblock * EDFfileCheck::check_edf_file(FILE *inputfile, char *txt_str
     if((scratchpad[i]<32)||(scratchpad[i]>126))
     {
       sprintf(txt_string, "Error, %ith character of reserved field is not a valid 7-bit ASCII character.",
-      i + 1);
+              i + 1);
       free(edf_hdr);
       free(edfhdr);
       return(NULL);
@@ -509,7 +509,7 @@ struct edfhdrblock * EDFfileCheck::check_edf_file(FILE *inputfile, char *txt_str
   strncpy(edfhdr->reserved, edf_hdr + 192, 44);
   edfhdr->reserved[44] = 0;
 
-/********************* NUMBER OF DATARECORDS *************************************/
+  /********************* NUMBER OF DATARECORDS *************************************/
 
   strncpy(scratchpad, edf_hdr + 236, 8);
   scratchpad[8] = 0;
@@ -519,7 +519,7 @@ struct edfhdrblock * EDFfileCheck::check_edf_file(FILE *inputfile, char *txt_str
     if((scratchpad[i]<32)||(scratchpad[i]>126))
     {
       sprintf(txt_string, "Error, %ith character of number of datarecords field is not a valid ASCII character.",
-      i + 1);
+              i + 1);
       free(edf_hdr);
       free(edfhdr);
       return(NULL);
@@ -529,8 +529,8 @@ struct edfhdrblock * EDFfileCheck::check_edf_file(FILE *inputfile, char *txt_str
   if(is_integer_number(scratchpad))
   {
     sprintf(txt_string, "Error, number of datarecords field is invalid: \"%s\".\n"
-                        "You can fix this problem with the header editor, check the manual for details.",
-           scratchpad);
+            "You can fix this problem with the header editor, check the manual for details.",
+            scratchpad);
     free(edf_hdr);
     free(edfhdr);
     return(NULL);
@@ -541,22 +541,22 @@ struct edfhdrblock * EDFfileCheck::check_edf_file(FILE *inputfile, char *txt_str
   {
     if(edfhdr->datarecords<1)
     {
-#ifdef Q_OS_WIN32
+      #ifdef Q_OS_WIN32
       __mingw_sprintf(txt_string, "Error, number of datarecords is %lli, expected >0.\n"
-                          "You can fix this problem with the header editor, check the manual for details.",
-            edfhdr->datarecords);
-#else
+                      "You can fix this problem with the header editor, check the manual for details.",
+                      edfhdr->datarecords);
+      #else
       sprintf(txt_string, "Error, number of datarecords is %lli, expected >0.\n"
-                          "You can fix this problem with the header editor, check the manual for details.",
-            edfhdr->datarecords);
-#endif
+              "You can fix this problem with the header editor, check the manual for details.",
+              edfhdr->datarecords);
+      #endif
       free(edf_hdr);
       free(edfhdr);
       return(NULL);
     }
   }
 
-/********************* DATARECORD DURATION *************************************/
+  /********************* DATARECORD DURATION *************************************/
 
   strncpy(scratchpad, edf_hdr + 244, 8);
   scratchpad[8] = 0;
@@ -566,7 +566,7 @@ struct edfhdrblock * EDFfileCheck::check_edf_file(FILE *inputfile, char *txt_str
     if((scratchpad[i]<32)||(scratchpad[i]>126))
     {
       sprintf(txt_string, "Error, %ith character of recordduration field is not a valid 7-bit ASCII character.",
-      i + 1);
+              i + 1);
       free(edf_hdr);
       free(edfhdr);
       return(NULL);
@@ -596,7 +596,7 @@ struct edfhdrblock * EDFfileCheck::check_edf_file(FILE *inputfile, char *txt_str
 
   free(edf_hdr);
 
-/********************* START WITH THE SIGNALS IN THE HEADER *********************/
+  /********************* START WITH THE SIGNALS IN THE HEADER *********************/
 
   edf_hdr = (char *)calloc(1, (edfhdr->edfsignals + 1) * 256);
   if(edf_hdr==NULL)
@@ -624,7 +624,7 @@ struct edfhdrblock * EDFfileCheck::check_edf_file(FILE *inputfile, char *txt_str
     return(NULL);
   }
 
-/**************************** LABELS *************************************/
+  /**************************** LABELS *************************************/
 
   edfhdr->nr_annot_chns = 0;
   for(i=0; i<edfhdr->edfsignals; i++)
@@ -635,9 +635,9 @@ struct edfhdrblock * EDFfileCheck::check_edf_file(FILE *inputfile, char *txt_str
       if((scratchpad[j]<32)||(scratchpad[j]>126))
       {
         sprintf(txt_string, "Error, %ith character of label field of signal %i is not a valid 7-bit ASCII character.\n"
-                            "Use the header editor to fix your file. Look at the manual for the details.",
-        j + 1,
-        i + 1);
+                "Use the header editor to fix your file. Look at the manual for the details.",
+                j + 1,
+                i + 1);
         free(edf_hdr);
         free(edfhdr->edfparam);
         free(edfhdr);
@@ -693,7 +693,7 @@ struct edfhdrblock * EDFfileCheck::check_edf_file(FILE *inputfile, char *txt_str
     }
   }
 
-/**************************** TRANSDUCER TYPES *************************************/
+  /**************************** TRANSDUCER TYPES *************************************/
 
   for(i=0; i<edfhdr->edfsignals; i++)
   {
@@ -703,9 +703,9 @@ struct edfhdrblock * EDFfileCheck::check_edf_file(FILE *inputfile, char *txt_str
       if((scratchpad[j]<32)||(scratchpad[j]>126))
       {
         sprintf(txt_string, "Error, %ith character of transducer type field of signal %i is not a valid 7-bit ASCII character.\n"
-                            "Use the header editor to fix your file. Look at the manual for the details.",
-        j + 1,
-        i + 1);
+                "Use the header editor to fix your file. Look at the manual for the details.",
+                j + 1,
+                i + 1);
         free(edf_hdr);
         free(edfhdr->edfparam);
         free(edfhdr);
@@ -724,7 +724,7 @@ struct edfhdrblock * EDFfileCheck::check_edf_file(FILE *inputfile, char *txt_str
           if(edfhdr->edfparam[i].transducer[j]!=' ')
           {
             sprintf(txt_string, "Error, transducer type field of EDF annotationchannel must be empty.\n"
-                                "Use the header editor to fix your file. Look at the manual for the details.");
+                    "Use the header editor to fix your file. Look at the manual for the details.");
             free(edf_hdr);
             free(edfhdr->edfparam);
             free(edfhdr);
@@ -742,7 +742,7 @@ struct edfhdrblock * EDFfileCheck::check_edf_file(FILE *inputfile, char *txt_str
           if(edfhdr->edfparam[i].transducer[j]!=' ')
           {
             sprintf(txt_string, "Error, transducer type field of BDF annotationchannel must be empty."
-                                "Use the header editor to fix your file. Look at the manual for the details.");
+                    "Use the header editor to fix your file. Look at the manual for the details.");
             free(edf_hdr);
             free(edfhdr->edfparam);
             free(edfhdr);
@@ -753,7 +753,7 @@ struct edfhdrblock * EDFfileCheck::check_edf_file(FILE *inputfile, char *txt_str
     }
   }
 
-/**************************** PHYSICAL DIMENSIONS *************************************/
+  /**************************** PHYSICAL DIMENSIONS *************************************/
 
   for(i=0; i<edfhdr->edfsignals; i++)
   {
@@ -777,7 +777,7 @@ struct edfhdrblock * EDFfileCheck::check_edf_file(FILE *inputfile, char *txt_str
     edfhdr->edfparam[i].physdimension[8] = 0;
   }
 
-/**************************** PHYSICAL MINIMUMS *************************************/
+  /**************************** PHYSICAL MINIMUMS *************************************/
 
   for(i=0; i<edfhdr->edfsignals; i++)
   {
@@ -789,8 +789,8 @@ struct edfhdrblock * EDFfileCheck::check_edf_file(FILE *inputfile, char *txt_str
       if((scratchpad[j]<32)||(scratchpad[j]>126))
       {
         sprintf(txt_string, "Error, %ith character of physical minimum field of signal %i is not a valid 7-bit ASCII character.",
-        j + 1,
-        i + 1);
+                j + 1,
+                i + 1);
         free(edf_hdr);
         free(edfhdr->edfparam);
         free(edfhdr);
@@ -801,8 +801,8 @@ struct edfhdrblock * EDFfileCheck::check_edf_file(FILE *inputfile, char *txt_str
     if(is_number(scratchpad))
     {
       sprintf(txt_string, "Error, physical minimum field of signal %i is invalid: \"%s\".",
-             i + 1,
-             scratchpad);
+              i + 1,
+              scratchpad);
       free(edf_hdr);
       free(edfhdr->edfparam);
       free(edfhdr);
@@ -812,7 +812,7 @@ struct edfhdrblock * EDFfileCheck::check_edf_file(FILE *inputfile, char *txt_str
     edfhdr->edfparam[i].phys_min = atof(scratchpad);
   }
 
-/**************************** PHYSICAL MAXIMUMS *************************************/
+  /**************************** PHYSICAL MAXIMUMS *************************************/
 
   for(i=0; i<edfhdr->edfsignals; i++)
   {
@@ -824,8 +824,8 @@ struct edfhdrblock * EDFfileCheck::check_edf_file(FILE *inputfile, char *txt_str
       if((scratchpad[j]<32)||(scratchpad[j]>126))
       {
         sprintf(txt_string, "Error, %ith character of physical maximum field of signal %i is not a valid 7-bit ASCII character.",
-        j + 1,
-        i + 1);
+                j + 1,
+                i + 1);
         free(edf_hdr);
         free(edfhdr->edfparam);
         free(edfhdr);
@@ -836,8 +836,8 @@ struct edfhdrblock * EDFfileCheck::check_edf_file(FILE *inputfile, char *txt_str
     if(is_number(scratchpad))
     {
       sprintf(txt_string, "Error, physical maximum field of signal %i is invalid: \"%s\".",
-             i + 1,
-             scratchpad);
+              i + 1,
+              scratchpad);
       free(edf_hdr);
       free(edfhdr->edfparam);
       free(edfhdr);
@@ -848,7 +848,7 @@ struct edfhdrblock * EDFfileCheck::check_edf_file(FILE *inputfile, char *txt_str
     if(edfhdr->edfparam[i].phys_max==edfhdr->edfparam[i].phys_min)
     {
       sprintf(txt_string, "Error, physical maximum of signal %i is equal to physical minimum",
-             i + 1);
+              i + 1);
       free(edf_hdr);
       free(edfhdr->edfparam);
       free(edfhdr);
@@ -856,7 +856,7 @@ struct edfhdrblock * EDFfileCheck::check_edf_file(FILE *inputfile, char *txt_str
     }
   }
 
-/**************************** DIGITAL MINIMUMS *************************************/
+  /**************************** DIGITAL MINIMUMS *************************************/
 
   for(i=0; i<edfhdr->edfsignals; i++)
   {
@@ -868,8 +868,8 @@ struct edfhdrblock * EDFfileCheck::check_edf_file(FILE *inputfile, char *txt_str
       if((scratchpad[j]<32)||(scratchpad[j]>126))
       {
         sprintf(txt_string, "Error, %ith character of digital minimum field of signal %i is not a valid 7-bit ASCII character.",
-        j + 1,
-        i + 1);
+                j + 1,
+                i + 1);
         free(edf_hdr);
         free(edfhdr->edfparam);
         free(edfhdr);
@@ -880,9 +880,9 @@ struct edfhdrblock * EDFfileCheck::check_edf_file(FILE *inputfile, char *txt_str
     if(is_integer_number(scratchpad))
     {
       sprintf(txt_string, "Error, digital minimum field of signal %i is invalid: \"%s\".\n"
-                          "Use the header editor to fix your file. Look at the manual for the details.",
-             i + 1,
-             scratchpad);
+              "Use the header editor to fix your file. Look at the manual for the details.",
+              i + 1,
+              scratchpad);
       free(edf_hdr);
       free(edfhdr->edfparam);
       free(edfhdr);
@@ -897,10 +897,10 @@ struct edfhdrblock * EDFfileCheck::check_edf_file(FILE *inputfile, char *txt_str
         if(n!=-32768)
         {
           sprintf(txt_string, "Error, digital minimum of signal %i is wrong: %i,"
-                              "\ndigital minimum of an EDF Annotations signal should be -32768\n"
-                              "Use the header editor to fix your file. Look at the manual for the details.",
-                i + 1,
-                n);
+                  "\ndigital minimum of an EDF Annotations signal should be -32768\n"
+                  "Use the header editor to fix your file. Look at the manual for the details.",
+                  i + 1,
+                  n);
           free(edf_hdr);
           free(edfhdr->edfparam);
           free(edfhdr);
@@ -915,10 +915,10 @@ struct edfhdrblock * EDFfileCheck::check_edf_file(FILE *inputfile, char *txt_str
         if(n!=-8388608)
         {
           sprintf(txt_string, "Error, digital minimum of signal %i is wrong: %i,"
-                              "\ndigital minimum of a BDF Annotations signal should be -8388608\n"
-                              "Use the header editor to fix your file. Look at the manual for the details.",
-                i + 1,
-                n);
+                  "\ndigital minimum of a BDF Annotations signal should be -8388608\n"
+                  "Use the header editor to fix your file. Look at the manual for the details.",
+                  i + 1,
+                  n);
           free(edf_hdr);
           free(edfhdr->edfparam);
           free(edfhdr);
@@ -931,8 +931,8 @@ struct edfhdrblock * EDFfileCheck::check_edf_file(FILE *inputfile, char *txt_str
       if((n>32767)||(n<-32768))
       {
         sprintf(txt_string, "Error, digital minimum of signal %i is out of range: %i,\nshould be in the range -32768 to 32767",
-              i + 1,
-              n);
+                i + 1,
+                n);
         free(edf_hdr);
         free(edfhdr->edfparam);
         free(edfhdr);
@@ -944,8 +944,8 @@ struct edfhdrblock * EDFfileCheck::check_edf_file(FILE *inputfile, char *txt_str
       if((n>8388607)||(n<-8388608))
       {
         sprintf(txt_string, "Error, digital minimum of signal %i is out of range: %i,\nshould be in the range -8388608 to 8388607",
-              i + 1,
-              n);
+                i + 1,
+                n);
         free(edf_hdr);
         free(edfhdr->edfparam);
         free(edfhdr);
@@ -955,7 +955,7 @@ struct edfhdrblock * EDFfileCheck::check_edf_file(FILE *inputfile, char *txt_str
     edfhdr->edfparam[i].dig_min = n;
   }
 
-/**************************** DIGITAL MAXIMUMS *************************************/
+  /**************************** DIGITAL MAXIMUMS *************************************/
 
   for(i=0; i<edfhdr->edfsignals; i++)
   {
@@ -967,8 +967,8 @@ struct edfhdrblock * EDFfileCheck::check_edf_file(FILE *inputfile, char *txt_str
       if((scratchpad[j]<32)||(scratchpad[j]>126))
       {
         sprintf(txt_string, "Error, %ith character of digital maximum field of signal %i is not a valid 7-bit ASCII character.",
-        j + 1,
-        i + 1);
+                j + 1,
+                i + 1);
         free(edf_hdr);
         free(edfhdr->edfparam);
         free(edfhdr);
@@ -979,9 +979,9 @@ struct edfhdrblock * EDFfileCheck::check_edf_file(FILE *inputfile, char *txt_str
     if(is_integer_number(scratchpad))
     {
       sprintf(txt_string, "Error, digital maximum field of signal %i is invalid: \"%s\".\n"
-                          "Use the header editor to fix your file. Look at the manual for the details.",
-             i + 1,
-             scratchpad);
+              "Use the header editor to fix your file. Look at the manual for the details.",
+              i + 1,
+              scratchpad);
       free(edf_hdr);
       free(edfhdr->edfparam);
       free(edfhdr);
@@ -996,10 +996,10 @@ struct edfhdrblock * EDFfileCheck::check_edf_file(FILE *inputfile, char *txt_str
         if(n!=32767)
         {
           sprintf(txt_string, "Error, digital maximum of signal %i is wrong: %i,"
-                              "\ndigital maximum of an EDF Annotations signal should be 32767\n"
-                              "Use the header editor to fix your file. Look at the manual for the details.",
-                i + 1,
-                n);
+                  "\ndigital maximum of an EDF Annotations signal should be 32767\n"
+                  "Use the header editor to fix your file. Look at the manual for the details.",
+                  i + 1,
+                  n);
           free(edf_hdr);
           free(edfhdr->edfparam);
           free(edfhdr);
@@ -1014,10 +1014,10 @@ struct edfhdrblock * EDFfileCheck::check_edf_file(FILE *inputfile, char *txt_str
         if(n!=8388607)
         {
           sprintf(txt_string, "Error, digital maximum of signal %i is wrong: %i,"
-                              "\ndigital maximum of a BDF Annotations signal should be 8388607\n"
-                              "Use the header editor to fix your file. Look at the manual for the details.",
-                i + 1,
-                n);
+                  "\ndigital maximum of a BDF Annotations signal should be 8388607\n"
+                  "Use the header editor to fix your file. Look at the manual for the details.",
+                  i + 1,
+                  n);
           free(edf_hdr);
           free(edfhdr->edfparam);
           free(edfhdr);
@@ -1030,8 +1030,8 @@ struct edfhdrblock * EDFfileCheck::check_edf_file(FILE *inputfile, char *txt_str
       if((n>32767)||(n<-32768))
       {
         sprintf(txt_string, "Error, digital maximum of signal %i is out of range: %i,\nshould be in the range -32768 to 32767",
-              i + 1,
-              n);
+                i + 1,
+                n);
         free(edf_hdr);
         free(edfhdr->edfparam);
         free(edfhdr);
@@ -1043,8 +1043,8 @@ struct edfhdrblock * EDFfileCheck::check_edf_file(FILE *inputfile, char *txt_str
       if((n>8388607)||(n<-8388608))
       {
         sprintf(txt_string, "Error, digital maximum of signal %i is out of range: %i,\nshould be in the range -8388608 to 8388607",
-              i + 1,
-              n);
+                i + 1,
+                n);
         free(edf_hdr);
         free(edfhdr->edfparam);
         free(edfhdr);
@@ -1055,7 +1055,7 @@ struct edfhdrblock * EDFfileCheck::check_edf_file(FILE *inputfile, char *txt_str
     if(edfhdr->edfparam[i].dig_max<(edfhdr->edfparam[i].dig_min + 1))
     {
       sprintf(txt_string, "Error, digital maximum of signal %i is less than or equal to digital minimum",
-             i + 1);
+              i + 1);
       free(edf_hdr);
       free(edfhdr->edfparam);
       free(edfhdr);
@@ -1063,7 +1063,7 @@ struct edfhdrblock * EDFfileCheck::check_edf_file(FILE *inputfile, char *txt_str
     }
   }
 
-/**************************** PREFILTER FIELDS *************************************/
+  /**************************** PREFILTER FIELDS *************************************/
 
   for(i=0; i<edfhdr->edfsignals; i++)
   {
@@ -1073,9 +1073,9 @@ struct edfhdrblock * EDFfileCheck::check_edf_file(FILE *inputfile, char *txt_str
       if((scratchpad[j]<32)||(scratchpad[j]>126))
       {
         sprintf(txt_string, "Error, %ith character of prefilter field of signal %i is not a valid 7-bit ASCII character.\n"
-                            "Use the header editor to fix your file. Look at the manual for the details.",
-        j + 1,
-        i + 1);
+                "Use the header editor to fix your file. Look at the manual for the details.",
+                j + 1,
+                i + 1);
         free(edf_hdr);
         free(edfhdr->edfparam);
         free(edfhdr);
@@ -1094,7 +1094,7 @@ struct edfhdrblock * EDFfileCheck::check_edf_file(FILE *inputfile, char *txt_str
           if(edfhdr->edfparam[i].prefilter[j]!=' ')
           {
             sprintf(txt_string, "Error, prefilter field of EDF annotationchannel must be empty.\n"
-                                "Use the header editor to fix your file. Look at the manual for the details.");
+                    "Use the header editor to fix your file. Look at the manual for the details.");
             free(edf_hdr);
             free(edfhdr->edfparam);
             free(edfhdr);
@@ -1112,7 +1112,7 @@ struct edfhdrblock * EDFfileCheck::check_edf_file(FILE *inputfile, char *txt_str
           if(edfhdr->edfparam[i].prefilter[j]!=' ')
           {
             sprintf(txt_string, "Error, prefilter field of BDF annotationchannel must be empty.\n"
-                                "Use the header editor to fix your file. Look at the manual for the details.");
+                    "Use the header editor to fix your file. Look at the manual for the details.");
             free(edf_hdr);
             free(edfhdr->edfparam);
             free(edfhdr);
@@ -1123,7 +1123,7 @@ struct edfhdrblock * EDFfileCheck::check_edf_file(FILE *inputfile, char *txt_str
     }
   }
 
-/*********************** NR OF SAMPLES IN EACH DATARECORD ********************/
+  /*********************** NR OF SAMPLES IN EACH DATARECORD ********************/
 
   edfhdr->recordsize = 0;
 
@@ -1137,8 +1137,8 @@ struct edfhdrblock * EDFfileCheck::check_edf_file(FILE *inputfile, char *txt_str
       if((scratchpad[j]<32)||(scratchpad[j]>126))
       {
         sprintf(txt_string, "Error, %ith character of number of samples field of signal %i is not a valid 7-bit ASCII character.",
-        j + 1,
-        i + 1);
+                j + 1,
+                i + 1);
         free(edf_hdr);
         free(edfhdr->edfparam);
         free(edfhdr);
@@ -1149,8 +1149,8 @@ struct edfhdrblock * EDFfileCheck::check_edf_file(FILE *inputfile, char *txt_str
     if(is_integer_number(scratchpad))
     {
       sprintf(txt_string, "Error, number of samples in datarecord field of signal %i is invalid: \"%s\".",
-             i + 1,
-             scratchpad);
+              i + 1,
+              scratchpad);
       free(edf_hdr);
       free(edfhdr->edfparam);
       free(edfhdr);
@@ -1161,8 +1161,8 @@ struct edfhdrblock * EDFfileCheck::check_edf_file(FILE *inputfile, char *txt_str
     if(n<1)
     {
       sprintf(txt_string, "Error, number of samples in datarecord of signal %i is out of range: %i,\nshould be >0",
-             i + 1,
-             n);
+              i + 1,
+              n);
       free(edf_hdr);
       free(edfhdr->edfparam);
       free(edfhdr);
@@ -1179,7 +1179,7 @@ struct edfhdrblock * EDFfileCheck::check_edf_file(FILE *inputfile, char *txt_str
     if(edfhdr->recordsize > 15728640)
     {
       sprintf(txt_string, "Error, the datarecordsize is %i bytes. The datarecordsize should not exceed 15 MB.",
-                          edfhdr->recordsize);
+              edfhdr->recordsize);
       free(edf_hdr);
       free(edfhdr->edfparam);
       free(edfhdr);
@@ -1193,7 +1193,7 @@ struct edfhdrblock * EDFfileCheck::check_edf_file(FILE *inputfile, char *txt_str
     if(edfhdr->recordsize > 10485760)
     {
       sprintf(txt_string, "Error, the datarecordsize is %i bytes. The datarecordsize should not exceed 10 MB.",
-                          edfhdr->recordsize);
+              edfhdr->recordsize);
       free(edf_hdr);
       free(edfhdr->edfparam);
       free(edfhdr);
@@ -1201,7 +1201,7 @@ struct edfhdrblock * EDFfileCheck::check_edf_file(FILE *inputfile, char *txt_str
     }
   }
 
-/**************************** RESERVED FIELDS *************************************/
+  /**************************** RESERVED FIELDS *************************************/
 
   for(i=0; i<edfhdr->edfsignals; i++)
   {
@@ -1211,8 +1211,8 @@ struct edfhdrblock * EDFfileCheck::check_edf_file(FILE *inputfile, char *txt_str
       if((scratchpad[j]<32)||(scratchpad[j]>126))
       {
         sprintf(txt_string, "Error, %ith character of reserved field of signal %i is not a valid 7-bit ASCII character.",
-        j + 1,
-        i + 1);
+                j + 1,
+                i + 1);
         free(edf_hdr);
         free(edfhdr->edfparam);
         free(edfhdr);
@@ -1223,7 +1223,7 @@ struct edfhdrblock * EDFfileCheck::check_edf_file(FILE *inputfile, char *txt_str
     edfhdr->edfparam[i].reserved[32] = 0;
   }
 
-/********************* EDF+ PATIENTNAME *********************************************/
+  /********************* EDF+ PATIENTNAME *********************************************/
 
   if(edfhdr->edfplus || edfhdr->bdfplus)
   {
@@ -1290,14 +1290,14 @@ struct edfhdrblock * EDFfileCheck::check_edf_file(FILE *inputfile, char *txt_str
       if(edfhdr->edfplus)
       {
         sprintf(txt_string, "Error, file is marked as EDF+ but local patient identification field does not\ncomply to the EDF+ standard:\n"
-              "\"%.80s\"",
-              edf_hdr+8);
+                "\"%.80s\"",
+                edf_hdr+8);
       }
       if(edfhdr->bdfplus)
       {
         sprintf(txt_string, "Error, file is marked as BDF+ but local patient identification field does not\ncomply to the BDF+ standard:\n"
-              "\"%.80s\"",
-              edf_hdr+8);
+                "\"%.80s\"",
+                edf_hdr+8);
       }
       free(edf_hdr);
       free(edfhdr->edfparam);
@@ -1338,7 +1338,7 @@ struct edfhdrblock * EDFfileCheck::check_edf_file(FILE *inputfile, char *txt_str
     {
       edfhdr->plus_gender[0] = 0;
     }
-    for(i=0; i<(80-p);i++)
+    for(i=0; i<(80-p); i++)
     {
       if(edfhdr->patient[i+p]==' ')
       {
@@ -1371,7 +1371,7 @@ struct edfhdrblock * EDFfileCheck::check_edf_file(FILE *inputfile, char *txt_str
       p += i + 1;
     }
 
-    for(i=0; i<(80-p);i++)
+    for(i=0; i<(80-p); i++)
     {
       if(edfhdr->patient[i+p]==' ')
       {
@@ -1383,7 +1383,7 @@ struct edfhdrblock * EDFfileCheck::check_edf_file(FILE *inputfile, char *txt_str
     edfhdr->plus_patient_name[i] = 0;
     p += i + 1;
 
-    for(i=0; i<(80-p);i++)
+    for(i=0; i<(80-p); i++)
     {
       edfhdr->plus_patient_additional[i] = edfhdr->patient[i+p];
     }
@@ -1391,7 +1391,7 @@ struct edfhdrblock * EDFfileCheck::check_edf_file(FILE *inputfile, char *txt_str
     p += i + 1;
   }
 
-/********************* EDF+ RECORDINGFIELD *********************************************/
+  /********************* EDF+ RECORDINGFIELD *********************************************/
 
   if(edfhdr->edfplus || edfhdr->bdfplus)
   {
@@ -1424,18 +1424,18 @@ struct edfhdrblock * EDFfileCheck::check_edf_file(FILE *inputfile, char *txt_str
       if((atoi(scratchpad2)<1)||(atoi(scratchpad2)>31))  error = 1;
       r = 0;
       if(!strcmp(scratchpad2 + 3, "JAN"))  r = 1;
-        else if(!strcmp(scratchpad2 + 3, "FEB"))  r = 2;
-          else if(!strcmp(scratchpad2 + 3, "MAR"))  r = 3;
-            else if(!strcmp(scratchpad2 + 3, "APR"))  r = 4;
-              else if(!strcmp(scratchpad2 + 3, "MAY"))  r = 5;
-                else if(!strcmp(scratchpad2 + 3, "JUN"))  r = 6;
-                  else if(!strcmp(scratchpad2 + 3, "JUL"))  r = 7;
-                    else if(!strcmp(scratchpad2 + 3, "AUG"))  r = 8;
-                      else if(!strcmp(scratchpad2 + 3, "SEP"))  r = 9;
-                        else if(!strcmp(scratchpad2 + 3, "OCT"))  r = 10;
-                          else if(!strcmp(scratchpad2 + 3, "NOV"))  r = 11;
-                            else if(!strcmp(scratchpad2 + 3, "DEC"))  r = 12;
-                              else error = 1;
+      else if(!strcmp(scratchpad2 + 3, "FEB"))  r = 2;
+      else if(!strcmp(scratchpad2 + 3, "MAR"))  r = 3;
+      else if(!strcmp(scratchpad2 + 3, "APR"))  r = 4;
+      else if(!strcmp(scratchpad2 + 3, "MAY"))  r = 5;
+      else if(!strcmp(scratchpad2 + 3, "JUN"))  r = 6;
+      else if(!strcmp(scratchpad2 + 3, "JUL"))  r = 7;
+      else if(!strcmp(scratchpad2 + 3, "AUG"))  r = 8;
+      else if(!strcmp(scratchpad2 + 3, "SEP"))  r = 9;
+      else if(!strcmp(scratchpad2 + 3, "OCT"))  r = 10;
+      else if(!strcmp(scratchpad2 + 3, "NOV"))  r = 11;
+      else if(!strcmp(scratchpad2 + 3, "DEC"))  r = 12;
+      else error = 1;
     }
 
     n = 0;
@@ -1463,14 +1463,14 @@ struct edfhdrblock * EDFfileCheck::check_edf_file(FILE *inputfile, char *txt_str
       if(edfhdr->edfplus)
       {
         sprintf(txt_string, "Error, file is marked as EDF+ but recording field does not comply to the\nEDF+ standard:\n"
-              "\"%.80s\"",
-              edf_hdr+88);
+                "\"%.80s\"",
+                edf_hdr+88);
       }
       if(edfhdr->bdfplus)
       {
         sprintf(txt_string, "Error, file is marked as BDF+ but recording field does not comply to the\nBDF+ standard:\n"
-              "\"%.80s\"",
-              edf_hdr+88);
+                "\"%.80s\"",
+                edf_hdr+88);
       }
       free(edf_hdr);
       free(edfhdr->edfparam);
@@ -1494,16 +1494,16 @@ struct edfhdrblock * EDFfileCheck::check_edf_file(FILE *inputfile, char *txt_str
         if(edfhdr->edfplus)
         {
           sprintf(txt_string, "Error, file is marked as EDF+ but startdate field does not match with startdate in\nrecordfield:\n"
-                "\"%.8s\" <-> \"%.11s\".",
-                edf_hdr+168,
-                edf_hdr+98);
+                  "\"%.8s\" <-> \"%.11s\".",
+                  edf_hdr+168,
+                  edf_hdr+98);
         }
         if(edfhdr->bdfplus)
         {
           sprintf(txt_string, "Error, file is marked as BDF+ but startdate field does not match with startdate in\nrecordfield:\n"
-                "\"%.8s\" <-> \"%.11s\".",
-                edf_hdr+168,
-                edf_hdr+98);
+                  "\"%.8s\" <-> \"%.11s\".",
+                  edf_hdr+168,
+                  edf_hdr+98);
         }
         free(edf_hdr);
         free(edfhdr->edfparam);
@@ -1602,7 +1602,7 @@ struct edfhdrblock * EDFfileCheck::check_edf_file(FILE *inputfile, char *txt_str
       p += i + 1;
     }
 
-    for(i=0; i<(80-p);i++)
+    for(i=0; i<(80-p); i++)
     {
       edfhdr->plus_recording_additional[i] = edfhdr->recording[i+p];
     }
@@ -1610,7 +1610,7 @@ struct edfhdrblock * EDFfileCheck::check_edf_file(FILE *inputfile, char *txt_str
     p += i + 1;
   }
 
-/********************* FILESIZE *********************************************/
+  /********************* FILESIZE *********************************************/
 
   edfhdr->hdrsize = edfhdr->edfsignals * 256 + 256;
 
@@ -1635,17 +1635,17 @@ struct edfhdrblock * EDFfileCheck::check_edf_file(FILE *inputfile, char *txt_str
 
     if(l_tmp != l_tmp2)
     {
-#ifdef Q_OS_WIN32
+      #ifdef Q_OS_WIN32
       __mingw_sprintf(txt_string, "Error, filesize does not match with the calculated filesize based on the parameters\n"
-                          "in the header. Filesize is %lli and filesize according to header is %lli.\n"
-                          "You can fix this problem with the header editor, check the manual for details.",
-                          l_tmp2, l_tmp);
-#else
+                      "in the header. Filesize is %lli and filesize according to header is %lli.\n"
+                      "You can fix this problem with the header editor, check the manual for details.",
+                      l_tmp2, l_tmp);
+      #else
       sprintf(txt_string, "Error, filesize does not match with the calculated filesize based on the parameters\n"
-                          "in the header. Filesize is %lli and filesize according to header is %lli.\n"
-                          "You can fix this problem with the header editor, check the manual for details.",
-                          l_tmp2, l_tmp);
-#endif
+              "in the header. Filesize is %lli and filesize according to header is %lli.\n"
+              "You can fix this problem with the header editor, check the manual for details.",
+              l_tmp2, l_tmp);
+      #endif
       free(edf_hdr);
       free(edfhdr->edfparam);
       free(edfhdr);
@@ -1862,16 +1862,16 @@ long long EDFfileCheck::get_long_duration(char *str)
 
     for(i=dotposition-1; i>=0; i--)
     {
-        value += ((long long)(str[i] - 48)) * radix;
-        radix *= 10;
+      value += ((long long)(str[i] - 48)) * radix;
+      radix *= 10;
     }
 
     radix = TIME_DIMENSION / 10;
 
     for(i=dotposition+1; i<len; i++)
     {
-        value += ((long long)(str[i] - 48)) * radix;
-        radix /= 10;
+      value += ((long long)(str[i] - 48)) * radix;
+      radix /= 10;
     }
   }
   else
@@ -1880,8 +1880,8 @@ long long EDFfileCheck::get_long_duration(char *str)
 
     for(i=len-1; i>=0; i--)
     {
-        value += ((long long)(str[i] - 48)) * radix;
-        radix *= 10;
+      value += ((long long)(str[i] - 48)) * radix;
+      radix *= 10;
     }
   }
 

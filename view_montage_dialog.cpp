@@ -347,40 +347,57 @@ void UI_ViewMontagewindow::SelectButtonClicked()
 
     switch(color)
     {
-      case Qt::white       : strcat(composition_txt, "white");
-                             break;
-      case Qt::black       : strcat(composition_txt, "black");
-                             break;
-      case Qt::red         : strcat(composition_txt, "red");
-                             break;
-      case Qt::darkRed     : strcat(composition_txt, "dark red");
-                             break;
-      case Qt::green       : strcat(composition_txt, "green");
-                             break;
-      case Qt::darkGreen   : strcat(composition_txt, "dark green");
-                             break;
-      case Qt::blue        : strcat(composition_txt, "blue");
-                             break;
-      case Qt::darkBlue    : strcat(composition_txt, "dark blue");
-                             break;
-      case Qt::cyan        : strcat(composition_txt, "cyan");
-                             break;
-      case Qt::darkCyan    : strcat(composition_txt, "dark cyan");
-                             break;
-      case Qt::magenta     : strcat(composition_txt, "magenta");
-                             break;
-      case Qt::darkMagenta : strcat(composition_txt, "dark magenta");
-                             break;
-      case Qt::yellow      : strcat(composition_txt, "yellow");
-                             break;
-      case Qt::darkYellow  : strcat(composition_txt, "dark yellow");
-                             break;
-      case Qt::gray        : strcat(composition_txt, "gray");
-                             break;
-      case Qt::darkGray    : strcat(composition_txt, "dark gray");
-                             break;
-      case Qt::lightGray   : strcat(composition_txt, "light gray");
-                             break;
+    case Qt::white       :
+      strcat(composition_txt, "white");
+      break;
+    case Qt::black       :
+      strcat(composition_txt, "black");
+      break;
+    case Qt::red         :
+      strcat(composition_txt, "red");
+      break;
+    case Qt::darkRed     :
+      strcat(composition_txt, "dark red");
+      break;
+    case Qt::green       :
+      strcat(composition_txt, "green");
+      break;
+    case Qt::darkGreen   :
+      strcat(composition_txt, "dark green");
+      break;
+    case Qt::blue        :
+      strcat(composition_txt, "blue");
+      break;
+    case Qt::darkBlue    :
+      strcat(composition_txt, "dark blue");
+      break;
+    case Qt::cyan        :
+      strcat(composition_txt, "cyan");
+      break;
+    case Qt::darkCyan    :
+      strcat(composition_txt, "dark cyan");
+      break;
+    case Qt::magenta     :
+      strcat(composition_txt, "magenta");
+      break;
+    case Qt::darkMagenta :
+      strcat(composition_txt, "dark magenta");
+      break;
+    case Qt::yellow      :
+      strcat(composition_txt, "yellow");
+      break;
+    case Qt::darkYellow  :
+      strcat(composition_txt, "dark yellow");
+      break;
+    case Qt::gray        :
+      strcat(composition_txt, "gray");
+      break;
+    case Qt::darkGray    :
+      strcat(composition_txt, "dark gray");
+      break;
+    case Qt::lightGray   :
+      strcat(composition_txt, "light gray");
+      break;
     }
 
     signalItem->appendRow(new QStandardItem(composition_txt));

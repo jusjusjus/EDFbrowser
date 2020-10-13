@@ -37,8 +37,8 @@
 
 
 UI_CancelSavewindow::UI_CancelSavewindow(const char *title, const char *str,
-                                         const char *button1txt, const char *button2txt,
-                                         int *button_nr)
+    const char *button1txt, const char *button2txt,
+    int *button_nr)
 {
   int i,
       len,

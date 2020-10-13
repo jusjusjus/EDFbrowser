@@ -71,34 +71,34 @@ public:
 
 private:
 
-QDialog       *myobjectDialog;
+  QDialog       *myobjectDialog;
 
-QPushButton   *pushButton1,
-              *pushButton2;
+  QPushButton   *pushButton1,
+                *pushButton2;
 
-QLabel        *PatientnameLabel,
-              *RecordingLabel,
-              *DatetimeLabel,
-              *PhysDimLabel,
-              *PhysMaxLabel;
+  QLabel        *PatientnameLabel,
+                *RecordingLabel,
+                *DatetimeLabel,
+                *PhysDimLabel,
+                *PhysMaxLabel;
 
-QLineEdit     *PatientnameLineEdit,
-              *RecordingLineEdit,
-              *PhysDimLineEdit;
+  QLineEdit     *PatientnameLineEdit,
+                *RecordingLineEdit,
+                *PhysDimLineEdit;
 
-QDateTimeEdit *StartDatetimeedit;
+  QDateTimeEdit *StartDatetimeedit;
 
-QDoubleSpinBox *PhysMaxSpinBox;
+  QDoubleSpinBox *PhysMaxSpinBox;
 
-char *recent_opendir,
-     *recent_savedir;
+  char *recent_opendir,
+       *recent_savedir;
 
-void enable_widgets(bool);
+  void enable_widgets(bool);
 
 
 private slots:
 
-void SelectFileButton();
+  void SelectFileButton();
 
 };
 

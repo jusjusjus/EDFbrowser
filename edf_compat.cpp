@@ -37,13 +37,13 @@
 
 #if defined(__APPLE__) || defined(__MACH__) || defined(__APPLE_CC__)
 
-#define fopeno fopen
+  #define fopeno fopen
 
 #else
 
-#define fseeko fseeko64
-#define ftello ftello64
-#define fopeno fopen64
+  #define fseeko fseeko64
+  #define ftello ftello64
+  #define fopeno fopen64
 
 #endif
 
@@ -98,27 +98,27 @@ UI_EDFCompatwindow::UI_EDFCompatwindow(QWidget *w_parent)
 void UI_EDFCompatwindow::CheckButtonClicked()
 {
   int i, j, k, p, r=0, n,
-      len,
-      edfsignals,
-      datarecords,
-      recordsize,
-      edfplus,
-      discontinuous,
-      bdf,
-      bdfplus,
-      *annot_ch,
-      nr_annot_chns,
-      max,
-      onset,
-      duration,
-      duration_start,
-      zero,
-      max_tal_ln,
-      error,
-      temp,
-      samplesize,
-      annots_in_tal,
-      progress_steps;
+                  len,
+                  edfsignals,
+                  datarecords,
+                  recordsize,
+                  edfplus,
+                  discontinuous,
+                  bdf,
+                  bdfplus,
+                  *annot_ch,
+                  nr_annot_chns,
+                  max,
+                  onset,
+                  duration,
+                  duration_start,
+                  zero,
+                  max_tal_ln,
+                  error,
+                  temp,
+                  samplesize,
+                  annots_in_tal,
+                  progress_steps;
 
   char *scratchpad,
        *cnv_buf,
@@ -128,13 +128,14 @@ void UI_EDFCompatwindow::CheckButtonClicked()
          elapsedtime,
          time_tmp=0.0;
 
-  union {
-          unsigned int one;
-          signed int one_signed;
-          unsigned short two[2];
-          signed short two_signed[2];
-          unsigned char four[4];
-        } var;
+  union
+  {
+    unsigned int one;
+    signed int one_signed;
+    unsigned short two[2];
+    signed short two_signed[2];
+    unsigned char four[4];
+  } var;
 
   FILE *inputfile;
 
@@ -218,7 +219,7 @@ void UI_EDFCompatwindow::CheckButtonClicked()
     return;
   }
 
-/***************** check the maximum and minimum of samples of all signals ******************************/
+  /***************** check the maximum and minimum of samples of all signals ******************************/
 
   QProgressDialog progress("Checking...", "Abort", 0, datarecords, EDFCompatDialog);
   progress.setWindowModality(Qt::WindowModal);
@@ -288,14 +289,14 @@ void UI_EDFCompatwindow::CheckButtonClicked()
         if(temp > edfparam[j].dig_max)
         {
           snprintf(txt_string, 2048, "Error.\n\nIn datarecord %i -> signal %i -> sample %i is more than digital maximum.\n"
-                 "Digital maximum for this signal as written in header is %i but sample is %i.\n"
-                 "Offset from start of file: 0x%X\n",
-                 i + 1,
-                 j + 1,
-                 k + 1,
-                 edfparam[j].dig_max,
-                 temp,
-                 (i * recordsize) + edfparam[j].buf_offset + (k * samplesize) + (edfsignals * 256) + 256);
+                   "Digital maximum for this signal as written in header is %i but sample is %i.\n"
+                   "Offset from start of file: 0x%X\n",
+                   i + 1,
+                   j + 1,
+                   k + 1,
+                   edfparam[j].dig_max,
+                   temp,
+                   (i * recordsize) + edfparam[j].buf_offset + (k * samplesize) + (edfsignals * 256) + 256);
           progress.reset();
           QMessageBox messagewindow(QMessageBox::Critical, "Error", txt_string);
           messagewindow.exec();
@@ -308,14 +309,14 @@ void UI_EDFCompatwindow::CheckButtonClicked()
         if(temp < edfparam[j].dig_min)
         {
           snprintf(txt_string, 2048, "Error.\n\nIn datarecord %i -> signal %i -> sample %i is less than digital minimum.\n"
-                 "Digital minimum for this signal as written in header is %i but sample is %i.\n"
-                 "Offset from start of file: 0x%X\n",
-                 i + 1,
-                 j + 1,
-                 k + 1,
-                 edfparam[j].dig_min,
-                 temp,
-                 (i * recordsize) + edfparam[j].buf_offset + (k * samplesize) + (edfsignals * 256) + 256);
+                   "Digital minimum for this signal as written in header is %i but sample is %i.\n"
+                   "Offset from start of file: 0x%X\n",
+                   i + 1,
+                   j + 1,
+                   k + 1,
+                   edfparam[j].dig_min,
+                   temp,
+                   (i * recordsize) + edfparam[j].buf_offset + (k * samplesize) + (edfsignals * 256) + 256);
           progress.reset();
           QMessageBox messagewindow(QMessageBox::Critical, "Error", txt_string);
           messagewindow.exec();
@@ -327,7 +328,7 @@ void UI_EDFCompatwindow::CheckButtonClicked()
       }
     }
 
-/************** process annotationsignals (if any) **************/
+    /************** process annotationsignals (if any) **************/
 
     error = 0;
 
@@ -344,7 +345,7 @@ void UI_EDFCompatwindow::CheckButtonClicked()
       p = edfparam[annot_ch[r]].buf_offset;
       max = edfparam[annot_ch[r]].smp_per_record * samplesize;
 
-/************** process one annotation signal ****************/
+      /************** process one annotation signal ****************/
 
       if(cnv_buf[p + max - 1]!=0)
       {
@@ -353,7 +354,8 @@ void UI_EDFCompatwindow::CheckButtonClicked()
       }
 
       if(!r)  /* if it's the first annotation signal, then check */
-      {       /* the timekeeping annotation */
+      {
+        /* the timekeeping annotation */
         error = 1;
 
         for(k=0; k<(max-2); k++)
@@ -453,7 +455,8 @@ void UI_EDFCompatwindow::CheckButtonClicked()
           if(scratchpad[n]==21)
           {
             if(duration||duration_start||onset||annots_in_tal)
-            {               /* it's not allowed to have multiple duration fields */
+            {
+              /* it's not allowed to have multiple duration fields */
               error = 35;   /* in one TAL or to have a duration field which is   */
               goto END;     /* not immediately behind the onsetfield             */
             }
@@ -462,9 +465,9 @@ void UI_EDFCompatwindow::CheckButtonClicked()
 
           if((scratchpad[n]==20)&&onset&&(!duration_start))
           {
-           annots_in_tal++;
-           n = 0;
-           continue;
+            annots_in_tal++;
+            n = 0;
+            continue;
           }
 
           if(!onset)
@@ -498,93 +501,93 @@ void UI_EDFCompatwindow::CheckButtonClicked()
         n++;
       }
 
- END:
+END:
 
-/****************** end ************************/
+      /****************** end ************************/
 
       if(error)
       {
         if(error==1)
         {
           snprintf(txt_string, 1700, "Error.\n\nInvalid annotation in datarecord %i.\n",
-                 i + 1);
+                   i + 1);
         }
         if(error==2)
         {
           snprintf(txt_string, 1700, "Error.\n\n"
-                 "Time keeping annotation in the first datarecord is %.12f\n"
-                 "expected <1.0\n",
-                 time_tmp);
+                   "Time keeping annotation in the first datarecord is %.12f\n"
+                   "expected <1.0\n",
+                   time_tmp);
         }
         if(error==3)
         {
           snprintf(txt_string, 1700, "Error.\n\n"
-                 "Datarecord duration is %.12f but timestep between\n"
-                 "datarecord %i and preceding datarecord is %.12f.\n",
-                 data_record_duration,
-                 i + 1,
-                 time_tmp - elapsedtime);
+                   "Datarecord duration is %.12f but timestep between\n"
+                   "datarecord %i and preceding datarecord is %.12f.\n",
+                   data_record_duration,
+                   i + 1,
+                   time_tmp - elapsedtime);
         }
         if(error==4)
         {
           snprintf(txt_string, 1700, "Error.\n\nDatarecords are not in chronological order,\n"
-                 "datarecord %i has timestamp %.12f and datarecord %i has timestamp %.12f.\n",
-                 i,
-                 elapsedtime,
-                 i + 1,
-                 time_tmp);
+                   "datarecord %i has timestamp %.12f and datarecord %i has timestamp %.12f.\n",
+                   i,
+                   elapsedtime,
+                   i + 1,
+                   time_tmp);
         }
         if(error==5)
         {
           snprintf(txt_string, 1700, "Error.\n\nInvalid annotation in datarecord %i,\n"
-                 "last byte is not a null-byte.\n",
-                 i + 1);
+                   "last byte is not a null-byte.\n",
+                   i + 1);
         }
         if(error==6)
         {
           snprintf(txt_string, 1700, "Error.\n\nInvalid annotation in datarecord %i,\n"
-                 "timekeeping TAL (the first annotation in the first annotations signal)\n"
-                 "should have two consecutive bytes with values 0x14 immediately after\n"
-                 "the number.\n",
-                 i + 1);
+                   "timekeeping TAL (the first annotation in the first annotations signal)\n"
+                   "should have two consecutive bytes with values 0x14 immediately after\n"
+                   "the number.\n",
+                   i + 1);
         }
         if(error==33)
         {
           snprintf(txt_string, 1700, "Error.\n\nInvalid annotation in datarecord %i,\n"
-                 "byte before the first null-byte should be equal to 0x14.\n",
-                 i + 1);
+                   "byte before the first null-byte should be equal to 0x14.\n",
+                   i + 1);
         }
         if(error==34)
         {
           snprintf(txt_string, 1700, "Error.\n\nInvalid annotation in datarecord %i,\n"
-                 "after two consecutive null-bytes all of the remaining bytes should be null-bytes as well.\n"
-                 "(it's not allowed to have two or more null-bytes between two TAL's)\n",
-                 i + 1);
+                   "after two consecutive null-bytes all of the remaining bytes should be null-bytes as well.\n"
+                   "(it's not allowed to have two or more null-bytes between two TAL's)\n",
+                   i + 1);
         }
         if(error==35)
         {
           snprintf(txt_string, 1700, "Error.\n\nInvalid annotation in datarecord %i,\n"
-                 "it's not allowed to have multiple duration fields in one TAL or\n"
-                 "to have a duration field which is not immediately behind the onsetfield.\n",
-                 i + 1);
+                   "it's not allowed to have multiple duration fields in one TAL or\n"
+                   "to have a duration field which is not immediately behind the onsetfield.\n",
+                   i + 1);
         }
         if(error==36)
         {
           snprintf(txt_string, 1700, "Error.\n\nInvalid annotation in datarecord %i,\n"
-                 "onset has an invalid number.\n",
-                 i + 1);
+                   "onset has an invalid number.\n",
+                   i + 1);
         }
         if(error==37)
         {
           snprintf(txt_string, 1700, "Error.\n\nInvalid annotation in datarecord %i,\n"
-                 "duration has an invalid number.\n",
-                 i + 1);
+                   "duration has an invalid number.\n",
+                   i + 1);
         }
         len = strlen(txt_string);
         p = (i * recordsize) + (edfsignals * 256) + 256 + (edfparam[annot_ch[r]].buf_offset);
         snprintf(txt_string + len, 348, "Offset from start of file: 0x%X\n\n"
-                "Stopped at the first error, additional errors may be present.",
-               p);
+                 "Stopped at the first error, additional errors may be present.",
+                 p);
         progress.reset();
         QMessageBox messagewindow(QMessageBox::Critical, "Error", txt_string);
         messagewindow.exec();

@@ -354,20 +354,20 @@ void UI_EDFhdrwindow::show_params(int row)
   date_time.month_str[2] += 32;
 
   snprintf(str, 400, "%i %s %i  %2i:%02i:%02i",
-          date_time.day,
-          date_time.month_str,
-          date_time.year,
-          date_time.hour,
-          date_time.minute,
-          date_time.second);
+           date_time.day,
+           date_time.month_str,
+           date_time.year,
+           date_time.hour,
+           date_time.minute,
+           date_time.second);
 
   if(mainwindow->edfheaderlist[row]->starttime_offset != 0LL)
   {
-#ifdef Q_OS_WIN32
+    #ifdef Q_OS_WIN32
     __mingw_snprintf(str + strlen(str), 100, ".%07lli", mainwindow->edfheaderlist[row]->starttime_offset);
-#else
+    #else
     snprintf(str + strlen(str), 100, ".%07lli", mainwindow->edfheaderlist[row]->starttime_offset);
-#endif
+    #endif
 
     remove_trailing_zeros(str);
   }
@@ -377,10 +377,10 @@ void UI_EDFhdrwindow::show_params(int row)
   file_duration = mainwindow->edfheaderlist[row]->long_data_record_duration * mainwindow->edfheaderlist[row]->datarecords;
 
   snprintf(str, 512,
-          "%2i:%02i:%02i",
-          (int)((file_duration / TIME_DIMENSION)/ 3600LL),
-          (int)(((file_duration / TIME_DIMENSION) % 3600LL) / 60LL),
-          (int)((file_duration / TIME_DIMENSION) % 60LL));
+           "%2i:%02i:%02i",
+           (int)((file_duration / TIME_DIMENSION)/ 3600LL),
+           (int)(((file_duration / TIME_DIMENSION) % 3600LL) / 60LL),
+           (int)((file_duration / TIME_DIMENSION) % 60LL));
 
   label4a->setText(str);
 

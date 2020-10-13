@@ -80,72 +80,72 @@ public:
 
 private:
 
-QDialog       *ascii2edfDialog;
+  QDialog       *ascii2edfDialog;
 
-QLabel        *SeparatorLabel,
-              *NumsignalsLabel,
-              *DatastartLabel,
-              *SamplefreqLabel,
-              *PatientnameLabel,
-              *RecordingLabel,
-              *DatetimeLabel,
-              *SignalsLabel,
-              *autoPhysicalMaximumLabel;
+  QLabel        *SeparatorLabel,
+                *NumsignalsLabel,
+                *DatastartLabel,
+                *SamplefreqLabel,
+                *PatientnameLabel,
+                *RecordingLabel,
+                *DatetimeLabel,
+                *SignalsLabel,
+                *autoPhysicalMaximumLabel;
 
-QRadioButton  *edfButton,
-              *bdfButton;
+  QRadioButton  *edfButton,
+                *bdfButton;
 
-QGroupBox     *groupbox1;
+  QGroupBox     *groupbox1;
 
-QVBoxLayout   *vbox1;
+  QVBoxLayout   *vbox1;
 
-QLineEdit     *SeparatorLineEdit,
-              *PatientnameLineEdit,
-              *RecordingLineEdit;
+  QLineEdit     *SeparatorLineEdit,
+                *PatientnameLineEdit,
+                *RecordingLineEdit;
 
-QSpinBox      *NumcolumnsSpinbox,
-              *DatastartSpinbox;
+  QSpinBox      *NumcolumnsSpinbox,
+                *DatastartSpinbox;
 
-QDoubleSpinBox *SamplefreqSpinbox;
+  QDoubleSpinBox *SamplefreqSpinbox;
 
-QDateTimeEdit *StartDatetimeedit;
+  QDateTimeEdit *StartDatetimeedit;
 
-QCheckBox     *autoPhysicalMaximumCheckbox;
+  QCheckBox     *autoPhysicalMaximumCheckbox;
 
-QTableWidget  *SignalsTablewidget;
+  QTableWidget  *SignalsTablewidget;
 
-QPushButton   *GoButton,
-              *CloseButton,
-              *SaveButton,
-              *LoadButton;
+  QPushButton   *GoButton,
+                *CloseButton,
+                *SaveButton,
+                *LoadButton;
 
-char separator,
-     *recent_opendir,
-     *recent_savedir;
+  char separator,
+       *recent_opendir,
+       *recent_savedir;
 
-int edfsignals,
-    startline,
-    columns,
-    column_enabled[ASCII_MAX_EDF_SIGNALS],
-    autoPhysicalMaximum,
-    edf_format;
+  int edfsignals,
+      startline,
+      columns,
+      column_enabled[ASCII_MAX_EDF_SIGNALS],
+      autoPhysicalMaximum,
+      edf_format;
 
-double samplefrequency,
-       datrecduration,
-       sensitivity[ASCII_MAX_EDF_SIGNALS],
-       value[ASCII_MAX_EDF_SIGNALS],
-       physmax[ASCII_MAX_EDF_SIGNALS];
+  double samplefrequency,
+         datrecduration,
+         sensitivity[ASCII_MAX_EDF_SIGNALS],
+         value[ASCII_MAX_EDF_SIGNALS],
+         physmax[ASCII_MAX_EDF_SIGNALS];
 
 
-int check_input(void);
+  int check_input(void);
 
 private slots:
 
-void numofcolumnschanged(int);
-void gobuttonpressed();
-void savebuttonpressed();
-void loadbuttonpressed();
-void autoPhysicalMaximumCheckboxChanged(int);
+  void numofcolumnschanged(int);
+  void gobuttonpressed();
+  void savebuttonpressed();
+  void loadbuttonpressed();
+  void autoPhysicalMaximumCheckboxChanged(int);
 };
 
 

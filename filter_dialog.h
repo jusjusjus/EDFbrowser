@@ -83,59 +83,59 @@ public:
 
 private:
 
-QDialog        *filterdialog;
+  QDialog        *filterdialog;
 
-QPushButton    *CancelButton,
-               *ApplyButton;
+  QPushButton    *CancelButton,
+                 *ApplyButton;
 
-QListWidget    *list;
+  QListWidget    *list;
 
-QComboBox      *typebox,
-               *modelbox;
+  QComboBox      *typebox,
+                 *modelbox;
 
-QDoubleSpinBox *freqbox,
-               *ripplebox,
-               *freq2box;
+  QDoubleSpinBox *freqbox,
+                 *ripplebox,
+                 *freq2box;
 
-QSpinBox       *orderbox;
+  QSpinBox       *orderbox;
 
-QLabel         *typeboxlabel,
-               *freqboxlabel,
-               *freqbox2label,
-               *orderboxlabel,
-               *modelboxlabel,
-               *listlabel,
-               *orderlabel,
-               *ordervaluelabel;
+  QLabel         *typeboxlabel,
+                 *freqboxlabel,
+                 *freqbox2label,
+                 *orderboxlabel,
+                 *modelboxlabel,
+                 *listlabel,
+                 *orderlabel,
+                 *ordervaluelabel;
 
-FilterCurve    *curve1;
+  FilterCurve    *curve1;
 
-double array[400],
-       array_pha[400],
-       last_ripple;
+  double array[400],
+         array_pha[400],
+         last_ripple;
 
-int arraysize,
-    last_order,
-    last_qfactor,
-    last_model,
-    last_samples;
+  int arraysize,
+      last_order,
+      last_qfactor,
+      last_model,
+      last_samples;
 
-void updatecurve(void);
+  void updatecurve(void);
 
-char *filter_spec,
-     spec_str_1[256],
-     spec_str_2[256];
+  char *filter_spec,
+       spec_str_1[256],
+       spec_str_2[256];
 
 
 private slots:
 
-void ApplyButtonClicked();
-void frequencyboxvaluechanged(double);
-void orderboxvaluechanged(int);
-void filtertypeboxvaluechanged(int);
-void filtermodelboxvaluechanged(int);
-void rippleboxvaluechanged(double);
-void freq2boxvaluechanged(double);
+  void ApplyButtonClicked();
+  void frequencyboxvaluechanged(double);
+  void orderboxvaluechanged(int);
+  void filtertypeboxvaluechanged(int);
+  void filtermodelboxvaluechanged(int);
+  void rippleboxvaluechanged(double);
+  void freq2boxvaluechanged(double);
 
 };
 

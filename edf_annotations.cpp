@@ -37,13 +37,13 @@
 
 #if defined(__APPLE__) || defined(__MACH__) || defined(__APPLE_CC__)
 
-#define fopeno fopen
+  #define fopeno fopen
 
 #else
 
-#define fseeko fseeko64
-#define ftello ftello64
-#define fopeno fopen64
+  #define fseeko fseeko64
+  #define ftello ftello64
+  #define fopeno fopen64
 
 #endif
 
@@ -53,29 +53,29 @@
 int EDF_annotations::get_annotations(int file_num, struct edfhdrblock *edf_hdr, struct annotationblock **annotslist, int read_nk_trigger_signal)
 {
   int i, j, k, p, r=0, n,
-      edfsignals,
-      datarecords,
-      recordsize,
-      discontinuous,
-      *annot_ch,
-      nr_annot_chns,
-      max,
-      onset,
-      duration,
-      duration_start,
-      zero,
-      max_tal_ln,
-      error,
-      annots_in_record,
-      annots_in_tal,
-      samplesize=2,
-      nk_triggers_smpls=0,
-      nk_triggers_bufoffset=0,
-      nk_triggers_enabled=0,
-      nk_triggers_channel=0,
-      nk_triggers_cnt=0,
-      sf,
-      progress_steps;
+                  edfsignals,
+                  datarecords,
+                  recordsize,
+                  discontinuous,
+                  *annot_ch,
+                  nr_annot_chns,
+                  max,
+                  onset,
+                  duration,
+                  duration_start,
+                  zero,
+                  max_tal_ln,
+                  error,
+                  annots_in_record,
+                  annots_in_tal,
+                  samplesize=2,
+                  nk_triggers_smpls=0,
+                  nk_triggers_bufoffset=0,
+                  nk_triggers_enabled=0,
+                  nk_triggers_channel=0,
+                  nk_triggers_cnt=0,
+                  sf,
+                  progress_steps;
 
   unsigned short nk_triggerfields=0,
                  nk_old_triggerfields=0;
@@ -88,16 +88,16 @@ int EDF_annotations::get_annotations(int file_num, struct edfhdrblock *edf_hdr, 
 
 
   long long data_record_duration,
-            elapsedtime,
-            time_tmp=0LL,
-            nk_trigger_sample_duration=0LL;
+       elapsedtime,
+       time_tmp=0LL,
+       nk_trigger_sample_duration=0LL;
 
   FILE *inputfile;
 
   struct edfparamblock *edfparam;
 
   struct annotationblock *new_annotation=NULL,
-                         *temp_annotation;
+                            *temp_annotation;
 
 
 
@@ -136,14 +136,18 @@ int EDF_annotations::get_annotations(int file_num, struct edfhdrblock *edf_hdr, 
 
             switch(sf)
             {
-              case  10 : error = 0;
-                         break;
-              case  20 : error = 0;
-                         break;
-              case  50 : error = 0;
-                         break;
-              case 100 : error = 0;
-                         break;
+            case  10 :
+              error = 0;
+              break;
+            case  20 :
+              error = 0;
+              break;
+            case  50 :
+              error = 0;
+              break;
+            case 100 :
+              error = 0;
+              break;
             }
 
             for(j=0; j<edfsignals; j++)
@@ -289,7 +293,7 @@ int EDF_annotations::get_annotations(int file_num, struct edfhdrblock *edf_hdr, 
         free(scratchpad);
         free(time_in_txt);
         free(duration_in_txt);
-	throw 11;
+        throw 11;
         //return(11);
       }
     }
@@ -303,12 +307,12 @@ int EDF_annotations::get_annotations(int file_num, struct edfhdrblock *edf_hdr, 
       free(scratchpad);
       free(time_in_txt);
       free(duration_in_txt);
-	throw 2;
+      throw 2;
       //return(2);
     }
 
 
-/************** process annotationsignals (if any) **************/
+    /************** process annotationsignals (if any) **************/
 
     error = 0;
 
@@ -326,7 +330,7 @@ int EDF_annotations::get_annotations(int file_num, struct edfhdrblock *edf_hdr, 
       p = edfparam[annot_ch[r]].buf_offset;
       max = edfparam[annot_ch[r]].smp_per_record * samplesize;
 
-/************** process one annotation signal ****************/
+      /************** process one annotation signal ****************/
 
       if(cnv_buf[p + max - 1]!=0)
       {
@@ -335,7 +339,8 @@ int EDF_annotations::get_annotations(int file_num, struct edfhdrblock *edf_hdr, 
       }
 
       if(!r)  /* if it's the first annotation signal, then check */
-      {       /* the timekeeping annotation */
+      {
+        /* the timekeeping annotation */
         error = 1;
 
         for(k=0; k<(max-2); k++)
@@ -435,7 +440,8 @@ int EDF_annotations::get_annotations(int file_num, struct edfhdrblock *edf_hdr, 
           if(scratchpad[n]==21)
           {
             if(duration||duration_start||onset||annots_in_tal)
-            {               /* it's not allowed to have multiple duration fields */
+            {
+              /* it's not allowed to have multiple duration fields */
               error = 35;   /* in one TAL or to have a duration field which is   */
               goto END;     /* not immediately behind the onsetfield             */
             }
@@ -458,7 +464,7 @@ int EDF_annotations::get_annotations(int file_num, struct edfhdrblock *edf_hdr, 
                   free(scratchpad);
                   free(time_in_txt);
                   free(duration_in_txt);
-		  throw 1;
+                  throw 1;
                   //return(1);
                 }
 
@@ -547,26 +553,26 @@ int EDF_annotations::get_annotations(int file_num, struct edfhdrblock *edf_hdr, 
         n++;
       }
 
- END:
+END:
 
-/****************** end ************************/
+      /****************** end ************************/
 
       if(error)
       {
         progress.reset();
         QMessageBox messagewindow(QMessageBox::Critical, "Error", "Can not read annotations because there is an EDF or BDF incompatibility in this file.\n"
-                                                                  "For more information, run the EDF/BDF compatibility checker in the Tools menu.");
+                                  "For more information, run the EDF/BDF compatibility checker in the Tools menu.");
         messagewindow.exec();
         free(cnv_buf);
         free(scratchpad);
         free(time_in_txt);
         free(duration_in_txt);
-	throw 9;
-	//return(9);
+        throw 9;
+        //return(9);
       }
     }
 
-/************** process NK triggers ****************/
+    /************** process NK triggers ****************/
 
     if(nk_triggers_enabled)
     {
@@ -596,8 +602,8 @@ int EDF_annotations::get_annotations(int file_num, struct edfhdrblock *edf_hdr, 
                 free(scratchpad);
                 free(time_in_txt);
                 free(duration_in_txt);
-		throw 1;
-		//return(1);
+                throw 1;
+                //return(1);
               }
 
               new_annotation->file_num = edf_hdr->file_num;
@@ -734,16 +740,16 @@ long long EDF_annotations::get_long_time(char *str)
 
     for(i=dotposition-1; i>=0; i--)
     {
-        value += ((long long)(str[i] - 48)) * radix;
-        radix *= 10;
+      value += ((long long)(str[i] - 48)) * radix;
+      radix *= 10;
     }
 
     radix = TIME_DIMENSION / 10;
 
     for(i=dotposition+1; i<len; i++)
     {
-        value += ((long long)(str[i] - 48)) * radix;
-        radix /= 10;
+      value += ((long long)(str[i] - 48)) * radix;
+      radix /= 10;
     }
   }
   else
@@ -752,8 +758,8 @@ long long EDF_annotations::get_long_time(char *str)
 
     for(i=len-1; i>=0; i--)
     {
-        value += ((long long)(str[i] - 48)) * radix;
-        radix *= 10;
+      value += ((long long)(str[i] - 48)) * radix;
+      radix *= 10;
     }
   }
 

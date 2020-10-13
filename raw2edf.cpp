@@ -37,13 +37,13 @@
 
 #if defined(__APPLE__) || defined(__MACH__) || defined(__APPLE_CC__)
 
-#define fopeno fopen
+  #define fopeno fopen
 
 #else
 
-#define fseeko fseeko64
-#define ftello ftello64
-#define fopeno fopen64
+  #define fseeko fseeko64
+  #define ftello ftello64
+  #define fopeno fopen64
 
 #endif
 
@@ -451,7 +451,7 @@ void UI_RAW2EDFapp::gobuttonpressed()
   }
 
   if(edf_set_startdatetime(hdl, StartDatetimeedit->date().year(), StartDatetimeedit->date().month(), StartDatetimeedit->date().day(),
-                                StartDatetimeedit->time().hour(), StartDatetimeedit->time().minute(), StartDatetimeedit->time().second()))
+                           StartDatetimeedit->time().hour(), StartDatetimeedit->time().minute(), StartDatetimeedit->time().second()))
   {
     QMessageBox messagewindow(QMessageBox::Critical, "Error", "edf_set_startdatetime()");
     messagewindow.exec();
@@ -491,11 +491,12 @@ void UI_RAW2EDFapp::gobuttonpressed()
 
   datarecords = 0;
 
-  union{
-         int one[1];
-         signed short two[2];
-         char four[4];
-       } var;
+  union
+  {
+    int one[1];
+    signed short two[2];
+    char four[4];
+  } var;
 
   skipblockcntr = 0;
 

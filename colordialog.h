@@ -63,49 +63,49 @@ public:
 
 private:
 
-int *color;
+  int *color;
 
-QDialog      *colormenu_dialog;
+  QDialog      *colormenu_dialog;
 
-QPushButton  *CloseButton;
+  QPushButton  *CloseButton;
 
-SpecialButton *ColorButton1,
-              *ColorButton2,
-              *ColorButton3,
-              *ColorButton4,
-              *ColorButton5,
-              *ColorButton6,
-              *ColorButton7,
-              *ColorButton8,
-              *ColorButton9,
-              *ColorButton10,
-              *ColorButton11,
-              *ColorButton12,
-              *ColorButton13,
-              *ColorButton14,
-              *ColorButton15,
-              *ColorButton16,
-              *parentbutton;
+  SpecialButton *ColorButton1,
+                *ColorButton2,
+                *ColorButton3,
+                *ColorButton4,
+                *ColorButton5,
+                *ColorButton6,
+                *ColorButton7,
+                *ColorButton8,
+                *ColorButton9,
+                *ColorButton10,
+                *ColorButton11,
+                *ColorButton12,
+                *ColorButton13,
+                *ColorButton14,
+                *ColorButton15,
+                *ColorButton16,
+                *parentbutton;
 
 
 private slots:
 
-void ColorButton1_pressed(SpecialButton *);
-void ColorButton2_pressed(SpecialButton *);
-void ColorButton3_pressed(SpecialButton *);
-void ColorButton4_pressed(SpecialButton *);
-void ColorButton5_pressed(SpecialButton *);
-void ColorButton6_pressed(SpecialButton *);
-void ColorButton7_pressed(SpecialButton *);
-void ColorButton8_pressed(SpecialButton *);
-void ColorButton9_pressed(SpecialButton *);
-void ColorButton10_pressed(SpecialButton *);
-void ColorButton11_pressed(SpecialButton *);
-void ColorButton12_pressed(SpecialButton *);
-void ColorButton13_pressed(SpecialButton *);
-void ColorButton14_pressed(SpecialButton *);
-void ColorButton15_pressed(SpecialButton *);
-void ColorButton16_pressed(SpecialButton *);
+  void ColorButton1_pressed(SpecialButton *);
+  void ColorButton2_pressed(SpecialButton *);
+  void ColorButton3_pressed(SpecialButton *);
+  void ColorButton4_pressed(SpecialButton *);
+  void ColorButton5_pressed(SpecialButton *);
+  void ColorButton6_pressed(SpecialButton *);
+  void ColorButton7_pressed(SpecialButton *);
+  void ColorButton8_pressed(SpecialButton *);
+  void ColorButton9_pressed(SpecialButton *);
+  void ColorButton10_pressed(SpecialButton *);
+  void ColorButton11_pressed(SpecialButton *);
+  void ColorButton12_pressed(SpecialButton *);
+  void ColorButton13_pressed(SpecialButton *);
+  void ColorButton14_pressed(SpecialButton *);
+  void ColorButton15_pressed(SpecialButton *);
+  void ColorButton16_pressed(SpecialButton *);
 
 };
 

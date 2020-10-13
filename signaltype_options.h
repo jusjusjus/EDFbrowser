@@ -51,26 +51,26 @@ class UI_Mainwindow;
 
 class SignaltypeOptions : public QWidget
 {
-	Q_OBJECT
+  Q_OBJECT
 
 public:
-	SignaltypeOptions(QWidget *parent=0);
+  SignaltypeOptions(QWidget *parent=0);
 
-	UI_Mainwindow *mainwindow;
+  UI_Mainwindow *mainwindow;
 
 
 private:
 
-	QTextEdit *document;
+  QTextEdit *document;
 
-	QPushButton *reloadButton,
-		    *saveButton;
+  QPushButton *reloadButton,
+              *saveButton;
 
 private slots:
 
-	void load_xml();
-	void save_xml();
-	bool check_xml();
+  void load_xml();
+  void save_xml();
+  bool check_xml();
 };
 
 

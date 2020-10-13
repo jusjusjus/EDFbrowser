@@ -35,13 +35,13 @@
 
 #if defined(__APPLE__) || defined(__MACH__) || defined(__APPLE_CC__)
 
-#define fopeno fopen
+  #define fopeno fopen
 
 #else
 
-#define fseeko fseeko64
-#define ftello ftello64
-#define fopeno fopen64
+  #define fseeko fseeko64
+  #define ftello ftello64
+  #define fopeno fopen64
 
 #endif
 
@@ -167,13 +167,14 @@ int FilteredBlockReadClass::process_signalcomp(int datarecord_start)
   double dig_value=0.0,
          f_tmp=0.0;
 
-  union {
-          unsigned int one;
-          signed int one_signed;
-          unsigned short two[2];
-          signed short two_signed[2];
-          unsigned char four[4];
-        } var;
+  union
+  {
+    unsigned int one;
+    signed int one_signed;
+    unsigned short two[2];
+    signed short two_signed[2];
+    unsigned char four[4];
+  } var;
 
 
   if((total_samples < 1) || (datarecord_cnt < 1))
@@ -215,17 +216,17 @@ int FilteredBlockReadClass::process_signalcomp(int datarecord_start)
       if(signalcomp->edfhdr->bdf)
       {
         var.two[0] = *((unsigned short *)(
-          readbuf
-          + (signalcomp->edfhdr->recordsize * (s / samples_per_datrec))
-          + signalcomp->edfhdr->edfparam[signalcomp->edfsignal[j]].buf_offset
-          + ((s % samples_per_datrec) * 3)));
+                         readbuf
+                         + (signalcomp->edfhdr->recordsize * (s / samples_per_datrec))
+                         + signalcomp->edfhdr->edfparam[signalcomp->edfsignal[j]].buf_offset
+                         + ((s % samples_per_datrec) * 3)));
 
         var.four[2] = *((unsigned char *)(
-          readbuf
-          + (signalcomp->edfhdr->recordsize * (s / samples_per_datrec))
-          + signalcomp->edfhdr->edfparam[signalcomp->edfsignal[j]].buf_offset
-          + ((s % samples_per_datrec) * 3)
-          + 2));
+                          readbuf
+                          + (signalcomp->edfhdr->recordsize * (s / samples_per_datrec))
+                          + signalcomp->edfhdr->edfparam[signalcomp->edfsignal[j]].buf_offset
+                          + ((s % samples_per_datrec) * 3)
+                          + 2));
 
         if(var.four[2]&0x80)
         {
@@ -242,10 +243,10 @@ int FilteredBlockReadClass::process_signalcomp(int datarecord_start)
       if(signalcomp->edfhdr->edf)
       {
         f_tmp = *(((short *)(
-          readbuf
-          + (signalcomp->edfhdr->recordsize * (s / samples_per_datrec))
-          + signalcomp->edfhdr->edfparam[signalcomp->edfsignal[j]].buf_offset))
-          + (s % samples_per_datrec));
+                     readbuf
+                     + (signalcomp->edfhdr->recordsize * (s / samples_per_datrec))
+                     + signalcomp->edfhdr->edfparam[signalcomp->edfsignal[j]].buf_offset))
+                  + (s % samples_per_datrec));
       }
 
       f_tmp += signalcomp->edfhdr->edfparam[signalcomp->edfsignal[j]].offset;

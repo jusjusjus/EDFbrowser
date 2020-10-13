@@ -74,7 +74,7 @@ UI_FreqSpectrumWindow::UI_FreqSpectrumWindow(struct signalcompblock *signal_comp
 
   for(i=strlen(signalcomp->edfhdr->filename); i>0; i--)
   {
-       if((signalcomp->edfhdr->filename[i-1]=='/')||(signalcomp->edfhdr->filename[i-1]=='\\'))  break;
+    if((signalcomp->edfhdr->filename[i-1]=='/')||(signalcomp->edfhdr->filename[i-1]=='\\'))  break;
   }
 
   if((signalcomp->edfhdr->viewtime + signalcomp->edfhdr->starttime_offset)>=0LL)
@@ -82,20 +82,20 @@ UI_FreqSpectrumWindow::UI_FreqSpectrumWindow(struct signalcompblock *signal_comp
     if(signalcomp->alias[0] != 0)
     {
       snprintf(signallabel, 512, "   %s   %i:%02i:%02i.%04i   %s", signalcomp->alias,
-                (int)((signalcomp->edfhdr->viewtime / TIME_DIMENSION)/ 3600LL),
-                (int)(((signalcomp->edfhdr->viewtime / TIME_DIMENSION) % 3600LL) / 60LL),
-                (int)((signalcomp->edfhdr->viewtime / TIME_DIMENSION) % 60LL),
-                (int)((signalcomp->edfhdr->viewtime % TIME_DIMENSION) / 1000LL),
-                signalcomp->edfhdr->filename + i);
+               (int)((signalcomp->edfhdr->viewtime / TIME_DIMENSION)/ 3600LL),
+               (int)(((signalcomp->edfhdr->viewtime / TIME_DIMENSION) % 3600LL) / 60LL),
+               (int)((signalcomp->edfhdr->viewtime / TIME_DIMENSION) % 60LL),
+               (int)((signalcomp->edfhdr->viewtime % TIME_DIMENSION) / 1000LL),
+               signalcomp->edfhdr->filename + i);
     }
     else
     {
       snprintf(signallabel, 512, "   %s   %i:%02i:%02i.%04i   %s", signalcomp->signallabel,
-                (int)((signalcomp->edfhdr->viewtime / TIME_DIMENSION)/ 3600LL),
-                (int)(((signalcomp->edfhdr->viewtime / TIME_DIMENSION) % 3600LL) / 60LL),
-                (int)((signalcomp->edfhdr->viewtime / TIME_DIMENSION) % 60LL),
-                (int)((signalcomp->edfhdr->viewtime % TIME_DIMENSION) / 1000LL),
-                signalcomp->edfhdr->filename + i);
+               (int)((signalcomp->edfhdr->viewtime / TIME_DIMENSION)/ 3600LL),
+               (int)(((signalcomp->edfhdr->viewtime / TIME_DIMENSION) % 3600LL) / 60LL),
+               (int)((signalcomp->edfhdr->viewtime / TIME_DIMENSION) % 60LL),
+               (int)((signalcomp->edfhdr->viewtime % TIME_DIMENSION) / 1000LL),
+               signalcomp->edfhdr->filename + i);
     }
   }
   else
@@ -111,20 +111,20 @@ UI_FreqSpectrumWindow::UI_FreqSpectrumWindow(struct signalcompblock *signal_comp
     if(signalcomp->alias[0] != 0)
     {
       snprintf(signallabel, 512, "   %s   -%i:%02i:%02i.%04i   %s", signalcomp->alias,
-              (int)((l_temp / TIME_DIMENSION)/ 3600LL),
-              (int)(((l_temp / TIME_DIMENSION) % 3600LL) / 60LL),
-              (int)((l_temp / TIME_DIMENSION) % 60LL),
-              (int)((l_temp % TIME_DIMENSION) / 1000LL),
-              signalcomp->edfhdr->filename + i);
+               (int)((l_temp / TIME_DIMENSION)/ 3600LL),
+               (int)(((l_temp / TIME_DIMENSION) % 3600LL) / 60LL),
+               (int)((l_temp / TIME_DIMENSION) % 60LL),
+               (int)((l_temp % TIME_DIMENSION) / 1000LL),
+               signalcomp->edfhdr->filename + i);
     }
     else
     {
       snprintf(signallabel, 512, "   %s   -%i:%02i:%02i.%04i   %s", signalcomp->signallabel,
-              (int)((l_temp / TIME_DIMENSION)/ 3600LL),
-              (int)(((l_temp / TIME_DIMENSION) % 3600LL) / 60LL),
-              (int)((l_temp / TIME_DIMENSION) % 60LL),
-              (int)((l_temp % TIME_DIMENSION) / 1000LL),
-              signalcomp->edfhdr->filename + i);
+               (int)((l_temp / TIME_DIMENSION)/ 3600LL),
+               (int)(((l_temp / TIME_DIMENSION) % 3600LL) / 60LL),
+               (int)((l_temp / TIME_DIMENSION) % 60LL),
+               (int)((l_temp % TIME_DIMENSION) / 1000LL),
+               signalcomp->edfhdr->filename + i);
     }
   }
 
@@ -567,13 +567,14 @@ void UI_FreqSpectrumWindow::update_curve()
   double dig_value=0.0,
          f_tmp=0.0;
 
-  union {
-          unsigned int one;
-          signed int one_signed;
-          unsigned short two[2];
-          signed short two_signed[2];
-          unsigned char four[4];
-        } var;
+  union
+  {
+    unsigned int one;
+    signed int one_signed;
+    unsigned short two[2];
+    signed short two_signed[2];
+    unsigned char four[4];
+  } var;
 
   if(signalcomp == NULL)
   {
@@ -624,7 +625,7 @@ void UI_FreqSpectrumWindow::update_curve()
   if(buf1 == NULL)
   {
     QMessageBox messagewindow(QMessageBox::Critical, "Error", "The system was not able to provide enough resources (memory) to perform the requested action.\n"
-                                  "Decrease the timescale and try again.");
+                              "Decrease the timescale and try again.");
     messagewindow.exec();
     return;
   }
@@ -643,19 +644,19 @@ void UI_FreqSpectrumWindow::update_curve()
       if(signalcomp->edfhdr->bdf)
       {
         var.two[0] = *((unsigned short *)(
-          viewbuf
-          + signalcomp->viewbufoffset
-          + (signalcomp->edfhdr->recordsize * (s2 / signalcomp->edfhdr->edfparam[signalcomp->edfsignal[j]].smp_per_record))
-          + signalcomp->edfhdr->edfparam[signalcomp->edfsignal[j]].buf_offset
-          + ((s2 % signalcomp->edfhdr->edfparam[signalcomp->edfsignal[j]].smp_per_record) * 3)));
+                         viewbuf
+                         + signalcomp->viewbufoffset
+                         + (signalcomp->edfhdr->recordsize * (s2 / signalcomp->edfhdr->edfparam[signalcomp->edfsignal[j]].smp_per_record))
+                         + signalcomp->edfhdr->edfparam[signalcomp->edfsignal[j]].buf_offset
+                         + ((s2 % signalcomp->edfhdr->edfparam[signalcomp->edfsignal[j]].smp_per_record) * 3)));
 
         var.four[2] = *((unsigned char *)(
-          viewbuf
-          + signalcomp->viewbufoffset
-          + (signalcomp->edfhdr->recordsize * (s2 / signalcomp->edfhdr->edfparam[signalcomp->edfsignal[j]].smp_per_record))
-          + signalcomp->edfhdr->edfparam[signalcomp->edfsignal[j]].buf_offset
-          + ((s2 % signalcomp->edfhdr->edfparam[signalcomp->edfsignal[j]].smp_per_record) * 3)
-          + 2));
+                          viewbuf
+                          + signalcomp->viewbufoffset
+                          + (signalcomp->edfhdr->recordsize * (s2 / signalcomp->edfhdr->edfparam[signalcomp->edfsignal[j]].smp_per_record))
+                          + signalcomp->edfhdr->edfparam[signalcomp->edfsignal[j]].buf_offset
+                          + ((s2 % signalcomp->edfhdr->edfparam[signalcomp->edfsignal[j]].smp_per_record) * 3)
+                          + 2));
 
         if(var.four[2]&0x80)
         {
@@ -672,11 +673,11 @@ void UI_FreqSpectrumWindow::update_curve()
       if(signalcomp->edfhdr->edf)
       {
         f_tmp = *(((short *)(
-          viewbuf
-          + signalcomp->viewbufoffset
-          + (signalcomp->edfhdr->recordsize * (s2 / signalcomp->edfhdr->edfparam[signalcomp->edfsignal[j]].smp_per_record))
-          + signalcomp->edfhdr->edfparam[signalcomp->edfsignal[j]].buf_offset))
-          + (s2 % signalcomp->edfhdr->edfparam[signalcomp->edfsignal[j]].smp_per_record));
+                     viewbuf
+                     + signalcomp->viewbufoffset
+                     + (signalcomp->edfhdr->recordsize * (s2 / signalcomp->edfhdr->edfparam[signalcomp->edfsignal[j]].smp_per_record))
+                     + signalcomp->edfhdr->edfparam[signalcomp->edfsignal[j]].buf_offset))
+                  + (s2 % signalcomp->edfhdr->edfparam[signalcomp->edfsignal[j]].smp_per_record));
       }
 
       f_tmp += signalcomp->edfhdr->edfparam[signalcomp->edfsignal[j]].offset;
@@ -839,7 +840,7 @@ void UI_FreqSpectrumWindow::update_curve()
   minvalue_vlog = 0.0;
   minvalue_sqrt_vlog = 0.0;
 
-#ifdef CHECK_POWERSPECTRUM
+  #ifdef CHECK_POWERSPECTRUM
   printf("samples is %i   dftblocksize is %i   dftblocks is %i    samplesleft is %i   fft_outputbufsize is %i    steps is %i\n", samples, dftblocksize, dftblocks, samplesleft, fft_outputbufsize, steps);
 
   double power1=0.0, power2=0.0;
@@ -848,7 +849,7 @@ void UI_FreqSpectrumWindow::update_curve()
   {
     power1 += (buf1[i] * buf1[i]);
   }
-#endif
+  #endif
 
   kiss_fftr_cfg cfg;
 
@@ -920,9 +921,9 @@ void UI_FreqSpectrumWindow::update_curve()
   {
     buf2[i] /= samplefreq;
 
-#ifdef CHECK_POWERSPECTRUM
+    #ifdef CHECK_POWERSPECTRUM
     power2 += buf2[i];
-#endif
+    #endif
 
     buf3[i] = sqrt(buf2[i] * freqstep);
 
@@ -989,12 +990,12 @@ void UI_FreqSpectrumWindow::update_curve()
     dftblocks++;
   }
 
-#ifdef CHECK_POWERSPECTRUM
+  #ifdef CHECK_POWERSPECTRUM
   power1 /= samples;
   power2 *= freqstep;
 
   printf("\n power1 is %f\n power2 is %f\n\n", power1, power2);
-#endif
+  #endif
 
   if(buf1 != NULL)
   {

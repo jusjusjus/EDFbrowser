@@ -37,13 +37,13 @@
 
 #if defined(__APPLE__) || defined(__MACH__) || defined(__APPLE_CC__)
 
-#define fopeno fopen
+  #define fopeno fopen
 
 #else
 
-#define fseeko fseeko64
-#define ftello ftello64
-#define fopeno fopen64
+  #define fseeko fseeko64
+  #define ftello ftello64
+  #define fopeno fopen64
 
 #endif
 
@@ -137,9 +137,9 @@ void UI_WAV2EDFwindow::SelectFileButton()
       bytes_per_sample,
       sf_divider;
 
-unsigned int fmt_chunk_offset,
-             data_chunk_offset,
-             tmp;
+  unsigned int fmt_chunk_offset,
+           data_chunk_offset,
+           tmp;
 
   char path[MAX_PATH_LENGTH],
        outputfilename[MAX_PATH_LENGTH],
@@ -147,17 +147,18 @@ unsigned int fmt_chunk_offset,
        *readbuf;
 
   long long blocks,
-            leftover,
-            progress_steps,
-            k;
+       leftover,
+       progress_steps,
+       k;
 
-  union {
-          unsigned int one;
-          signed int one_signed;
-          unsigned short two[2];
-          signed short two_signed[2];
-          unsigned char four[4];
-        } var;
+  union
+  {
+    unsigned int one;
+    signed int one_signed;
+    unsigned short two[2];
+    signed short two_signed[2];
+    unsigned char four[4];
+  } var;
 
 
   enable_widgets(false);
@@ -197,7 +198,7 @@ unsigned int fmt_chunk_offset,
     return;
   }
 
-/***************** check if the wavefile is valid ******************************/
+  /***************** check if the wavefile is valid ******************************/
 
   rewind(inputfile);
 
@@ -447,7 +448,7 @@ unsigned int fmt_chunk_offset,
 
 //  printf("resolution is %i    edfsignals is %i    sf is %i    blocks is %lli\n", resolution, edfsignals, sf, blocks);
 
-/***************** create a new EDF file *****************************************/
+  /***************** create a new EDF file *****************************************/
 
   get_filename_from_path(outputfilename, path, MAX_PATH_LENGTH);
   remove_extension_from_filename(outputfilename);
@@ -585,7 +586,7 @@ unsigned int fmt_chunk_offset,
 
   edfwrite_annotation_latin1(edf_hdl, 0LL, -1, "Recording starts");
 
-/***************** start conversion **************************************/
+  /***************** start conversion **************************************/
 
   fseeko(inputfile, (long long)data_chunk_offset + 8LL, SEEK_SET);
 

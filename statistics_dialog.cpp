@@ -174,7 +174,7 @@ UI_StatisticWindow::UI_StatisticWindow(struct signalcompblock *signalcomp, long 
                 signalcomp->physdimension,
                 signalcomp->stat_zero_crossing_cnt,
                 (((double)signalcomp->stat_zero_crossing_cnt / 2.0)) / ((double)pagetime / (double)TIME_DIMENSION)
-              );
+               );
       }
       else
       {
@@ -191,7 +191,7 @@ UI_StatisticWindow::UI_StatisticWindow(struct signalcompblock *signalcomp, long 
                 signalcomp->physdimension,
                 signalcomp->stat_zero_crossing_cnt,
                 (((double)signalcomp->stat_zero_crossing_cnt / 2.0)) / ((double)pagetime / (double)TIME_DIMENSION)
-              );
+               );
       }
     }
   }

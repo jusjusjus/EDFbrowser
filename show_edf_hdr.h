@@ -70,52 +70,52 @@ public:
 
 private:
 
-QDialog      *EDFhdrDialog;
+  QDialog      *EDFhdrDialog;
 
-QListWidget  *filelist;
+  QListWidget  *filelist;
 
-QTableWidget *signallist;
+  QTableWidget *signallist;
 
-QLabel       *label1,
-             *label2,
-             *label6,
-             *label7,
-             *label8,
-             *label9,
-             *label10,
-             *label11,
-             *label12,
-             *label13,
-             *label3,
-             *label4,
-             *label5,
-             *label20,
-             *label21;
+  QLabel       *label1,
+               *label2,
+               *label6,
+               *label7,
+               *label8,
+               *label9,
+               *label10,
+               *label11,
+               *label12,
+               *label13,
+               *label3,
+               *label4,
+               *label5,
+               *label20,
+               *label21;
 
-SpecialButton *label1a,
-              *label2a,
-              *label6a,
-              *label7a,
-              *label8a,
-              *label9a,
-              *label10a,
-              *label11a,
-              *label12a,
-              *label13a,
-              *label3a,
-              *label4a,
-              *label5a,
-              *label20a,
-              *label21a;
+  SpecialButton *label1a,
+                *label2a,
+                *label6a,
+                *label7a,
+                *label8a,
+                *label9a,
+                *label10a,
+                *label11a,
+                *label12a,
+                *label13a,
+                *label3a,
+                *label4a,
+                *label5a,
+                *label20a,
+                *label21a;
 
-QPushButton  *pushButton1;
+  QPushButton  *pushButton1;
 
-int edfplus_layout;
+  int edfplus_layout;
 
 
 private slots:
 
-void show_params(int);
+  void show_params(int);
 
 };
 

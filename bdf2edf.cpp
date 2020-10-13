@@ -37,13 +37,13 @@
 
 #if defined(__APPLE__) || defined(__MACH__) || defined(__APPLE_CC__)
 
-#define fopeno fopen
+  #define fopeno fopen
 
 #else
 
-#define fseeko fseeko64
-#define ftello ftello64
-#define fopeno fopen64
+  #define fseeko fseeko64
+  #define ftello ftello64
+  #define fopeno fopen64
 
 #endif
 
@@ -278,7 +278,7 @@ void UI_BDF2EDFwindow::SelectFileButton()
     return;
   }
 
-/***************** check if the file is valid ******************************/
+  /***************** check if the file is valid ******************************/
 
   EDFfileCheck EDFfilechecker;
 
@@ -300,7 +300,7 @@ void UI_BDF2EDFwindow::SelectFileButton()
     return;
   }
 
-/***************** load signalproperties ******************************/
+  /***************** load signalproperties ******************************/
 
   label1->setText(QString::fromLocal8Bit(inputpath));
 
@@ -352,18 +352,20 @@ void UI_BDF2EDFwindow::StartConversion()
   char *readbuf,
        scratchpad[256];
 
-  union {
-          unsigned int one;
-          signed int one_signed;
-          unsigned short two[2];
-          signed short two_signed[2];
-          unsigned char four[4];
-        } var;
+  union
+  {
+    unsigned int one;
+    signed int one_signed;
+    unsigned short two[2];
+    signed short two_signed[2];
+    unsigned char four[4];
+  } var;
 
-  union {
-          signed short one_short;
-          unsigned char two_bytes[2];
-        } var2;
+  union
+  {
+    signed short one_short;
+    unsigned char two_bytes[2];
+  } var2;
 
 
 
@@ -394,8 +396,8 @@ void UI_BDF2EDFwindow::StartConversion()
         annotlist[new_edfsignals] = 0;
 
         filterlist[new_edfsignals] = create_filter(0,
-                                                  ((QDoubleSpinBox *)(SignalsTablewidget->cellWidget(i, 1)))->value(),
-                                                  1.0 / (edfhdr->data_record_duration / edfhdr->edfparam[i].smp_per_record));
+                                     ((QDoubleSpinBox *)(SignalsTablewidget->cellWidget(i, 1)))->value(),
+                                     1.0 / (edfhdr->data_record_duration / edfhdr->edfparam[i].smp_per_record));
 
         dividerlist[new_edfsignals] = ((QDoubleSpinBox *)(SignalsTablewidget->cellWidget(i, 2)))->value();
 
@@ -409,7 +411,7 @@ void UI_BDF2EDFwindow::StartConversion()
       annotlist[new_edfsignals] = 1;
 
       filterlist[new_edfsignals] = create_filter(0, 0.01,
-                                                1.0 / (edfhdr->data_record_duration / edfhdr->edfparam[i].smp_per_record));
+                                   1.0 / (edfhdr->data_record_duration / edfhdr->edfparam[i].smp_per_record));
       dividerlist[new_edfsignals] = 1.0;
 
       new_edfsignals++;
@@ -671,7 +673,7 @@ void UI_BDF2EDFwindow::StartConversion()
   }
   for(i=0; i<(new_edfsignals * 32); i++)
   {
-   fputc(' ', outputfile);
+    fputc(' ', outputfile);
   }
 
 ///////////////////////////// start conversion //////////////////////////////////////

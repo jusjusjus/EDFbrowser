@@ -36,13 +36,13 @@
 
 #if defined(__APPLE__) || defined(__MACH__) || defined(__APPLE_CC__)
 
-#define fopeno fopen
+  #define fopeno fopen
 
 #else
 
-#define fseeko fseeko64
-#define ftello ftello64
-#define fopeno fopen64
+  #define fseeko fseeko64
+  #define ftello ftello64
+  #define fopeno fopen64
 
 #endif
 
@@ -69,14 +69,14 @@ void print_screen_to_edf(UI_Mainwindow *mainwindow)
       len;
 
   long long duration,
-            smpls_written[MAXSIGNALS],
-            s2,
-            preamble=0LL,
-            smpls_preamble[MAXSIGNALS],
-            taltime=0LL,
-            l_temp,
-            referencetime,
-            annot_difftime=0LL;
+       smpls_written[MAXSIGNALS],
+       s2,
+       preamble=0LL,
+       smpls_preamble[MAXSIGNALS],
+       taltime=0LL,
+       l_temp,
+       referencetime,
+       annot_difftime=0LL;
 
   char path[MAX_PATH_LENGTH],
        scratchpad[512],
@@ -92,20 +92,22 @@ void print_screen_to_edf(UI_Mainwindow *mainwindow)
 
   struct signalcompblock **signalcomp;
 
-  union {
-          signed int one_signed;
-          signed short two_signed[2];
-          unsigned char four[4];
-        } wr_var;
+  union
+  {
+    signed int one_signed;
+    signed short two_signed[2];
+    unsigned char four[4];
+  } wr_var;
 
-  union {
-          signed short one_signed;
-          unsigned char two[2];
-        } null_bytes[MAXSIGNALS];
+  union
+  {
+    signed short one_signed;
+    unsigned char two[2];
+  } null_bytes[MAXSIGNALS];
 
-struct annotationblock *annotations_pntr;
+  struct annotationblock *annotations_pntr;
 
-struct date_time_struct date_time;
+  struct date_time_struct date_time;
 
 /////////////////////////////////////////////////////////////////////////
 
@@ -182,7 +184,7 @@ struct date_time_struct date_time;
     if(duration % signalcomp[i]->edfhdr->long_data_record_duration)
     {
       QMessageBox messagewindow(QMessageBox::Critical, "Error", "This combination of files can not be printed to EDF\n"
-                                                                "because the quotient of the datarecordblock durations is not an integer.");
+                                "because the quotient of the datarecordblock durations is not an integer.");
       messagewindow.exec();
       return;
     }
@@ -256,7 +258,7 @@ struct date_time_struct date_time;
 
   utc_to_date_time(referencetime, &date_time);
 
-/************************* write EDF-header ***************************************/
+  /************************* write EDF-header ***************************************/
 
   rewind(mainwindow->edfheaderlist[mainwindow->sel_viewtime]->file_hdl);
 
@@ -307,32 +309,45 @@ struct date_time_struct date_time;
 
     switch(date_time.month)
     {
-      case  1 : fprintf(outputfile, "JAN");
-                break;
-      case  2 : fprintf(outputfile, "FEB");
-                break;
-      case  3 : fprintf(outputfile, "MAR");
-                break;
-      case  4 : fprintf(outputfile, "APR");
-                break;
-      case  5 : fprintf(outputfile, "MAY");
-                break;
-      case  6 : fprintf(outputfile, "JUN");
-                break;
-      case  7 : fprintf(outputfile, "JUL");
-                break;
-      case  8 : fprintf(outputfile, "AUG");
-                break;
-      case  9 : fprintf(outputfile, "SEP");
-                break;
-      case 10 : fprintf(outputfile, "OCT");
-                break;
-      case 11 : fprintf(outputfile, "NOV");
-                break;
-      case 12 : fprintf(outputfile, "DEC");
-                break;
-      default : fprintf(outputfile, "ERR");
-                break;
+    case  1 :
+      fprintf(outputfile, "JAN");
+      break;
+    case  2 :
+      fprintf(outputfile, "FEB");
+      break;
+    case  3 :
+      fprintf(outputfile, "MAR");
+      break;
+    case  4 :
+      fprintf(outputfile, "APR");
+      break;
+    case  5 :
+      fprintf(outputfile, "MAY");
+      break;
+    case  6 :
+      fprintf(outputfile, "JUN");
+      break;
+    case  7 :
+      fprintf(outputfile, "JUL");
+      break;
+    case  8 :
+      fprintf(outputfile, "AUG");
+      break;
+    case  9 :
+      fprintf(outputfile, "SEP");
+      break;
+    case 10 :
+      fprintf(outputfile, "OCT");
+      break;
+    case 11 :
+      fprintf(outputfile, "NOV");
+      break;
+    case 12 :
+      fprintf(outputfile, "DEC");
+      break;
+    default :
+      fprintf(outputfile, "ERR");
+      break;
     }
 
     fprintf(outputfile, "-%04i ", date_time.year);
@@ -811,7 +826,7 @@ struct date_time_struct date_time;
       p += sprintf(scratchpad + p, "Z-ratio ");
     }
 
-    for(;p<81; p++)
+    for(; p<81; p++)
     {
       scratchpad[p] = ' ';
     }
@@ -833,7 +848,7 @@ struct date_time_struct date_time;
   for(i=0; i<signalcomps; i++)
   {
     fprintf(outputfile, "%-8i", signalcomp[i]->edfhdr->edfparam[signalcomp[i]->edfsignal[0]].smp_per_record
-     * duration_factor[signalcomp[i]->filenum]);
+            * duration_factor[signalcomp[i]->filenum]);
   }
 
   if(edfplus)
@@ -904,11 +919,11 @@ struct date_time_struct date_time;
               if(signalcomp[i]->edfhdr->edf)
               {
                 temp = *(((short *)(
-                  viewbuf
-                  + signalcomp[i]->viewbufoffset
-                  + (signalcomp[i]->edfhdr->recordsize * (s2 / signalcomp[i]->edfhdr->edfparam[signalcomp[i]->edfsignal[j]].smp_per_record))
-                  + signalcomp[i]->edfhdr->edfparam[signalcomp[i]->edfsignal[j]].buf_offset))
-                  + (s2 % signalcomp[i]->edfhdr->edfparam[signalcomp[i]->edfsignal[j]].smp_per_record));
+                            viewbuf
+                            + signalcomp[i]->viewbufoffset
+                            + (signalcomp[i]->edfhdr->recordsize * (s2 / signalcomp[i]->edfhdr->edfparam[signalcomp[i]->edfsignal[j]].smp_per_record))
+                            + signalcomp[i]->edfhdr->edfparam[signalcomp[i]->edfsignal[j]].buf_offset))
+                         + (s2 % signalcomp[i]->edfhdr->edfparam[signalcomp[i]->edfsignal[j]].smp_per_record));
               }
 
               temp += signalcomp[i]->edfhdr->edfparam[signalcomp[i]->edfsignal[j]].offset;
@@ -1056,8 +1071,8 @@ struct date_time_struct date_time;
     if(edfplus)
     {
       tallen = fprintf(outputfile, "+%i.%07i",
-      (int)(taltime / TIME_DIMENSION),
-      (int)(taltime % TIME_DIMENSION));
+                       (int)(taltime / TIME_DIMENSION),
+                       (int)(taltime % TIME_DIMENSION));
 
       fputc(20, outputfile);
       fputc(20, outputfile);
@@ -1136,8 +1151,8 @@ struct date_time_struct date_time;
           if((l_temp >= 0LL) && (l_temp < (mainwindow->pagetime + TIME_DIMENSION)))
           {
             tallen += fprintf(outputfile, "%+i.%07i",
-            (int)(l_temp / TIME_DIMENSION),
-            (int)(l_temp % TIME_DIMENSION));
+                              (int)(l_temp / TIME_DIMENSION),
+                              (int)(l_temp % TIME_DIMENSION));
 
             if(annotations_pntr->duration[0]!=0)
             {

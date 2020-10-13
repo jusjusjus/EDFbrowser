@@ -77,34 +77,34 @@ public:
 
 private:
 
-QLabel       *label1[16],
-             *label2,
-             *label3,
-             *label4;
+  QLabel       *label1[16],
+               *label2,
+               *label3,
+               *label4;
 
-QLineEdit    *lineEdit1[16];
+  QLineEdit    *lineEdit1[16];
 
-QRadioButton *radioButton1,
-             *radioButton2;
+  QRadioButton *radioButton1,
+               *radioButton2;
 
-QCheckBox    *checkBox1;
+  QCheckBox    *checkBox1;
 
-QPushButton  *selectButton,
-             *closeButton;
-
-
-QDialog      *myobjectDialog;
+  QPushButton  *selectButton,
+               *closeButton;
 
 
-char  inputpath[MAX_PATH_LENGTH],
-      outputpath[MAX_PATH_LENGTH],
-      *recent_opendir,
-      *recent_savedir;
+  QDialog      *myobjectDialog;
+
+
+  char  inputpath[MAX_PATH_LENGTH],
+        outputpath[MAX_PATH_LENGTH],
+        *recent_opendir,
+        *recent_savedir;
 
 
 private slots:
 
-void SelectFileButton();
+  void SelectFileButton();
 
 };
 

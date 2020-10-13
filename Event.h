@@ -26,13 +26,13 @@ class Event : public QAction
 {
 
 public:
-	Event(const char* name, QObject* parent, double min=0., double max=LONGDURATION);
+  Event(const char* name, QObject* parent, double min=0., double max=LONGDURATION);
 
-	bool check(double duration);
+  bool check(double duration);
 
 private:
-	double minDuration,
-	       maxDuration;
+  double minDuration,
+         maxDuration;
 
 };
 
