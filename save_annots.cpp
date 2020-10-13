@@ -37,13 +37,13 @@
 
 #if defined(__APPLE__) || defined(__MACH__) || defined(__APPLE_CC__)
 
-#define fopeno fopen
+  #define fopeno fopen
 
 #else
 
-#define fseeko fseeko64
-#define ftello ftello64
-#define fopeno fopen64
+  #define fseeko fseeko64
+  #define ftello ftello64
+  #define fopeno fopen64
 
 #endif
 
@@ -53,17 +53,17 @@
 int save_annotations(UI_Mainwindow *mainwindow, FILE *outputfile, struct edfhdrblock *hdr, struct annotationblock *annotlist)
 {
   int i, j, k, n, p=0,
-      new_edfsignals=0,
-      signalslist[MAXSIGNALS],
-      datarecords,
-      annot_len,
-      annot_smp_per_record,
-      annot_recordsize,
-      timestamp_decimals,
-      timestamp_digits,
-      annots_per_datrec,
-      space,
-      progress_steps;
+                  new_edfsignals=0,
+                  signalslist[MAXSIGNALS],
+                  datarecords,
+                  annot_len,
+                  annot_smp_per_record,
+                  annot_recordsize,
+                  timestamp_decimals,
+                  timestamp_digits,
+                  annots_per_datrec,
+                  space,
+                  progress_steps;
 
   char *readbuf,
        scratchpad[256],
@@ -416,7 +416,7 @@ int save_annotations(UI_Mainwindow *mainwindow, FILE *outputfile, struct edfhdrb
   fprintf(outputfile, "%-8i", annot_smp_per_record);
   for(i=0; i<((new_edfsignals * 32) + 32); i++)
   {
-   fputc(' ', outputfile);
+    fputc(' ', outputfile);
   }
 
 ///////////////////////////////////////////////////////////////////
@@ -484,47 +484,63 @@ int save_annotations(UI_Mainwindow *mainwindow, FILE *outputfile, struct edfhdrb
       }
     }
 
-#ifdef Q_OS_WIN32
+    #ifdef Q_OS_WIN32
     switch(timestamp_decimals)
     {
-      case 0 : p = __mingw_snprintf(annot_buf, 16, "+%lli", time / TIME_DIMENSION);
-                break;
-      case 1 : p = __mingw_snprintf(annot_buf, 16, "+%lli.%01lli", time / TIME_DIMENSION, (time % TIME_DIMENSION) / 1000000LL);
-                break;
-      case 2 : p = __mingw_snprintf(annot_buf, 16, "+%lli.%02lli", time / TIME_DIMENSION, (time % TIME_DIMENSION) / 100000LL);
-                break;
-      case 3 : p = __mingw_snprintf(annot_buf, 16, "+%lli.%03lli", time / TIME_DIMENSION, (time % TIME_DIMENSION) / 10000LL);
-                break;
-      case 4 : p = __mingw_snprintf(annot_buf, 16, "+%lli.%04lli", time / TIME_DIMENSION, (time % TIME_DIMENSION) / 1000LL);
-                break;
-      case 5 : p = __mingw_snprintf(annot_buf, 16, "+%lli.%05lli", time / TIME_DIMENSION, (time % TIME_DIMENSION) / 100LL);
-                break;
-      case 6 : p = __mingw_snprintf(annot_buf, 16, "+%lli.%06lli", time / TIME_DIMENSION, (time % TIME_DIMENSION) / 10LL);
-                break;
-      case 7 : p = __mingw_snprintf(annot_buf, 16, "+%lli.%07lli", time / TIME_DIMENSION, time % TIME_DIMENSION);
-                break;
+    case 0 :
+      p = __mingw_snprintf(annot_buf, 16, "+%lli", time / TIME_DIMENSION);
+      break;
+    case 1 :
+      p = __mingw_snprintf(annot_buf, 16, "+%lli.%01lli", time / TIME_DIMENSION, (time % TIME_DIMENSION) / 1000000LL);
+      break;
+    case 2 :
+      p = __mingw_snprintf(annot_buf, 16, "+%lli.%02lli", time / TIME_DIMENSION, (time % TIME_DIMENSION) / 100000LL);
+      break;
+    case 3 :
+      p = __mingw_snprintf(annot_buf, 16, "+%lli.%03lli", time / TIME_DIMENSION, (time % TIME_DIMENSION) / 10000LL);
+      break;
+    case 4 :
+      p = __mingw_snprintf(annot_buf, 16, "+%lli.%04lli", time / TIME_DIMENSION, (time % TIME_DIMENSION) / 1000LL);
+      break;
+    case 5 :
+      p = __mingw_snprintf(annot_buf, 16, "+%lli.%05lli", time / TIME_DIMENSION, (time % TIME_DIMENSION) / 100LL);
+      break;
+    case 6 :
+      p = __mingw_snprintf(annot_buf, 16, "+%lli.%06lli", time / TIME_DIMENSION, (time % TIME_DIMENSION) / 10LL);
+      break;
+    case 7 :
+      p = __mingw_snprintf(annot_buf, 16, "+%lli.%07lli", time / TIME_DIMENSION, time % TIME_DIMENSION);
+      break;
     }
-#else
+    #else
     switch(timestamp_decimals)
     {
-      case 0 : p = snprintf(annot_buf, 16, "+%lli", time / TIME_DIMENSION);
-                break;
-      case 1 : p = snprintf(annot_buf, 16, "+%lli.%01lli", time / TIME_DIMENSION, (time % TIME_DIMENSION) / 1000000LL);
-                break;
-      case 2 : p = snprintf(annot_buf, 16, "+%lli.%02lli", time / TIME_DIMENSION, (time % TIME_DIMENSION) / 100000LL);
-                break;
-      case 3 : p = snprintf(annot_buf, 16, "+%lli.%03lli", time / TIME_DIMENSION, (time % TIME_DIMENSION) / 10000LL);
-                break;
-      case 4 : p = snprintf(annot_buf, 16, "+%lli.%04lli", time / TIME_DIMENSION, (time % TIME_DIMENSION) / 1000LL);
-                break;
-      case 5 : p = snprintf(annot_buf, 16, "+%lli.%05lli", time / TIME_DIMENSION, (time % TIME_DIMENSION) / 100LL);
-                break;
-      case 6 : p = snprintf(annot_buf, 16, "+%lli.%06lli", time / TIME_DIMENSION, (time % TIME_DIMENSION) / 10LL);
-                break;
-      case 7 : p = snprintf(annot_buf, 16, "+%lli.%07lli", time / TIME_DIMENSION, time % TIME_DIMENSION);
-                break;
+    case 0 :
+      p = snprintf(annot_buf, 16, "+%lli", time / TIME_DIMENSION);
+      break;
+    case 1 :
+      p = snprintf(annot_buf, 16, "+%lli.%01lli", time / TIME_DIMENSION, (time % TIME_DIMENSION) / 1000000LL);
+      break;
+    case 2 :
+      p = snprintf(annot_buf, 16, "+%lli.%02lli", time / TIME_DIMENSION, (time % TIME_DIMENSION) / 100000LL);
+      break;
+    case 3 :
+      p = snprintf(annot_buf, 16, "+%lli.%03lli", time / TIME_DIMENSION, (time % TIME_DIMENSION) / 10000LL);
+      break;
+    case 4 :
+      p = snprintf(annot_buf, 16, "+%lli.%04lli", time / TIME_DIMENSION, (time % TIME_DIMENSION) / 1000LL);
+      break;
+    case 5 :
+      p = snprintf(annot_buf, 16, "+%lli.%05lli", time / TIME_DIMENSION, (time % TIME_DIMENSION) / 100LL);
+      break;
+    case 6 :
+      p = snprintf(annot_buf, 16, "+%lli.%06lli", time / TIME_DIMENSION, (time % TIME_DIMENSION) / 10LL);
+      break;
+    case 7 :
+      p = snprintf(annot_buf, 16, "+%lli.%07lli", time / TIME_DIMENSION, time % TIME_DIMENSION);
+      break;
     }
-#endif
+    #endif
     annot_buf[p++] = 20;
     annot_buf[p++] = 20;
     annot_buf[p++] = 0;
@@ -537,19 +553,19 @@ int save_annotations(UI_Mainwindow *mainwindow, FILE *outputfile, struct edfhdrb
         {
           if(annot->onset<0)
           {
-#ifdef Q_OS_WIN32
+            #ifdef Q_OS_WIN32
             p += __mingw_snprintf(annot_buf + p, 20, "-%lli.%07lli", -(annot->onset / TIME_DIMENSION), -(annot->onset % TIME_DIMENSION));
-#else
+            #else
             p += snprintf(annot_buf + p, 20, "-%lli.%07lli", -(annot->onset / TIME_DIMENSION), -(annot->onset % TIME_DIMENSION));
-#endif
+            #endif
           }
           else
           {
-#ifdef Q_OS_WIN32
+            #ifdef Q_OS_WIN32
             p += __mingw_snprintf(annot_buf + p, 20, "+%lli.%07lli", annot->onset / TIME_DIMENSION, annot->onset % TIME_DIMENSION);
-#else
+            #else
             p += snprintf(annot_buf + p, 20, "+%lli.%07lli", annot->onset / TIME_DIMENSION, annot->onset % TIME_DIMENSION);
-#endif
+            #endif
           }
 
           for(j=0; j<7; j++)

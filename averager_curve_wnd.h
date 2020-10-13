@@ -137,10 +137,10 @@ private:
 
 private slots:
 
-void sliderMoved(int);
-void averager_curve_dialogDestroyed(QObject *);
-void export_edf(void);
-void update_flywheel(int);
+  void sliderMoved(int);
+  void averager_curve_dialogDestroyed(QObject *);
+  void export_edf(void);
+  void update_flywheel(int);
 
 };
 

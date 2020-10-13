@@ -59,11 +59,11 @@ public:
 
 private:
 
-QDialog      *MessageDialog;
+  QDialog      *MessageDialog;
 
-QLabel       *Label1;
+  QLabel       *Label1;
 
-QPushButton  *pushButton1;
+  QPushButton  *pushButton1;
 
 };
 

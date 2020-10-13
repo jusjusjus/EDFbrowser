@@ -87,29 +87,29 @@ public:
 
 private:
 
-QDialog      *myobjectDialog;
+  QDialog      *myobjectDialog;
 
-QListWidget  *list;
+  QListWidget  *list;
 
-QPushButton  *startButton,
-             *cancelButton;
+  QPushButton  *startButton,
+               *cancelButton;
 
-QGroupBox    *groupBox1;
+  QGroupBox    *groupBox1;
 
-QVBoxLayout  *vbox1;
+  QVBoxLayout  *vbox1;
 
-QRadioButton *radioButton1,
-             *radioButton2,
-             *radioButton3;
+  QRadioButton *radioButton1,
+               *radioButton2,
+               *radioButton3;
 
-QCheckBox    *checkBox1,
-             *checkBox2;
+  QCheckBox    *checkBox1,
+               *checkBox2;
 
-void load_signalcomps(void);
+  void load_signalcomps(void);
 
 private slots:
 
-void Export_RR_intervals();
+  void Export_RR_intervals();
 
 };
 

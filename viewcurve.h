@@ -44,9 +44,9 @@
 #include <QComboBox>
 #include <QLabel>
 #if QT_VERSION < 0x050000
-#include <QPrinter>
+  #include <QPrinter>
 #else
-#include <QtPrintSupport>
+  #include <QtPrintSupport>
 #endif
 #include <QPixmap>
 #include <QPrintDialog>
@@ -114,9 +114,9 @@ private:
   struct graphicBufStruct *graphicBuf;
 
   struct crossHairStruct *crosshair_1,
-                         *crosshair_2;
+           *crosshair_2;
 
-	void run();
+  void run();
 
 };
 
@@ -164,12 +164,12 @@ public:
   double original_screen_offset;
 
   struct graphicBufStruct *graphicBuf,
-                          *printBuf;
+           *printBuf;
 
   struct active_markersblock *active_markers;
 
   struct crossHairStruct crosshair_1,
-                         crosshair_2;
+           crosshair_2;
 
   QColor backgroundcolor,
          small_ruler_color,
@@ -191,15 +191,15 @@ public:
 
   void drawCurve_stage_1(QPainter *painter=NULL, int w_width=0, int w_height=0, int print_linewidth=0);
   //void setCrosshair_1_center(void);
-	void set_crosshairs(double fraction_1, double fraction_2);
+  void set_crosshairs(double fraction_1, double fraction_2);
 
 
 public slots:
 
   void exec_sidemenu(int);
-#if QT_VERSION < 0x050000
+  #if QT_VERSION < 0x050000
   void print_to_postscript();
-#endif
+  #endif
   void print_to_pdf();
   void print_to_image(int, int);
   void print_to_printer();
@@ -257,7 +257,7 @@ private:
 
   void backup_colors_for_printing(void);
   void restore_colors_after_printing(void);
-	int ymouseOverSignal(int my, int ymin=-5, int ymax=24);
+  int ymouseOverSignal(int my, int ymin=-5, int ymax=24);
 
 protected slots:
 

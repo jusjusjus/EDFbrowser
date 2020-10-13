@@ -67,53 +67,53 @@ class AdjustFilterSettings : public QObject
 
 public:
 
-AdjustFilterSettings(struct signalcompblock *, QWidget *);
+  AdjustFilterSettings(struct signalcompblock *, QWidget *);
 
 
 private:
 
-int filter_nr,
-    filter_cnt,
-    type,
-    model,
-    order,
-    size,
-    brand[MAXFILTERS];
+  int filter_nr,
+      filter_cnt,
+      type,
+      model,
+      order,
+      size,
+      brand[MAXFILTERS];
 
-double frequency1,
-       frequency2,
-       ripple;
+  double frequency1,
+         frequency2,
+         ripple;
 
-struct signalcompblock * signalcomp;
+  struct signalcompblock * signalcomp;
 
-UI_Mainwindow  *mainwindow;
+  UI_Mainwindow  *mainwindow;
 
-ViewCurve      *maincurve;
+  ViewCurve      *maincurve;
 
-QDialog        *filtersettings_dialog;
+  QDialog        *filtersettings_dialog;
 
-QLabel         *label[5];
+  QLabel         *label[5];
 
-QComboBox      *filterbox,
-               *stepsizebox;
+  QComboBox      *filterbox,
+                 *stepsizebox;
 
-QSpinBox       *orderbox;
+  QSpinBox       *orderbox;
 
-QDoubleSpinBox *freq1box,
-               *freq2box;
+  QDoubleSpinBox *freq1box,
+                 *freq2box;
 
-QPushButton    *CloseButton;
+  QPushButton    *CloseButton;
 
-void update_filter(void);
+  void update_filter(void);
 
 
 private slots:
 
-void freqbox1valuechanged(double);
-void freqbox2valuechanged(double);
-void orderboxvaluechanged(int);
-void stepsizeboxchanged(int);
-void filterboxchanged(int);
+  void freqbox1valuechanged(double);
+  void freqbox2valuechanged(double);
+  void orderboxvaluechanged(int);
+  void stepsizeboxchanged(int);
+  void filterboxchanged(int);
 
 };
 

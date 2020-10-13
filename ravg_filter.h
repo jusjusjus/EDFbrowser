@@ -47,17 +47,18 @@
 
 
 
-struct ravg_filter_settings{
-                       int size;
-                       int type;
-                       int first_sample;
-                       double *buf;
-                       double *buf2;
-                       int buf_pntr;
-                       int buf_pntr2;
-                       double mean;
-                       double mean2;
-                      };
+struct ravg_filter_settings
+{
+  int size;
+  int type;
+  int first_sample;
+  double *buf;
+  double *buf2;
+  int buf_pntr;
+  int buf_pntr2;
+  double mean;
+  double mean2;
+};
 
 
 

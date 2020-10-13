@@ -49,8 +49,14 @@ class FilterCurve: public QWidget
 public:
   FilterCurve(QWidget *parent=0);
 
-  QSize sizeHint() const {return minimumSizeHint(); }
-  QSize minimumSizeHint() const {return QSize(30,10); }
+  QSize sizeHint() const
+  {
+    return minimumSizeHint();
+  }
+  QSize minimumSizeHint() const
+  {
+    return QSize(30,10);
+  }
 
   void setSignalColor1(QColor);
   void setSignalColor2(QColor);

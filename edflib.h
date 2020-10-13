@@ -99,7 +99,8 @@ extern "C" {
 /* For more info about the BDF and BDF+ format, visit: http://www.teuniz.net/edfbrowser/bdfplus%20format%20description.html */
 
 
-struct edf_param_struct{         /* this structure contains all the relevant EDF-signal parameters of one signal */
+struct edf_param_struct          /* this structure contains all the relevant EDF-signal parameters of one signal */
+{
   char   label[17];              /* label (name) of the signal, null-terminated string */
   long long smp_in_file;         /* number of samples of this signal in the file */
   double phys_max;               /* physical maximum, usually the maximum input of the ADC */
@@ -110,17 +111,19 @@ struct edf_param_struct{         /* this structure contains all the relevant EDF
   char   physdimension[9];       /* physical dimension (uV, bpm, mA, etc.), null-terminated string */
   char   prefilter[81];          /* null-terminated string */
   char   transducer[81];         /* null-terminated string */
-      };
+};
 
 
-struct edf_annotation_struct{                           /* this structure is used for annotations */
-        long long onset;                                /* onset time of the event, expressed in units of 100 nanoSeconds and relative to the starttime in the header */
-        char duration[16];                              /* duration time, this is a null-terminated ASCII text-string */
-        char annotation[EDFLIB_MAX_ANNOTATION_LEN + 1]; /* description of the event in UTF-8, this is a null terminated string */
-       };
+struct edf_annotation_struct                            /* this structure is used for annotations */
+{
+  long long onset;                                /* onset time of the event, expressed in units of 100 nanoSeconds and relative to the starttime in the header */
+  char duration[16];                              /* duration time, this is a null-terminated ASCII text-string */
+  char annotation[EDFLIB_MAX_ANNOTATION_LEN + 1]; /* description of the event in UTF-8, this is a null terminated string */
+};
 
 
-struct edf_hdr_struct{                     /* this structure contains all the relevant EDF header info and will be filled when calling the function edf_open_file_readonly() */
+struct edf_hdr_struct                      /* this structure contains all the relevant EDF header info and will be filled when calling the function edf_open_file_readonly() */
+{
   int       handle;                        /* a handle (identifier) used to distinguish the different files */
   int       filetype;                      /* 0: EDF, 1: EDFplus, 2: BDF, 3: BDFplus, a negative number means an error */
   int       edfsignals;                    /* number of EDF signals in the file, annotation channels are NOT included */
@@ -147,7 +150,7 @@ struct edf_hdr_struct{                     /* this structure contains all the re
   long long datarecords_in_file;                          /* number of datarecords in the file */
   long long annotations_in_file;                          /* number of annotations in the file */
   struct edf_param_struct signalparam[EDFLIB_MAXSIGNALS]; /* array of structs which contain the relevant signal parameters */
-       };
+};
 
 
 
@@ -379,7 +382,7 @@ int edf_set_physical_dimension(int handle, int edfsignal, const char *phys_dim);
 
 
 int edf_set_startdatetime(int handle, int startdate_year, int startdate_month, int startdate_day,
-                                      int starttime_hour, int starttime_minute, int starttime_second);
+                          int starttime_hour, int starttime_minute, int starttime_second);
 
 /* Sets the startdate and starttime. */
 /* year: 1970 - 3000, month: 1 - 12, day: 1 - 31 */

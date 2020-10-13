@@ -488,11 +488,11 @@ void SignalCurve::exec_sidemenu()
   sidemenuButton1->setGeometry(10, 10, 100, 20);
   sidemenuButton1->setText("to printer");
 
-#if QT_VERSION < 0x050000
+  #if QT_VERSION < 0x050000
   sidemenuButton2 = new QPushButton(sidemenu);
   sidemenuButton2->setGeometry(10, 40, 100, 20);
   sidemenuButton2->setText("to Postscript");
-#endif
+  #endif
 
   sidemenuButton3 = new QPushButton(sidemenu);
   sidemenuButton3->setGeometry(10, 70, 100, 20);
@@ -514,9 +514,9 @@ void SignalCurve::exec_sidemenu()
   }
 
   QObject::connect(sidemenuButton1, SIGNAL(clicked()), this, SLOT(print_to_printer()));
-#if QT_VERSION < 0x050000
+  #if QT_VERSION < 0x050000
   QObject::connect(sidemenuButton2, SIGNAL(clicked()), this, SLOT(print_to_postscript()));
-#endif
+  #endif
   QObject::connect(sidemenuButton3, SIGNAL(clicked()), this, SLOT(print_to_pdf()));
   QObject::connect(sidemenuButton4, SIGNAL(clicked()), this, SLOT(print_to_image()));
   QObject::connect(sidemenuButton5, SIGNAL(clicked()), this, SLOT(print_to_ascii()));
@@ -2543,8 +2543,8 @@ int SignalCurve::getCursorPosition(void)
 }
 
 
-  /* size is size of destination, returns length of directory */
-  /* last character of destination is not a slash! */
+/* size is size of destination, returns length of directory */
+/* last character of destination is not a slash! */
 int SignalCurve::get_directory_from_path(char *dest, const char *src, int ssize)
 {
   int i, len;

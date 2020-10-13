@@ -91,9 +91,9 @@ private:
 
 private slots:
 
-void rowClicked(QListWidgetItem *);
-void adEntry();
-void removeEntry();
+  void rowClicked(QListWidgetItem *);
+  void adEntry();
+  void removeEntry();
 
 };
 

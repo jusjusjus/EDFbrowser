@@ -83,56 +83,56 @@ public:
 
 private:
 
-QLabel       *label1,
-             *label2,
-             *label3,
-             *label4,
-             *label5;
+  QLabel       *label1,
+               *label2,
+               *label3,
+               *label4,
+               *label5;
 
-QPushButton  *pushButton1,
-             *pushButton2,
-             *pushButton3,
-             *pushButton4,
-             *pushButton5,
-             *pushButton6;
+  QPushButton  *pushButton1,
+               *pushButton2,
+               *pushButton3,
+               *pushButton4,
+               *pushButton5,
+               *pushButton6;
 
-QSpinBox     *spinBox1,
-             *spinBox2,
-             *spinBox3;
+  QSpinBox     *spinBox1,
+               *spinBox2,
+               *spinBox3;
 
-QRadioButton *radioButton1,
-             *radioButton2;
+  QRadioButton *radioButton1,
+               *radioButton2;
 
-QTableWidget *SignalsTablewidget;
+  QTableWidget *SignalsTablewidget;
 
-QDialog      *myobjectDialog;
+  QDialog      *myobjectDialog;
 
-int  signalslist[MAXSIGNALS],
-     dividerlist[MAXSIGNALS],
-     file_num;
+  int  signalslist[MAXSIGNALS],
+       dividerlist[MAXSIGNALS],
+       file_num;
 
-char  inputpath[MAX_PATH_LENGTH],
-      outputpath[MAX_PATH_LENGTH],
-      *recent_savedir;
+  char  inputpath[MAX_PATH_LENGTH],
+        outputpath[MAX_PATH_LENGTH],
+        *recent_savedir;
 
-FILE *inputfile,
-     *outputfile;
+  FILE *inputfile,
+       *outputfile;
 
-struct edfhdrblock *edfhdr;
+  struct edfhdrblock *edfhdr;
 
-void showpopupmessage(const char *, const char *);
+  void showpopupmessage(const char *, const char *);
 
 private slots:
 
-void SelectFileButton();
-void StartConversion();
-void Select_all_signals();
-void Deselect_all_signals();
-void Set_SRdivider_all_signals();
-void spinBox1changed(int);
-void spinBox2changed(int);
-void radioButton1Toggled(bool);
-void radioButton2Toggled(bool);
+  void SelectFileButton();
+  void StartConversion();
+  void Select_all_signals();
+  void Deselect_all_signals();
+  void Set_SRdivider_all_signals();
+  void spinBox1changed(int);
+  void spinBox2changed(int);
+  void radioButton1Toggled(bool);
+  void radioButton2Toggled(bool);
 
 };
 

@@ -37,13 +37,13 @@
 
 #if defined(__APPLE__) || defined(__MACH__) || defined(__APPLE_CC__)
 
-#define fopeno fopen
+  #define fopeno fopen
 
 #else
 
-#define fseeko fseeko64
-#define ftello ftello64
-#define fopeno fopen64
+  #define fseeko fseeko64
+  #define ftello ftello64
+  #define fopeno fopen64
 
 #endif
 
@@ -375,7 +375,7 @@ void UI_headerEditorWindow::open_file()
   if((!edf) && (!bdf))
   {
     QMessageBox messagewindow(QMessageBox::Critical, "Error", "File is not a valid EDF or BDF file.\n"
-                                                              "Invalid version.");
+                              "Invalid version.");
     messagewindow.exec();
     fclose(file);
     file = NULL;
@@ -396,7 +396,7 @@ void UI_headerEditorWindow::open_file()
   if(edfsignals > 2049)
   {
     QMessageBox messagewindow(QMessageBox::Critical, "Error", "Number of signals in header is more than 2048.\n"
-                                                              "This tool can not process more than 2048 signals.");
+                              "This tool can not process more than 2048 signals.");
     messagewindow.exec();
     fclose(file);
     file = NULL;
@@ -408,7 +408,7 @@ void UI_headerEditorWindow::open_file()
   if(filesize < (((edfsignals + 1LL) * 256LL) + edfsignals))
   {
     QMessageBox messagewindow(QMessageBox::Critical, "Error", "Filesize is too small.\n"
-                                                              "Can not fix this file.");
+                              "Can not fix this file.");
     messagewindow.exec();
     fclose(file);
     file = NULL;
@@ -584,17 +584,17 @@ void UI_headerEditorWindow::read_header()
 
       r = 0;
       if(!strncmp(scratchpad + p + 3, "JAN", 3))  r = 1;
-        else if(!strncmp(scratchpad + p + 3, "FEB", 3))  r = 2;
-          else if(!strncmp(scratchpad + p + 3, "MAR", 3))  r = 3;
-            else if(!strncmp(scratchpad + p + 3, "APR", 3))  r = 4;
-              else if(!strncmp(scratchpad + p + 3, "MAY", 3))  r = 5;
-                else if(!strncmp(scratchpad + p + 3, "JUN", 3))  r = 6;
-                  else if(!strncmp(scratchpad + p + 3, "JUL", 3))  r = 7;
-                    else if(!strncmp(scratchpad + p + 3, "AUG", 3))  r = 8;
-                      else if(!strncmp(scratchpad + p + 3, "SEP", 3))  r = 9;
-                        else if(!strncmp(scratchpad + p + 3, "OCT", 3))  r = 10;
-                          else if(!strncmp(scratchpad + p + 3, "NOV", 3))  r = 11;
-                            else if(!strncmp(scratchpad + p + 3, "DEC", 3))  r = 12;
+      else if(!strncmp(scratchpad + p + 3, "FEB", 3))  r = 2;
+      else if(!strncmp(scratchpad + p + 3, "MAR", 3))  r = 3;
+      else if(!strncmp(scratchpad + p + 3, "APR", 3))  r = 4;
+      else if(!strncmp(scratchpad + p + 3, "MAY", 3))  r = 5;
+      else if(!strncmp(scratchpad + p + 3, "JUN", 3))  r = 6;
+      else if(!strncmp(scratchpad + p + 3, "JUL", 3))  r = 7;
+      else if(!strncmp(scratchpad + p + 3, "AUG", 3))  r = 8;
+      else if(!strncmp(scratchpad + p + 3, "SEP", 3))  r = 9;
+      else if(!strncmp(scratchpad + p + 3, "OCT", 3))  r = 10;
+      else if(!strncmp(scratchpad + p + 3, "NOV", 3))  r = 11;
+      else if(!strncmp(scratchpad + p + 3, "DEC", 3))  r = 12;
 
       if(r)
       {
@@ -661,17 +661,17 @@ void UI_headerEditorWindow::read_header()
 
       r = 0;
       if(!strncmp(scratchpad + 13, "JAN", 3))  r = 1;
-        else if(!strncmp(scratchpad + 13, "FEB", 3))  r = 2;
-          else if(!strncmp(scratchpad + 13, "MAR", 3))  r = 3;
-            else if(!strncmp(scratchpad + 13, "APR", 3))  r = 4;
-              else if(!strncmp(scratchpad + 13, "MAY", 3))  r = 5;
-                else if(!strncmp(scratchpad + 13, "JUN", 3))  r = 6;
-                  else if(!strncmp(scratchpad + 13, "JUL", 3))  r = 7;
-                    else if(!strncmp(scratchpad + 13, "AUG", 3))  r = 8;
-                      else if(!strncmp(scratchpad + 13, "SEP", 3))  r = 9;
-                        else if(!strncmp(scratchpad + 13, "OCT", 3))  r = 10;
-                          else if(!strncmp(scratchpad + 13, "NOV", 3))  r = 11;
-                            else if(!strncmp(scratchpad + 13, "DEC", 3))  r = 12;
+      else if(!strncmp(scratchpad + 13, "FEB", 3))  r = 2;
+      else if(!strncmp(scratchpad + 13, "MAR", 3))  r = 3;
+      else if(!strncmp(scratchpad + 13, "APR", 3))  r = 4;
+      else if(!strncmp(scratchpad + 13, "MAY", 3))  r = 5;
+      else if(!strncmp(scratchpad + 13, "JUN", 3))  r = 6;
+      else if(!strncmp(scratchpad + 13, "JUL", 3))  r = 7;
+      else if(!strncmp(scratchpad + 13, "AUG", 3))  r = 8;
+      else if(!strncmp(scratchpad + 13, "SEP", 3))  r = 9;
+      else if(!strncmp(scratchpad + 13, "OCT", 3))  r = 10;
+      else if(!strncmp(scratchpad + 13, "NOV", 3))  r = 11;
+      else if(!strncmp(scratchpad + 13, "DEC", 3))  r = 12;
 
       if(r)
       {
@@ -858,7 +858,7 @@ void UI_headerEditorWindow::read_header()
     if(atoi(scratchpad) < 1)
     {
       sprintf(str, "Samples per record of signal %i is less than 1.\n"
-                   "Can not fix this file.", i + 1);
+              "Can not fix this file.", i + 1);
       QMessageBox messagewindow(QMessageBox::Critical, "Error", str);
       messagewindow.exec();
       fclose(file);
@@ -900,7 +900,7 @@ void UI_headerEditorWindow::read_header()
   if(recordsize < 1)
   {
     QMessageBox messagewindow(QMessageBox::Critical, "Error", "Recordsize is less than 1.\n"
-                                                              "Can not fix this file.");
+                              "Can not fix this file.");
     messagewindow.exec();
     fclose(file);
     file = NULL;
@@ -917,7 +917,7 @@ void UI_headerEditorWindow::save_hdr()
        str[256];
 
   long long filesize,
-            l_tmp=0LL;
+       l_tmp=0LL;
 
 
   if(file == NULL)
@@ -984,30 +984,42 @@ void UI_headerEditorWindow::save_hdr()
 
       switch(i)
       {
-        case  1 : sprintf(scratchpad, "%02i-JAN-%04i ", dateEdit1->date().day(), dateEdit1->date().year());
-                  break;
-        case  2 : sprintf(scratchpad, "%02i-FEB-%04i ", dateEdit1->date().day(), dateEdit1->date().year());
-                  break;
-        case  3 : sprintf(scratchpad, "%02i-MAR-%04i ", dateEdit1->date().day(), dateEdit1->date().year());
-                  break;
-        case  4 : sprintf(scratchpad, "%02i-APR-%04i ", dateEdit1->date().day(), dateEdit1->date().year());
-                  break;
-        case  5 : sprintf(scratchpad, "%02i-MAY-%04i ", dateEdit1->date().day(), dateEdit1->date().year());
-                  break;
-        case  6 : sprintf(scratchpad, "%02i-JUN-%04i ", dateEdit1->date().day(), dateEdit1->date().year());
-                  break;
-        case  7 : sprintf(scratchpad, "%02i-JUL-%04i ", dateEdit1->date().day(), dateEdit1->date().year());
-                  break;
-        case  8 : sprintf(scratchpad, "%02i-AUG-%04i ", dateEdit1->date().day(), dateEdit1->date().year());
-                  break;
-        case  9 : sprintf(scratchpad, "%02i-SEP-%04i ", dateEdit1->date().day(), dateEdit1->date().year());
-                  break;
-        case 10 : sprintf(scratchpad, "%02i-OCT-%04i ", dateEdit1->date().day(), dateEdit1->date().year());
-                  break;
-        case 11 : sprintf(scratchpad, "%02i-NOV-%04i ", dateEdit1->date().day(), dateEdit1->date().year());
-                  break;
-        case 12 : sprintf(scratchpad, "%02i-DEC-%04i ", dateEdit1->date().day(), dateEdit1->date().year());
-                  break;
+      case  1 :
+        sprintf(scratchpad, "%02i-JAN-%04i ", dateEdit1->date().day(), dateEdit1->date().year());
+        break;
+      case  2 :
+        sprintf(scratchpad, "%02i-FEB-%04i ", dateEdit1->date().day(), dateEdit1->date().year());
+        break;
+      case  3 :
+        sprintf(scratchpad, "%02i-MAR-%04i ", dateEdit1->date().day(), dateEdit1->date().year());
+        break;
+      case  4 :
+        sprintf(scratchpad, "%02i-APR-%04i ", dateEdit1->date().day(), dateEdit1->date().year());
+        break;
+      case  5 :
+        sprintf(scratchpad, "%02i-MAY-%04i ", dateEdit1->date().day(), dateEdit1->date().year());
+        break;
+      case  6 :
+        sprintf(scratchpad, "%02i-JUN-%04i ", dateEdit1->date().day(), dateEdit1->date().year());
+        break;
+      case  7 :
+        sprintf(scratchpad, "%02i-JUL-%04i ", dateEdit1->date().day(), dateEdit1->date().year());
+        break;
+      case  8 :
+        sprintf(scratchpad, "%02i-AUG-%04i ", dateEdit1->date().day(), dateEdit1->date().year());
+        break;
+      case  9 :
+        sprintf(scratchpad, "%02i-SEP-%04i ", dateEdit1->date().day(), dateEdit1->date().year());
+        break;
+      case 10 :
+        sprintf(scratchpad, "%02i-OCT-%04i ", dateEdit1->date().day(), dateEdit1->date().year());
+        break;
+      case 11 :
+        sprintf(scratchpad, "%02i-NOV-%04i ", dateEdit1->date().day(), dateEdit1->date().year());
+        break;
+      case 12 :
+        sprintf(scratchpad, "%02i-DEC-%04i ", dateEdit1->date().day(), dateEdit1->date().year());
+        break;
       }
 
       strcat(str, scratchpad);
@@ -1062,30 +1074,42 @@ void UI_headerEditorWindow::save_hdr()
 
       switch(i)
       {
-        case  1 : sprintf(scratchpad, "%02i-JAN-%04i ", startTimeDate->date().day(), startTimeDate->date().year());
-                  break;
-        case  2 : sprintf(scratchpad, "%02i-FEB-%04i ", startTimeDate->date().day(), startTimeDate->date().year());
-                  break;
-        case  3 : sprintf(scratchpad, "%02i-MAR-%04i ", startTimeDate->date().day(), startTimeDate->date().year());
-                  break;
-        case  4 : sprintf(scratchpad, "%02i-APR-%04i ", startTimeDate->date().day(), startTimeDate->date().year());
-                  break;
-        case  5 : sprintf(scratchpad, "%02i-MAY-%04i ", startTimeDate->date().day(), startTimeDate->date().year());
-                  break;
-        case  6 : sprintf(scratchpad, "%02i-JUN-%04i ", startTimeDate->date().day(), startTimeDate->date().year());
-                  break;
-        case  7 : sprintf(scratchpad, "%02i-JUL-%04i ", startTimeDate->date().day(), startTimeDate->date().year());
-                  break;
-        case  8 : sprintf(scratchpad, "%02i-AUG-%04i ", startTimeDate->date().day(), startTimeDate->date().year());
-                  break;
-        case  9 : sprintf(scratchpad, "%02i-SEP-%04i ", startTimeDate->date().day(), startTimeDate->date().year());
-                  break;
-        case 10 : sprintf(scratchpad, "%02i-OCT-%04i ", startTimeDate->date().day(), startTimeDate->date().year());
-                  break;
-        case 11 : sprintf(scratchpad, "%02i-NOV-%04i ", startTimeDate->date().day(), startTimeDate->date().year());
-                  break;
-        case 12 : sprintf(scratchpad, "%02i-DEC-%04i ", startTimeDate->date().day(), startTimeDate->date().year());
-                  break;
+      case  1 :
+        sprintf(scratchpad, "%02i-JAN-%04i ", startTimeDate->date().day(), startTimeDate->date().year());
+        break;
+      case  2 :
+        sprintf(scratchpad, "%02i-FEB-%04i ", startTimeDate->date().day(), startTimeDate->date().year());
+        break;
+      case  3 :
+        sprintf(scratchpad, "%02i-MAR-%04i ", startTimeDate->date().day(), startTimeDate->date().year());
+        break;
+      case  4 :
+        sprintf(scratchpad, "%02i-APR-%04i ", startTimeDate->date().day(), startTimeDate->date().year());
+        break;
+      case  5 :
+        sprintf(scratchpad, "%02i-MAY-%04i ", startTimeDate->date().day(), startTimeDate->date().year());
+        break;
+      case  6 :
+        sprintf(scratchpad, "%02i-JUN-%04i ", startTimeDate->date().day(), startTimeDate->date().year());
+        break;
+      case  7 :
+        sprintf(scratchpad, "%02i-JUL-%04i ", startTimeDate->date().day(), startTimeDate->date().year());
+        break;
+      case  8 :
+        sprintf(scratchpad, "%02i-AUG-%04i ", startTimeDate->date().day(), startTimeDate->date().year());
+        break;
+      case  9 :
+        sprintf(scratchpad, "%02i-SEP-%04i ", startTimeDate->date().day(), startTimeDate->date().year());
+        break;
+      case 10 :
+        sprintf(scratchpad, "%02i-OCT-%04i ", startTimeDate->date().day(), startTimeDate->date().year());
+        break;
+      case 11 :
+        sprintf(scratchpad, "%02i-NOV-%04i ", startTimeDate->date().day(), startTimeDate->date().year());
+        break;
+      case 12 :
+        sprintf(scratchpad, "%02i-DEC-%04i ", startTimeDate->date().day(), startTimeDate->date().year());
+        break;
       }
 
       strcat(str, scratchpad);

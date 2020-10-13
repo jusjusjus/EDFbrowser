@@ -72,35 +72,35 @@ public:
 
 private:
 
-QDialog      *jump_dialog;
+  QDialog      *jump_dialog;
 
-QPushButton  *CloseButton,
-             *jumpButton;
+  QPushButton  *CloseButton,
+               *jumpButton;
 
-QLabel       *label1,
-             *label2,
-             *label3;
+  QLabel       *label1,
+               *label2,
+               *label3;
 
-QTimeEdit    *timeEdit1,
-             *timeEdit2;
+  QTimeEdit    *timeEdit1,
+               *timeEdit2;
 
-QTime        time1,
-             time2;
+  QTime        time1,
+               time2;
 
-QSpinBox     *daybox1,
-             *daybox2;
+  QSpinBox     *daybox1,
+               *daybox2;
 
-long long    recording_duration,
-             starttime;
+  long long    recording_duration,
+       starttime;
 
 
 private slots:
 
-void jumpbutton_pressed();
-void absolutetime_changed(const QTime &);
-void offsettime_changed(const QTime &);
-void absoluteday_changed(int);
-void offsetday_changed(int);
+  void jumpbutton_pressed();
+  void absolutetime_changed(const QTime &);
+  void offsettime_changed(const QTime &);
+  void absoluteday_changed(int);
+  void offsetday_changed(int);
 
 };
 

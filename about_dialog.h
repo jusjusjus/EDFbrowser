@@ -60,15 +60,15 @@ public:
 
 private:
 
-QDialog      *AboutDialog;
+  QDialog      *AboutDialog;
 
-QPushButton  *pushButton1;
+  QPushButton  *pushButton1;
 
-QTextEdit    *textedit1;
+  QTextEdit    *textedit1;
 
-QHBoxLayout  *hlayout1;
+  QHBoxLayout  *hlayout1;
 
-QVBoxLayout  *vlayout1;
+  QVBoxLayout  *vlayout1;
 
 };
 

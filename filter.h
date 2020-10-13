@@ -47,15 +47,16 @@
 
 
 
-struct filter_settings{
-                       double old_input;
-                       double old_output;
-                       double factor;
-                       double sample_frequency;
-                       double cutoff_frequency;
-                       int    is_LPF;
-                       int first_sample;
-                      };
+struct filter_settings
+{
+  double old_input;
+  double old_output;
+  double factor;
+  double sample_frequency;
+  double cutoff_frequency;
+  int    is_LPF;
+  int first_sample;
+};
 
 
 

@@ -37,13 +37,13 @@
 
 #if defined(__APPLE__) || defined(__MACH__) || defined(__APPLE_CC__)
 
-#define fopeno fopen
+  #define fopeno fopen
 
 #else
 
-#define fseeko fseeko64
-#define ftello ftello64
-#define fopeno fopen64
+  #define fseeko fseeko64
+  #define ftello ftello64
+  #define fopeno fopen64
 
 #endif
 
@@ -250,14 +250,14 @@ void UI_UNISENS2EDFwindow::SelectFileButton()
     strncpy(str_measurementId, QString::fromLatin1(str).toLocal8Bit().data(), 128);
   }
   else if(char_encoding == 2)
-    {
-      strncpy(str_measurementId, QString::fromUtf8(str).toLocal8Bit().data(), 128);
-    }
-    else
-    {
+  {
+    strncpy(str_measurementId, QString::fromUtf8(str).toLocal8Bit().data(), 128);
+  }
+  else
+  {
 //      strncpy(str_measurementId, str, 128);
-      strncpy(str_measurementId, QString::fromUtf8(str).toLocal8Bit().data(), 128);  // default for XML is UTF-8
-    }
+    strncpy(str_measurementId, QString::fromUtf8(str).toLocal8Bit().data(), 128);  // default for XML is UTF-8
+  }
 
   str_measurementId[127] = 0;
 
@@ -449,14 +449,14 @@ void UI_UNISENS2EDFwindow::SelectFileButton()
         strncpy(signallabel[total_edf_signals], str, 16);
       }
       else if(char_encoding == 2)
-        {
-          strncpy(signallabel[total_edf_signals], QString::fromUtf8(str).toLatin1().data(), 16);
-        }
-        else
-        {
+      {
+        strncpy(signallabel[total_edf_signals], QString::fromUtf8(str).toLatin1().data(), 16);
+      }
+      else
+      {
 //          strncpy(signallabel[total_edf_signals], str, 16);
-          strncpy(signallabel[total_edf_signals], QString::fromUtf8(str).toLatin1().data(), 16);  // default for XML is UTF-8
-        }
+        strncpy(signallabel[total_edf_signals], QString::fromUtf8(str).toLatin1().data(), 16);  // default for XML is UTF-8
+      }
 
       signallabel[total_edf_signals][16] = 0;
 
@@ -642,14 +642,14 @@ void UI_UNISENS2EDFwindow::SelectFileButton()
         strncpy(signallabel[total_edf_signals], str, 16);
       }
       else if(char_encoding == 2)
-        {
-          strncpy(signallabel[total_edf_signals], QString::fromUtf8(str).toLatin1().data(), 16);
-        }
-        else
-        {
+      {
+        strncpy(signallabel[total_edf_signals], QString::fromUtf8(str).toLatin1().data(), 16);
+      }
+      else
+      {
 //          strncpy(signallabel[total_edf_signals], str, 16);
-          strncpy(signallabel[total_edf_signals], QString::fromUtf8(str).toLatin1().data(), 16);  // default for XML is UTF-8
-        }
+        strncpy(signallabel[total_edf_signals], QString::fromUtf8(str).toLatin1().data(), 16);  // default for XML is UTF-8
+      }
 
       signallabel[total_edf_signals][16] = 0;
 
@@ -1027,8 +1027,8 @@ void UI_UNISENS2EDFwindow::SelectFileButton()
   }
 
   if(edf_set_startdatetime(hdl, atoi(str_timestampStart), atoi(str_timestampStart + 5),
-                          atoi(str_timestampStart + 8), atoi(str_timestampStart + 11),
-                          atoi(str_timestampStart + 14), atoi(str_timestampStart + 17)))  err = 1;
+                           atoi(str_timestampStart + 8), atoi(str_timestampStart + 11),
+                           atoi(str_timestampStart + 14), atoi(str_timestampStart + 17)))  err = 1;
 
   if(edf_set_datarecord_duration(hdl, 100000 / sf_divider))  err = 1;
 
@@ -1118,20 +1118,22 @@ void UI_UNISENS2EDFwindow::SelectFileButton()
 
   unsigned long long ul_tmp;
 
-  union {
-          unsigned int one;
-          signed int one_signed;
-          unsigned short two[2];
-          signed short two_signed[2];
-          unsigned char four[4];
-          float flp;
-        } var;
+  union
+  {
+    unsigned int one;
+    signed int one_signed;
+    unsigned short two[2];
+    signed short two_signed[2];
+    unsigned char four[4];
+    float flp;
+  } var;
 
-  union {
-          unsigned long long lone;
-          signed long long lone_signed;
-          double dflp;
-        } var2;
+  union
+  {
+    unsigned long long lone;
+    signed long long lone_signed;
+    double dflp;
+  } var2;
 
 // for(i=0; i<file_cnt; i++)
 // {
@@ -1361,343 +1363,343 @@ void UI_UNISENS2EDFwindow::SelectFileButton()
               }
             }
             else if(datatype[k] == US_DATATYPE_UINT16_LI)
+            {
+              for(i=0; i<sf_t; i++)
               {
-                for(i=0; i<sf_t; i++)
+                for(j=0; j<signals_t; j++)
                 {
-                  for(j=0; j<signals_t; j++)
-                  {
-                    buf2_t[(j * sf_t) + i] = *(((unsigned short *)buf1_t) + (i * signals_t) + j) - adcz;
-                  }
+                  buf2_t[(j * sf_t) + i] = *(((unsigned short *)buf1_t) + (i * signals_t) + j) - adcz;
                 }
               }
-              else if(datatype[k] == US_DATATYPE_INT24_LI)
+            }
+            else if(datatype[k] == US_DATATYPE_INT24_LI)
+            {
+              for(i=0; i<sf_t; i++)
+              {
+                for(j=0; j<signals_t; j++)
                 {
-                  for(i=0; i<sf_t; i++)
+                  var.four[0] = *((unsigned char *)buf1_t + (((i * signals_t) + j) * 3));
+                  var.four[1] = *((unsigned char *)buf1_t + (((i * signals_t) + j) * 3) + 1);
+                  var.four[2] = *((unsigned char *)buf1_t + (((i * signals_t) + j) * 3) + 2);
+
+                  if(var.four[2] & 0x80)
                   {
-                    for(j=0; j<signals_t; j++)
-                    {
-                      var.four[0] = *((unsigned char *)buf1_t + (((i * signals_t) + j) * 3));
-                      var.four[1] = *((unsigned char *)buf1_t + (((i * signals_t) + j) * 3) + 1);
-                      var.four[2] = *((unsigned char *)buf1_t + (((i * signals_t) + j) * 3) + 2);
-
-                      if(var.four[2] & 0x80)
-                      {
-                        var.four[3] = 0xff;
-                      }
-                      else
-                      {
-                        var.four[3] = 0x00;
-                      }
-
-                      buf2_t[(j * sf_t) + i] = var.one_signed - adcz;
-                    }
+                    var.four[3] = 0xff;
                   }
+                  else
+                  {
+                    var.four[3] = 0x00;
+                  }
+
+                  buf2_t[(j * sf_t) + i] = var.one_signed - adcz;
                 }
-                else if(datatype[k] == US_DATATYPE_UINT24_LI)
+              }
+            }
+            else if(datatype[k] == US_DATATYPE_UINT24_LI)
+            {
+              for(i=0; i<sf_t; i++)
+              {
+                for(j=0; j<signals_t; j++)
+                {
+                  var.four[0] = *((unsigned char *)buf1_t + (((i * signals_t) + j) * 3));
+                  var.four[1] = *((unsigned char *)buf1_t + (((i * signals_t) + j) * 3) + 1);
+                  var.four[2] = *((unsigned char *)buf1_t + (((i * signals_t) + j) * 3) + 2);
+                  var.four[3] = 0;
+
+                  buf2_t[(j * sf_t) + i] = var.one - adcz;
+                }
+              }
+            }
+            else if((datatype[k] == US_DATATYPE_INT8_LI) || (datatype[k] == US_DATATYPE_INT8_BI))
+            {
+              for(i=0; i<sf_t; i++)
+              {
+                for(j=0; j<signals_t; j++)
+                {
+                  buf2_t[(j * sf_t) + i] = *(((signed char *)buf1_t) + (i * signals_t) + j) - adcz;
+                }
+              }
+            }
+            else if((datatype[k] == US_DATATYPE_UINT8_LI) || (datatype[k] == US_DATATYPE_UINT8_BI))
+            {
+              for(i=0; i<sf_t; i++)
+              {
+                for(j=0; j<signals_t; j++)
+                {
+                  tmp2 = *(((unsigned char *)buf1_t) + (i * signals_t) + j) - adcz;
+
+                  buf2_t[(j * sf_t) + i] = tmp2;
+                }
+              }
+            }
+            else if(datatype[k] == US_DATATYPE_INT16_BI)
+            {
+              for(i=0; i<sf_t; i++)
+              {
+                for(j=0; j<signals_t; j++)
+                {
+                  tmp3 = *(((signed short *)buf1_t) + (i * signals_t) + j);
+
+                  buf2_t[(j * sf_t) + i] = ((signed short)((((unsigned short)tmp3 & 0xFF00) >> 8) |
+                                            (((unsigned short)tmp3 & 0x00FF) << 8))
+                                           ) - adcz;
+                }
+              }
+            }
+            else if(datatype[k] == US_DATATYPE_UINT16_BI)
+            {
+              for(i=0; i<sf_t; i++)
+              {
+                for(j=0; j<signals_t; j++)
+                {
+                  tmp3 = *(((signed short *)buf1_t) + (i * signals_t) + j);
+
+                  buf2_t[(j * sf_t) + i] = ((unsigned short)((((unsigned short)tmp3 & 0xFF00) >> 8) |
+                                            (((unsigned short)tmp3 & 0x00FF) << 8))
+                                           )  - adcz;
+                }
+              }
+            }
+            else if(datatype[k] == US_DATATYPE_INT24_BI)
+            {
+              for(i=0; i<sf_t; i++)
+              {
+                for(j=0; j<signals_t; j++)
+                {
+                  var.four[2] = *((unsigned char *)buf1_t + (((i * signals_t) + j) * 3));
+                  var.four[1] = *((unsigned char *)buf1_t + (((i * signals_t) + j) * 3) + 1);
+                  var.four[0] = *((unsigned char *)buf1_t + (((i * signals_t) + j) * 3) + 2);
+
+                  if(var.four[2] & 0x80)
                   {
-                    for(i=0; i<sf_t; i++)
-                    {
-                      for(j=0; j<signals_t; j++)
-                      {
-                        var.four[0] = *((unsigned char *)buf1_t + (((i * signals_t) + j) * 3));
-                        var.four[1] = *((unsigned char *)buf1_t + (((i * signals_t) + j) * 3) + 1);
-                        var.four[2] = *((unsigned char *)buf1_t + (((i * signals_t) + j) * 3) + 2);
-                        var.four[3] = 0;
-
-                        buf2_t[(j * sf_t) + i] = var.one - adcz;
-                      }
-                    }
+                    var.four[3] = 0xff;
                   }
-                  else if((datatype[k] == US_DATATYPE_INT8_LI) || (datatype[k] == US_DATATYPE_INT8_BI))
-                    {
-                      for(i=0; i<sf_t; i++)
-                      {
-                        for(j=0; j<signals_t; j++)
-                        {
-                          buf2_t[(j * sf_t) + i] = *(((signed char *)buf1_t) + (i * signals_t) + j) - adcz;
-                        }
-                      }
-                    }
-                    else if((datatype[k] == US_DATATYPE_UINT8_LI) || (datatype[k] == US_DATATYPE_UINT8_BI))
-                      {
-                        for(i=0; i<sf_t; i++)
-                        {
-                          for(j=0; j<signals_t; j++)
-                          {
-                            tmp2 = *(((unsigned char *)buf1_t) + (i * signals_t) + j) - adcz;
+                  else
+                  {
+                    var.four[3] = 0x00;
+                  }
 
-                            buf2_t[(j * sf_t) + i] = tmp2;
-                          }
-                        }
-                      }
-                      else if(datatype[k] == US_DATATYPE_INT16_BI)
-                        {
-                          for(i=0; i<sf_t; i++)
-                          {
-                            for(j=0; j<signals_t; j++)
-                            {
-                              tmp3 = *(((signed short *)buf1_t) + (i * signals_t) + j);
+                  buf2_t[(j * sf_t) + i] = var.one_signed - adcz;
+                }
+              }
+            }
+            else if(datatype[k] == US_DATATYPE_UINT24_BI)
+            {
+              for(i=0; i<sf_t; i++)
+              {
+                for(j=0; j<signals_t; j++)
+                {
+                  var.four[3] = 0;
+                  var.four[2] = *((unsigned char *)buf1_t + (((i * signals_t) + j) * 3));
+                  var.four[1] = *((unsigned char *)buf1_t + (((i * signals_t) + j) * 3) + 1);
+                  var.four[0] = *((unsigned char *)buf1_t + (((i * signals_t) + j) * 3) + 2);
 
-                              buf2_t[(j * sf_t) + i] = ((signed short)((((unsigned short)tmp3 & 0xFF00) >> 8) |
-                                                                       (((unsigned short)tmp3 & 0x00FF) << 8))
-                                                       ) - adcz;
-                            }
-                          }
-                        }
-                        else if(datatype[k] == US_DATATYPE_UINT16_BI)
-                          {
-                            for(i=0; i<sf_t; i++)
-                            {
-                              for(j=0; j<signals_t; j++)
-                              {
-                                tmp3 = *(((signed short *)buf1_t) + (i * signals_t) + j);
+                  buf2_t[(j * sf_t) + i] = var.one - adcz;
+                }
+              }
+            }
+            else if(datatype[k] == US_DATATYPE_INT32_LI)
+            {
+              for(i=0; i<sf_t; i++)
+              {
+                for(j=0; j<signals_t; j++)
+                {
+                  buf2_t[(j * sf_t) + i] = *(((signed int *)buf1_t) + (i * signals_t) + j) - adcz;
+                }
+              }
+            }
+            else if(datatype[k] == US_DATATYPE_UINT32_LI)
+            {
+              for(i=0; i<sf_t; i++)
+              {
+                for(j=0; j<signals_t; j++)
+                {
+                  buf2_t[(j * sf_t) + i] = *(((unsigned int *)buf1_t) + (i * signals_t) + j) - adcz;
+                }
+              }
+            }
+            else if(datatype[k] == US_DATATYPE_INT32_BI)
+            {
+              for(i=0; i<sf_t; i++)
+              {
+                for(j=0; j<signals_t; j++)
+                {
+                  tmp = *(((signed int *)buf1_t) + (i * signals_t) + j);
 
-                                buf2_t[(j * sf_t) + i] = ((unsigned short)((((unsigned short)tmp3 & 0xFF00) >> 8) |
-                                                                           (((unsigned short)tmp3 & 0x00FF) << 8))
-                                                         )  - adcz;
-                              }
-                            }
-                          }
-                          else if(datatype[k] == US_DATATYPE_INT24_BI)
-                            {
-                              for(i=0; i<sf_t; i++)
-                              {
-                                for(j=0; j<signals_t; j++)
-                                {
-                                  var.four[2] = *((unsigned char *)buf1_t + (((i * signals_t) + j) * 3));
-                                  var.four[1] = *((unsigned char *)buf1_t + (((i * signals_t) + j) * 3) + 1);
-                                  var.four[0] = *((unsigned char *)buf1_t + (((i * signals_t) + j) * 3) + 2);
+                  buf2_t[(j * sf_t) + i] = ((signed int)((((unsigned int)tmp & 0xFF000000) >> 24) |
+                                                         (((unsigned int)tmp & 0x00FF0000) >>  8) |
+                                                         (((unsigned int)tmp & 0x0000FF00) <<  8) |
+                                                         (((unsigned int)tmp & 0x000000FF) << 24))
+                                           ) - adcz;
+                }
+              }
+            }
+            else if(datatype[k] == US_DATATYPE_UINT32_BI)
+            {
+              for(i=0; i<sf_t; i++)
+              {
+                for(j=0; j<signals_t; j++)
+                {
+                  tmp = *(((signed int *)buf1_t) + (i * signals_t) + j);
 
-                                  if(var.four[2] & 0x80)
-                                  {
-                                    var.four[3] = 0xff;
-                                  }
-                                  else
-                                  {
-                                    var.four[3] = 0x00;
-                                  }
+                  buf2_t[(j * sf_t) + i] = ((unsigned int)((((unsigned int)tmp & 0xFF000000) >> 24) |
+                                            (((unsigned int)tmp & 0x00FF0000) >>  8) |
+                                            (((unsigned int)tmp & 0x0000FF00) <<  8) |
+                                            (((unsigned int)tmp & 0x000000FF) << 24))
+                                           ) - adcz;
+                }
+              }
+            }
+            else if(datatype[k] == US_DATATYPE_FLOAT_LI)
+            {
+              for(i=0; i<sf_t; i++)
+              {
+                for(j=0; j<signals_t; j++)
+                {
+                  buf2_t[(j * sf_t) + i] = (*(((float *)buf1_t) + (i * signals_t) + j) - adcz);
+                }
+              }
+            }
+            else if(datatype[k] == US_DATATYPE_FLOAT_BI)
+            {
+              for(i=0; i<sf_t; i++)
+              {
+                for(j=0; j<signals_t; j++)
+                {
+                  tmp = *(((signed int *)buf1_t) + (i * signals_t) + j);
 
-                                  buf2_t[(j * sf_t) + i] = var.one_signed - adcz;
-                                }
-                              }
-                            }
-                            else if(datatype[k] == US_DATATYPE_UINT24_BI)
-                              {
-                                for(i=0; i<sf_t; i++)
-                                {
-                                  for(j=0; j<signals_t; j++)
-                                  {
-                                    var.four[3] = 0;
-                                    var.four[2] = *((unsigned char *)buf1_t + (((i * signals_t) + j) * 3));
-                                    var.four[1] = *((unsigned char *)buf1_t + (((i * signals_t) + j) * 3) + 1);
-                                    var.four[0] = *((unsigned char *)buf1_t + (((i * signals_t) + j) * 3) + 2);
+                  var.one = ((((unsigned int)tmp & 0xFF000000) >> 24) |
+                             (((unsigned int)tmp & 0x00FF0000) >>  8) |
+                             (((unsigned int)tmp & 0x0000FF00) <<  8) |
+                             (((unsigned int)tmp & 0x000000FF) << 24));
 
-                                    buf2_t[(j * sf_t) + i] = var.one - adcz;
-                                  }
-                                }
-                              }
-                              else if(datatype[k] == US_DATATYPE_INT32_LI)
-                                {
-                                  for(i=0; i<sf_t; i++)
-                                  {
-                                    for(j=0; j<signals_t; j++)
-                                    {
-                                      buf2_t[(j * sf_t) + i] = *(((signed int *)buf1_t) + (i * signals_t) + j) - adcz;
-                                    }
-                                  }
-                                }
-                                else if(datatype[k] == US_DATATYPE_UINT32_LI)
-                                  {
-                                    for(i=0; i<sf_t; i++)
-                                    {
-                                      for(j=0; j<signals_t; j++)
-                                      {
-                                        buf2_t[(j * sf_t) + i] = *(((unsigned int *)buf1_t) + (i * signals_t) + j) - adcz;
-                                      }
-                                    }
-                                  }
-                                  else if(datatype[k] == US_DATATYPE_INT32_BI)
-                                    {
-                                      for(i=0; i<sf_t; i++)
-                                      {
-                                        for(j=0; j<signals_t; j++)
-                                        {
-                                            tmp = *(((signed int *)buf1_t) + (i * signals_t) + j);
+                  buf2_t[(j * sf_t) + i] = var.flp - adcz;
+                }
+              }
+            }
+            else if(datatype[k] == US_DATATYPE_DOUBLE_LI)
+            {
+              for(i=0; i<sf_t; i++)
+              {
+                for(j=0; j<signals_t; j++)
+                {
+                  buf2_t[(j * sf_t) + i] = (*(((double *)buf1_t) + (i * signals_t) + j) - adcz);
+                }
+              }
+            }
+            else if(datatype[k] == US_DATATYPE_DOUBLE_BI)
+            {
+              for(i=0; i<sf_t; i++)
+              {
+                for(j=0; j<signals_t; j++)
+                {
+                  ul_tmp = *(((unsigned long long *)buf1_t) + (i * signals_t) + j);
 
-                                            buf2_t[(j * sf_t) + i] = ((signed int)((((unsigned int)tmp & 0xFF000000) >> 24) |
-                                                                                   (((unsigned int)tmp & 0x00FF0000) >>  8) |
-                                                                                   (((unsigned int)tmp & 0x0000FF00) <<  8) |
-                                                                                   (((unsigned int)tmp & 0x000000FF) << 24))
-                                                                     ) - adcz;
-                                        }
-                                      }
-                                    }
-                                    else if(datatype[k] == US_DATATYPE_UINT32_BI)
-                                      {
-                                        for(i=0; i<sf_t; i++)
-                                        {
-                                          for(j=0; j<signals_t; j++)
-                                          {
-                                            tmp = *(((signed int *)buf1_t) + (i * signals_t) + j);
+                  var2.lone = (((ul_tmp & 0xFF00000000000000) >> 56) |
+                               ((ul_tmp & 0x00FF000000000000) >> 40) |
+                               ((ul_tmp & 0x0000FF0000000000) >> 24) |
+                               ((ul_tmp & 0x000000FF00000000) >>  8) |
+                               ((ul_tmp & 0x00000000FF000000) <<  8) |
+                               ((ul_tmp & 0x0000000000FF0000) << 24) |
+                               ((ul_tmp & 0x000000000000FF00) << 40) |
+                               ((ul_tmp & 0x00000000000000FF) << 56));
 
-                                            buf2_t[(j * sf_t) + i] = ((unsigned int)((((unsigned int)tmp & 0xFF000000) >> 24) |
-                                                                                     (((unsigned int)tmp & 0x00FF0000) >>  8) |
-                                                                                     (((unsigned int)tmp & 0x0000FF00) <<  8) |
-                                                                                     (((unsigned int)tmp & 0x000000FF) << 24))
-                                                                     ) - adcz;
-                                          }
-                                        }
-                                      }
-                                      else if(datatype[k] == US_DATATYPE_FLOAT_LI)
-                                        {
-                                          for(i=0; i<sf_t; i++)
-                                          {
-                                            for(j=0; j<signals_t; j++)
-                                            {
-                                              buf2_t[(j * sf_t) + i] = (*(((float *)buf1_t) + (i * signals_t) + j) - adcz);
-                                            }
-                                          }
-                                        }
-                                        else if(datatype[k] == US_DATATYPE_FLOAT_BI)
-                                          {
-                                            for(i=0; i<sf_t; i++)
-                                            {
-                                              for(j=0; j<signals_t; j++)
-                                              {
-                                                tmp = *(((signed int *)buf1_t) + (i * signals_t) + j);
+                  buf2_t[(j * sf_t) + i] = var2.dflp - adcz;
+                }
+              }
+            }
+            else if(datatype[k] == US_DATATYPE_INT64_LI)
+            {
+              for(i=0; i<sf_t; i++)
+              {
+                for(j=0; j<signals_t; j++)
+                {
+                  buf2_t[(j * sf_t) + i] = *(((signed long long *)buf1_t) + (i * signals_t) + j) - adcz;
+                }
+              }
+            }
+            else if(datatype[k] == US_DATATYPE_UINT64_LI)
+            {
+              for(i=0; i<sf_t; i++)
+              {
+                for(j=0; j<signals_t; j++)
+                {
+                  buf2_t[(j * sf_t) + i] = *(((unsigned long long *)buf1_t) + (i * signals_t) + j) - adcz;
+                }
+              }
+            }
+            else if(datatype[k] == US_DATATYPE_INT64_BI)
+            {
+              for(i=0; i<sf_t; i++)
+              {
+                for(j=0; j<signals_t; j++)
+                {
+                  ul_tmp = *(((unsigned long long *)buf1_t) + (i * signals_t) + j);
 
-                                                var.one = ((((unsigned int)tmp & 0xFF000000) >> 24) |
-                                                           (((unsigned int)tmp & 0x00FF0000) >>  8) |
-                                                           (((unsigned int)tmp & 0x0000FF00) <<  8) |
-                                                           (((unsigned int)tmp & 0x000000FF) << 24));
+                  var2.lone = ((signed long long)(
+                                 ((ul_tmp & 0xFF00000000000000) >> 56) |
+                                 ((ul_tmp & 0x00FF000000000000) >> 40) |
+                                 ((ul_tmp & 0x0000FF0000000000) >> 24) |
+                                 ((ul_tmp & 0x000000FF00000000) >>  8) |
+                                 ((ul_tmp & 0x00000000FF000000) <<  8) |
+                                 ((ul_tmp & 0x0000000000FF0000) << 24) |
+                                 ((ul_tmp & 0x000000000000FF00) << 40) |
+                                 ((ul_tmp & 0x00000000000000FF) << 56))
+                              );
 
-                                                buf2_t[(j * sf_t) + i] = var.flp - adcz;
-                                              }
-                                            }
-                                          }
-                                          else if(datatype[k] == US_DATATYPE_DOUBLE_LI)
-                                            {
-                                              for(i=0; i<sf_t; i++)
-                                              {
-                                                for(j=0; j<signals_t; j++)
-                                                {
-                                                  buf2_t[(j * sf_t) + i] = (*(((double *)buf1_t) + (i * signals_t) + j) - adcz);
-                                                }
-                                              }
-                                            }
-                                            else if(datatype[k] == US_DATATYPE_DOUBLE_BI)
-                                              {
-                                                for(i=0; i<sf_t; i++)
-                                                {
-                                                  for(j=0; j<signals_t; j++)
-                                                  {
-                                                    ul_tmp = *(((unsigned long long *)buf1_t) + (i * signals_t) + j);
+                  buf2_t[(j * sf_t) + i] = var2.lone_signed - adcz;
+                }
+              }
+            }
+            else if(datatype[k] == US_DATATYPE_UINT64_BI)
+            {
+              for(i=0; i<sf_t; i++)
+              {
+                for(j=0; j<signals_t; j++)
+                {
+                  ul_tmp = *(((unsigned long long *)buf1_t) + (i * signals_t) + j);
 
-                                                    var2.lone = (((ul_tmp & 0xFF00000000000000) >> 56) |
-                                                                 ((ul_tmp & 0x00FF000000000000) >> 40) |
-                                                                 ((ul_tmp & 0x0000FF0000000000) >> 24) |
-                                                                 ((ul_tmp & 0x000000FF00000000) >>  8) |
-                                                                 ((ul_tmp & 0x00000000FF000000) <<  8) |
-                                                                 ((ul_tmp & 0x0000000000FF0000) << 24) |
-                                                                 ((ul_tmp & 0x000000000000FF00) << 40) |
-                                                                 ((ul_tmp & 0x00000000000000FF) << 56));
+                  var2.lone = ((unsigned long long)(
+                                 ((ul_tmp & 0xFF00000000000000) >> 56) |
+                                 ((ul_tmp & 0x00FF000000000000) >> 40) |
+                                 ((ul_tmp & 0x0000FF0000000000) >> 24) |
+                                 ((ul_tmp & 0x000000FF00000000) >>  8) |
+                                 ((ul_tmp & 0x00000000FF000000) <<  8) |
+                                 ((ul_tmp & 0x0000000000FF0000) << 24) |
+                                 ((ul_tmp & 0x000000000000FF00) << 40) |
+                                 ((ul_tmp & 0x00000000000000FF) << 56))
+                              );
 
-                                                    buf2_t[(j * sf_t) + i] = var2.dflp - adcz;
-                                                  }
-                                                }
-                                              }
-                                              else if(datatype[k] == US_DATATYPE_INT64_LI)
-                                                {
-                                                  for(i=0; i<sf_t; i++)
-                                                  {
-                                                    for(j=0; j<signals_t; j++)
-                                                    {
-                                                      buf2_t[(j * sf_t) + i] = *(((signed long long *)buf1_t) + (i * signals_t) + j) - adcz;
-                                                    }
-                                                  }
-                                                }
-                                                else if(datatype[k] == US_DATATYPE_UINT64_LI)
-                                                  {
-                                                    for(i=0; i<sf_t; i++)
-                                                    {
-                                                      for(j=0; j<signals_t; j++)
-                                                      {
-                                                        buf2_t[(j * sf_t) + i] = *(((unsigned long long *)buf1_t) + (i * signals_t) + j) - adcz;
-                                                      }
-                                                    }
-                                                  }
-                                                  else if(datatype[k] == US_DATATYPE_INT64_BI)
-                                                    {
-                                                      for(i=0; i<sf_t; i++)
-                                                      {
-                                                        for(j=0; j<signals_t; j++)
-                                                        {
-                                                          ul_tmp = *(((unsigned long long *)buf1_t) + (i * signals_t) + j);
-
-                                                          var2.lone = ((signed long long)(
-                                                            ((ul_tmp & 0xFF00000000000000) >> 56) |
-                                                            ((ul_tmp & 0x00FF000000000000) >> 40) |
-                                                            ((ul_tmp & 0x0000FF0000000000) >> 24) |
-                                                            ((ul_tmp & 0x000000FF00000000) >>  8) |
-                                                            ((ul_tmp & 0x00000000FF000000) <<  8) |
-                                                            ((ul_tmp & 0x0000000000FF0000) << 24) |
-                                                            ((ul_tmp & 0x000000000000FF00) << 40) |
-                                                            ((ul_tmp & 0x00000000000000FF) << 56))
-                                                            );
-
-                                                          buf2_t[(j * sf_t) + i] = var2.lone_signed - adcz;
-                                                        }
-                                                      }
-                                                    }
-                                                    else if(datatype[k] == US_DATATYPE_UINT64_BI)
-                                                      {
-                                                        for(i=0; i<sf_t; i++)
-                                                        {
-                                                          for(j=0; j<signals_t; j++)
-                                                          {
-                                                            ul_tmp = *(((unsigned long long *)buf1_t) + (i * signals_t) + j);
-
-                                                            var2.lone = ((unsigned long long)(
-                                                              ((ul_tmp & 0xFF00000000000000) >> 56) |
-                                                              ((ul_tmp & 0x00FF000000000000) >> 40) |
-                                                              ((ul_tmp & 0x0000FF0000000000) >> 24) |
-                                                              ((ul_tmp & 0x000000FF00000000) >>  8) |
-                                                              ((ul_tmp & 0x00000000FF000000) <<  8) |
-                                                              ((ul_tmp & 0x0000000000FF0000) << 24) |
-                                                              ((ul_tmp & 0x000000000000FF00) << 40) |
-                                                              ((ul_tmp & 0x00000000000000FF) << 56))
-                                                              );
-
-                                                            buf2_t[(j * sf_t) + i] = var2.lone - adcz;
-                                                          }
-                                                        }
-                                                      }
+                  buf2_t[(j * sf_t) + i] = var2.lone - adcz;
+                }
+              }
+            }
           }
         }
       }
       else if(blocks_written == datablocks[k])
+      {
+        if(!nedval_enc[k])
         {
-          if(!nedval_enc[k])
+          for(i=0; i<sf_t; i++)
           {
-            for(i=0; i<sf_t; i++)
+            for(j=0; j<signals_t; j++)
             {
-              for(j=0; j<signals_t; j++)
-              {
-                buf2_t[(j * sf_t) + i] = 0;
-              }
-            }
-          }
-          else
-          {
-            for(i=0; i<sf_t; i++)
-            {
-              for(j=0; j<signals_t; j++)
-              {
-                buf2_t[(j * sf_t) + i] = nedval_value2[k][j] - adcz;
-              }
+              buf2_t[(j * sf_t) + i] = 0;
             }
           }
         }
+        else
+        {
+          for(i=0; i<sf_t; i++)
+          {
+            for(j=0; j<signals_t; j++)
+            {
+              buf2_t[(j * sf_t) + i] = nedval_value2[k][j] - adcz;
+            }
+          }
+        }
+      }
     }
 
     if(edf_blockwrite_digital_samples(hdl, buf2))
@@ -1971,32 +1973,32 @@ int UI_UNISENS2EDFwindow::get_signalparameters_from_BIN_attributes(struct xml_ha
     adcres[file_nr] = 0;
   }
   else if(strlen(str) < 1)
-    {
-      adcres[file_nr] = 0;
-    }
-    else adcres[file_nr] = atoi(str);
+  {
+    adcres[file_nr] = 0;
+  }
+  else adcres[file_nr] = atoi(str);
 
   if(xml_get_attribute_of_element(xml_hdl, "unit", str, 255))
   {
     strcpy(physdim[file_nr], "X");
   }
   else if(strlen(str) < 1)
-    {
-      strcpy(physdim[file_nr], "X");
-    }
-    else if(char_encoding == 1)  // Latin-1
-      {
-        strncpy(physdim[file_nr], str, 8);
-      }
-      else if(char_encoding == 2)
-        {
-          strncpy(physdim[file_nr], QString::fromUtf8(str).toLatin1().data(), 8);
-        }
-        else
-        {
+  {
+    strcpy(physdim[file_nr], "X");
+  }
+  else if(char_encoding == 1)  // Latin-1
+  {
+    strncpy(physdim[file_nr], str, 8);
+  }
+  else if(char_encoding == 2)
+  {
+    strncpy(physdim[file_nr], QString::fromUtf8(str).toLatin1().data(), 8);
+  }
+  else
+  {
 //          strncpy(physdim[file_nr], str, 8);
-          strncpy(physdim[file_nr], QString::fromUtf8(str).toLatin1().data(), 8);  // default for XML is UTF-8
-        }
+    strncpy(physdim[file_nr], QString::fromUtf8(str).toLatin1().data(), 8);  // default for XML is UTF-8
+  }
 
   physdim[file_nr][8] = 0;
 
@@ -2080,10 +2082,10 @@ int UI_UNISENS2EDFwindow::get_signalparameters_from_BIN_attributes(struct xml_ha
     lsbval[file_nr] = 1.0;
   }
   else if(strlen(str) < 1)
-    {
-      lsbval[file_nr] = 1.0;
-    }
-    else lsbval[file_nr] = atof(str);
+  {
+    lsbval[file_nr] = 1.0;
+  }
+  else lsbval[file_nr] = atof(str);
 
   if((lsbval[file_nr] < -1000000.0) || (lsbval[file_nr] > 1000000.0))
   {
@@ -2115,106 +2117,106 @@ int UI_UNISENS2EDFwindow::get_signalparameters_from_BIN_attributes(struct xml_ha
       digmin[file_nr] = -8388608;
     }
     else if(!strcmp(str, "float"))
-      {
-        datatype[file_nr] = US_DATATYPE_FLOAT_LI;
-        bdf = 1;
-        straightbinary[file_nr] = 0;
-        samplesize[file_nr] = 4;
-        physmax[file_nr] *= (8388607LL - (baseline[file_nr] - adczero[file_nr]));
-        physmin[file_nr] *= (-8388608LL - (baseline[file_nr] - adczero[file_nr]));
-        digmax[file_nr] = 8388607;
-        digmin[file_nr] = -8388608;
-      }
-      else if(!strcmp(str, "int32"))
-        {
-          datatype[file_nr] = US_DATATYPE_INT32_LI;
-          bdf = 1;
-          straightbinary[file_nr] = 0;
-          samplesize[file_nr] = 4;
-          physmax[file_nr] *= (8388607LL - (baseline[file_nr] - adczero[file_nr]));
-          physmin[file_nr] *= (-8388608LL - (baseline[file_nr] - adczero[file_nr]));
-          digmax[file_nr] = 8388607;
-          digmin[file_nr] = -8388608;
-        }
-        else if(!strcmp(str, "uint32"))
-          {
-            datatype[file_nr] = US_DATATYPE_UINT32_LI;
-            bdf = 1;
-            straightbinary[file_nr] = 1;
-            samplesize[file_nr] = 4;
-            physmax[file_nr] *= (8388607LL - (baseline[file_nr] - adczero[file_nr]));
-            physmin[file_nr] *= (-8388608LL - (baseline[file_nr] - adczero[file_nr]));
-            digmax[file_nr] = 8388607;
-            digmin[file_nr] = -8388608;
-          }
-          else if(!strcmp(str, "int16"))
-            {
-              datatype[file_nr] = US_DATATYPE_INT16_LI;
-              straightbinary[file_nr] = 0;
-              samplesize[file_nr] = 2;
-              physmax[file_nr] *= (32767LL - (baseline[file_nr] - adczero[file_nr]));
-              physmin[file_nr] *= (-32768LL - (baseline[file_nr] - adczero[file_nr]));
-              digmax[file_nr] = 32767;
-              digmin[file_nr] = -32768;
-            }
-            else if(!strcmp(str, "uint16"))
-              {
-                datatype[file_nr] = US_DATATYPE_UINT16_LI;
-                straightbinary[file_nr] = 1;
-                samplesize[file_nr] = 2;
-                physmax[file_nr] *= (32767LL - (baseline[file_nr] - adczero[file_nr]));
-                physmin[file_nr] *= (-32768LL - (baseline[file_nr] - adczero[file_nr]));
-                digmax[file_nr] = 32767;
-                digmin[file_nr] = -32768;
-              }
-              else if(!strcmp(str, "int8"))
-                {
-                  datatype[file_nr] = US_DATATYPE_INT8_LI;
-                  straightbinary[file_nr] = 0;
-                  samplesize[file_nr] = 1;
-                  physmax[file_nr] *= (127 - (baseline[file_nr] - adczero[file_nr]));
-                  physmin[file_nr] *= (-128 - (baseline[file_nr] - adczero[file_nr]));
-                  digmax[file_nr] = 127;
-                  digmin[file_nr] = -128;
-                }
-                else if(!strcmp(str, "uint8"))
-                  {
-                    datatype[file_nr] = US_DATATYPE_UINT8_LI;
-                    straightbinary[file_nr] = 1;
-                    samplesize[file_nr] = 1;
-                    physmax[file_nr] *= (127 - (baseline[file_nr] - adczero[file_nr]));
-                    physmin[file_nr] *= (-128 - (baseline[file_nr] - adczero[file_nr]));
-                    digmax[file_nr] = 127;
-                    digmin[file_nr] = -128;
-                  }
-                  else if(!strcmp(str, "int64"))
-                    {
-                      datatype[file_nr] = US_DATATYPE_INT64_LI;
-                      bdf = 1;
-                      straightbinary[file_nr] = 0;
-                      samplesize[file_nr] = 8;
-                      physmax[file_nr] *= (8388607LL - (baseline[file_nr] - adczero[file_nr]));
-                      physmin[file_nr] *= (-8388608LL - (baseline[file_nr] - adczero[file_nr]));
-                      digmax[file_nr] = 8388607;
-                      digmin[file_nr] = -8388608;
-                    }
-                    else if(!strcmp(str, "uint64"))
-                      {
-                        datatype[file_nr] = US_DATATYPE_UINT64_LI;
-                        bdf = 1;
-                        straightbinary[file_nr] = 1;
-                        samplesize[file_nr] = 8;
-                        physmax[file_nr] *= (8388607LL - (baseline[file_nr] - adczero[file_nr]));
-                        physmin[file_nr] *= (-8388608LL - (baseline[file_nr] - adczero[file_nr]));
-                        digmax[file_nr] = 8388607;
-                        digmin[file_nr] = -8388608;
-                      }
-                      else
-                      {
-                        snprintf(scratchpad, 2047, "Error, unsupported combination of datatype: %s and csv file\n", str);
-                        textEdit1->append(scratchpad);
-                        return(1);
-                      }
+    {
+      datatype[file_nr] = US_DATATYPE_FLOAT_LI;
+      bdf = 1;
+      straightbinary[file_nr] = 0;
+      samplesize[file_nr] = 4;
+      physmax[file_nr] *= (8388607LL - (baseline[file_nr] - adczero[file_nr]));
+      physmin[file_nr] *= (-8388608LL - (baseline[file_nr] - adczero[file_nr]));
+      digmax[file_nr] = 8388607;
+      digmin[file_nr] = -8388608;
+    }
+    else if(!strcmp(str, "int32"))
+    {
+      datatype[file_nr] = US_DATATYPE_INT32_LI;
+      bdf = 1;
+      straightbinary[file_nr] = 0;
+      samplesize[file_nr] = 4;
+      physmax[file_nr] *= (8388607LL - (baseline[file_nr] - adczero[file_nr]));
+      physmin[file_nr] *= (-8388608LL - (baseline[file_nr] - adczero[file_nr]));
+      digmax[file_nr] = 8388607;
+      digmin[file_nr] = -8388608;
+    }
+    else if(!strcmp(str, "uint32"))
+    {
+      datatype[file_nr] = US_DATATYPE_UINT32_LI;
+      bdf = 1;
+      straightbinary[file_nr] = 1;
+      samplesize[file_nr] = 4;
+      physmax[file_nr] *= (8388607LL - (baseline[file_nr] - adczero[file_nr]));
+      physmin[file_nr] *= (-8388608LL - (baseline[file_nr] - adczero[file_nr]));
+      digmax[file_nr] = 8388607;
+      digmin[file_nr] = -8388608;
+    }
+    else if(!strcmp(str, "int16"))
+    {
+      datatype[file_nr] = US_DATATYPE_INT16_LI;
+      straightbinary[file_nr] = 0;
+      samplesize[file_nr] = 2;
+      physmax[file_nr] *= (32767LL - (baseline[file_nr] - adczero[file_nr]));
+      physmin[file_nr] *= (-32768LL - (baseline[file_nr] - adczero[file_nr]));
+      digmax[file_nr] = 32767;
+      digmin[file_nr] = -32768;
+    }
+    else if(!strcmp(str, "uint16"))
+    {
+      datatype[file_nr] = US_DATATYPE_UINT16_LI;
+      straightbinary[file_nr] = 1;
+      samplesize[file_nr] = 2;
+      physmax[file_nr] *= (32767LL - (baseline[file_nr] - adczero[file_nr]));
+      physmin[file_nr] *= (-32768LL - (baseline[file_nr] - adczero[file_nr]));
+      digmax[file_nr] = 32767;
+      digmin[file_nr] = -32768;
+    }
+    else if(!strcmp(str, "int8"))
+    {
+      datatype[file_nr] = US_DATATYPE_INT8_LI;
+      straightbinary[file_nr] = 0;
+      samplesize[file_nr] = 1;
+      physmax[file_nr] *= (127 - (baseline[file_nr] - adczero[file_nr]));
+      physmin[file_nr] *= (-128 - (baseline[file_nr] - adczero[file_nr]));
+      digmax[file_nr] = 127;
+      digmin[file_nr] = -128;
+    }
+    else if(!strcmp(str, "uint8"))
+    {
+      datatype[file_nr] = US_DATATYPE_UINT8_LI;
+      straightbinary[file_nr] = 1;
+      samplesize[file_nr] = 1;
+      physmax[file_nr] *= (127 - (baseline[file_nr] - adczero[file_nr]));
+      physmin[file_nr] *= (-128 - (baseline[file_nr] - adczero[file_nr]));
+      digmax[file_nr] = 127;
+      digmin[file_nr] = -128;
+    }
+    else if(!strcmp(str, "int64"))
+    {
+      datatype[file_nr] = US_DATATYPE_INT64_LI;
+      bdf = 1;
+      straightbinary[file_nr] = 0;
+      samplesize[file_nr] = 8;
+      physmax[file_nr] *= (8388607LL - (baseline[file_nr] - adczero[file_nr]));
+      physmin[file_nr] *= (-8388608LL - (baseline[file_nr] - adczero[file_nr]));
+      digmax[file_nr] = 8388607;
+      digmin[file_nr] = -8388608;
+    }
+    else if(!strcmp(str, "uint64"))
+    {
+      datatype[file_nr] = US_DATATYPE_UINT64_LI;
+      bdf = 1;
+      straightbinary[file_nr] = 1;
+      samplesize[file_nr] = 8;
+      physmax[file_nr] *= (8388607LL - (baseline[file_nr] - adczero[file_nr]));
+      physmin[file_nr] *= (-8388608LL - (baseline[file_nr] - adczero[file_nr]));
+      digmax[file_nr] = 8388607;
+      digmin[file_nr] = -8388608;
+    }
+    else
+    {
+      snprintf(scratchpad, 2047, "Error, unsupported combination of datatype: %s and csv file\n", str);
+      textEdit1->append(scratchpad);
+      return(1);
+    }
   }
   else
   {
@@ -2229,129 +2231,129 @@ int UI_UNISENS2EDFwindow::get_signalparameters_from_BIN_attributes(struct xml_ha
       digmin[file_nr] = -128;
     }
     else if(!strcmp(str, "int8"))
-      {
-        datatype[file_nr] = US_DATATYPE_INT8_LI;
-        straightbinary[file_nr] = 0;
-        samplesize[file_nr] = 1;
-        physmax[file_nr] *= (127 - (baseline[file_nr] - adczero[file_nr]));
-        physmin[file_nr] *= (-128 - (baseline[file_nr] - adczero[file_nr]));
-        digmax[file_nr] = 127;
-        digmin[file_nr] = -128;
-      }
-      else if(!strcmp(str, "uint16"))
-        {
-          datatype[file_nr] = US_DATATYPE_UINT16_LI;
-          straightbinary[file_nr] = 1;
-          samplesize[file_nr] = 2;
-          physmax[file_nr] *= (32767LL - (baseline[file_nr] - adczero[file_nr]));
-          physmin[file_nr] *= (-32768LL - (baseline[file_nr] - adczero[file_nr]));
-          digmax[file_nr] = 32767;
-          digmin[file_nr] = -32768;
-        }
-        else if(!strcmp(str, "int16"))
-          {
-            datatype[file_nr] = US_DATATYPE_INT16_LI;
-            straightbinary[file_nr] = 0;
-            samplesize[file_nr] = 2;
-            physmax[file_nr] *= (32767LL - (baseline[file_nr] - adczero[file_nr]));
-            physmin[file_nr] *= (-32768LL - (baseline[file_nr] - adczero[file_nr]));
-            digmax[file_nr] = 32767;
-            digmin[file_nr] = -32768;
-          }
-          else if(!strcmp(str, "uint24"))
-            {
-              datatype[file_nr] = US_DATATYPE_UINT24_LI;
-              bdf = 1;
-              straightbinary[file_nr] = 1;
-              samplesize[file_nr] = 3;
-              physmax[file_nr] *= (8388607LL - (baseline[file_nr] - adczero[file_nr]));
-              physmin[file_nr] *= (-8388608LL - (baseline[file_nr] - adczero[file_nr]));
-              digmax[file_nr] = 8388607;
-              digmin[file_nr] = -8388608;
-            }
-            else if(!strcmp(str, "int24"))
-              {
-                datatype[file_nr] = US_DATATYPE_INT24_LI;
-                bdf = 1;
-                straightbinary[file_nr] = 0;
-                samplesize[file_nr] = 3;
-                physmax[file_nr] *= (8388607LL - (baseline[file_nr] - adczero[file_nr]));
-                physmin[file_nr] *= (-8388608LL - (baseline[file_nr] - adczero[file_nr]));
-                digmax[file_nr] = 8388607;
-                digmin[file_nr] = -8388608;
-              }
-              else if(!strcmp(str, "uint32"))
-                {
-                  datatype[file_nr] = US_DATATYPE_UINT32_LI;
-                  bdf = 1;
-                  straightbinary[file_nr] = 1;
-                  samplesize[file_nr] = 4;
-                  physmax[file_nr] *= (8388607LL - (baseline[file_nr] - adczero[file_nr]));
-                  physmin[file_nr] *= (-8388608LL - (baseline[file_nr] - adczero[file_nr]));
-                  digmax[file_nr] = 8388607;
-                  digmin[file_nr] = -8388608;
-                }
-                else if(!strcmp(str, "int32"))
-                  {
-                    datatype[file_nr] = US_DATATYPE_INT32_LI;
-                    bdf = 1;
-                    straightbinary[file_nr] = 0;
-                    samplesize[file_nr] = 4;
-                    physmax[file_nr] *= (8388607LL - (baseline[file_nr] - adczero[file_nr]));
-                    physmin[file_nr] *= (-8388608LL - (baseline[file_nr] - adczero[file_nr]));
-                    digmax[file_nr] = 8388607;
-                    digmin[file_nr] = -8388608;
-                  }
-                  else if(!strcmp(str, "float"))
-                    {
-                      datatype[file_nr] = US_DATATYPE_FLOAT_LI;
-                      bdf = 1;
-                      straightbinary[file_nr] = 0;
-                      samplesize[file_nr] = 4;
-                      physmax[file_nr] *= (8388607LL - (baseline[file_nr] - adczero[file_nr]));
-                      physmin[file_nr] *= (-8388608LL - (baseline[file_nr] - adczero[file_nr]));
-                      digmax[file_nr] = 8388607;
-                      digmin[file_nr] = -8388608;
-                    }
-                    else if(!strcmp(str, "double"))
-                      {
-                        datatype[file_nr] = US_DATATYPE_DOUBLE_LI;
-                        bdf = 1;
-                        straightbinary[file_nr] = 0;
-                        samplesize[file_nr] = 8;
-                        physmax[file_nr] *= (8388607LL - (baseline[file_nr] - adczero[file_nr]));
-                        physmin[file_nr] *= (-8388608LL - (baseline[file_nr] - adczero[file_nr]));
-                        digmax[file_nr] = 8388607;
-                        digmin[file_nr] = -8388608;
-                      }
-                      else if(!strcmp(str, "uint64"))
-                        {
-                          datatype[file_nr] = US_DATATYPE_UINT64_LI;
-                          bdf = 1;
-                          straightbinary[file_nr] = 1;
-                          samplesize[file_nr] = 8;
-                          physmax[file_nr] *= (8388607LL - (baseline[file_nr] - adczero[file_nr]));
-                          physmin[file_nr] *= (-8388608LL - (baseline[file_nr] - adczero[file_nr]));
-                          digmax[file_nr] = 8388607;
-                          digmin[file_nr] = -8388608;
-                        }
-                        else if(!strcmp(str, "int64"))
-                          {
-                            datatype[file_nr] = US_DATATYPE_INT64_LI;
-                            bdf = 1;
-                            straightbinary[file_nr] = 0;
-                            samplesize[file_nr] = 8;
-                            physmax[file_nr] *= (8388607LL - (baseline[file_nr] - adczero[file_nr]));
-                            physmin[file_nr] *= (-8388608LL - (baseline[file_nr] - adczero[file_nr]));
-                            digmax[file_nr] = 8388607;
-                            digmin[file_nr] = -8388608;
-                          }
-                          else
-                          {
-                            snprintf(scratchpad, 2047, "Error, unsupported combination of datatype: %s and binary file\n", str);
-                            textEdit1->append(scratchpad);
-                            return(1);
-                          }
+    {
+      datatype[file_nr] = US_DATATYPE_INT8_LI;
+      straightbinary[file_nr] = 0;
+      samplesize[file_nr] = 1;
+      physmax[file_nr] *= (127 - (baseline[file_nr] - adczero[file_nr]));
+      physmin[file_nr] *= (-128 - (baseline[file_nr] - adczero[file_nr]));
+      digmax[file_nr] = 127;
+      digmin[file_nr] = -128;
+    }
+    else if(!strcmp(str, "uint16"))
+    {
+      datatype[file_nr] = US_DATATYPE_UINT16_LI;
+      straightbinary[file_nr] = 1;
+      samplesize[file_nr] = 2;
+      physmax[file_nr] *= (32767LL - (baseline[file_nr] - adczero[file_nr]));
+      physmin[file_nr] *= (-32768LL - (baseline[file_nr] - adczero[file_nr]));
+      digmax[file_nr] = 32767;
+      digmin[file_nr] = -32768;
+    }
+    else if(!strcmp(str, "int16"))
+    {
+      datatype[file_nr] = US_DATATYPE_INT16_LI;
+      straightbinary[file_nr] = 0;
+      samplesize[file_nr] = 2;
+      physmax[file_nr] *= (32767LL - (baseline[file_nr] - adczero[file_nr]));
+      physmin[file_nr] *= (-32768LL - (baseline[file_nr] - adczero[file_nr]));
+      digmax[file_nr] = 32767;
+      digmin[file_nr] = -32768;
+    }
+    else if(!strcmp(str, "uint24"))
+    {
+      datatype[file_nr] = US_DATATYPE_UINT24_LI;
+      bdf = 1;
+      straightbinary[file_nr] = 1;
+      samplesize[file_nr] = 3;
+      physmax[file_nr] *= (8388607LL - (baseline[file_nr] - adczero[file_nr]));
+      physmin[file_nr] *= (-8388608LL - (baseline[file_nr] - adczero[file_nr]));
+      digmax[file_nr] = 8388607;
+      digmin[file_nr] = -8388608;
+    }
+    else if(!strcmp(str, "int24"))
+    {
+      datatype[file_nr] = US_DATATYPE_INT24_LI;
+      bdf = 1;
+      straightbinary[file_nr] = 0;
+      samplesize[file_nr] = 3;
+      physmax[file_nr] *= (8388607LL - (baseline[file_nr] - adczero[file_nr]));
+      physmin[file_nr] *= (-8388608LL - (baseline[file_nr] - adczero[file_nr]));
+      digmax[file_nr] = 8388607;
+      digmin[file_nr] = -8388608;
+    }
+    else if(!strcmp(str, "uint32"))
+    {
+      datatype[file_nr] = US_DATATYPE_UINT32_LI;
+      bdf = 1;
+      straightbinary[file_nr] = 1;
+      samplesize[file_nr] = 4;
+      physmax[file_nr] *= (8388607LL - (baseline[file_nr] - adczero[file_nr]));
+      physmin[file_nr] *= (-8388608LL - (baseline[file_nr] - adczero[file_nr]));
+      digmax[file_nr] = 8388607;
+      digmin[file_nr] = -8388608;
+    }
+    else if(!strcmp(str, "int32"))
+    {
+      datatype[file_nr] = US_DATATYPE_INT32_LI;
+      bdf = 1;
+      straightbinary[file_nr] = 0;
+      samplesize[file_nr] = 4;
+      physmax[file_nr] *= (8388607LL - (baseline[file_nr] - adczero[file_nr]));
+      physmin[file_nr] *= (-8388608LL - (baseline[file_nr] - adczero[file_nr]));
+      digmax[file_nr] = 8388607;
+      digmin[file_nr] = -8388608;
+    }
+    else if(!strcmp(str, "float"))
+    {
+      datatype[file_nr] = US_DATATYPE_FLOAT_LI;
+      bdf = 1;
+      straightbinary[file_nr] = 0;
+      samplesize[file_nr] = 4;
+      physmax[file_nr] *= (8388607LL - (baseline[file_nr] - adczero[file_nr]));
+      physmin[file_nr] *= (-8388608LL - (baseline[file_nr] - adczero[file_nr]));
+      digmax[file_nr] = 8388607;
+      digmin[file_nr] = -8388608;
+    }
+    else if(!strcmp(str, "double"))
+    {
+      datatype[file_nr] = US_DATATYPE_DOUBLE_LI;
+      bdf = 1;
+      straightbinary[file_nr] = 0;
+      samplesize[file_nr] = 8;
+      physmax[file_nr] *= (8388607LL - (baseline[file_nr] - adczero[file_nr]));
+      physmin[file_nr] *= (-8388608LL - (baseline[file_nr] - adczero[file_nr]));
+      digmax[file_nr] = 8388607;
+      digmin[file_nr] = -8388608;
+    }
+    else if(!strcmp(str, "uint64"))
+    {
+      datatype[file_nr] = US_DATATYPE_UINT64_LI;
+      bdf = 1;
+      straightbinary[file_nr] = 1;
+      samplesize[file_nr] = 8;
+      physmax[file_nr] *= (8388607LL - (baseline[file_nr] - adczero[file_nr]));
+      physmin[file_nr] *= (-8388608LL - (baseline[file_nr] - adczero[file_nr]));
+      digmax[file_nr] = 8388607;
+      digmin[file_nr] = -8388608;
+    }
+    else if(!strcmp(str, "int64"))
+    {
+      datatype[file_nr] = US_DATATYPE_INT64_LI;
+      bdf = 1;
+      straightbinary[file_nr] = 0;
+      samplesize[file_nr] = 8;
+      physmax[file_nr] *= (8388607LL - (baseline[file_nr] - adczero[file_nr]));
+      physmin[file_nr] *= (-8388608LL - (baseline[file_nr] - adczero[file_nr]));
+      digmax[file_nr] = 8388607;
+      digmin[file_nr] = -8388608;
+    }
+    else
+    {
+      snprintf(scratchpad, 2047, "Error, unsupported combination of datatype: %s and binary file\n", str);
+      textEdit1->append(scratchpad);
+      return(1);
+    }
   }
 
   return(0);

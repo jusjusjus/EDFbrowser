@@ -60,20 +60,20 @@ public:
 
 private:
 
-QDialog      *MessageDialog;
+  QDialog      *MessageDialog;
 
-QLabel       *Label1;
+  QLabel       *Label1;
 
-QPushButton  *pushButton1,
-             *pushButton2;
+  QPushButton  *pushButton1,
+               *pushButton2;
 
-int *buttonnr;
+  int *buttonnr;
 
 
 private slots:
 
-void button1Clicked();
-void button2Clicked();
+  void button1Clicked();
+  void button2Clicked();
 
 };
 

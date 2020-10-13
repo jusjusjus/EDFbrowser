@@ -37,13 +37,13 @@
 
 #if defined(__APPLE__) || defined(__MACH__) || defined(__APPLE_CC__)
 
-#define fopeno fopen
+  #define fopeno fopen
 
 #else
 
-#define fseeko fseeko64
-#define ftello ftello64
-#define fopeno fopen64
+  #define fseeko fseeko64
+  #define ftello ftello64
+  #define fopeno fopen64
 
 #endif
 
@@ -108,7 +108,7 @@ UI_FINO2EDFwindow::UI_FINO2EDFwindow(char *recent_dir, char *save_dir)
 void UI_FINO2EDFwindow::SelectFileButton()
 {
   FILE *inputfile=NULL,
-       *outputfile=NULL;
+        *outputfile=NULL;
 
   int i, j, k, p,
       temp,
@@ -140,10 +140,11 @@ void UI_FINO2EDFwindow::SelectFileButton()
          new_value[MAX_SIGNALS],
          old_value[MAX_SIGNALS];
 
-  union{
-         short two;
-         char one[2];
-       } var;
+  union
+  {
+    short two;
+    char one[2];
+  } var;
 
 
 
@@ -190,7 +191,7 @@ void UI_FINO2EDFwindow::SelectFileButton()
     return;
   }
 
-/***************** check if the txtfile is valid ******************************/
+  /***************** check if the txtfile is valid ******************************/
 
   rewind(inputfile);
 
@@ -246,7 +247,7 @@ void UI_FINO2EDFwindow::SelectFileButton()
     return;
   }
 
-/***************** collect items *****************************************/
+  /***************** collect items *****************************************/
 
   rewind(inputfile);
 
@@ -523,7 +524,7 @@ void UI_FINO2EDFwindow::SelectFileButton()
   datetime[16] = 0;
 
 
-/***************** write header *****************************************/
+  /***************** write header *****************************************/
 
   get_filename_from_path(outputfilename, path, MAX_PATH_LENGTH);
   remove_extension_from_filename(outputfilename);
@@ -619,7 +620,7 @@ void UI_FINO2EDFwindow::SelectFileButton()
     fputc(' ', outputfile);
   }
 
-/***************** start conversion **************************************/
+  /***************** start conversion **************************************/
 
   rewind(inputfile);
 
@@ -683,7 +684,7 @@ void UI_FINO2EDFwindow::SelectFileButton()
 
     line[i] = temp;
 
-  /**************************************/
+    /**************************************/
 
     if(line[i]==',')
     {
@@ -773,7 +774,7 @@ void UI_FINO2EDFwindow::SelectFileButton()
       column++;
     }
 
-  /**************************************/
+    /**************************************/
 
     i++;
 

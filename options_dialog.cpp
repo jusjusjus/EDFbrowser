@@ -77,13 +77,13 @@ UI_OptionsDialog::UI_OptionsDialog(QWidget *w_parent, unsigned int tab_number) /
 
 /////////////////////////////////////// Tab 1 : Colors ///////////////////////////////////////////////////////////////////////
 
-	colorOptions = new ColorOptions(w_parent);
-	tabholder->addTab(colorOptions, "Colors");
+  colorOptions = new ColorOptions(w_parent);
+  tabholder->addTab(colorOptions, "Colors");
 
 /////////////////////////////////////// Tab 2 : Calibration ///////////////////////////////////////////////////////////////////////
 
-	signaltypeOptions = new SignaltypeOptions(w_parent);
-	tabholder->addTab(signaltypeOptions, "Signaltypes");
+  signaltypeOptions = new SignaltypeOptions(w_parent);
+  tabholder->addTab(signaltypeOptions, "Signaltypes");
 
 /////////////////////////////////////// Tab 2 : Calibration ///////////////////////////////////////////////////////////////////////
 
@@ -165,7 +165,7 @@ UI_OptionsDialog::UI_OptionsDialog(QWidget *w_parent, unsigned int tab_number) /
     colorBarTable->setRowHeight(i, 20);
 
     colorBarTable->setCellWidget(i, 0, new QCheckBox);
-   ((QCheckBox *)(colorBarTable->cellWidget(i, 0)))->setTristate(false);
+    ((QCheckBox *)(colorBarTable->cellWidget(i, 0)))->setTristate(false);
     if(i < mainwindow->spectrum_colorbar->items)
     {
       ((QCheckBox *)(colorBarTable->cellWidget(i, 0)))->setCheckState(Qt::Checked);
@@ -450,7 +450,7 @@ UI_OptionsDialog::UI_OptionsDialog(QWidget *w_parent, unsigned int tab_number) /
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //
-	tabholder->setCurrentIndex(tab_number);
+  tabholder->setCurrentIndex(tab_number);
 //
 
   horLayout = new QHBoxLayout;
@@ -497,8 +497,8 @@ void UI_OptionsDialog::spinBox4_2ValueChanged(int stepsize)
 
 void UI_OptionsDialog::combobox4_1IndexChanged(int index)
 {
-  	if(index == 0) mainwindow->powerlinefreq = 50;
-	if(index == 1) mainwindow->powerlinefreq = 60;
+  if(index == 0) mainwindow->powerlinefreq = 50;
+  if(index == 1) mainwindow->powerlinefreq = 60;
 }
 
 
@@ -562,9 +562,9 @@ void UI_OptionsDialog::ApplyButtonClicked()
     for(j=0; j<mainwindow->signalcomp[i]->num_of_signals; j++)
     {
       mainwindow->signalcomp[i]->sensitivity[j] =
-       mainwindow->signalcomp[i]->edfhdr->edfparam[mainwindow->signalcomp[i]->edfsignal[j]].bitvalue
-       / ((double)mainwindow->signalcomp[i]->voltpercm
-       * mainwindow->pixelsizefactor);
+        mainwindow->signalcomp[i]->edfhdr->edfparam[mainwindow->signalcomp[i]->edfsignal[j]].bitvalue
+        / ((double)mainwindow->signalcomp[i]->voltpercm
+           * mainwindow->pixelsizefactor);
     }
   }
 
@@ -654,16 +654,14 @@ void UI_OptionsDialog::ApplyButton2Clicked()
   {
     mainwindow->spectrum_colorbar->method = 0;
   }
-  else
-    if(radiobutton2->isChecked()) // peak
-    {
-      mainwindow->spectrum_colorbar->method = 1;
-    }
-    else
-      if(radiobutton3->isChecked()) // average
-      {
-        mainwindow->spectrum_colorbar->method = 2;
-      }
+  else if(radiobutton2->isChecked()) // peak
+  {
+    mainwindow->spectrum_colorbar->method = 1;
+  }
+  else if(radiobutton3->isChecked()) // average
+  {
+    mainwindow->spectrum_colorbar->method = 2;
+  }
 
   mainwindow->maxdftblocksize = spinbox3_1->value();
   if(mainwindow->maxdftblocksize & 1)
@@ -1077,9 +1075,9 @@ void UI_OptionsDialog::saveColorSchemaButtonClicked()
 
   if(strlen(path) > 4)
   {
-    if(strcmp(path + strlen(path) - 6, ".color"))	// check if the ending is '.color'
+    if(strcmp(path + strlen(path) - 6, ".color")) // check if the ending is '.color'
     {
-      strcat(path, ".color");				// if not : append it to the string.
+      strcat(path, ".color");       // if not : append it to the string.
     }
   }
 
@@ -1097,91 +1095,91 @@ void UI_OptionsDialog::saveColorSchemaButtonClicked()
   fprintf(colorfile, "<?xml version=\"1.0\"?>\n<" PROGRAM_NAME "_colorschema>\n");
 
   fprintf(colorfile, " <backgroundcolor>\n"
-                  "  <red>%i</red>\n"
-                  "  <green>%i</green>\n"
-                  "  <blue>%i</blue>\n"
-                  " </backgroundcolor>\n",
-                  mainwindow->maincurve->backgroundcolor.red(),
-                  mainwindow->maincurve->backgroundcolor.green(),
-                  mainwindow->maincurve->backgroundcolor.blue());
+          "  <red>%i</red>\n"
+          "  <green>%i</green>\n"
+          "  <blue>%i</blue>\n"
+          " </backgroundcolor>\n",
+          mainwindow->maincurve->backgroundcolor.red(),
+          mainwindow->maincurve->backgroundcolor.green(),
+          mainwindow->maincurve->backgroundcolor.blue());
 
   fprintf(colorfile, " <small_ruler_color>\n"
-                  "  <red>%i</red>\n"
-                  "  <green>%i</green>\n"
-                  "  <blue>%i</blue>\n"
-                  " </small_ruler_color>\n",
-                  mainwindow->maincurve->small_ruler_color.red(),
-                  mainwindow->maincurve->small_ruler_color.green(),
-                  mainwindow->maincurve->small_ruler_color.blue());
+          "  <red>%i</red>\n"
+          "  <green>%i</green>\n"
+          "  <blue>%i</blue>\n"
+          " </small_ruler_color>\n",
+          mainwindow->maincurve->small_ruler_color.red(),
+          mainwindow->maincurve->small_ruler_color.green(),
+          mainwindow->maincurve->small_ruler_color.blue());
 
   fprintf(colorfile, " <big_ruler_color>\n"
-                  "  <red>%i</red>\n"
-                  "  <green>%i</green>\n"
-                  "  <blue>%i</blue>\n"
-                  " </big_ruler_color>\n",
-                  mainwindow->maincurve->big_ruler_color.red(),
-                  mainwindow->maincurve->big_ruler_color.green(),
-                  mainwindow->maincurve->big_ruler_color.blue());
+          "  <red>%i</red>\n"
+          "  <green>%i</green>\n"
+          "  <blue>%i</blue>\n"
+          " </big_ruler_color>\n",
+          mainwindow->maincurve->big_ruler_color.red(),
+          mainwindow->maincurve->big_ruler_color.green(),
+          mainwindow->maincurve->big_ruler_color.blue());
 
   fprintf(colorfile, " <mouse_rect_color>\n"
-                  "  <red>%i</red>\n"
-                  "  <green>%i</green>\n"
-                  "  <blue>%i</blue>\n"
-                  " </mouse_rect_color>\n",
-                  mainwindow->maincurve->mouse_rect_color.red(),
-                  mainwindow->maincurve->mouse_rect_color.green(),
-                  mainwindow->maincurve->mouse_rect_color.blue());
+          "  <red>%i</red>\n"
+          "  <green>%i</green>\n"
+          "  <blue>%i</blue>\n"
+          " </mouse_rect_color>\n",
+          mainwindow->maincurve->mouse_rect_color.red(),
+          mainwindow->maincurve->mouse_rect_color.green(),
+          mainwindow->maincurve->mouse_rect_color.blue());
 
   fprintf(colorfile, " <text_color>\n"
-                  "  <red>%i</red>\n"
-                  "  <green>%i</green>\n"
-                  "  <blue>%i</blue>\n"
-                  " </text_color>\n",
-                  mainwindow->maincurve->text_color.red(),
-                  mainwindow->maincurve->text_color.green(),
-                  mainwindow->maincurve->text_color.blue());
+          "  <red>%i</red>\n"
+          "  <green>%i</green>\n"
+          "  <blue>%i</blue>\n"
+          " </text_color>\n",
+          mainwindow->maincurve->text_color.red(),
+          mainwindow->maincurve->text_color.green(),
+          mainwindow->maincurve->text_color.blue());
 
   fprintf(colorfile, " <baseline_color>\n"
-                  "  <red>%i</red>\n"
-                  "  <green>%i</green>\n"
-                  "  <blue>%i</blue>\n"
-                  " </baseline_color>\n",
-                  mainwindow->maincurve->baseline_color.red(),
-                  mainwindow->maincurve->baseline_color.green(),
-                  mainwindow->maincurve->baseline_color.blue());
+          "  <red>%i</red>\n"
+          "  <green>%i</green>\n"
+          "  <blue>%i</blue>\n"
+          " </baseline_color>\n",
+          mainwindow->maincurve->baseline_color.red(),
+          mainwindow->maincurve->baseline_color.green(),
+          mainwindow->maincurve->baseline_color.blue());
 
   fprintf(colorfile, " <annot_marker_color>\n"
-                  "  <red>%i</red>\n"
-                  "  <green>%i</green>\n"
-                  "  <blue>%i</blue>\n"
-                  " </annot_marker_color>\n",
-                  mainwindow->maincurve->annot_marker_color.red(),
-                  mainwindow->maincurve->annot_marker_color.green(),
-                  mainwindow->maincurve->annot_marker_color.blue());
+          "  <red>%i</red>\n"
+          "  <green>%i</green>\n"
+          "  <blue>%i</blue>\n"
+          " </annot_marker_color>\n",
+          mainwindow->maincurve->annot_marker_color.red(),
+          mainwindow->maincurve->annot_marker_color.green(),
+          mainwindow->maincurve->annot_marker_color.blue());
 
   fprintf(colorfile, " <signal_color>%i</signal_color>\n",
-                  mainwindow->maincurve->signal_color);
+          mainwindow->maincurve->signal_color);
 
   fprintf(colorfile, " <crosshair_1_color>%i</crosshair_1_color>\n",
-                  mainwindow->maincurve->crosshair_1.color);
+          mainwindow->maincurve->crosshair_1.color);
 
   fprintf(colorfile, " <crosshair_2_color>%i</crosshair_2_color>\n",
-                  mainwindow->maincurve->crosshair_2.color);
+          mainwindow->maincurve->crosshair_2.color);
 
   fprintf(colorfile, " <floating_ruler_color>%i</floating_ruler_color>\n",
-                  mainwindow->maincurve->floating_ruler_color);
+          mainwindow->maincurve->floating_ruler_color);
 
   fprintf(colorfile, " <blackwhite_printing>%i</blackwhite_printing>\n",
-                  mainwindow->maincurve->blackwhite_printing);
+          mainwindow->maincurve->blackwhite_printing);
 
   fprintf(colorfile, " <show_annot_markers>%i</show_annot_markers>\n",
-                  mainwindow->show_annot_markers);
+          mainwindow->show_annot_markers);
 
   fprintf(colorfile, " <show_baselines>%i</show_baselines>\n",
-                  mainwindow->show_baselines);
+          mainwindow->show_baselines);
 
   fprintf(colorfile, " <clip_to_pane>%i</clip_to_pane>\n",
-                  mainwindow->clip_to_pane);
+          mainwindow->clip_to_pane);
 
 
 

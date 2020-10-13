@@ -55,8 +55,14 @@ public:
   UI_Flywheel(QWidget *parent=0);
   ~UI_Flywheel();
 
-  QSize sizeHint() const {return minimumSizeHint(); }
-  QSize minimumSizeHint() const {return QSize(10,30); }
+  QSize sizeHint() const
+  {
+    return minimumSizeHint();
+  }
+  QSize minimumSizeHint() const
+  {
+    return QSize(10,30);
+  }
 
 private slots:
 
@@ -98,7 +104,7 @@ private:
   QLinearGradient *linearGrad;
 
 signals:
-     void dialMoved(int);
+  void dialMoved(int);
 };
 
 

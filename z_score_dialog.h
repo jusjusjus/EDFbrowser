@@ -94,78 +94,78 @@ public:
 
 private:
 
-QHBoxLayout *hlayout1,
-            *hlayout2,
-            *hlayout3,
-            *hlayout4,
-            *hlayout5;
+  QHBoxLayout *hlayout1,
+              *hlayout2,
+              *hlayout3,
+              *hlayout4,
+              *hlayout5;
 
-QVBoxLayout *vlayout2,
-            *vlayout3;
+  QVBoxLayout *vlayout2,
+              *vlayout3;
 
-QLabel      *crossoverbinLabel,
-            *thresholdLabel,
-            *pagelenLabel,
-            *hysteresisLabel;
+  QLabel      *crossoverbinLabel,
+              *thresholdLabel,
+              *pagelenLabel,
+              *hysteresisLabel;
 //            *errordetectionLabel;
 
-QPushButton *CloseButton,
-            *StartButton,
-            *get_annotButton,
-            *defaultButton,
-            *jumpButton,
-            *addTraceButton;
+  QPushButton *CloseButton,
+              *StartButton,
+              *get_annotButton,
+              *defaultButton,
+              *jumpButton,
+              *addTraceButton;
 
-QSpinBox    *pagelenSpinbox;
+  QSpinBox    *pagelenSpinbox;
 //            *errordetectionSpinbox;
 
-QDoubleSpinBox *thresholdSpinbox,
-               *crossoverSpinbox,
-               *hysteresisSpinbox;
+  QDoubleSpinBox *thresholdSpinbox,
+                 *crossoverSpinbox,
+                 *hysteresisSpinbox;
 
-QRadioButton *epochRadioButton,
-             *pageRadioButton,
-             *wakesleepRadioButton;
+  QRadioButton *epochRadioButton,
+               *pageRadioButton,
+               *wakesleepRadioButton;
 
-SignalCurve *curve1;
+  SignalCurve *curve1;
 
-UI_ZScoreWindow **zscoredialog;
+  UI_ZScoreWindow **zscoredialog;
 
-QAction     *shift_page_right_Act,
-            *shift_page_left_Act;
+  QAction     *shift_page_right_Act,
+              *shift_page_left_Act;
 
-int signalnr,
-    zscore_page_len,
-    avg_majority,
-    epoch_cntr,
-    zscore_pages,
-    zscore_wake,
-    *zscore_sleepstage_buf,
-    *zscore_error_buf,
-    plot_type,
-    zscore_dialog_is_destroyed,
-    zscore_dialognumber,
-    zscore_error_detection;
+  int signalnr,
+      zscore_page_len,
+      avg_majority,
+      epoch_cntr,
+      zscore_pages,
+      zscore_wake,
+      *zscore_sleepstage_buf,
+      *zscore_error_buf,
+      plot_type,
+      zscore_dialog_is_destroyed,
+      zscore_dialognumber,
+      zscore_error_detection;
 
-double *zscore_epoch_buf,
-       *zscore_page_buf,
-       crossoverfreq,
-       z_threshold,
-       z_hysteresis;
+  double *zscore_epoch_buf,
+         *zscore_page_buf,
+         crossoverfreq,
+         z_threshold,
+         z_hysteresis;
 
 
 private slots:
 
-void startButtonClicked();
-void get_annotationsButtonClicked();
-void jumpButtonClicked();
-void ZscoreDialogDestroyed(QObject *);
-void RadioButtonsClicked(bool);
-void defaultButtonClicked();
-void markersMoved();
-void addTraceButtonClicked();
-void shift_page_right();
-void shift_page_left();
+  void startButtonClicked();
+  void get_annotationsButtonClicked();
+  void jumpButtonClicked();
+  void ZscoreDialogDestroyed(QObject *);
+  void RadioButtonsClicked(bool);
+  void defaultButtonClicked();
+  void markersMoved();
+  void addTraceButtonClicked();
+  void shift_page_right();
+  void shift_page_left();
 
 };
 

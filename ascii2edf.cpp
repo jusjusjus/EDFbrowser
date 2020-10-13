@@ -37,13 +37,13 @@
 
 #if defined(__APPLE__) || defined(__MACH__) || defined(__APPLE_CC__)
 
-#define fopeno fopen
+  #define fopeno fopen
 
 #else
 
-#define fseeko fseeko64
-#define ftello ftello64
-#define fopeno fopen64
+  #define fseeko fseeko64
+  #define ftello ftello64
+  #define fopeno fopen64
 
 #endif
 
@@ -388,7 +388,7 @@ void UI_ASCII2EDFapp::gobuttonpressed()
     return;
   }
 
-/********************** check file *************************/
+  /********************** check file *************************/
 
   rewind(inputfile);
 
@@ -482,7 +482,7 @@ void UI_ASCII2EDFapp::gobuttonpressed()
     return;
   }
 
-/***************** find highest physical maximums ***********************/
+  /***************** find highest physical maximums ***********************/
 
   if(autoPhysicalMaximum)
   {
@@ -677,7 +677,7 @@ void UI_ASCII2EDFapp::gobuttonpressed()
     QApplication::restoreOverrideCursor();
   }
 
-/***************** write header *****************************************/
+  /***************** write header *****************************************/
 
   outputfilename[0] = 0;
   if(recent_savedir[0]!=0)
@@ -940,7 +940,7 @@ void UI_ASCII2EDFapp::gobuttonpressed()
     fputc(' ', outputfile);
   }
 
-/***************** start conversion **************************************/
+  /***************** start conversion **************************************/
 
   QApplication::setOverrideCursor(Qt::WaitCursor);
 
@@ -1595,7 +1595,7 @@ int UI_ASCII2EDFapp::check_input(void)
   char str[128],
        big_str[ASCII_MAX_LINE_LEN];
 
-  const char *columnname[]={"", "Label", "Physical maximum", "Physical dimension"};
+  const char *columnname[]= {"", "Label", "Physical maximum", "Physical dimension"};
 
 
   strcpy(str, SeparatorLineEdit->text().toLatin1().data());
@@ -1690,8 +1690,8 @@ int UI_ASCII2EDFapp::check_input(void)
           if( (str[k]<32) || (str[k]>126) )
           {
             snprintf(big_str, ASCII_MAX_LINE_LEN,
-            "Character %i in %s field of row %i is not a valid ASCII character.",
-            k + 1, columnname[j], i + 1);
+                     "Character %i in %s field of row %i is not a valid ASCII character.",
+                     k + 1, columnname[j], i + 1);
 
             QMessageBox messagewindow(QMessageBox::Critical, "Invalid input", big_str);
             messagewindow.exec();
@@ -1704,8 +1704,8 @@ int UI_ASCII2EDFapp::check_input(void)
             if(k==0)
             {
               snprintf(big_str, ASCII_MAX_LINE_LEN,
-              "Text in %s field of row %i is not valid.\nField must not be empty and left-aligned (no spaces in front of the text).",
-              columnname[j], i + 1);
+                       "Text in %s field of row %i is not valid.\nField must not be empty and left-aligned (no spaces in front of the text).",
+                       columnname[j], i + 1);
 
               QMessageBox messagewindow(QMessageBox::Critical, "Invalid input", big_str);
               messagewindow.exec();
@@ -1719,9 +1719,9 @@ int UI_ASCII2EDFapp::check_input(void)
             if(str[len-1]=='.')
             {
               snprintf(big_str, ASCII_MAX_LINE_LEN,
-              "Text in %s field of row %i is not valid.\n"
-              "Last character can not be a dot.",
-              columnname[j], i + 1);
+                       "Text in %s field of row %i is not valid.\n"
+                       "Last character can not be a dot.",
+                       columnname[j], i + 1);
 
               QMessageBox messagewindow(QMessageBox::Critical, "Invalid input", big_str);
               messagewindow.exec();
@@ -1736,9 +1736,9 @@ int UI_ASCII2EDFapp::check_input(void)
                 if(dot)
                 {
                   snprintf(big_str, ASCII_MAX_LINE_LEN,
-                  "Text in %s field of row %i is not valid.\n"
-                  "Only one dot is allowed as a decimal separator.",
-                  columnname[j], i + 1);
+                           "Text in %s field of row %i is not valid.\n"
+                           "Only one dot is allowed as a decimal separator.",
+                           columnname[j], i + 1);
 
                   QMessageBox messagewindow(QMessageBox::Critical, "Invalid input", big_str);
                   messagewindow.exec();
@@ -1750,9 +1750,9 @@ int UI_ASCII2EDFapp::check_input(void)
                   if(k==0)
                   {
                     snprintf(big_str, ASCII_MAX_LINE_LEN,
-                    "Text in %s field of row %i is not valid.\n"
-                    "First character can not be a dot.",
-                    columnname[j], i + 1);
+                             "Text in %s field of row %i is not valid.\n"
+                             "First character can not be a dot.",
+                             columnname[j], i + 1);
 
                     QMessageBox messagewindow(QMessageBox::Critical, "Invalid input", big_str);
                     messagewindow.exec();
@@ -1766,9 +1766,9 @@ int UI_ASCII2EDFapp::check_input(void)
               else
               {
                 snprintf(big_str, ASCII_MAX_LINE_LEN,
-                "Text in %s field of row %i is not valid.\n"
-                "Field must contain a number and no spaces.",
-                columnname[j], i + 1);
+                         "Text in %s field of row %i is not valid.\n"
+                         "Field must contain a number and no spaces.",
+                         columnname[j], i + 1);
 
                 QMessageBox messagewindow(QMessageBox::Critical, "Invalid input", big_str);
                 messagewindow.exec();
@@ -1784,9 +1784,9 @@ int UI_ASCII2EDFapp::check_input(void)
           if(atof(str)<1.0)
           {
             snprintf(big_str, ASCII_MAX_LINE_LEN,
-            "Value in %s field of row %i is not valid.\n"
-            "Value must be 1 or more.",
-            columnname[j], i + 1);
+                     "Value in %s field of row %i is not valid.\n"
+                     "Value must be 1 or more.",
+                     columnname[j], i + 1);
 
             QMessageBox messagewindow(QMessageBox::Critical, "Invalid input", big_str);
             messagewindow.exec();

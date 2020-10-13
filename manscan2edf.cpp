@@ -37,13 +37,13 @@
 
 #if defined(__APPLE__) || defined(__MACH__) || defined(__APPLE_CC__)
 
-#define fopeno fopen
+  #define fopeno fopen
 
 #else
 
-#define fseeko fseeko64
-#define ftello ftello64
-#define fopeno fopen64
+  #define fseeko fseeko64
+  #define ftello ftello64
+  #define fopeno fopen64
 
 #endif
 
@@ -53,31 +53,32 @@
 
 
 
-struct segment_prop_struct{
-        long long data_offset;
-        int sweeps;
-        int channels;
-        int samplefrequency;
-        int sec_duration;
-        char label[MAXSIGNALS][17];
-        double gain[MAXSIGNALS];
-        int startdate_year;
-        int startdate_month;
-        int startdate_day;
-        int starttime_hour;
-        int starttime_minute;
-        int starttime_second;
-        double hpf;
-        double lpf;
-        char recorder_version[128];
-        char recorder_brand[128];
-        char datafilename[MAX_PATH_LENGTH];
-        long long starttime_offset;
-        int ev_cnt;
-        long long ev_onset[MBIMAXEVENTS];
-        long long ev_duration[MBIMAXEVENTS];
-        char ev_description[MBIMAXEVENTS][MBIMAXEVLEN + 1];
-        };
+struct segment_prop_struct
+{
+  long long data_offset;
+  int sweeps;
+  int channels;
+  int samplefrequency;
+  int sec_duration;
+  char label[MAXSIGNALS][17];
+  double gain[MAXSIGNALS];
+  int startdate_year;
+  int startdate_month;
+  int startdate_day;
+  int starttime_hour;
+  int starttime_minute;
+  int starttime_second;
+  double hpf;
+  double lpf;
+  char recorder_version[128];
+  char recorder_brand[128];
+  char datafilename[MAX_PATH_LENGTH];
+  long long starttime_offset;
+  int ev_cnt;
+  long long ev_onset[MBIMAXEVENTS];
+  long long ev_duration[MBIMAXEVENTS];
+  char ev_description[MBIMAXEVENTS][MBIMAXEVLEN + 1];
+};
 
 
 
@@ -123,7 +124,7 @@ UI_MANSCAN2EDFwindow::UI_MANSCAN2EDFwindow(char *recent_dir, char *save_dir)
 void UI_MANSCAN2EDFwindow::SelectFileButton()
 {
   FILE *header_inputfile=NULL,
-       *data_inputfile=NULL;
+        *data_inputfile=NULL;
 
   int i, j, k, n, tmp, hdl, chns=0, sf, blocks, *buf, progress_steps, segment_cnt, n_segments=0;
 
@@ -139,10 +140,11 @@ void UI_MANSCAN2EDFwindow::SelectFileButton()
 
   struct segment_prop_struct *segment_properties;
 
-  union{
-         int one;
-         char four[4];
-       } var;
+  union
+  {
+    int one;
+    char four[4];
+  } var;
 
   struct date_time_struct dtm_struct;
 
@@ -281,26 +283,26 @@ void UI_MANSCAN2EDFwindow::SelectFileButton()
 
     segment_properties->sec_duration = segment_properties->sweeps / segment_properties->samplefrequency;
 
-  // for(i=0; i<segment_properties->ev_cnt; i++)
-  // {
-  //   printf("%s  %lli  %lli\n", segment_properties->ev_description[i], segment_properties->ev_onset[i], segment_properties->ev_duration[i]);
-  // }
-  //
-  // for(i=0; i<segment_properties->channels; i++)
-  // {
-  //   printf("%s    %.10f\n", segment_properties->label[i], segment_properties->gain[i]);
-  // }
-  // printf("data_offset is %lli   sweeps is %i datafileheader_filename is %s\n", segment_properties->data_offset, segment_properties->sweeps, segment_properties->datafilename);
-  //
-  // printf("startdate_day is %i   startdate_month is %i   startdate_year is %i\n", segment_properties->startdate_day, segment_properties->startdate_month, segment_properties->startdate_year);
-  //
-  // printf("starttime is:  %02i:%02i:%02i    starttime offset is: %lli\n", segment_properties->starttime_hour, segment_properties->starttime_minute, segment_properties->starttime_second, segment_properties->starttime_offset);
-  //
-  // printf("samplerate is: %i   hpf is %f   lpf is %f\n", segment_properties->samplefrequency, segment_properties->hpf, segment_properties->lpf);
-  //
-  // printf("recorder version: %s   recorder brand: %s\n", segment_properties->recorder_version, segment_properties->recorder_brand);
-  //
-  // printf("recording duration: %i seconds\n", segment_properties->sec_duration);
+    // for(i=0; i<segment_properties->ev_cnt; i++)
+    // {
+    //   printf("%s  %lli  %lli\n", segment_properties->ev_description[i], segment_properties->ev_onset[i], segment_properties->ev_duration[i]);
+    // }
+    //
+    // for(i=0; i<segment_properties->channels; i++)
+    // {
+    //   printf("%s    %.10f\n", segment_properties->label[i], segment_properties->gain[i]);
+    // }
+    // printf("data_offset is %lli   sweeps is %i datafileheader_filename is %s\n", segment_properties->data_offset, segment_properties->sweeps, segment_properties->datafilename);
+    //
+    // printf("startdate_day is %i   startdate_month is %i   startdate_year is %i\n", segment_properties->startdate_day, segment_properties->startdate_month, segment_properties->startdate_year);
+    //
+    // printf("starttime is:  %02i:%02i:%02i    starttime offset is: %lli\n", segment_properties->starttime_hour, segment_properties->starttime_minute, segment_properties->starttime_second, segment_properties->starttime_offset);
+    //
+    // printf("samplerate is: %i   hpf is %f   lpf is %f\n", segment_properties->samplefrequency, segment_properties->hpf, segment_properties->lpf);
+    //
+    // printf("recorder version: %s   recorder brand: %s\n", segment_properties->recorder_version, segment_properties->recorder_brand);
+    //
+    // printf("recording duration: %i seconds\n", segment_properties->sec_duration);
 
     chns = segment_properties->channels;
 
@@ -592,7 +594,7 @@ void UI_MANSCAN2EDFwindow::SelectFileButton()
       }
     }
 
-  ////////////////// start conversion ///////////////////////////////////////////
+    ////////////////// start conversion ///////////////////////////////////////////
 
     QProgressDialog progress("Converting a segment...", "Abort", 0, blocks);
     progress.setWindowModality(Qt::WindowModal);
@@ -740,8 +742,8 @@ int UI_MANSCAN2EDFwindow::get_events(struct segment_prop_struct *segprop, int se
        annot_descr[MBIMAXEVLEN + 1];
 
   long long onset,
-            duration,
-            sf;
+       duration,
+       sf;
 
 
   sf = segprop->samplefrequency;
@@ -780,7 +782,7 @@ int UI_MANSCAN2EDFwindow::get_events(struct segment_prop_struct *segprop, int se
     strntolower(linebuf, 33);
 
     if((!(strncmp(linebuf, "event beginsample durationsamples", 33))) ||
-      (!(strncmp(linebuf, "event durationsamples beginsample", 33))))
+        (!(strncmp(linebuf, "event durationsamples beginsample", 33))))
     {
       if(!(strncmp(linebuf, "event beginsample durationsamples", 33)))
       {
@@ -1310,11 +1312,11 @@ int UI_MANSCAN2EDFwindow::get_start_date(struct segment_prop_struct *segprop, in
   }
 
   if((linebuf[p]   < '0') || (linebuf[p]   > '9') ||
-     (linebuf[p+1] < '0') || (linebuf[p+1] > '9') ||
-     (linebuf[p+3] < '0') || (linebuf[p+3] > '9') ||
-     (linebuf[p+4] < '0') || (linebuf[p+4] > '9') ||
-     (linebuf[p+6] < '0') || (linebuf[p+6] > '9') ||
-     (linebuf[p+7] < '0') || (linebuf[p+7] > '9'))
+      (linebuf[p+1] < '0') || (linebuf[p+1] > '9') ||
+      (linebuf[p+3] < '0') || (linebuf[p+3] > '9') ||
+      (linebuf[p+4] < '0') || (linebuf[p+4] > '9') ||
+      (linebuf[p+6] < '0') || (linebuf[p+6] > '9') ||
+      (linebuf[p+7] < '0') || (linebuf[p+7] > '9'))
   {
     return(-1);
   }
@@ -1381,11 +1383,11 @@ int UI_MANSCAN2EDFwindow::get_start_date(struct segment_prop_struct *segprop, in
       if((linebuf[p+2] == ':') && (linebuf[p+5] == ':'))
       {
         if((linebuf[p]   < '0') || (linebuf[p]   > '9') ||
-           (linebuf[p+1] < '0') || (linebuf[p+1] > '9') ||
-           (linebuf[p+3] < '0') || (linebuf[p+3] > '9') ||
-           (linebuf[p+4] < '0') || (linebuf[p+4] > '9') ||
-           (linebuf[p+6] < '0') || (linebuf[p+6] > '9') ||
-           (linebuf[p+7] < '0') || (linebuf[p+7] > '9'))
+            (linebuf[p+1] < '0') || (linebuf[p+1] > '9') ||
+            (linebuf[p+3] < '0') || (linebuf[p+3] > '9') ||
+            (linebuf[p+4] < '0') || (linebuf[p+4] > '9') ||
+            (linebuf[p+6] < '0') || (linebuf[p+6] > '9') ||
+            (linebuf[p+7] < '0') || (linebuf[p+7] > '9'))
         {
           return(-1);
         }
@@ -1967,16 +1969,16 @@ long long UI_MANSCAN2EDFwindow::get_long_time(const char *str)
 
     for(i=dotposition-1; i>=0; i--)
     {
-        value += ((long long)(str[i] - 48)) * radix;
-        radix *= 10;
+      value += ((long long)(str[i] - 48)) * radix;
+      radix *= 10;
     }
 
     radix = TIME_DIMENSION / 10;
 
     for(i=dotposition+1; i<len; i++)
     {
-        value += ((long long)(str[i] - 48)) * radix;
-        radix /= 10;
+      value += ((long long)(str[i] - 48)) * radix;
+      radix /= 10;
     }
   }
   else
@@ -1985,8 +1987,8 @@ long long UI_MANSCAN2EDFwindow::get_long_time(const char *str)
 
     for(i=len-1; i>=0; i--)
     {
-        value += ((long long)(str[i] - 48)) * radix;
-        radix *= 10;
+      value += ((long long)(str[i] - 48)) * radix;
+      radix *= 10;
     }
   }
 

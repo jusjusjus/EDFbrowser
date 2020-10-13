@@ -37,13 +37,13 @@
 
 #if defined(__APPLE__) || defined(__MACH__) || defined(__APPLE_CC__)
 
-#define fopeno fopen
+  #define fopeno fopen
 
 #else
 
-#define fseeko fseeko64
-#define ftello ftello64
-#define fopeno fopen64
+  #define fseeko fseeko64
+  #define ftello ftello64
+  #define fopeno fopen64
 
 #endif
 
@@ -126,13 +126,14 @@ void UI_AsciiExportwindow::ExportButtonClicked()
        *duration_in_txt,
        str[1024];
 
-  union {
-          unsigned int one;
-          signed int one_signed;
-          unsigned short two[2];
-          signed short two_signed[2];
-          unsigned char four[4];
-        } var;
+  union
+  {
+    unsigned int one;
+    signed int one_signed;
+    unsigned short two[2];
+    signed short two_signed[2];
+    unsigned char four[4];
+  } var;
 
   FILE *inputfile,
        *outputfile,
@@ -408,7 +409,7 @@ void UI_AsciiExportwindow::ExportButtonClicked()
     return;
   }
 
-/***************** write header ******************************/
+  /***************** write header ******************************/
 
   strcpy(ascii_path, path);
   remove_extension_from_filename(ascii_path);
@@ -451,7 +452,7 @@ void UI_AsciiExportwindow::ExportButtonClicked()
 
   fclose(outputfile);
 
-/***************** write signals ******************************/
+  /***************** write signals ******************************/
 
   strcpy(ascii_path, path);
   remove_extension_from_filename(ascii_path);
@@ -502,7 +503,7 @@ void UI_AsciiExportwindow::ExportButtonClicked()
 
   fclose(outputfile);
 
-/***************** open annotation file ******************************/
+  /***************** open annotation file ******************************/
 
   strcpy(ascii_path, path);
   remove_extension_from_filename(ascii_path);
@@ -524,7 +525,7 @@ void UI_AsciiExportwindow::ExportButtonClicked()
 
   fprintf(annotationfile, "Onset,Duration,Annotation\n");
 
-/***************** write data ******************************/
+  /***************** write data ******************************/
 
   strcpy(ascii_path, path);
   remove_extension_from_filename(ascii_path);
@@ -584,7 +585,7 @@ void UI_AsciiExportwindow::ExportButtonClicked()
     return;
   }
 
-/***************** start data conversion ******************************/
+  /***************** start data conversion ******************************/
 
   QProgressDialog progress("Writing file...", "Abort", 0, datarecords);
   progress.setWindowModality(Qt::WindowModal);
@@ -636,7 +637,7 @@ void UI_AsciiExportwindow::ExportButtonClicked()
       max = edfparamascii[annot_ch[0]].smp_per_record * samplesize;
       p = edfparamascii[annot_ch[0]].buf_offset * samplesize;
 
-/* extract time from datarecord */
+      /* extract time from datarecord */
 
       for(k=0; k<max; k++)
       {
@@ -663,7 +664,7 @@ void UI_AsciiExportwindow::ExportButtonClicked()
       scratchpad[k] = 0;
       elapsedtime = atof(scratchpad);
 
-/* process annotations */
+      /* process annotations */
 
       for(r=0; r<nr_annot_chns; r++)
       {
@@ -726,42 +727,42 @@ void UI_AsciiExportwindow::ExportButtonClicked()
               continue;
             }
             else if(onset)
-                 {
-                   scratchpad[n] = 0;
-                   if(n)
-                   {
-                     utf8_to_latin1(scratchpad);
-                     for(m=0; m<n; m++)
-                     {
-                       if(scratchpad[m] == 0)
-                       {
-                         break;
-                       }
+            {
+              scratchpad[n] = 0;
+              if(n)
+              {
+                utf8_to_latin1(scratchpad);
+                for(m=0; m<n; m++)
+                {
+                  if(scratchpad[m] == 0)
+                  {
+                    break;
+                  }
 
-                       if((((unsigned char *)scratchpad)[m] < 32) || (((unsigned char *)scratchpad)[m] == ','))
-                       {
-                         scratchpad[m] = '.';
-                       }
-                     }
-                     fprintf(annotationfile, "%s,%s,%s\n", time_in_txt, duration_in_txt, scratchpad);
-                   }
-                   n = 0;
-                   duration = 0;
-                   duration_in_txt[0] = 0;
-                   scratchpad[0] = 0;
-                   continue;
-                 }
-                 else
-                 {
-                   scratchpad[n] = 0;
-                   strcpy(time_in_txt, scratchpad);
-                   n = 0;
-                   onset = 1;
-                   duration = 0;
-                   duration_in_txt[0] = 0;
-                   scratchpad[0] = 0;
-                   continue;
-                 }
+                  if((((unsigned char *)scratchpad)[m] < 32) || (((unsigned char *)scratchpad)[m] == ','))
+                  {
+                    scratchpad[m] = '.';
+                  }
+                }
+                fprintf(annotationfile, "%s,%s,%s\n", time_in_txt, duration_in_txt, scratchpad);
+              }
+              n = 0;
+              duration = 0;
+              duration_in_txt[0] = 0;
+              scratchpad[0] = 0;
+              continue;
+            }
+            else
+            {
+              scratchpad[n] = 0;
+              strcpy(time_in_txt, scratchpad);
+              n = 0;
+              onset = 1;
+              duration = 0;
+              duration_in_txt[0] = 0;
+              scratchpad[0] = 0;
+              continue;
+            }
           }
 
           if(scratchpad[n]==21)
@@ -801,7 +802,7 @@ void UI_AsciiExportwindow::ExportButtonClicked()
     }
     else elapsedtime = datarecordswritten * data_record_duration;
 
-/* done with timekeeping and annotations, continue with the data */
+    /* done with timekeeping and annotations, continue with the data */
 
     do
     {

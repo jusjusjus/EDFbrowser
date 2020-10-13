@@ -92,9 +92,9 @@ public:
 
   struct spectrum_markersblock *spectrum_color;
 
-void rescan();
-void init(int);
-void clear();
+  void rescan();
+  void init(int);
+  void clear();
 
 private:
 
@@ -122,7 +122,7 @@ private:
   QRadioButton *sqrtButton,
                *vlogButton,
                *colorBarButton,
-	       *autoscaleButton;
+               *autoscaleButton;
 
   int samples,
       steps,
@@ -140,11 +140,11 @@ private:
          maxvalue_sqrt_vlog,
          minvalue_vlog,
          minvalue_sqrt_vlog,
-         *buf1,			// 
-         *buf2,			// Power spectral density = Power spectrum / dw : uV^2 / Hz
-	 *buf3,			// sqrt( Power spectral density )	
-	 *buf4,			// log10( buf2 )
-         *buf5;			// log10( buf3 )
+         *buf1,     //
+         *buf2,     // Power spectral density = Power spectrum / dw : uV^2 / Hz
+         *buf3,     // sqrt( Power spectral density )
+         *buf4,     // log10( buf2 )
+         *buf5;     // log10( buf3 )
 
   char *viewbuf,
        signallabel[512],
@@ -153,13 +153,13 @@ private:
 
 private slots:
 
-void update_curve();
-void sliderMoved(int);
-void sqrtButtonClicked(bool);
-void vlogButtonClicked(bool);
-void colorBarButtonClicked(bool);
-void print_to_txt();
-void setdashboard();
+  void update_curve();
+  void sliderMoved(int);
+  void sqrtButtonClicked(bool);
+  void vlogButtonClicked(bool);
+  void colorBarButtonClicked(bool);
+  void print_to_txt();
+  void setdashboard();
 
 };
 

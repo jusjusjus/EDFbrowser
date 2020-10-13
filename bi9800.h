@@ -68,21 +68,21 @@ public:
 
 private:
 
-QPushButton  *pushButton1,
-             *pushButton2;
+  QPushButton  *pushButton1,
+               *pushButton2;
 
-QDialog      *myobjectDialog;
+  QDialog      *myobjectDialog;
 
-char  *recent_opendir,
-      *recent_savedir;
+  char  *recent_opendir,
+        *recent_savedir;
 
 
 
-void showpopupmessage(const char *, const char *);
+  void showpopupmessage(const char *, const char *);
 
 private slots:
 
-void SelectFileButton();
+  void SelectFileButton();
 
 };
 

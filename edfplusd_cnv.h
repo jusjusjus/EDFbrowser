@@ -43,8 +43,8 @@
 #include <QProgressDialog>
 #include <QStyle>
 #if QT_VERSION < 0x050000
-#include <QPlastiqueStyle>
-#include <QWindowsStyle>
+  #include <QPlastiqueStyle>
+  #include <QWindowsStyle>
 #endif
 #include <QString>
 #include <QByteArray>
@@ -71,23 +71,23 @@ public:
 
 private:
 
-QPushButton  *pushButton1,
-             *pushButton2;
+  QPushButton  *pushButton1,
+               *pushButton2;
 
-QTextEdit    *textEdit1;
+  QTextEdit    *textEdit1;
 
-QDialog      *myobjectDialog;
+  QDialog      *myobjectDialog;
 
-char *recent_opendir,
-     *recent_savedir;
+  char *recent_opendir,
+       *recent_savedir;
 
-long long get_datarecord_timestamp(char *);
-void write_values_to_hdr(FILE *, long long, int, struct edfhdrblock *);
-void free_annotations(struct annotationblock *);
+  long long get_datarecord_timestamp(char *);
+  void write_values_to_hdr(FILE *, long long, int, struct edfhdrblock *);
+  void free_annotations(struct annotationblock *);
 
 private slots:
 
-void SelectFileButton();
+  void SelectFileButton();
 
 };
 

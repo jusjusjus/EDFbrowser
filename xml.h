@@ -58,11 +58,11 @@
 #endif
 
 #ifdef Q_OS_MAC
-#if QT_VERSION < 0x050000
-  #include <QMacStyle>
-#else
-  #include <QStyleFactory>
-#endif
+  #if QT_VERSION < 0x050000
+    #include <QMacStyle>
+  #else
+    #include <QStyleFactory>
+  #endif
   #include <sys/types.h>
   #include <sys/stat.h>
 #endif
@@ -144,7 +144,7 @@ void configpath(char*, const char*);
 FILE *open_configfile(const char*);
 
 #ifdef __WIN32
-QString specialFolder(int);
+  QString specialFolder(int);
 #endif
 
 

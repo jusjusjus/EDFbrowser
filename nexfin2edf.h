@@ -70,38 +70,38 @@ public:
 
 private:
 
-QDialog       *myobjectDialog;
+  QDialog       *myobjectDialog;
 
-QPushButton   *pushButton1,
-              *pushButton2;
+  QPushButton   *pushButton1,
+                *pushButton2;
 
-QLabel        *PatientnameLabel,
-              *RecordingLabel,
-              *DatetimeLabel;
+  QLabel        *PatientnameLabel,
+                *RecordingLabel,
+                *DatetimeLabel;
 
-QLineEdit     *PatientnameLineEdit,
-              *RecordingLineEdit;
+  QLineEdit     *PatientnameLineEdit,
+                *RecordingLineEdit;
 
-QDateTimeEdit *StartDatetimeedit;
+  QDateTimeEdit *StartDatetimeedit;
 
-QRadioButton  *radio100button,
-              *radio103button,
-              *radio032button;
+  QRadioButton  *radio100button,
+                *radio103button,
+                *radio032button;
 
-QComboBox     *analoginputscombobox;
+  QComboBox     *analoginputscombobox;
 
-int file_type;
+  int file_type;
 
-char *recent_opendir,
-     *recent_savedir;
+  char *recent_opendir,
+       *recent_savedir;
 
-void enable_widgets(bool);
+  void enable_widgets(bool);
 
 
 private slots:
 
-void SelectFileButton();
-void radiobuttonchecked(bool);
+  void SelectFileButton();
+  void radiobuttonchecked(bool);
 
 };
 

@@ -57,11 +57,11 @@
 #endif
 
 #ifdef Q_OS_MAC
-#if QT_VERSION < 0x050000
-  #include <QMacStyle>
-#else
-  #include <QStyleFactory>
-#endif
+  #if QT_VERSION < 0x050000
+    #include <QMacStyle>
+  #else
+    #include <QStyleFactory>
+  #endif
   #include <sys/types.h>
   #include <sys/stat.h>
 #endif
@@ -230,9 +230,9 @@ public:
       mainwindow_title_type;
 
   long long pagetime,
-       	    epochstart,
-       	    pagestep,
-            maxfilesize_to_readin_annotations;
+       epochstart,
+       pagestep,
+       maxfilesize_to_readin_annotations;
 
   char *viewbuf,
        viewtime_string[128],
@@ -249,13 +249,14 @@ public:
          x_pixelsizefactor,
          average_period;
 
-  struct{
-          double crossoverfreq;
-          double z_threshold;
-          double z_hysteresis;
-          int zscore_page_len;
-          int zscore_error_detection;
-        } z_score_var;
+  struct
+  {
+    double crossoverfreq;
+    double z_threshold;
+    double z_hysteresis;
+    int zscore_page_len;
+    int zscore_error_detection;
+  } z_score_var;
 
   struct raw2edf_var_struct raw2edf_var;
 
@@ -357,12 +358,12 @@ private:
        eventscorepath[MAX_PATH_LENGTH],
        recent_file_path[MAX_RECENTFILES][MAX_PATH_LENGTH];
 
-	QString montagefilename,
-		datafilename,
-		epochfilename,
-		eventfilename;
+  QString montagefilename,
+          datafilename,
+          epochfilename,
+          eventfilename;
 
-	bool showSpectrum;
+  bool showSpectrum;
 
   QAction  *former_page_Act,
            *shift_page_left_Act,
@@ -453,9 +454,9 @@ private:
   void read_general_settings();
   void write_settings();
 
-#ifdef Q_OS_WIN32
+  #ifdef Q_OS_WIN32
   QString specialFolder(int);
-#endif
+  #endif
 
   long long check_edf_file_datarecords(struct edfhdrblock *);
 

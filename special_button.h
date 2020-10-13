@@ -49,8 +49,14 @@ class SpecialButton: public QWidget
 public:
   SpecialButton(QWidget *parent=0);
 
-  QSize sizeHint() const {return minimumSizeHint(); }
-  QSize minimumSizeHint() const {return QSize(30,10); }
+  QSize sizeHint() const
+  {
+    return minimumSizeHint();
+  }
+  QSize minimumSizeHint() const
+  {
+    return QSize(30,10);
+  }
 
 public slots:
   void setColor(QColor);
@@ -70,7 +76,7 @@ private:
   int global_Color;
 
 signals:
-     void clicked(SpecialButton *);
+  void clicked(SpecialButton *);
 };
 
 

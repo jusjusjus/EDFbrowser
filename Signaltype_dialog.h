@@ -34,30 +34,30 @@ class Signaltypes;
 
 class UI_Signaltype_dialog : public QObject
 {
-	Q_OBJECT
+  Q_OBJECT
 
 
 public:
-	UI_Signaltype_dialog(Signaltypes *parent);
-	Signaltypes *parent;
-	UI_Mainwindow *mainwindow;
+  UI_Signaltype_dialog(Signaltypes *parent);
+  Signaltypes *parent;
+  UI_Mainwindow *mainwindow;
 
 
 private:
-	QDialog	*dialog;
+  QDialog *dialog;
 
-	std::vector<QComboBox*> Choices;
+  std::vector<QComboBox*> Choices;
 
-	QGridLayout *layout;
+  QGridLayout *layout;
 
-	QListWidget *typelist;
+  QListWidget *typelist;
 
-	QPushButton *update,
-			*close;
+  QPushButton *update,
+              *close;
 
 
 private slots:
-	void updateit();
+  void updateit();
 };
 
 

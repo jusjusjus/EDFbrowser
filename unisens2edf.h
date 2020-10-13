@@ -69,75 +69,75 @@ public:
 
 private:
 
-QTextEdit    *textEdit1;
+  QTextEdit    *textEdit1;
 
-QPushButton  *pushButton1,
-             *pushButton2;
+  QPushButton  *pushButton1,
+               *pushButton2;
 
-QDialog      *myobjectDialog;
+  QDialog      *myobjectDialog;
 
-char  *recent_opendir,
-      *recent_savedir,
-     binfilename[MAXFILES][MAX_PATH_LENGTH],
-     evtfilename[MAXFILES][MAX_PATH_LENGTH],
-     physdim[MAXFILES][9],
-     signallabel[MAXSIGNALS][17],
-     str_timestampStart[32],
-     str_measurementId[128],
-     csv_sep[MAXFILES],
-     csv_dec_sep[MAXFILES];
+  char  *recent_opendir,
+        *recent_savedir,
+        binfilename[MAXFILES][MAX_PATH_LENGTH],
+        evtfilename[MAXFILES][MAX_PATH_LENGTH],
+        physdim[MAXFILES][9],
+        signallabel[MAXSIGNALS][17],
+        str_timestampStart[32],
+        str_measurementId[128],
+        csv_sep[MAXFILES],
+        csv_dec_sep[MAXFILES];
 
-int straightbinary[MAXFILES],
-    big_endian[MAXFILES],
-    samplesize[MAXFILES],
-    datatype[MAXFILES],
-    sf[MAXFILES],
-    csv_enc[MAXFILES],
-    nedval_enc[MAXFILES],
-    nedval_smpl[MAXFILES],
-    nedval_value[MAXFILES][MAXSIGNALS],
-    nedval_value2[MAXFILES][MAXSIGNALS],
-    sf_less_1,
-    sf_inv[MAXFILES],
-    sf_divider,
-    digmax[MAXFILES],
-    digmin[MAXFILES],
-    adcres[MAXFILES],
-    datablocks[MAXFILES],
-    edf_signals[MAXFILES],
-    total_edf_signals,
-    edf_signal_start[MAXFILES],
-    max_datablocks,
-    file_cnt,
-    trig_file_cnt,
-    buf1_offset[MAXFILES],
-    buf2_offset[MAXFILES],
-    buf1_freadsize[MAXFILES],
-    char_encoding,
-    bdf,
-    evt_sf[MAXFILES],
-    total_annotations,
-    starttime_fraction;
+  int straightbinary[MAXFILES],
+      big_endian[MAXFILES],
+      samplesize[MAXFILES],
+      datatype[MAXFILES],
+      sf[MAXFILES],
+      csv_enc[MAXFILES],
+      nedval_enc[MAXFILES],
+      nedval_smpl[MAXFILES],
+      nedval_value[MAXFILES][MAXSIGNALS],
+      nedval_value2[MAXFILES][MAXSIGNALS],
+      sf_less_1,
+      sf_inv[MAXFILES],
+      sf_divider,
+      digmax[MAXFILES],
+      digmin[MAXFILES],
+      adcres[MAXFILES],
+      datablocks[MAXFILES],
+      edf_signals[MAXFILES],
+      total_edf_signals,
+      edf_signal_start[MAXFILES],
+      max_datablocks,
+      file_cnt,
+      trig_file_cnt,
+      buf1_offset[MAXFILES],
+      buf2_offset[MAXFILES],
+      buf1_freadsize[MAXFILES],
+      char_encoding,
+      bdf,
+      evt_sf[MAXFILES],
+      total_annotations,
+      starttime_fraction;
 
-long long adczero[MAXFILES],
-          baseline[MAXFILES];
-
-
-double physmax[MAXFILES],
-       physmin[MAXFILES],
-       lsbval[MAXFILES];
-
-FILE *binfile[MAXFILES];
+  long long adczero[MAXFILES],
+       baseline[MAXFILES];
 
 
-int get_signalparameters_from_BIN_attributes(struct xml_handle *, int);
-int get_signalparameters_from_EVT_attributes(struct xml_handle *, int);
-int get_events_from_csv_files(int, int, const char *);
-int count_events_from_csv_files(int, const char *, int *);
+  double physmax[MAXFILES],
+         physmin[MAXFILES],
+         lsbval[MAXFILES];
+
+  FILE *binfile[MAXFILES];
+
+
+  int get_signalparameters_from_BIN_attributes(struct xml_handle *, int);
+  int get_signalparameters_from_EVT_attributes(struct xml_handle *, int);
+  int get_events_from_csv_files(int, int, const char *);
+  int count_events_from_csv_files(int, const char *, int *);
 
 private slots:
 
-void SelectFileButton();
+  void SelectFileButton();
 
 };
 

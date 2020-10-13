@@ -37,13 +37,13 @@
 
 #if defined(__APPLE__) || defined(__MACH__) || defined(__APPLE_CC__)
 
-#define fopeno fopen
+  #define fopeno fopen
 
 #else
 
-#define fseeko fseeko64
-#define ftello ftello64
-#define fopeno fopen64
+  #define fseeko fseeko64
+  #define ftello ftello64
+  #define fopeno fopen64
 
 #endif
 
@@ -177,7 +177,7 @@ UI_ReduceSignalsWindow::UI_ReduceSignalsWindow(QWidget *w_parent)
 void UI_ReduceSignalsWindow::spinBox1changed(int value)
 {
   long long seconds,
-            milliSec;
+       milliSec;
 
   int days;
 
@@ -215,7 +215,7 @@ void UI_ReduceSignalsWindow::spinBox1changed(int value)
 void UI_ReduceSignalsWindow::spinBox2changed(int value)
 {
   long long seconds,
-            milliSec;
+       milliSec;
 
   int days;
 
@@ -249,7 +249,7 @@ void UI_ReduceSignalsWindow::spinBox2changed(int value)
 void UI_ReduceSignalsWindow::radioButton1Toggled(bool checked)
 {
   long long seconds,
-            milliSec;
+       milliSec;
 
   int days;
 
@@ -394,7 +394,7 @@ void UI_ReduceSignalsWindow::SelectFileButton()
       days;
 
   long long seconds,
-            milliSec;
+       milliSec;
 
   char txt_string[2048],
        str[256];
@@ -459,7 +459,7 @@ void UI_ReduceSignalsWindow::SelectFileButton()
   if(edfhdr->datarecords > 2147483647LL)
   {
     QMessageBox messagewindow(QMessageBox::Critical, "Failure", "This file contains more than 2147483647 datarecords.\n"
-                                                                "This tool can not handle more than 2147483647 datarecords.");
+                              "This tool can not handle more than 2147483647 datarecords.");
     messagewindow.exec();
 
     inputfile = NULL;
@@ -473,7 +473,7 @@ void UI_ReduceSignalsWindow::SelectFileButton()
     return;
   }
 
-/***************** load signalproperties ******************************/
+  /***************** load signalproperties ******************************/
 
   label1->setText(inputpath);
 
@@ -563,29 +563,30 @@ void UI_ReduceSignalsWindow::StartConversion()
       datrecs_processed;
 
   char *readbuf=NULL,
-       scratchpad[256];
+        scratchpad[256];
 
   long long new_starttime,
-            time_diff,
-            onset_diff,
-            taltime,
-            l_temp,
-            endtime=0,
-            l_tmp;
+       time_diff,
+       onset_diff,
+       taltime,
+       l_temp,
+       endtime=0,
+       l_tmp;
 
   struct date_time_struct dts;
 
   struct annotationblock *new_annot_list=NULL,
-                         *root_new_annot_list=NULL,
-                         *annot_list=NULL;
+                            *root_new_annot_list=NULL,
+                             *annot_list=NULL;
 
-  union {
-          unsigned int one;
-          signed int one_signed;
-          unsigned short two[2];
-          signed short two_signed[2];
-          unsigned char four[4];
-        } var;
+  union
+  {
+    unsigned int one;
+    signed int one_signed;
+    unsigned short two[2];
+    signed short two_signed[2];
+    unsigned char four[4];
+  } var;
 
   QProgressDialog progress("Processing file...", "Abort", 0, 1);
   progress.setWindowModality(Qt::WindowModal);
@@ -988,7 +989,7 @@ void UI_ReduceSignalsWindow::StartConversion()
   }
   for(i=0; i<(new_edfsignals * 32); i++)
   {
-   fputc(' ', outputfile);
+    fputc(' ', outputfile);
   }
   if(edfhdr->edfplus || edfhdr->bdfplus)
   {
@@ -1140,22 +1141,30 @@ void UI_ReduceSignalsWindow::StartConversion()
     {
       switch(timestamp_decimals)
       {
-        case 0 : tallen = fprintf(outputfile, "+%i", (int)(taltime / TIME_DIMENSION));
-                  break;
-        case 1 : tallen = fprintf(outputfile, "+%i.%01i", (int)(taltime / TIME_DIMENSION), (int)((taltime % TIME_DIMENSION) / 1000000LL));
-                  break;
-        case 2 : tallen = fprintf(outputfile, "+%i.%02i", (int)(taltime / TIME_DIMENSION), (int)((taltime % TIME_DIMENSION) / 100000LL));
-                  break;
-        case 3 : tallen = fprintf(outputfile, "+%i.%03i", (int)(taltime / TIME_DIMENSION), (int)((taltime % TIME_DIMENSION) / 10000LL));
-                  break;
-        case 4 : tallen = fprintf(outputfile, "+%i.%04i", (int)(taltime / TIME_DIMENSION), (int)((taltime % TIME_DIMENSION) / 1000LL));
-                  break;
-        case 5 : tallen = fprintf(outputfile, "+%i.%05i", (int)(taltime / TIME_DIMENSION), (int)((taltime % TIME_DIMENSION) / 100LL));
-                  break;
-        case 6 : tallen = fprintf(outputfile, "+%i.%06i", (int)(taltime / TIME_DIMENSION), (int)((taltime % TIME_DIMENSION) / 10LL));
-                  break;
-        case 7 : tallen = fprintf(outputfile, "+%i.%07i", (int)(taltime / TIME_DIMENSION), (int)(taltime % TIME_DIMENSION));
-                  break;
+      case 0 :
+        tallen = fprintf(outputfile, "+%i", (int)(taltime / TIME_DIMENSION));
+        break;
+      case 1 :
+        tallen = fprintf(outputfile, "+%i.%01i", (int)(taltime / TIME_DIMENSION), (int)((taltime % TIME_DIMENSION) / 1000000LL));
+        break;
+      case 2 :
+        tallen = fprintf(outputfile, "+%i.%02i", (int)(taltime / TIME_DIMENSION), (int)((taltime % TIME_DIMENSION) / 100000LL));
+        break;
+      case 3 :
+        tallen = fprintf(outputfile, "+%i.%03i", (int)(taltime / TIME_DIMENSION), (int)((taltime % TIME_DIMENSION) / 10000LL));
+        break;
+      case 4 :
+        tallen = fprintf(outputfile, "+%i.%04i", (int)(taltime / TIME_DIMENSION), (int)((taltime % TIME_DIMENSION) / 1000LL));
+        break;
+      case 5 :
+        tallen = fprintf(outputfile, "+%i.%05i", (int)(taltime / TIME_DIMENSION), (int)((taltime % TIME_DIMENSION) / 100LL));
+        break;
+      case 6 :
+        tallen = fprintf(outputfile, "+%i.%06i", (int)(taltime / TIME_DIMENSION), (int)((taltime % TIME_DIMENSION) / 10LL));
+        break;
+      case 7 :
+        tallen = fprintf(outputfile, "+%i.%07i", (int)(taltime / TIME_DIMENSION), (int)(taltime % TIME_DIMENSION));
+        break;
       }
 
       fputc(20, outputfile);
@@ -1171,8 +1180,8 @@ void UI_ReduceSignalsWindow::StartConversion()
           if(new_annot_list != NULL)
           {
             len = snprintf(scratchpad, 256, "%+i.%07i",
-            (int)(new_annot_list->onset / TIME_DIMENSION),
-            (int)(new_annot_list->onset % TIME_DIMENSION));
+                           (int)(new_annot_list->onset / TIME_DIMENSION),
+                           (int)(new_annot_list->onset % TIME_DIMENSION));
 
             for(j=0; j<7; j++)
             {

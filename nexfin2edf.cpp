@@ -37,13 +37,13 @@
 
 #if defined(__APPLE__) || defined(__MACH__) || defined(__APPLE_CC__)
 
-#define fopeno fopen
+  #define fopeno fopen
 
 #else
 
-#define fseeko fseeko64
-#define ftello ftello64
-#define fopeno fopen64
+  #define fseeko fseeko64
+  #define ftello ftello64
+  #define fopeno fopen64
 
 #endif
 
@@ -128,7 +128,7 @@ UI_NEXFIN2EDFwindow::UI_NEXFIN2EDFwindow(char *recent_dir, char *save_dir)
 void UI_NEXFIN2EDFwindow::SelectFileButton()
 {
   FILE *inputfile=NULL,
-       *outputfile=NULL;
+        *outputfile=NULL;
 
   int i, j, k, p,
       temp,
@@ -162,10 +162,11 @@ void UI_NEXFIN2EDFwindow::SelectFileButton()
          new_value[MAX_SIGNALS],
          old_value[MAX_SIGNALS];
 
-  union{
-         short two;
-         char one[2];
-       } var;
+  union
+  {
+    short two;
+    char one[2];
+  } var;
 
 
   if(radio100button->isChecked()==true)
@@ -241,187 +242,187 @@ void UI_NEXFIN2EDFwindow::SelectFileButton()
 
   if(file_type==100)
   {
-/***************** check if the txtfile is valid ******************************/
+    /***************** check if the txtfile is valid ******************************/
 
-  rewind(inputfile);
+    rewind(inputfile);
 
-  if(fread(scratchpad, 32, 1, inputfile)!=1)
-  {
-    QMessageBox messagewindow(QMessageBox::Critical, "Error", "Can not read from file.");
-    messagewindow.exec();
-    fclose(inputfile);
-    enable_widgets(true);
-    return;
-  }
-
-  if(strncmp(scratchpad, "Time;IBI;HR;LVET;HRS;Sys;Dia;MAP", 32))
-  {
-    QMessageBox messagewindow(QMessageBox::Critical, "Error", "Unknown data in file (1).");
-    messagewindow.exec();
-    fclose(inputfile);
-    enable_widgets(true);
-    return;
-  }
-
-/***************** collect items *****************************************/
-
-  rewind(inputfile);
-
-  while(1)
-  {
-    temp = fgetc(inputfile);
-
-    if(temp==EOF)
+    if(fread(scratchpad, 32, 1, inputfile)!=1)
     {
-      QMessageBox messagewindow(QMessageBox::Critical, "Error", "Reached end of file unexpectedly (5).");
+      QMessageBox messagewindow(QMessageBox::Critical, "Error", "Can not read from file.");
       messagewindow.exec();
       fclose(inputfile);
       enable_widgets(true);
       return;
     }
 
-    if(temp==separator)
+    if(strncmp(scratchpad, "Time;IBI;HR;LVET;HRS;Sys;Dia;MAP", 32))
     {
-      break;
-    }
-  }
-
-  i = 0;
-
-  while(temp!='\n')
-  {
-    temp = fgetc(inputfile);
-
-    if(temp==EOF)
-    {
-      QMessageBox messagewindow(QMessageBox::Critical, "Error", "Reached end of file unexpectedly (6).");
+      QMessageBox messagewindow(QMessageBox::Critical, "Error", "Unknown data in file (1).");
       messagewindow.exec();
       fclose(inputfile);
       enable_widgets(true);
       return;
     }
 
-    if(temp=='\r')
-    {
-      continue;
-    }
+    /***************** collect items *****************************************/
 
-    if(((temp==separator)||(temp=='\n'))&&(edfsignals<7))
+    rewind(inputfile);
+
+    while(1)
     {
-      if(edfsignals>=MAX_SIGNALS)
+      temp = fgetc(inputfile);
+
+      if(temp==EOF)
       {
-        QMessageBox messagewindow(QMessageBox::Critical, "Error", "Too many labels/signals (7).");
+        QMessageBox messagewindow(QMessageBox::Critical, "Error", "Reached end of file unexpectedly (5).");
         messagewindow.exec();
         fclose(inputfile);
         enable_widgets(true);
         return;
       }
 
-      line[i] = 0;
-
-      ok = 0;
-
-      if(!strcmp(line, "IBI"))
+      if(temp==separator)
       {
-        strcpy(labels[edfsignals], "IBI             ");
-        strcpy(phys_dim[edfsignals], "s       ");
-        strcpy(phys_min[edfsignals], "-31.744 ");
-        strcpy(phys_max[edfsignals], "31.744  ");
-        sensitivity[edfsignals] = 1000.0;
-        ok = 1;
+        break;
       }
+    }
 
-      if(!strcmp(line, "HR"))
-      {
-        strcpy(labels[edfsignals], "HR              ");
-        strcpy(phys_dim[edfsignals], "bpm     ");
-        strcpy(phys_min[edfsignals], "-1024   ");
-        strcpy(phys_max[edfsignals], "1024    ");
-        sensitivity[edfsignals] = 31.0;
-        ok = 1;
-      }
+    i = 0;
 
-      if(!strcmp(line, "LVET"))
-      {
-        strcpy(labels[edfsignals], "LVET            ");
-        strcpy(phys_dim[edfsignals], "s       ");
-        strcpy(phys_min[edfsignals], "-10     ");
-        strcpy(phys_max[edfsignals], "10      ");
-        sensitivity[edfsignals] = 3174.4;
-        ok = 1;
-      }
+    while(temp!='\n')
+    {
+      temp = fgetc(inputfile);
 
-      if(!strcmp(line, "HRS"))
+      if(temp==EOF)
       {
-        strcpy(labels[edfsignals], "HRS             ");
-        strcpy(phys_dim[edfsignals], "mmHg    ");
-        strcpy(phys_min[edfsignals], "-1024   ");
-        strcpy(phys_max[edfsignals], "1024    ");
-        sensitivity[edfsignals] = 31.0;
-        ok = 1;
-      }
-
-      if(!strcmp(line, "Sys"))
-      {
-        strcpy(labels[edfsignals], "Sys             ");
-        strcpy(phys_dim[edfsignals], "mmHg    ");
-        strcpy(phys_min[edfsignals], "-1024   ");
-        strcpy(phys_max[edfsignals], "1024    ");
-        sensitivity[edfsignals] = 31.0;
-        ok = 1;
-      }
-
-      if(!strcmp(line, "Dia"))
-      {
-        strcpy(labels[edfsignals], "Dia             ");
-        strcpy(phys_dim[edfsignals], "mmHg    ");
-        strcpy(phys_min[edfsignals], "-1024   ");
-        strcpy(phys_max[edfsignals], "1024    ");
-        sensitivity[edfsignals] = 31.0;
-        ok = 1;
-      }
-
-      if(!strcmp(line, "MAP"))
-      {
-        strcpy(labels[edfsignals], "MAP             ");
-        strcpy(phys_dim[edfsignals], "mmHg    ");
-        strcpy(phys_min[edfsignals], "-1024   ");
-        strcpy(phys_max[edfsignals], "1024    ");
-        sensitivity[edfsignals] = 31.0;
-        ok = 1;
-      }
-
-      if(!ok)
-      {
-        snprintf(txt_string, 2048, "Found unknown label/signal: %s", line);
-        QMessageBox messagewindow(QMessageBox::Critical, "Error", txt_string);
+        QMessageBox messagewindow(QMessageBox::Critical, "Error", "Reached end of file unexpectedly (6).");
         messagewindow.exec();
         fclose(inputfile);
         enable_widgets(true);
         return;
       }
 
-      edfsignals++;
+      if(temp=='\r')
+      {
+        continue;
+      }
 
-      i = 0;
+      if(((temp==separator)||(temp=='\n'))&&(edfsignals<7))
+      {
+        if(edfsignals>=MAX_SIGNALS)
+        {
+          QMessageBox messagewindow(QMessageBox::Critical, "Error", "Too many labels/signals (7).");
+          messagewindow.exec();
+          fclose(inputfile);
+          enable_widgets(true);
+          return;
+        }
+
+        line[i] = 0;
+
+        ok = 0;
+
+        if(!strcmp(line, "IBI"))
+        {
+          strcpy(labels[edfsignals], "IBI             ");
+          strcpy(phys_dim[edfsignals], "s       ");
+          strcpy(phys_min[edfsignals], "-31.744 ");
+          strcpy(phys_max[edfsignals], "31.744  ");
+          sensitivity[edfsignals] = 1000.0;
+          ok = 1;
+        }
+
+        if(!strcmp(line, "HR"))
+        {
+          strcpy(labels[edfsignals], "HR              ");
+          strcpy(phys_dim[edfsignals], "bpm     ");
+          strcpy(phys_min[edfsignals], "-1024   ");
+          strcpy(phys_max[edfsignals], "1024    ");
+          sensitivity[edfsignals] = 31.0;
+          ok = 1;
+        }
+
+        if(!strcmp(line, "LVET"))
+        {
+          strcpy(labels[edfsignals], "LVET            ");
+          strcpy(phys_dim[edfsignals], "s       ");
+          strcpy(phys_min[edfsignals], "-10     ");
+          strcpy(phys_max[edfsignals], "10      ");
+          sensitivity[edfsignals] = 3174.4;
+          ok = 1;
+        }
+
+        if(!strcmp(line, "HRS"))
+        {
+          strcpy(labels[edfsignals], "HRS             ");
+          strcpy(phys_dim[edfsignals], "mmHg    ");
+          strcpy(phys_min[edfsignals], "-1024   ");
+          strcpy(phys_max[edfsignals], "1024    ");
+          sensitivity[edfsignals] = 31.0;
+          ok = 1;
+        }
+
+        if(!strcmp(line, "Sys"))
+        {
+          strcpy(labels[edfsignals], "Sys             ");
+          strcpy(phys_dim[edfsignals], "mmHg    ");
+          strcpy(phys_min[edfsignals], "-1024   ");
+          strcpy(phys_max[edfsignals], "1024    ");
+          sensitivity[edfsignals] = 31.0;
+          ok = 1;
+        }
+
+        if(!strcmp(line, "Dia"))
+        {
+          strcpy(labels[edfsignals], "Dia             ");
+          strcpy(phys_dim[edfsignals], "mmHg    ");
+          strcpy(phys_min[edfsignals], "-1024   ");
+          strcpy(phys_max[edfsignals], "1024    ");
+          sensitivity[edfsignals] = 31.0;
+          ok = 1;
+        }
+
+        if(!strcmp(line, "MAP"))
+        {
+          strcpy(labels[edfsignals], "MAP             ");
+          strcpy(phys_dim[edfsignals], "mmHg    ");
+          strcpy(phys_min[edfsignals], "-1024   ");
+          strcpy(phys_max[edfsignals], "1024    ");
+          sensitivity[edfsignals] = 31.0;
+          ok = 1;
+        }
+
+        if(!ok)
+        {
+          snprintf(txt_string, 2048, "Found unknown label/signal: %s", line);
+          QMessageBox messagewindow(QMessageBox::Critical, "Error", txt_string);
+          messagewindow.exec();
+          fclose(inputfile);
+          enable_widgets(true);
+          return;
+        }
+
+        edfsignals++;
+
+        i = 0;
+      }
+
+      if(temp==separator)
+      {
+        continue;
+      }
+
+      line[i++] = temp;
     }
 
-    if(temp==separator)
+    if(!edfsignals)
     {
-      continue;
+      QMessageBox messagewindow(QMessageBox::Critical, "Error", "There are no labels/signals.");
+      messagewindow.exec();
+      fclose(inputfile);
+      enable_widgets(true);
+      return;
     }
-
-    line[i++] = temp;
-  }
-
-  if(!edfsignals)
-  {
-    QMessageBox messagewindow(QMessageBox::Critical, "Error", "There are no labels/signals.");
-    messagewindow.exec();
-    fclose(inputfile);
-    enable_widgets(true);
-    return;
-  }
 
   }  /********** end if(file_type==100)  ********************/
 
@@ -469,7 +470,7 @@ void UI_NEXFIN2EDFwindow::SelectFileButton()
   datetime[16] = 0;
 
 
-/***************** write header *****************************************/
+  /***************** write header *****************************************/
 
   get_filename_from_path(outputfilename, path, MAX_PATH_LENGTH);
   remove_extension_from_filename(outputfilename);
@@ -672,179 +673,179 @@ void UI_NEXFIN2EDFwindow::SelectFileButton()
     fputc(' ', outputfile);
   }
 
-/***************** start conversion **************************************/
+  /***************** start conversion **************************************/
 
   rewind(inputfile);
 
   if(file_type==100)   /*** filetype is 100 **********/
   {
 
-  for(i=0; ; )
-  {
-    temp = fgetc(inputfile);
-
-    if(temp==EOF)
+    for(i=0; ; )
     {
-      QMessageBox messagewindow(QMessageBox::Critical, "Error", "Reached end of file unexpectedly (8).");
-      messagewindow.exec();
-      fclose(inputfile);
-      fclose(outputfile);
-      enable_widgets(true);
-      return;
-    }
+      temp = fgetc(inputfile);
 
-    if(temp=='\n')  i++;
-
-    if(i>0)  break;
-  }
-
-  QApplication::setOverrideCursor(Qt::WaitCursor);
-
-  for(k=0; k<10; k++)  qApp->processEvents();
-
-  i = 0;
-
-  column = 0;
-
-  datarecords = 0LL;
-
-  str_start = 0;
-
-  line_nr = 1;
-
-  while(1)
-  {
-    temp = fgetc(inputfile);
-
-    if(temp==EOF)
-    {
-      for(k=0; k<edfsignals; k++)
+      if(temp==EOF)
       {
-        temp = (int)(new_value[k] * sensitivity[k]);
-
-        if(temp>31744)  temp = 31744;
-
-        if(temp<-31744)  temp = -31744;
-
-        var.two = (short)temp;
-
-        fputc(var.one[0], outputfile);
-        fputc(var.one[1], outputfile);
+        QMessageBox messagewindow(QMessageBox::Critical, "Error", "Reached end of file unexpectedly (8).");
+        messagewindow.exec();
+        fclose(inputfile);
+        fclose(outputfile);
+        enable_widgets(true);
+        return;
       }
 
-      datarecords++;
+      if(temp=='\n')  i++;
 
-      break;
+      if(i>0)  break;
     }
 
-    line[i] = temp;
+    QApplication::setOverrideCursor(Qt::WaitCursor);
 
-  /**************************************/
+    for(k=0; k<10; k++)  qApp->processEvents();
 
-    if(line[i]==',')
+    i = 0;
+
+    column = 0;
+
+    datarecords = 0LL;
+
+    str_start = 0;
+
+    line_nr = 1;
+
+    while(1)
     {
-      line[i] = '.';
-    }
+      temp = fgetc(inputfile);
 
-    if((line[i]==separator)||(line[i]=='\n'))
-    {
-      if(column)
+      if(temp==EOF)
       {
-        new_value[column-1] = atof(line + str_start);
-      }
-      else
-      {
-        new_smpl_time = (int)(atof(line + str_start) * 100.0);
-      }
-
-      if(line[i]=='\n')
-      {
-        /**************************************/
-
-        line_nr++;
-
-        if(column!=edfsignals)
+        for(k=0; k<edfsignals; k++)
         {
-          QApplication::restoreOverrideCursor();
-          snprintf(txt_string, 2048, "Number of separators in line %i is wrong.", line_nr);
-          QMessageBox messagewindow(QMessageBox::Critical, "Error", txt_string);
-          messagewindow.exec();
-          fclose(inputfile);
-          fclose(outputfile);
-          enable_widgets(true);
-          return;
+          temp = (int)(new_value[k] * sensitivity[k]);
+
+          if(temp>31744)  temp = 31744;
+
+          if(temp<-31744)  temp = -31744;
+
+          var.two = (short)temp;
+
+          fputc(var.one[0], outputfile);
+          fputc(var.one[1], outputfile);
         }
 
-        timestep = new_smpl_time - datarecords;
+        datarecords++;
 
-        if(timestep<=0)
+        break;
+      }
+
+      line[i] = temp;
+
+      /**************************************/
+
+      if(line[i]==',')
+      {
+        line[i] = '.';
+      }
+
+      if((line[i]==separator)||(line[i]=='\n'))
+      {
+        if(column)
         {
-          QApplication::restoreOverrideCursor();
-          snprintf(txt_string, 2048, "Timestep <= 0 in line %i.", line_nr);
-          QMessageBox messagewindow(QMessageBox::Critical, "Error", txt_string);
-          messagewindow.exec();
-          fclose(inputfile);
-          fclose(outputfile);
-          enable_widgets(true);
-          return;
+          new_value[column-1] = atof(line + str_start);
+        }
+        else
+        {
+          new_smpl_time = (int)(atof(line + str_start) * 100.0);
         }
 
-        for(j=0; j<timestep; j++)
+        if(line[i]=='\n')
         {
-          for(k=0; k<edfsignals; k++)
+          /**************************************/
+
+          line_nr++;
+
+          if(column!=edfsignals)
           {
-            temp = (int)((old_value[k] + ((new_value[k] - old_value[k]) * ((double)j / (double)timestep))) * sensitivity[k]);
-
-            if(temp>31744)  temp = 31744;
-
-            if(temp<-31744)  temp = -31744;
-
-            var.two = (short)temp;
-
-            fputc(var.one[0], outputfile);
-            fputc(var.one[1], outputfile);
+            QApplication::restoreOverrideCursor();
+            snprintf(txt_string, 2048, "Number of separators in line %i is wrong.", line_nr);
+            QMessageBox messagewindow(QMessageBox::Critical, "Error", txt_string);
+            messagewindow.exec();
+            fclose(inputfile);
+            fclose(outputfile);
+            enable_widgets(true);
+            return;
           }
 
-          datarecords++;
+          timestep = new_smpl_time - datarecords;
+
+          if(timestep<=0)
+          {
+            QApplication::restoreOverrideCursor();
+            snprintf(txt_string, 2048, "Timestep <= 0 in line %i.", line_nr);
+            QMessageBox messagewindow(QMessageBox::Critical, "Error", txt_string);
+            messagewindow.exec();
+            fclose(inputfile);
+            fclose(outputfile);
+            enable_widgets(true);
+            return;
+          }
+
+          for(j=0; j<timestep; j++)
+          {
+            for(k=0; k<edfsignals; k++)
+            {
+              temp = (int)((old_value[k] + ((new_value[k] - old_value[k]) * ((double)j / (double)timestep))) * sensitivity[k]);
+
+              if(temp>31744)  temp = 31744;
+
+              if(temp<-31744)  temp = -31744;
+
+              var.two = (short)temp;
+
+              fputc(var.one[0], outputfile);
+              fputc(var.one[1], outputfile);
+            }
+
+            datarecords++;
+          }
+
+          for(j=0; j<edfsignals; j++)
+          {
+            old_value[j] = new_value[j];
+          }
+
+          /**************************************/
+
+          str_start = 0;
+
+          i = 0;
+
+          column = 0;
+
+          continue;
         }
 
-        for(j=0; j<edfsignals; j++)
-        {
-          old_value[j] = new_value[j];
-        }
+        str_start = i + 1;
 
-        /**************************************/
-
-        str_start = 0;
-
-        i = 0;
-
-        column = 0;
-
-        continue;
+        column++;
       }
 
-      str_start = i + 1;
+      /**************************************/
 
-      column++;
+      i++;
+
+      if(i>2046)
+      {
+        QApplication::restoreOverrideCursor();
+        snprintf(txt_string, 2048, "Line %i is too long.", line_nr);
+        QMessageBox messagewindow(QMessageBox::Critical, "Error", txt_string);
+        messagewindow.exec();
+        fclose(inputfile);
+        fclose(outputfile);
+        enable_widgets(true);
+        return;
+      }
     }
-
-  /**************************************/
-
-    i++;
-
-    if(i>2046)
-    {
-      QApplication::restoreOverrideCursor();
-      snprintf(txt_string, 2048, "Line %i is too long.", line_nr);
-      QMessageBox messagewindow(QMessageBox::Critical, "Error", txt_string);
-      messagewindow.exec();
-      fclose(inputfile);
-      fclose(outputfile);
-      enable_widgets(true);
-      return;
-    }
-  }
 
   }  /********** end if(file_type==100)  ********************/
 
@@ -918,11 +919,11 @@ void UI_NEXFIN2EDFwindow::SelectFileButton()
 
   fseeko(outputfile, 236LL, SEEK_SET);
 
-#ifdef Q_OS_WIN32
+  #ifdef Q_OS_WIN32
   __mingw_fprintf(outputfile, "%-8lli", datarecords);
-#else
+  #else
   fprintf(outputfile, "%-8lli", datarecords);
-#endif
+  #endif
 
   if(fclose(outputfile))
   {

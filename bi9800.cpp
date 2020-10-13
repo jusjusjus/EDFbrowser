@@ -37,13 +37,13 @@
 
 #if defined(__APPLE__) || defined(__MACH__) || defined(__APPLE_CC__)
 
-#define fopeno fopen
+  #define fopeno fopen
 
 #else
 
-#define fseeko fseeko64
-#define ftello ftello64
-#define fopeno fopen64
+  #define fseeko fseeko64
+  #define ftello ftello64
+  #define fopeno fopen64
 
 #endif
 
@@ -156,7 +156,7 @@ void UI_BI98002EDFwindow::SelectFileButton()
     }
   }
 
-/***************** check if the file is valid ******************************/
+  /***************** check if the file is valid ******************************/
 
   for(end_of_file=0; end_of_file == 0; )
   {
@@ -186,16 +186,21 @@ void UI_BI98002EDFwindow::SelectFileButton()
       samplefreq = atoi(str + 14);
       switch(samplefreq)
       {
-        case  128 : break;
-        case  256 : break;
-        case  512 : break;
-        case 1024 : break;
+      case  128 :
+        break;
+      case  256 :
+        break;
+      case  512 :
+        break;
+      case 1024 :
+        break;
 
-        default : QMessageBox messagewindow(QMessageBox::Critical, "Error", "Unknown samplerate.");
-                  messagewindow.exec();
-                  fclose(dcmfile);
-                  fclose(evtfile);
-                  return;
+      default :
+        QMessageBox messagewindow(QMessageBox::Critical, "Error", "Unknown samplerate.");
+        messagewindow.exec();
+        fclose(dcmfile);
+        fclose(evtfile);
+        return;
       }
 
       checked_samplerate = 1;
@@ -207,7 +212,7 @@ void UI_BI98002EDFwindow::SelectFileButton()
       modelnumber_str[8] = 0;
 
       if(strcmp(modelnumber_str, "TM SD01G") &&
-         strcmp(modelnumber_str, "SD SD02G"))
+          strcmp(modelnumber_str, "SD SD02G"))
       {
         QMessageBox messagewindow(QMessageBox::Critical, "Error", "Wrong modelnumber.");
         messagewindow.exec();
@@ -229,8 +234,8 @@ void UI_BI98002EDFwindow::SelectFileButton()
       startdate_day = atoi(str2 + 8);
 
       if((startdate_year < 1970) || (startdate_year > 3000) ||
-         (startdate_month < 1)   || (startdate_month > 12)  ||
-         (startdate_day < 1)     || (startdate_day > 31))
+          (startdate_month < 1)   || (startdate_month > 12)  ||
+          (startdate_day < 1)     || (startdate_day > 31))
       {
         QMessageBox messagewindow(QMessageBox::Critical, "Error", "Wrong recorddate.");
         messagewindow.exec();
@@ -252,8 +257,8 @@ void UI_BI98002EDFwindow::SelectFileButton()
       starttime_second = atoi(str2 + 6);
 
       if((starttime_hour < 0)  || (starttime_hour > 23)   ||
-        (starttime_minute < 0) || (starttime_minute > 59) ||
-        (starttime_second < 0) || (starttime_second > 59))
+          (starttime_minute < 0) || (starttime_minute > 59) ||
+          (starttime_second < 0) || (starttime_second > 59))
       {
         QMessageBox messagewindow(QMessageBox::Critical, "Error", "Wrong recordtime.");
         messagewindow.exec();
@@ -284,10 +289,10 @@ void UI_BI98002EDFwindow::SelectFileButton()
   }
 
   if(!checked_modelnumber ||
-     !checked_samplerate  ||
-     !checked_recordhours ||
-     !checked_recorddate  ||
-     !checked_recordtime)
+      !checked_samplerate  ||
+      !checked_recordhours ||
+      !checked_recorddate  ||
+      !checked_recordtime)
   {
     QMessageBox messagewindow(QMessageBox::Critical, "Error", "Missing line.");
     messagewindow.exec();
@@ -484,8 +489,8 @@ void UI_BI98002EDFwindow::SelectFileButton()
       starttime_second = atoi(str + 6);
 
       if((starttime_hour < 0)   || (starttime_hour > 23)   ||
-         (starttime_minute < 0) || (starttime_minute > 59) ||
-         (starttime_second < 0) || (starttime_second > 59))
+          (starttime_minute < 0) || (starttime_minute > 59) ||
+          (starttime_second < 0) || (starttime_second > 59))
       {
       }
       else

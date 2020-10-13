@@ -74,11 +74,11 @@
 #include "signaltype_options.h"
 
 #ifndef OPTIONS_COLORS
-#define	OPTIONS_COLORS		0
-#define	OPTIONS_SIGNALTYPE	1
-#define	OPTIONS_CALIBRATION	2
-#define	OPTIONS_POWERSPECT	3
-#define	OPTIONS_OTHER		4
+  #define OPTIONS_COLORS    0
+  #define OPTIONS_SIGNALTYPE  1
+  #define OPTIONS_CALIBRATION 2
+  #define OPTIONS_POWERSPECT  3
+  #define OPTIONS_OTHER   4
 #endif
 
 
@@ -98,112 +98,112 @@ public:
 
 private:
 
-QDialog        *optionsdialog;
+  QDialog        *optionsdialog;
 
-QScrollArea    *scrollarea;
+  QScrollArea    *scrollarea;
 
-QFrame         *frame;
+  QFrame         *frame;
 
-QGridLayout    *scrolllayout;
+  QGridLayout    *scrolllayout;
 
-QTabWidget     *tabholder;
+  QTabWidget     *tabholder;
 
-	QWidget	*tab2,
-               *tab3,
-               *tab4;
+  QWidget *tab2,
+          *tab3,
+          *tab4;
 
-	ColorOptions		*colorOptions;
-	SignaltypeOptions	*signaltypeOptions;
+  ColorOptions    *colorOptions;
+  SignaltypeOptions *signaltypeOptions;
 
-QVBoxLayout    *mainLayout;
+  QVBoxLayout    *mainLayout;
 
-QHBoxLayout    *horLayout;
+  QHBoxLayout    *horLayout;
 
-QPushButton    *CloseButton,
-               *DefaultButton,
-               *colorSchema_NK_Button,
-               *colorSchema_Dark_Button,
-               *ApplyButton,
-               *DefaultButton2,
-               *ApplyButton2,
-               *saveColorSchemaButton,
-               *loadColorSchemaButton;
+  QPushButton    *CloseButton,
+                 *DefaultButton,
+                 *colorSchema_NK_Button,
+                 *colorSchema_Dark_Button,
+                 *ApplyButton,
+                 *DefaultButton2,
+                 *ApplyButton2,
+                 *saveColorSchemaButton,
+                 *loadColorSchemaButton;
 
-SpecialButton  *BgColorButton,
-               *SrColorButton,
-               *BrColorButton,
-               *MrColorButton,
-               *TxtColorButton,
-               *SigColorButton,
-               *BaseColorButton,
-               *Crh1ColorButton,
-               *Crh2ColorButton,
-               *FrColorButton,
-               *AnnotMkrButton,
-               *slabel2_1,
-               *slabel2_3;
+  SpecialButton  *BgColorButton,
+                 *SrColorButton,
+                 *BrColorButton,
+                 *MrColorButton,
+                 *TxtColorButton,
+                 *SigColorButton,
+                 *BaseColorButton,
+                 *Crh1ColorButton,
+                 *Crh2ColorButton,
+                 *FrColorButton,
+                 *AnnotMkrButton,
+                 *slabel2_1,
+                 *slabel2_3;
 
-QLabel         *label1,
-               *label2,
-               *label3,
-               *label4,
-               *label5,
-               *label6,
-               *label7,
-               *label8,
-               *label9,
-               *label10,
-               *label11,
-               *label12,
-               *label13,
-               *label4_1,
-               *label4_2,
-               *label4_3,
-               *label4_4,
-               *label4_5,
-               *label4_6,
-               *label4_7,
-               *label4_8,
-               *label4_9,
-               *label4_10,
-               *label2_2,
-               *label2_4,
-               *label1_3,
-               *label2_3,
-               *label3_3,
-               *label3_4;
+  QLabel         *label1,
+                 *label2,
+                 *label3,
+                 *label4,
+                 *label5,
+                 *label6,
+                 *label7,
+                 *label8,
+                 *label9,
+                 *label10,
+                 *label11,
+                 *label12,
+                 *label13,
+                 *label4_1,
+                 *label4_2,
+                 *label4_3,
+                 *label4_4,
+                 *label4_5,
+                 *label4_6,
+                 *label4_7,
+                 *label4_8,
+                 *label4_9,
+                 *label4_10,
+                 *label2_2,
+                 *label2_4,
+                 *label1_3,
+                 *label2_3,
+                 *label3_3,
+                 *label3_4;
 
-QSpinBox       *spinbox2_1,
-               *spinbox2_2,
-               *spinbox3_1,
-               *spinbox4_1,
-               *spinbox4_2,
-               *spinbox4_3;
+  QSpinBox       *spinbox2_1,
+                 *spinbox2_2,
+                 *spinbox3_1,
+                 *spinbox4_1,
+                 *spinbox4_2,
+                 *spinbox4_3;
 
-QComboBox      *combobox4_1,
-               *combobox4_2,
-               *combobox4_3;
+  QComboBox      *combobox4_1,
+                 *combobox4_2,
+                 *combobox4_3;
 
-QCheckBox      *checkbox1,
-               *checkbox2,
-               *checkbox3,
-               *checkbox4,
-               *checkbox4_1,
-               *checkbox4_2,
-               *checkbox4_3,
-               *checkbox4_4,
-               *checkbox4_5,
-               *checkbox2_1;
+  QCheckBox      *checkbox1,
+                 *checkbox2,
+                 *checkbox3,
+                 *checkbox4,
+                 *checkbox4_1,
+                 *checkbox4_2,
+                 *checkbox4_3,
+                 *checkbox4_4,
+                 *checkbox4_5,
+                 *checkbox2_1;
 
-QTableWidget   *colorBarTable;
+  QTableWidget   *colorBarTable;
 
-QRadioButton   *radiobutton1,
-               *radiobutton2,
-               *radiobutton3;
+  QRadioButton   *radiobutton1,
+                 *radiobutton2,
+                 *radiobutton3;
 
-QLineEdit      *lineEdit3_1;
+  QLineEdit      *lineEdit3_1;
 
-void update_interface(void);
+  void update_interface(void);
 
 private slots:
 
@@ -212,42 +212,42 @@ private slots:
 //void BrColorButtonClicked(SpecialButton *);
 //void MrColorButtonClicked(SpecialButton *);
 //void TxtColorButtonClicked(SpecialButton *);
-void SigColorButtonClicked(SpecialButton *);
+  void SigColorButtonClicked(SpecialButton *);
 //void BaseColorButtonClicked(SpecialButton *);
-void Crh1ColorButtonClicked(SpecialButton *);
-void Crh2ColorButtonClicked(SpecialButton *);
-void FrColorButtonClicked(SpecialButton *);
+  void Crh1ColorButtonClicked(SpecialButton *);
+  void Crh2ColorButtonClicked(SpecialButton *);
+  void FrColorButtonClicked(SpecialButton *);
 //void AnnotMkrButtonClicked(SpecialButton *);
-void checkbox1Clicked(int);
-void checkbox2Clicked(int);
-void checkbox3Clicked(int);
-void checkbox4Clicked(int);
-void checkbox4_1Clicked(int);
-void checkbox4_2Clicked(int);
-void checkbox4_3Clicked(int);
-void checkbox4_4Clicked(int);
-void checkbox4_5Clicked(int);
-void DefaultButtonClicked();
-void ApplyButtonClicked();
-void colorBarButtonClicked(SpecialButton *);
-void DefaultButton2Clicked();
-void checkBoxChanged(int);
-void ApplyButton2Clicked();
-void radioButtonToggled(bool);
-void spinBoxValueChanged(double);
-void spinBox3_3ValueChanged(int);
-void labelEdited(const QString  &);
-void calibrate_checkbox_stateChanged(int);
-void spinBox4_1ValueChanged(int);
-void combobox4_1IndexChanged(int);
-void combobox4_2IndexChanged(int);
-void combobox4_3IndexChanged(int);
-void spinBox4_2ValueChanged(int);
-void spinBox4_3ValueChanged(int);
-void saveColorSchemaButtonClicked();
-void loadColorSchemaButtonClicked();
-void loadColorSchema_NK();
-void loadColorSchema_Dark();
+  void checkbox1Clicked(int);
+  void checkbox2Clicked(int);
+  void checkbox3Clicked(int);
+  void checkbox4Clicked(int);
+  void checkbox4_1Clicked(int);
+  void checkbox4_2Clicked(int);
+  void checkbox4_3Clicked(int);
+  void checkbox4_4Clicked(int);
+  void checkbox4_5Clicked(int);
+  void DefaultButtonClicked();
+  void ApplyButtonClicked();
+  void colorBarButtonClicked(SpecialButton *);
+  void DefaultButton2Clicked();
+  void checkBoxChanged(int);
+  void ApplyButton2Clicked();
+  void radioButtonToggled(bool);
+  void spinBoxValueChanged(double);
+  void spinBox3_3ValueChanged(int);
+  void labelEdited(const QString  &);
+  void calibrate_checkbox_stateChanged(int);
+  void spinBox4_1ValueChanged(int);
+  void combobox4_1IndexChanged(int);
+  void combobox4_2IndexChanged(int);
+  void combobox4_3IndexChanged(int);
+  void spinBox4_2ValueChanged(int);
+  void spinBox4_3ValueChanged(int);
+  void saveColorSchemaButtonClicked();
+  void loadColorSchemaButtonClicked();
+  void loadColorSchema_NK();
+  void loadColorSchema_Dark();
 
 };
 

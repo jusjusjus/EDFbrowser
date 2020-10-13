@@ -141,9 +141,9 @@ void UI_BIOSEMI2BDFPLUSwindow::SelectFileButton()
        outputfilename[MAX_PATH_LENGTH];
 
   long long datarecords,
-            status_sample_duration,
-            trigger_cnt,
-            progress_steps;
+       status_sample_duration,
+       trigger_cnt,
+       progress_steps;
 
   struct edf_hdr_struct hdr;
 
@@ -199,29 +199,41 @@ void UI_BIOSEMI2BDFPLUSwindow::SelectFileButton()
 
     switch(error)
     {
-      case EDFLIB_MALLOC_ERROR                : strcpy(str, "EDFlib: malloc error.");
-                                                break;
-      case EDFLIB_NO_SUCH_FILE_OR_DIRECTORY   : strcpy(str, "EDFlib: no such file or directory.");
-                                                break;
-      case EDFLIB_FILE_CONTAINS_FORMAT_ERRORS : strcpy(str, "EDFlib: file contains format errors.\nOpen the file in EDFbrowser to get more info.");
-                                                break;
-      case EDFLIB_MAXFILES_REACHED            : strcpy(str, "EDFlib: maximum amount of files reached.");
-                                                break;
-      case EDFLIB_FILE_READ_ERROR             : strcpy(str, "EDFlib: a file read error occurred.");
-                                                break;
-      case EDFLIB_FILE_ALREADY_OPENED         : strcpy(str, "EDFlib: file is already opened.");
-                                                break;
-      case EDFLIB_FILETYPE_ERROR              : strcpy(str, "EDFlib: filetype error.");
-                                                break;
-      case EDFLIB_FILE_WRITE_ERROR            : strcpy(str, "EDFlib: file write error.");
-                                                break;
-      case EDFLIB_NUMBER_OF_SIGNALS_INVALID   : strcpy(str, "EDFlib: invalid number of signals.");
-                                                break;
-      case EDFLIB_FILE_IS_DISCONTINUOUS       : strcpy(str, "EDFlib: file is discontinuous.");
-                                                break;
-      case EDFLIB_INVALID_READ_ANNOTS_VALUE   : strcpy(str, "EDFlib: invalid read annotations argument.");
-                                                break;
-      default                                 : strcpy(str, "EDFlib: unknown error.");
+    case EDFLIB_MALLOC_ERROR                :
+      strcpy(str, "EDFlib: malloc error.");
+      break;
+    case EDFLIB_NO_SUCH_FILE_OR_DIRECTORY   :
+      strcpy(str, "EDFlib: no such file or directory.");
+      break;
+    case EDFLIB_FILE_CONTAINS_FORMAT_ERRORS :
+      strcpy(str, "EDFlib: file contains format errors.\nOpen the file in EDFbrowser to get more info.");
+      break;
+    case EDFLIB_MAXFILES_REACHED            :
+      strcpy(str, "EDFlib: maximum amount of files reached.");
+      break;
+    case EDFLIB_FILE_READ_ERROR             :
+      strcpy(str, "EDFlib: a file read error occurred.");
+      break;
+    case EDFLIB_FILE_ALREADY_OPENED         :
+      strcpy(str, "EDFlib: file is already opened.");
+      break;
+    case EDFLIB_FILETYPE_ERROR              :
+      strcpy(str, "EDFlib: filetype error.");
+      break;
+    case EDFLIB_FILE_WRITE_ERROR            :
+      strcpy(str, "EDFlib: file write error.");
+      break;
+    case EDFLIB_NUMBER_OF_SIGNALS_INVALID   :
+      strcpy(str, "EDFlib: invalid number of signals.");
+      break;
+    case EDFLIB_FILE_IS_DISCONTINUOUS       :
+      strcpy(str, "EDFlib: file is discontinuous.");
+      break;
+    case EDFLIB_INVALID_READ_ANNOTS_VALUE   :
+      strcpy(str, "EDFlib: invalid read annotations argument.");
+      break;
+    default                                 :
+      strcpy(str, "EDFlib: unknown error.");
     }
 
     QMessageBox messagewindow(QMessageBox::Critical, "Error", str);
@@ -285,26 +297,36 @@ void UI_BIOSEMI2BDFPLUSwindow::SelectFileButton()
 
   switch(sf)
   {
-    case 16384 : error = 0;
-                 break;
-    case  8192 : error = 0;
-                 break;
-    case  4096 : error = 0;
-                 break;
-    case  2048 : error = 0;
-                 break;
-    case  1024 : error = 0;
-                 break;
-    case   512 : error = 0;
-                 break;
-    case   256 : error = 0;
-                 break;
-    case   128 : error = 0;
-                 break;
-    case    64 : error = 0;
-                 break;
-    case    32 : error = 0;
-                 break;
+  case 16384 :
+    error = 0;
+    break;
+  case  8192 :
+    error = 0;
+    break;
+  case  4096 :
+    error = 0;
+    break;
+  case  2048 :
+    error = 0;
+    break;
+  case  1024 :
+    error = 0;
+    break;
+  case   512 :
+    error = 0;
+    break;
+  case   256 :
+    error = 0;
+    break;
+  case   128 :
+    error = 0;
+    break;
+  case    64 :
+    error = 0;
+    break;
+  case    32 :
+    error = 0;
+    break;
   }
 
   if(error)
@@ -434,23 +456,32 @@ void UI_BIOSEMI2BDFPLUSwindow::SelectFileButton()
   {
     switch(hdl_out)
     {
-      case EDFLIB_MALLOC_ERROR                : strcpy(str, "EDFlib: malloc error.");
-                                                break;
-      case EDFLIB_NO_SUCH_FILE_OR_DIRECTORY   : strcpy(str, "EDFlib: no such file or directory.");
-                                                break;
-      case EDFLIB_MAXFILES_REACHED            : strcpy(str, "EDFlib: maximum amount of files reached.");
-                                                break;
-      case EDFLIB_FILE_READ_ERROR             : strcpy(str, "EDFlib: a file read error occurred.");
-                                                break;
-      case EDFLIB_FILE_ALREADY_OPENED         : strcpy(str, "EDFlib: file is already opened.");
-                                                break;
-      case EDFLIB_FILETYPE_ERROR              : strcpy(str, "EDFlib: filetype error.");
-                                                break;
-      case EDFLIB_FILE_WRITE_ERROR            : strcpy(str, "EDFlib: file write error.");
-                                                break;
-      case EDFLIB_NUMBER_OF_SIGNALS_INVALID   : strcpy(str, "EDFlib: invalid number of signals.");
-                                                break;
-      default                                 : strcpy(str, "EDFlib: unknown error.");
+    case EDFLIB_MALLOC_ERROR                :
+      strcpy(str, "EDFlib: malloc error.");
+      break;
+    case EDFLIB_NO_SUCH_FILE_OR_DIRECTORY   :
+      strcpy(str, "EDFlib: no such file or directory.");
+      break;
+    case EDFLIB_MAXFILES_REACHED            :
+      strcpy(str, "EDFlib: maximum amount of files reached.");
+      break;
+    case EDFLIB_FILE_READ_ERROR             :
+      strcpy(str, "EDFlib: a file read error occurred.");
+      break;
+    case EDFLIB_FILE_ALREADY_OPENED         :
+      strcpy(str, "EDFlib: file is already opened.");
+      break;
+    case EDFLIB_FILETYPE_ERROR              :
+      strcpy(str, "EDFlib: filetype error.");
+      break;
+    case EDFLIB_FILE_WRITE_ERROR            :
+      strcpy(str, "EDFlib: file write error.");
+      break;
+    case EDFLIB_NUMBER_OF_SIGNALS_INVALID   :
+      strcpy(str, "EDFlib: invalid number of signals.");
+      break;
+    default                                 :
+      strcpy(str, "EDFlib: unknown error.");
     }
 
     QMessageBox messagewindow(QMessageBox::Critical, "Error", str);
@@ -796,13 +827,13 @@ void UI_BIOSEMI2BDFPLUSwindow::SelectFileButton()
 
   progress.reset();
 
-#ifdef Q_OS_WIN32
+  #ifdef Q_OS_WIN32
   __mingw_snprintf(str, 2048, "Done. Converted %lli input trigger events to BDF+ annotations.\n"
-                      "\nBDF+ file is located at %s", trigger_cnt, outputpath);
-#else
+                   "\nBDF+ file is located at %s", trigger_cnt, outputpath);
+  #else
   snprintf(str, 2048, "Done. Converted %lli input trigger events to BDF+ annotations.\n"
-                      "\nBDF+ file is located at %s", trigger_cnt, outputpath);
-#endif
+           "\nBDF+ file is located at %s", trigger_cnt, outputpath);
+  #endif
 
   QMessageBox messagewindow(QMessageBox::Information, "Ready", str);
   messagewindow.setIconPixmap(QPixmap(":/images/ok.png"));

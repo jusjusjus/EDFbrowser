@@ -52,7 +52,8 @@
 
 
 
-struct zratio_filter_settings{
+struct zratio_filter_settings
+{
   double crossoverfreq;
   int dftblocksize;
   double samplefreq;

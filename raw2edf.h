@@ -64,18 +64,19 @@
 #include "global.h"
 
 
-  struct raw2edf_var_struct{
-          int sf;
-          int chns;
-          int phys_max;
-          int straightbinary;
-          int endianness;
-          int samplesize;
-          int offset;
-          int skipblocksize;
-          int skipbytes;
-          char phys_dim[16];
-        };
+struct raw2edf_var_struct
+{
+  int sf;
+  int chns;
+  int phys_max;
+  int straightbinary;
+  int endianness;
+  int samplesize;
+  int offset;
+  int skipblocksize;
+  int skipbytes;
+  char phys_dim[16];
+};
 
 
 
@@ -89,62 +90,62 @@ public:
 
 private:
 
-QDialog       *raw2edfDialog;
+  QDialog       *raw2edfDialog;
 
-QLabel        *SignalsLabel,
-              *OffsetLabel,
-              *SamplefreqLabel,
-              *PatientnameLabel,
-              *RecordingLabel,
-              *DatetimeLabel,
-              *SampleSizeLabel,
-              *skipblocksizeLabel,
-              *skipbytesLabel,
-              *PhysicalMaximumLabel,
-              *PhysicalDimensionLabel,
-              *EncodingLabel,
-              *variableTypeLabel,
-              *EndiannessLabel;
+  QLabel        *SignalsLabel,
+                *OffsetLabel,
+                *SamplefreqLabel,
+                *PatientnameLabel,
+                *RecordingLabel,
+                *DatetimeLabel,
+                *SampleSizeLabel,
+                *skipblocksizeLabel,
+                *skipbytesLabel,
+                *PhysicalMaximumLabel,
+                *PhysicalDimensionLabel,
+                *EncodingLabel,
+                *variableTypeLabel,
+                *EndiannessLabel;
 
-QLineEdit     *PatientnameLineEdit,
-              *RecordingLineEdit,
-              *PhysicalDimensionLineEdit;
+  QLineEdit     *PatientnameLineEdit,
+                *RecordingLineEdit,
+                *PhysicalDimensionLineEdit;
 
-QSpinBox      *SignalsSpinbox,
-              *OffsetSpinbox,
-              *SamplefreqSpinbox,
-              *SampleSizeSpinbox,
-              *skipblocksizeSpinbox,
-              *skipbytesSpinbox,
-              *PhysicalMaximumSpinbox;
+  QSpinBox      *SignalsSpinbox,
+                *OffsetSpinbox,
+                *SamplefreqSpinbox,
+                *SampleSizeSpinbox,
+                *skipblocksizeSpinbox,
+                *skipbytesSpinbox,
+                *PhysicalMaximumSpinbox;
 
-QComboBox     *EncodingCombobox,
-              *EndiannessCombobox;
+  QComboBox     *EncodingCombobox,
+                *EndiannessCombobox;
 
-QDateTimeEdit *StartDatetimeedit;
+  QDateTimeEdit *StartDatetimeedit;
 
-QPushButton   *GoButton,
-              *CloseButton,
-              *SaveButton,
-              *LoadButton;
+  QPushButton   *GoButton,
+                *CloseButton,
+                *SaveButton,
+                *LoadButton;
 
-char *recent_opendir,
-     *recent_savedir;
+  char *recent_opendir,
+       *recent_savedir;
 
-int edfsignals,
-    offset,
-    samplefrequency,
-    edf_format;
+  int edfsignals,
+      offset,
+      samplefrequency,
+      edf_format;
 
-struct raw2edf_var_struct *raw2edf_var;
+  struct raw2edf_var_struct *raw2edf_var;
 
 private slots:
 
-void gobuttonpressed();
-void savebuttonpressed();
-void loadbuttonpressed();
-void PhysicalDimensionLineEdited(QString);
-void sampleTypeChanged(int);
+  void gobuttonpressed();
+  void savebuttonpressed();
+  void loadbuttonpressed();
+  void PhysicalDimensionLineEdited(QString);
+  void sampleTypeChanged(int);
 
 };
 

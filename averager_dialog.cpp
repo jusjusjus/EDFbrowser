@@ -184,9 +184,9 @@ void UI_AveragerWindow::startButtonClicked()
          avg_min_value;
 
   long long backup_viewtime,
-            backup_timescale,
-            l_time1,
-            l_time2;
+       backup_timescale,
+       l_time1,
+       l_time2;
 
   struct annotationblock *annot;
 
@@ -232,12 +232,15 @@ void UI_AveragerWindow::startButtonClicked()
 
   switch(n)
   {
-    case 0 : trigger_position_ratio = 10;
-            break;
-    case 1 : trigger_position_ratio = 4;
-            break;
-    case 2 : trigger_position_ratio = 2;
-            break;
+  case 0 :
+    trigger_position_ratio = 10;
+    break;
+  case 1 :
+    trigger_position_ratio = 4;
+    break;
+  case 2 :
+    trigger_position_ratio = 2;
+    break;
   }
 
   backup_viewtime = mainwindow->edfheaderlist[0]->viewtime;
@@ -259,7 +262,7 @@ void UI_AveragerWindow::startButtonClicked()
     annot = edfplus_annotation_item(&mainwindow->annotationlist[0], i);
 
     if(((annot->onset - mainwindow->edfheaderlist[0]->starttime_offset) >= l_time1)
-      && ((annot->onset - mainwindow->edfheaderlist[0]->starttime_offset) <= l_time2))
+        && ((annot->onset - mainwindow->edfheaderlist[0]->starttime_offset) <= l_time2))
     {
       strcpy(str, annot->annotation);
 
@@ -347,7 +350,7 @@ void UI_AveragerWindow::startButtonClicked()
       annot = edfplus_annotation_item(&mainwindow->annotationlist[0], i);
 
       if(((annot->onset - mainwindow->edfheaderlist[0]->starttime_offset) >= l_time1)
-        && ((annot->onset - mainwindow->edfheaderlist[0]->starttime_offset) <= l_time2))
+          && ((annot->onset - mainwindow->edfheaderlist[0]->starttime_offset) <= l_time2))
       {
         strcpy(str, annot->annotation);
 
@@ -397,10 +400,10 @@ void UI_AveragerWindow::startButtonClicked()
     if(!avg_cnt)
     {
       sprintf(scratchpad, "The selected annotation/trigger \"%s\" is not in the selected timewindow\n"
-                          "%i:%02i:%02i - %i:%02i:%02i",
-                          annot_str,
-                          timeEdit1->time().hour(), timeEdit1->time().minute(), timeEdit1->time().second(),
-                          timeEdit2->time().hour(), timeEdit2->time().minute(), timeEdit2->time().second());
+              "%i:%02i:%02i - %i:%02i:%02i",
+              annot_str,
+              timeEdit1->time().hour(), timeEdit1->time().minute(), timeEdit1->time().second(),
+              timeEdit2->time().hour(), timeEdit2->time().minute(), timeEdit2->time().second());
 
       QMessageBox messagewindow(QMessageBox::Critical, "Error", scratchpad);
       messagewindow.exec();
@@ -437,15 +440,15 @@ void UI_AveragerWindow::startButtonClicked()
     }
 
     mainwindow->averagecurvedialog[dialoglistnumber] = new UI_AverageCurveWindow(mainwindow->signalcomp[signal_nr], mainwindow, dialoglistnumber,
-                                                                                 avgbuf,
-                                                                                 avg_max_value,
-                                                                                 avg_min_value,
-                                                                                 mainwindow->pagetime,
-                                                                                 mainwindow->signalcomp[signal_nr]->samples_on_screen,
-                                                                                 avg_cnt,
-                                                                                 trigger_position_ratio,
-                                                                                 annot_str,
-                                                                                 avg_periodspinbox->value());
+        avgbuf,
+        avg_max_value,
+        avg_min_value,
+        mainwindow->pagetime,
+        mainwindow->signalcomp[signal_nr]->samples_on_screen,
+        avg_cnt,
+        trigger_position_ratio,
+        annot_str,
+        avg_periodspinbox->value());
 
     for(i=0; i<MAXAVERAGECURVEDIALOGS; i++)
     {
@@ -497,13 +500,14 @@ void UI_AveragerWindow::process_avg(struct signalcompblock *signalcomp)
   double dig_value=0.0,
          f_tmp=0.0;
 
-  union {
-          unsigned int one;
-          signed int one_signed;
-          unsigned short two[2];
-          signed short two_signed[2];
-          unsigned char four[4];
-        } var;
+  union
+  {
+    unsigned int one;
+    signed int one_signed;
+    unsigned short two[2];
+    signed short two_signed[2];
+    unsigned char four[4];
+  } var;
 
   viewbuf = mainwindow->viewbuf;
 
@@ -529,19 +533,19 @@ void UI_AveragerWindow::process_avg(struct signalcompblock *signalcomp)
       if(signalcomp->edfhdr->bdf)
       {
         var.two[0] = *((unsigned short *)(
-          viewbuf
-          + signalcomp->viewbufoffset
-          + (signalcomp->edfhdr->recordsize * (s2 / signalcomp->edfhdr->edfparam[signalcomp->edfsignal[j]].smp_per_record))
-          + signalcomp->edfhdr->edfparam[signalcomp->edfsignal[j]].buf_offset
-          + ((s2 % signalcomp->edfhdr->edfparam[signalcomp->edfsignal[j]].smp_per_record) * 3)));
+                         viewbuf
+                         + signalcomp->viewbufoffset
+                         + (signalcomp->edfhdr->recordsize * (s2 / signalcomp->edfhdr->edfparam[signalcomp->edfsignal[j]].smp_per_record))
+                         + signalcomp->edfhdr->edfparam[signalcomp->edfsignal[j]].buf_offset
+                         + ((s2 % signalcomp->edfhdr->edfparam[signalcomp->edfsignal[j]].smp_per_record) * 3)));
 
         var.four[2] = *((unsigned char *)(
-          viewbuf
-          + signalcomp->viewbufoffset
-          + (signalcomp->edfhdr->recordsize * (s2 / signalcomp->edfhdr->edfparam[signalcomp->edfsignal[j]].smp_per_record))
-          + signalcomp->edfhdr->edfparam[signalcomp->edfsignal[j]].buf_offset
-          + ((s2 % signalcomp->edfhdr->edfparam[signalcomp->edfsignal[j]].smp_per_record) * 3)
-          + 2));
+                          viewbuf
+                          + signalcomp->viewbufoffset
+                          + (signalcomp->edfhdr->recordsize * (s2 / signalcomp->edfhdr->edfparam[signalcomp->edfsignal[j]].smp_per_record))
+                          + signalcomp->edfhdr->edfparam[signalcomp->edfsignal[j]].buf_offset
+                          + ((s2 % signalcomp->edfhdr->edfparam[signalcomp->edfsignal[j]].smp_per_record) * 3)
+                          + 2));
 
         if(var.four[2]&0x80)
         {
@@ -558,11 +562,11 @@ void UI_AveragerWindow::process_avg(struct signalcompblock *signalcomp)
       if(signalcomp->edfhdr->edf)
       {
         f_tmp = *(((short *)(
-          viewbuf
-          + signalcomp->viewbufoffset
-          + (signalcomp->edfhdr->recordsize * (s2 / signalcomp->edfhdr->edfparam[signalcomp->edfsignal[j]].smp_per_record))
-          + signalcomp->edfhdr->edfparam[signalcomp->edfsignal[j]].buf_offset))
-          + (s2 % signalcomp->edfhdr->edfparam[signalcomp->edfsignal[j]].smp_per_record));
+                     viewbuf
+                     + signalcomp->viewbufoffset
+                     + (signalcomp->edfhdr->recordsize * (s2 / signalcomp->edfhdr->edfparam[signalcomp->edfsignal[j]].smp_per_record))
+                     + signalcomp->edfhdr->edfparam[signalcomp->edfsignal[j]].buf_offset))
+                  + (s2 % signalcomp->edfhdr->edfparam[signalcomp->edfsignal[j]].smp_per_record));
       }
 
       f_tmp += signalcomp->edfhdr->edfparam[signalcomp->edfsignal[j]].offset;

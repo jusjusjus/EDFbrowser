@@ -100,7 +100,7 @@ UI_FMaudio2EDFwindow::UI_FMaudio2EDFwindow(char *recent_dir, char *save_dir)
 
 
 
-void UI_FMaudio2EDFwindow::SelectFileButton()			// Conversion FM_wave->edf starts.
+void UI_FMaudio2EDFwindow::SelectFileButton()     // Conversion FM_wave->edf starts.
 {
   FILE *inputfile=NULL;
 
@@ -115,11 +115,11 @@ void UI_FMaudio2EDFwindow::SelectFileButton()			// Conversion FM_wave->edf start
       hdl_out,
       readbufsize,
       *buf2=NULL, *buf3=NULL, pos=0, smpls=0,
-      freq=608000, freq_min=448000, freq_max=768000;
+       freq=608000, freq_min=448000, freq_max=768000;
 
   unsigned int fmt_chunk_offset,
-               data_chunk_offset,
-               tmp;
+           data_chunk_offset,
+           tmp;
 
   char path[MAX_PATH_LENGTH],
        outputfilename[MAX_PATH_LENGTH],
@@ -127,9 +127,9 @@ void UI_FMaudio2EDFwindow::SelectFileButton()			// Conversion FM_wave->edf start
        *buf1=NULL;
 
   long long blocks,
-            leftover,
-            progress_steps,
-            k;
+       leftover,
+       progress_steps,
+       k;
 
 
   hpf44=NULL;
@@ -181,7 +181,7 @@ void UI_FMaudio2EDFwindow::SelectFileButton()			// Conversion FM_wave->edf start
     return;
   }
 
-/***************** check if the wavefile is valid ******************************/
+  /***************** check if the wavefile is valid ******************************/
 
   rewind(inputfile);
 
@@ -206,7 +206,8 @@ void UI_FMaudio2EDFwindow::SelectFileButton()			// Conversion FM_wave->edf start
   fmt_chunk_offset = 12;
 
   while(1)
-  { // Find fmt chunk and load it into scractchpad.
+  {
+    // Find fmt chunk and load it into scractchpad.
     fseeko(inputfile, (long long)fmt_chunk_offset, SEEK_SET);
 
     if(fread(scratchpad, 256, 1, inputfile) != 1)
@@ -247,7 +248,7 @@ void UI_FMaudio2EDFwindow::SelectFileButton()			// Conversion FM_wave->edf start
     return;
   }
 
-  edfsignals = *((unsigned short *)(scratchpad + 10));			// That is number of signals. (2 bytes)
+  edfsignals = *((unsigned short *)(scratchpad + 10));      // That is number of signals. (2 bytes)
 
   if(edfsignals < 1)
   {
@@ -261,53 +262,63 @@ void UI_FMaudio2EDFwindow::SelectFileButton()			// Conversion FM_wave->edf start
   if(edfsignals > 1)
   {
     QMessageBox messagewindow(QMessageBox::Critical, "Error", "Number of channels in wave file is > 1\n"
-                                                              "Can only handle mono recordings.");
+                              "Can only handle mono recordings.");
     messagewindow.exec();
     fclose(inputfile);
     enable_widgets(true);
     return;
   }
 
-  sf = *((unsigned int *)(scratchpad + 12));	// Sampling frequency of wav.	(4 bits)
+  sf = *((unsigned int *)(scratchpad + 12));  // Sampling frequency of wav. (4 bits)
 
   switch(sf)
   {
-    case 96000 : dsf = 384;
-                 usf = 2;
-                 break;
-    case 88200 : dsf = 882;
-                 usf = 5;
-                 break;
-    case 48000 : dsf = 384;
-                 usf = 4;
-                 break;
-    case 44100 : dsf = 441;
-                 usf = 5;
-                 break;
-    case 32000 : dsf = 384;
-                 usf = 6;
-                 break;
-    case 22050 : dsf = 441;
-                 usf = 10;
-                 break;
-    case 16000 : dsf = 384;
-                 usf = 12;
-                 break;
-    case 11025 : dsf = 441;
-                 usf = 20;
-                 break;
-    case  8000 : dsf = 384;
-                 usf = 24;
-                 break;
-    default    : dsf =  0;
-                 usf = 1;
-                 break;
+  case 96000 :
+    dsf = 384;
+    usf = 2;
+    break;
+  case 88200 :
+    dsf = 882;
+    usf = 5;
+    break;
+  case 48000 :
+    dsf = 384;
+    usf = 4;
+    break;
+  case 44100 :
+    dsf = 441;
+    usf = 5;
+    break;
+  case 32000 :
+    dsf = 384;
+    usf = 6;
+    break;
+  case 22050 :
+    dsf = 441;
+    usf = 10;
+    break;
+  case 16000 :
+    dsf = 384;
+    usf = 12;
+    break;
+  case 11025 :
+    dsf = 441;
+    usf = 20;
+    break;
+  case  8000 :
+    dsf = 384;
+    usf = 24;
+    break;
+  default    :
+    dsf =  0;
+    usf = 1;
+    break;
   }
 
   if(!dsf)
   {
     sprintf(scratchpad, "error: samplefrequency is %iHz.\n"
-           "expected: 8000, 11025, 16000, 22050, 32000, 44100, 48000, 88200 or 96000 Hz\n", sf);
+            "expected: 8000, 11025, 16000, 22050, 32000, 44100, 48000, 88200 or 96000 Hz\n", sf);
     QMessageBox messagewindow(QMessageBox::Critical, "Error", scratchpad);
     messagewindow.exec();
     fclose(inputfile);
@@ -316,13 +327,13 @@ void UI_FMaudio2EDFwindow::SelectFileButton()			// Conversion FM_wave->edf start
   }
 
 //  usf *= 2;  // Select 1000Hz instead of 500Hz for the new EDF file,
-               // not used because it doesn't improve signal quality
+  // not used because it doesn't improve signal quality
 
-                  // sf:   samplefrequency of the source file
+  // sf:   samplefrequency of the source file
   uf = sf * usf;  // uf:   upsampling frequency (192KHz or 220.5KHz)
-                  // usf:  upsampling factor
+  // usf:  upsampling factor
   df = uf / dsf;  // df:   downsampling frequency (500Hz, samplefrequency of the new EDF file)
-                  // dsf:  downsampling factor
+  // dsf:  downsampling factor
 
   resolution = *((unsigned short *)(scratchpad + 22));
 
@@ -340,7 +351,8 @@ void UI_FMaudio2EDFwindow::SelectFileButton()			// Conversion FM_wave->edf start
   data_chunk_offset = 12;
 
   while(1)
-  { // Find data chunk and load it into scractchpad.
+  {
+    // Find data chunk and load it into scractchpad.
     fseeko(inputfile, (long long)data_chunk_offset, SEEK_SET);
 
     if(fread(scratchpad, 256, 1, inputfile)!=1)
@@ -447,7 +459,7 @@ void UI_FMaudio2EDFwindow::SelectFileButton()			// Conversion FM_wave->edf start
     return;
   }
 
-/***************** create a new EDF file *****************************************/
+  /***************** create a new EDF file *****************************************/
 
   get_filename_from_path(outputfilename, path, MAX_PATH_LENGTH);
   remove_extension_from_filename(outputfilename);
@@ -494,8 +506,8 @@ void UI_FMaudio2EDFwindow::SelectFileButton()			// Conversion FM_wave->edf start
   edf_set_samplefrequency(hdl_out, 0, df);
   edf_set_physical_maximum(hdl_out, 0, 8192);
   edf_set_physical_minimum(hdl_out, 0, -8192);
-  edf_set_digital_maximum(hdl_out, 0, 32767);			// Signed 16-bit
-  edf_set_digital_minimum(hdl_out, 0, -32768);			// ... .
+  edf_set_digital_maximum(hdl_out, 0, 32767);     // Signed 16-bit
+  edf_set_digital_minimum(hdl_out, 0, -32768);      // ... .
   edf_set_label(hdl_out, 0, "ECG");
   edf_set_physical_dimension(hdl_out, 0, "uV");
 
@@ -508,7 +520,7 @@ void UI_FMaudio2EDFwindow::SelectFileButton()			// Conversion FM_wave->edf start
 
   edfwrite_annotation_latin1(hdl_out, 0LL, -1, "Recording starts");
 
-/***************** start conversion **************************************/
+  /***************** start conversion **************************************/
 
   fseeko(inputfile, (long long)data_chunk_offset + 8LL, SEEK_SET);
 
@@ -526,10 +538,33 @@ void UI_FMaudio2EDFwindow::SelectFileButton()			// Conversion FM_wave->edf start
     {
       progress.setValue((int)k);
       qApp->processEvents();
-      if(progress.wasCanceled() == true) { edfclose_file(hdl_out); fclose(inputfile); free(buf1); free(buf2); free(buf3); deleteFilters(); enable_widgets(true); return; }
+      if(progress.wasCanceled() == true)
+      {
+        edfclose_file(hdl_out);
+        fclose(inputfile);
+        free(buf1);
+        free(buf2);
+        free(buf3);
+        deleteFilters();
+        enable_widgets(true);
+        return;
+      }
     }
 
-    if(fread(buf1, readbufsize, 1, inputfile) != 1) { progress.reset(); QMessageBox messagewindow(QMessageBox::Critical, "Error", "A read error occurred during conversion."); messagewindow.exec(); edfclose_file(hdl_out); fclose(inputfile); free(buf1); free(buf2); free(buf3); deleteFilters(); enable_widgets(true); return; }
+    if(fread(buf1, readbufsize, 1, inputfile) != 1)
+    {
+      progress.reset();
+      QMessageBox messagewindow(QMessageBox::Critical, "Error", "A read error occurred during conversion.");
+      messagewindow.exec();
+      edfclose_file(hdl_out);
+      fclose(inputfile);
+      free(buf1);
+      free(buf2);
+      free(buf3);
+      deleteFilters();
+      enable_widgets(true);
+      return;
+    }
 
 
     for(i=0; i<uf; i++)
@@ -561,9 +596,9 @@ void UI_FMaudio2EDFwindow::SelectFileButton()			// Conversion FM_wave->edf start
           freq = freq_min;
         }
         else if(freq > freq_max)
-          {
-            freq = freq_max;
-          }
+        {
+          freq = freq_max;
+        }
 
         smpls = 0;
       }
@@ -581,9 +616,22 @@ void UI_FMaudio2EDFwindow::SelectFileButton()			// Conversion FM_wave->edf start
 
       if(!(i % dsf)) buf3[i / dsf] = buf2[i] / 8;
     }
-    
 
-    if(edf_blockwrite_digital_samples(hdl_out, buf3)) { progress.reset(); QMessageBox messagewindow(QMessageBox::Critical, "Error", "A write error occurred during conversion."); messagewindow.exec(); edfclose_file(hdl_out); fclose(inputfile); free(buf1); free(buf2); free(buf3); deleteFilters(); enable_widgets(true); return; }
+
+    if(edf_blockwrite_digital_samples(hdl_out, buf3))
+    {
+      progress.reset();
+      QMessageBox messagewindow(QMessageBox::Critical, "Error", "A write error occurred during conversion.");
+      messagewindow.exec();
+      edfclose_file(hdl_out);
+      fclose(inputfile);
+      free(buf1);
+      free(buf2);
+      free(buf3);
+      deleteFilters();
+      enable_widgets(true);
+      return;
+    }
   }
 
 
@@ -638,40 +686,95 @@ void UI_FMaudio2EDFwindow::deleteFilters(void)
 
 
 
-bool UI_FMaudio2EDFwindow::allocateFilters(int uf, int usf, int dsf)	 // uf: upsamling frequency, df: downsampling frequency
+bool UI_FMaudio2EDFwindow::allocateFilters(int uf, int usf, int dsf)   // uf: upsamling frequency, df: downsampling frequency
 {
   lpf9a = create_ravg_filter(1, usf * 2);
-  if(lpf9a == NULL) { QMessageBox messagewindow(QMessageBox::Critical, "Error", "A memory allocation error occurred. (ravg filter)."); messagewindow.exec(); return false; }
+  if(lpf9a == NULL)
+  {
+    QMessageBox messagewindow(QMessageBox::Critical, "Error", "A memory allocation error occurred. (ravg filter).");
+    messagewindow.exec();
+    return false;
+  }
 
   lpf9b = create_ravg_filter(1, usf * 2);
-  if(lpf9b == NULL) { QMessageBox messagewindow(QMessageBox::Critical, "Error", "A memory allocation error occurred. (ravg filter)."); messagewindow.exec(); return false; }
+  if(lpf9b == NULL)
+  {
+    QMessageBox messagewindow(QMessageBox::Critical, "Error", "A memory allocation error occurred. (ravg filter).");
+    messagewindow.exec();
+    return false;
+  }
 
   lpf9c = create_ravg_filter(1, usf * 2);
-  if(lpf9c == NULL) { QMessageBox messagewindow(QMessageBox::Critical, "Error", "A memory allocation error occurred. (ravg filter)."); messagewindow.exec(); return false; }
+  if(lpf9c == NULL)
+  {
+    QMessageBox messagewindow(QMessageBox::Critical, "Error", "A memory allocation error occurred. (ravg filter).");
+    messagewindow.exec();
+    return false;
+  }
 
   lpf9d = create_ravg_filter(1, usf * 2);
-  if(lpf9d == NULL) { QMessageBox messagewindow(QMessageBox::Critical, "Error", "A memory allocation error occurred. (ravg filter)."); messagewindow.exec(); return false; }
+  if(lpf9d == NULL)
+  {
+    QMessageBox messagewindow(QMessageBox::Critical, "Error", "A memory allocation error occurred. (ravg filter).");
+    messagewindow.exec();
+    return false;
+  }
 
   lpf9e = create_ravg_filter(1, usf * 2);
-  if(lpf9e == NULL) { QMessageBox messagewindow(QMessageBox::Critical, "Error", "A memory allocation error occurred. (ravg filter)."); messagewindow.exec(); return false; }
+  if(lpf9e == NULL)
+  {
+    QMessageBox messagewindow(QMessageBox::Critical, "Error", "A memory allocation error occurred. (ravg filter).");
+    messagewindow.exec();
+    return false;
+  }
 
   hpf44 = create_ravg_filter(0, uf / 700);
-  if(hpf44 == NULL) { QMessageBox messagewindow(QMessageBox::Critical, "Error", "A memory allocation error occurred. (ravg filter)."); messagewindow.exec(); return false; }
+  if(hpf44 == NULL)
+  {
+    QMessageBox messagewindow(QMessageBox::Critical, "Error", "A memory allocation error occurred. (ravg filter).");
+    messagewindow.exec();
+    return false;
+  }
 
   lpf200a = create_ravg_filter(1, dsf * 2);
-  if(lpf200a == NULL) { QMessageBox messagewindow(QMessageBox::Critical, "Error", "A memory allocation error occurred. (ravg filter)."); messagewindow.exec(); return false; }
+  if(lpf200a == NULL)
+  {
+    QMessageBox messagewindow(QMessageBox::Critical, "Error", "A memory allocation error occurred. (ravg filter).");
+    messagewindow.exec();
+    return false;
+  }
 
   lpf200b = create_ravg_filter(1, dsf * 2);
-  if(lpf200b == NULL) { QMessageBox messagewindow(QMessageBox::Critical, "Error", "A memory allocation error occurred. (ravg filter)."); messagewindow.exec(); return false; }
+  if(lpf200b == NULL)
+  {
+    QMessageBox messagewindow(QMessageBox::Critical, "Error", "A memory allocation error occurred. (ravg filter).");
+    messagewindow.exec();
+    return false;
+  }
 
   lpf200c = create_ravg_filter(1, dsf * 2);
-  if(lpf200c == NULL) { QMessageBox messagewindow(QMessageBox::Critical, "Error", "A memory allocation error occurred. (ravg filter)."); messagewindow.exec(); return false; }
+  if(lpf200c == NULL)
+  {
+    QMessageBox messagewindow(QMessageBox::Critical, "Error", "A memory allocation error occurred. (ravg filter).");
+    messagewindow.exec();
+    return false;
+  }
 
   lpf200d = create_ravg_filter(1, dsf * 2);
-  if(lpf200d == NULL) { QMessageBox messagewindow(QMessageBox::Critical, "Error", "A memory allocation error occurred. (ravg filter)."); messagewindow.exec(); return false; }
+  if(lpf200d == NULL)
+  {
+    QMessageBox messagewindow(QMessageBox::Critical, "Error", "A memory allocation error occurred. (ravg filter).");
+    messagewindow.exec();
+    return false;
+  }
 
   lpf200e = create_ravg_filter(1, dsf * 2);
-  if(lpf200e == NULL) { QMessageBox messagewindow(QMessageBox::Critical, "Error", "A memory allocation error occurred. (ravg filter)."); messagewindow.exec(); return false; }
+  if(lpf200e == NULL)
+  {
+    QMessageBox messagewindow(QMessageBox::Critical, "Error", "A memory allocation error occurred. (ravg filter).");
+    messagewindow.exec();
+    return false;
+  }
 
   return true;
 }

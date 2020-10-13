@@ -36,13 +36,13 @@
 
 #if defined(__APPLE__) || defined(__MACH__) || defined(__APPLE_CC__)
 
-#define fopeno fopen
+  #define fopeno fopen
 
 #else
 
-#define fseeko fseeko64
-#define ftello ftello64
-#define fopeno fopen64
+  #define fseeko fseeko64
+  #define ftello ftello64
+  #define fopeno fopen64
 
 #endif
 
@@ -121,9 +121,9 @@ UI_ExportAnnotationswindow::UI_ExportAnnotationswindow(QWidget *w_parent, struct
 
   asciiISOtimedateFractionRadioButton = new QRadioButton("yyyy-mm-ddThh:mm:ss.xxx");
 
-  asciiTimedateRadioButton = new QRadioButton("mm/dd/yyyy hh:mm:ss");			// Non-ISO format of Daniels program.
+  asciiTimedateRadioButton = new QRadioButton("mm/dd/yyyy hh:mm:ss");     // Non-ISO format of Daniels program.
 
-  asciiTimedateFractionRadioButton = new QRadioButton("mm/dd/yyyy hh:mm:ss.xxx");		// Non-ISO format of Daniels program.
+  asciiTimedateFractionRadioButton = new QRadioButton("mm/dd/yyyy hh:mm:ss.xxx");   // Non-ISO format of Daniels program.
 
   durationCheckBox = new QCheckBox("Duration column", ExportAnnotsDialog);
   durationCheckBox->setTristate(false);
@@ -133,10 +133,10 @@ UI_ExportAnnotationswindow::UI_ExportAnnotationswindow(QWidget *w_parent, struct
   //endCheckBox->setTristate(false);
   //endCheckBox->setCheckState(Qt::Unchecked);
 
-	durationGroup = new QButtonGroup(ExportAnnotsDialog);
-	durationGroup->addButton(durationCheckBox);
-	//durationGroup->addButton(endCheckBox);
-	durationGroup->setExclusive(false);
+  durationGroup = new QButtonGroup(ExportAnnotsDialog);
+  durationGroup->addButton(durationCheckBox);
+  //durationGroup->addButton(endCheckBox);
+  durationGroup->setExclusive(false);
 
   asciiSettingsHBoxLayout = new QHBoxLayout;
   asciiSettingsHBoxLayout->addWidget(separatorLabel);
@@ -167,49 +167,56 @@ UI_ExportAnnotationswindow::UI_ExportAnnotationswindow(QWidget *w_parent, struct
 
   switch(mainwindow->export_annotations_var->format)
   {
-    case 0 : EDFplusRadioButton->setChecked(true);
-             asciiSettingsGroupBox->setEnabled(false);
-             break;
+  case 0 :
+    EDFplusRadioButton->setChecked(true);
+    asciiSettingsGroupBox->setEnabled(false);
+    break;
 
-    case 8 : XMLRadioButton->setChecked(true);
-             asciiSettingsGroupBox->setEnabled(false);
-             break;
+  case 8 :
+    XMLRadioButton->setChecked(true);
+    asciiSettingsGroupBox->setEnabled(false);
+    break;
 
-    case 1 : CSVRadioButton->setChecked(true);
-             asciiSettingsGroupBox->setEnabled(true);
-             asciiSecondsRadioButton->setChecked(true);
-             break;
+  case 1 :
+    CSVRadioButton->setChecked(true);
+    asciiSettingsGroupBox->setEnabled(true);
+    asciiSecondsRadioButton->setChecked(true);
+    break;
 
-    case 2 : CSVRadioButton->setChecked(true);
-             asciiSettingsGroupBox->setEnabled(true);
-             asciiISOtimeRadioButton->setChecked(true);
-             break;
+  case 2 :
+    CSVRadioButton->setChecked(true);
+    asciiSettingsGroupBox->setEnabled(true);
+    asciiISOtimeRadioButton->setChecked(true);
+    break;
 
-    case 3 : CSVRadioButton->setChecked(true);
-             asciiSettingsGroupBox->setEnabled(true);
-             asciiISOtimedateRadioButton->setChecked(true);
-             break;
+  case 3 :
+    CSVRadioButton->setChecked(true);
+    asciiSettingsGroupBox->setEnabled(true);
+    asciiISOtimedateRadioButton->setChecked(true);
+    break;
 
-    case 4 : CSVRadioButton->setChecked(true);
-             asciiSettingsGroupBox->setEnabled(true);
-             asciiISOtimeFractionRadioButton->setChecked(true);
-             break;
+  case 4 :
+    CSVRadioButton->setChecked(true);
+    asciiSettingsGroupBox->setEnabled(true);
+    asciiISOtimeFractionRadioButton->setChecked(true);
+    break;
 
-    case 5 : CSVRadioButton->setChecked(true);
-             asciiSettingsGroupBox->setEnabled(true);
-             asciiISOtimedateFractionRadioButton->setChecked(true);
-             break;
+  case 5 :
+    CSVRadioButton->setChecked(true);
+    asciiSettingsGroupBox->setEnabled(true);
+    asciiISOtimedateFractionRadioButton->setChecked(true);
+    break;
   }
 
-  if(mainwindow->export_annotations_var->duration)	durationCheckBox->setChecked(true);
-  else							durationCheckBox->setChecked(false);
+  if(mainwindow->export_annotations_var->duration)  durationCheckBox->setChecked(true);
+  else              durationCheckBox->setChecked(false);
 
   QObject::connect(CloseButton,    SIGNAL(clicked()),     ExportAnnotsDialog, SLOT(close()));
   QObject::connect(ExportButton,   SIGNAL(clicked()),     this,               SLOT(ExportButtonClicked()));
   QObject::connect(CSVRadioButton, SIGNAL(toggled(bool)), this,               SLOT(outputformatRadioButtonClicked(bool)));
 
-	QObject::connect(durationCheckBox, SIGNAL(stateChanged(int)), this, SLOT(DurationCheckBoxChanged(int)));
-	//QObject::connect(endCheckBox, SIGNAL(stateChanged(int)), this, SLOT(EndCheckBoxChanged(int)));
+  QObject::connect(durationCheckBox, SIGNAL(stateChanged(int)), this, SLOT(DurationCheckBoxChanged(int)));
+  //QObject::connect(endCheckBox, SIGNAL(stateChanged(int)), this, SLOT(EndCheckBoxChanged(int)));
 
   filelist->setCurrentRow(mainwindow->files_open - 1);
 }
@@ -217,26 +224,26 @@ UI_ExportAnnotationswindow::UI_ExportAnnotationswindow(QWidget *w_parent, struct
 
 int UI_ExportAnnotationswindow::execute()
 {
-	check_list();
-	return ExportAnnotsDialog->exec();
+  check_list();
+  return ExportAnnotsDialog->exec();
 }
 
 
 
 void UI_ExportAnnotationswindow::check_list()
 {
-	if(annotationlist[0] == NULL)
-	{
-		QMessageBox messagewindow(QMessageBox::Critical, "Error", "Attempting to export an empty list.");
-		messagewindow.exec();
-	}
+  if(annotationlist[0] == NULL)
+  {
+    QMessageBox messagewindow(QMessageBox::Critical, "Error", "Attempting to export an empty list.");
+    messagewindow.exec();
+  }
 }
 
 
 
 void UI_ExportAnnotationswindow::outputformatRadioButtonClicked(bool checked)
 {
-	asciiSettingsGroupBox->setEnabled( checked );
+  asciiSettingsGroupBox->setEnabled( checked );
 }
 
 
@@ -256,7 +263,7 @@ void UI_ExportAnnotationswindow::ExportButtonClicked()
   long long end;
 
   double onset_from_start,
-	 end_from_start;
+         end_from_start;
 
   char path[MAX_PATH_LENGTH],
        str[1024],
@@ -275,21 +282,21 @@ void UI_ExportAnnotationswindow::ExportButtonClicked()
   include_end = 0;
 
 
-	if(CSVRadioButton->isChecked() == true)
-	{
-	       	if(asciiSecondsRadioButton->isChecked() == true)		csv_format = 1;
-	       	if(asciiISOtimeRadioButton->isChecked() == true)		csv_format = 2;
-	       	if(asciiISOtimedateRadioButton->isChecked() == true)		csv_format = 3;
-	       	if(asciiISOtimeFractionRadioButton->isChecked() == true)	csv_format = 4;
-	       	if(asciiISOtimedateFractionRadioButton->isChecked() == true)	csv_format = 5;
-	       	if(asciiTimedateRadioButton->isChecked() == true)		csv_format = 6;
-	       	if(asciiTimedateFractionRadioButton->isChecked() == true)	csv_format = 7;
-	}
+  if(CSVRadioButton->isChecked() == true)
+  {
+    if(asciiSecondsRadioButton->isChecked() == true)    csv_format = 1;
+    if(asciiISOtimeRadioButton->isChecked() == true)    csv_format = 2;
+    if(asciiISOtimedateRadioButton->isChecked() == true)    csv_format = 3;
+    if(asciiISOtimeFractionRadioButton->isChecked() == true)  csv_format = 4;
+    if(asciiISOtimedateFractionRadioButton->isChecked() == true)  csv_format = 5;
+    if(asciiTimedateRadioButton->isChecked() == true)   csv_format = 6;
+    if(asciiTimedateFractionRadioButton->isChecked() == true) csv_format = 7;
+  }
 
-  if(EDFplusRadioButton->isChecked() == true)	csv_format = 0;
-  if(XMLRadioButton->isChecked() == true)	csv_format = 8;
+  if(EDFplusRadioButton->isChecked() == true) csv_format = 0;
+  if(XMLRadioButton->isChecked() == true) csv_format = 8;
 
-   mainwindow->export_annotations_var->format = csv_format;
+  mainwindow->export_annotations_var->format = csv_format;
 
   if(separatorBox->currentIndex() == 0)
   {
@@ -302,8 +309,8 @@ void UI_ExportAnnotationswindow::ExportButtonClicked()
     mainwindow->export_annotations_var->separator = 1;
   }
 
-  if(durationCheckBox->checkState() == Qt::Checked)	include_duration = 1;
-  //else if(endCheckBox->checkState() == Qt::Checked)	include_end = 1;
+  if(durationCheckBox->checkState() == Qt::Checked) include_duration = 1;
+  //else if(endCheckBox->checkState() == Qt::Checked) include_end = 1;
 
   mainwindow->export_annotations_var->duration = include_duration;
   mainwindow->export_annotations_var->end = include_end;
@@ -410,94 +417,94 @@ void UI_ExportAnnotationswindow::ExportButtonClicked()
       return;
     }
 
-    if(include_duration)	fprintf(annotationfile, "#Onset%cDuration%cAnnotation", separator, separator);
-    else if(include_end)	fprintf(annotationfile, "#Onset%cEnd%cAnnotation", separator, separator);
-    else			fprintf(annotationfile, "#Onset%cAnnotation", separator);
+    if(include_duration)  fprintf(annotationfile, "#Onset%cDuration%cAnnotation", separator, separator);
+    else if(include_end)  fprintf(annotationfile, "#Onset%cEnd%cAnnotation", separator, separator);
+    else      fprintf(annotationfile, "#Onset%cAnnotation", separator);
 
-#if defined(Q_OS_LINUX) || defined(Q_OS_MAC)
+    #if defined(Q_OS_LINUX) || defined(Q_OS_MAC)
     fprintf(annotationfile, "\n");
-#elif defined(Q_OS_WIN32)
+    #elif defined(Q_OS_WIN32)
     fprintf(annotationfile, "\r\n");
-#endif
+    #endif
 
-    for(j=0; j < annot_cnt; j++)		// for all annotations
+    for(j=0; j < annot_cnt; j++)    // for all annotations
     {
-	annot = edfplus_annotation_item(&annot_list, j);
-	if(annot == NULL) break;
+      annot = edfplus_annotation_item(&annot_list, j);
+      if(annot == NULL) break;
 
-	strncpy(str, annot->annotation, 1024);
-	str[1023] = 0;
-	utf8_to_latin1(str);
+      strncpy(str, annot->annotation, 1024);
+      str[1023] = 0;
+      utf8_to_latin1(str);
 
-	len = strlen(str);
-	for(i=0; i<len; i++)
-	{
-		if( (((unsigned char *)str)[i] < 32) or (((unsigned char *)str)[i] == ',') )
-		{
-			str[i] = '.';
-		}
-	}
-
-
-	end = annot->onset + atof(annot->duration) * TIME_DIMENSION;
-	onset_from_start = (double)(annot->onset - hdr->starttime_offset) / TIME_DIMENSION;
-	end_from_start = (double)(end - hdr->starttime_offset) / TIME_DIMENSION;
-
-	remainder = annot->onset % TIME_DIMENSION;
-	if(remainder < 0)
-	{
-		utc_to_date_time(hdr->utc_starttime + (annot->onset / TIME_DIMENSION) - 1, &tm);
-		remainder = TIME_DIMENSION + remainder;
-	}
-	else
-	{
-		utc_to_date_time(hdr->utc_starttime + (annot->onset / TIME_DIMENSION), &tm);
-	}
-
-	remainder_end = end % TIME_DIMENSION;
-	if(remainder_end < 0)
-	{
-		utc_to_date_time(hdr->utc_starttime + (end / TIME_DIMENSION) - 1, &tm_end);
-		remainder_end = TIME_DIMENSION + remainder_end;
-	}
-	else
-	{
-		utc_to_date_time(hdr->utc_starttime + (end / TIME_DIMENSION), &tm_end);
-	}
-
-	if(csv_format == 1)	 fprintf(annotationfile, "%+.7f", onset_from_start);
-	else if(csv_format == 2) fprintf(annotationfile, "%02i:%02i:%02i", tm.hour, tm.minute, tm.second);
-	else if(csv_format == 3) fprintf(annotationfile, "%04i-%02i-%02iT%02i:%02i:%02i", tm.year, tm.month, tm.day, tm.hour, tm.minute, tm.second);
-	else if(csv_format == 4) fprintf(annotationfile, "%02i:%02i:%02i.%07i", tm.hour, tm.minute, tm.second, remainder);
-	else if(csv_format == 5) fprintf(annotationfile, "%04i-%02i-%02iT%02i:%02i:%02i.%07i", tm.year, tm.month, tm.day, tm.hour, tm.minute, tm.second, remainder);
-	else if(csv_format == 6) fprintf(annotationfile, "%02i/%02i/%04i %02i:%02i:%02i", tm.month, tm.day, tm.year, tm.hour, tm.minute, tm.second);
-	else if(csv_format == 7) fprintf(annotationfile, "%02i/%02i/%04i %02i:%02i:%02i.%07i", tm.month, tm.day, tm.year, tm.hour, tm.minute, tm.second, remainder);
+      len = strlen(str);
+      for(i=0; i<len; i++)
+      {
+        if( (((unsigned char *)str)[i] < 32) or (((unsigned char *)str)[i] == ',') )
+        {
+          str[i] = '.';
+        }
+      }
 
 
-	fprintf(annotationfile, "%c", separator);
+      end = annot->onset + atof(annot->duration) * TIME_DIMENSION;
+      onset_from_start = (double)(annot->onset - hdr->starttime_offset) / TIME_DIMENSION;
+      end_from_start = (double)(end - hdr->starttime_offset) / TIME_DIMENSION;
+
+      remainder = annot->onset % TIME_DIMENSION;
+      if(remainder < 0)
+      {
+        utc_to_date_time(hdr->utc_starttime + (annot->onset / TIME_DIMENSION) - 1, &tm);
+        remainder = TIME_DIMENSION + remainder;
+      }
+      else
+      {
+        utc_to_date_time(hdr->utc_starttime + (annot->onset / TIME_DIMENSION), &tm);
+      }
+
+      remainder_end = end % TIME_DIMENSION;
+      if(remainder_end < 0)
+      {
+        utc_to_date_time(hdr->utc_starttime + (end / TIME_DIMENSION) - 1, &tm_end);
+        remainder_end = TIME_DIMENSION + remainder_end;
+      }
+      else
+      {
+        utc_to_date_time(hdr->utc_starttime + (end / TIME_DIMENSION), &tm_end);
+      }
+
+      if(csv_format == 1)  fprintf(annotationfile, "%+.7f", onset_from_start);
+      else if(csv_format == 2) fprintf(annotationfile, "%02i:%02i:%02i", tm.hour, tm.minute, tm.second);
+      else if(csv_format == 3) fprintf(annotationfile, "%04i-%02i-%02iT%02i:%02i:%02i", tm.year, tm.month, tm.day, tm.hour, tm.minute, tm.second);
+      else if(csv_format == 4) fprintf(annotationfile, "%02i:%02i:%02i.%07i", tm.hour, tm.minute, tm.second, remainder);
+      else if(csv_format == 5) fprintf(annotationfile, "%04i-%02i-%02iT%02i:%02i:%02i.%07i", tm.year, tm.month, tm.day, tm.hour, tm.minute, tm.second, remainder);
+      else if(csv_format == 6) fprintf(annotationfile, "%02i/%02i/%04i %02i:%02i:%02i", tm.month, tm.day, tm.year, tm.hour, tm.minute, tm.second);
+      else if(csv_format == 7) fprintf(annotationfile, "%02i/%02i/%04i %02i:%02i:%02i.%07i", tm.month, tm.day, tm.year, tm.hour, tm.minute, tm.second, remainder);
 
 
-	if(include_duration) fprintf(annotationfile, "%s%c", annot->duration, separator);
+      fprintf(annotationfile, "%c", separator);
 
-	else if(include_end)
-	{
-		if(csv_format == 1)	 fprintf(annotationfile, "%+.7f", end_from_start);
-		else if(csv_format == 2) fprintf(annotationfile, "%02i:%02i:%02i", tm_end.hour, tm_end.minute, tm_end.second);
-		else if(csv_format == 3) fprintf(annotationfile, "%04i-%02i-%02iT%02i:%02i:%02i", tm_end.year, tm_end.month, tm_end.day, tm_end.hour, tm_end.minute, tm_end.second);
-		else if(csv_format == 4) fprintf(annotationfile, "%02i:%02i:%02i.%07i", tm_end.hour, tm_end.minute, tm_end.second, remainder);
-		else if(csv_format == 5) fprintf(annotationfile, "%04i-%02i-%02iT%02i:%02i:%02i.%07i", tm_end.year, tm_end.month, tm_end.day, tm_end.hour, tm_end.minute, tm_end.second, remainder);
-		else if(csv_format == 6) fprintf(annotationfile, "%02i/%02i/%04i %02i:%02i:%02i", tm_end.month, tm_end.day, tm_end.year, tm_end.hour, tm_end.minute, tm_end.second);
-		else if(csv_format == 7) fprintf(annotationfile, "%02i/%02i/%04i %02i:%02i:%02i.%07i", tm_end.month, tm_end.day, tm_end.year, tm_end.hour, tm_end.minute, tm_end.second, remainder);
-		fprintf(annotationfile, "%c", separator);
-	}
 
-	fprintf(annotationfile, "%s", str);
+      if(include_duration) fprintf(annotationfile, "%s%c", annot->duration, separator);
 
-#if defined(Q_OS_LINUX) || defined(Q_OS_MAC)
-	fprintf(annotationfile, "\n");
-#elif defined(Q_OS_WIN32)
-	fprintf(annotationfile, "\r\n");
-#endif
+      else if(include_end)
+      {
+        if(csv_format == 1)  fprintf(annotationfile, "%+.7f", end_from_start);
+        else if(csv_format == 2) fprintf(annotationfile, "%02i:%02i:%02i", tm_end.hour, tm_end.minute, tm_end.second);
+        else if(csv_format == 3) fprintf(annotationfile, "%04i-%02i-%02iT%02i:%02i:%02i", tm_end.year, tm_end.month, tm_end.day, tm_end.hour, tm_end.minute, tm_end.second);
+        else if(csv_format == 4) fprintf(annotationfile, "%02i:%02i:%02i.%07i", tm_end.hour, tm_end.minute, tm_end.second, remainder);
+        else if(csv_format == 5) fprintf(annotationfile, "%04i-%02i-%02iT%02i:%02i:%02i.%07i", tm_end.year, tm_end.month, tm_end.day, tm_end.hour, tm_end.minute, tm_end.second, remainder);
+        else if(csv_format == 6) fprintf(annotationfile, "%02i/%02i/%04i %02i:%02i:%02i", tm_end.month, tm_end.day, tm_end.year, tm_end.hour, tm_end.minute, tm_end.second);
+        else if(csv_format == 7) fprintf(annotationfile, "%02i/%02i/%04i %02i:%02i:%02i.%07i", tm_end.month, tm_end.day, tm_end.year, tm_end.hour, tm_end.minute, tm_end.second, remainder);
+        fprintf(annotationfile, "%c", separator);
+      }
+
+      fprintf(annotationfile, "%s", str);
+
+      #if defined(Q_OS_LINUX) || defined(Q_OS_MAC)
+      fprintf(annotationfile, "\n");
+      #elif defined(Q_OS_WIN32)
+      fprintf(annotationfile, "\r\n");
+      #endif
 
     }
 
@@ -537,13 +544,13 @@ void UI_ExportAnnotationswindow::ExportButtonClicked()
     utc_to_date_time(hdr->utc_starttime, &tm);
 
     fprintf(annotationfile, " <recording_start_time>%04i-%02i-%02iT%02i:%02i:%02i.%07i</recording_start_time>",
-                            tm.year, tm.month, tm.day, tm.hour, tm.minute, tm.second, (int)hdr->starttime_offset);
+            tm.year, tm.month, tm.day, tm.hour, tm.minute, tm.second, (int)hdr->starttime_offset);
 
-#if defined(Q_OS_LINUX) || defined(Q_OS_MAC)
-	fprintf(annotationfile, "\n");
-#elif defined(Q_OS_WIN32)
-	fprintf(annotationfile, "\r\n");
-#endif
+    #if defined(Q_OS_LINUX) || defined(Q_OS_MAC)
+    fprintf(annotationfile, "\n");
+    #elif defined(Q_OS_WIN32)
+    fprintf(annotationfile, "\r\n");
+    #endif
 
     for(j=0; j < annot_cnt; j++)
     {
@@ -567,10 +574,10 @@ void UI_ExportAnnotationswindow::ExportButtonClicked()
       }
 
       fprintf(annotationfile, " <annotation>\n"
-                              "  <onset>%04i-%02i-%02iT%02i:%02i:%02i.%07i</onset>\n"
-                              "  <duration>%s</duration>\n"
-                              "  <description>",
-                              tm.year, tm.month, tm.day, tm.hour, tm.minute, tm.second, remainder, annot->duration);
+              "  <onset>%04i-%02i-%02iT%02i:%02i:%02i.%07i</onset>\n"
+              "  <duration>%s</duration>\n"
+              "  <description>",
+              tm.year, tm.month, tm.day, tm.hour, tm.minute, tm.second, remainder, annot->duration);
 
       xml_fwrite_encode_entity(annotationfile, annot->annotation);
 
@@ -601,18 +608,24 @@ void UI_ExportAnnotationswindow::ExportButtonClicked()
     {
       switch(hdl)
       {
-        case EDFLIB_MALLOC_ERROR : strcpy(str, "EDFlib: malloc error");
-                                  break;
-        case EDFLIB_NO_SUCH_FILE_OR_DIRECTORY : strcpy(str, "EDFlib: no such file or directory");
-                                  break;
-        case EDFLIB_MAXFILES_REACHED : strcpy(str, "EDFlib: maximum files reached");
-                                  break;
-        case EDFLIB_FILE_ALREADY_OPENED : strcpy(str, "EDFlib: file already opened");
-                                  break;
-        case EDFLIB_NUMBER_OF_SIGNALS_INVALID : strcpy(str, "EDFlib: number of signals is invalid");
-                                  break;
-        default : strcpy(str, "EDFlib: unknown error");
-                                  break;
+      case EDFLIB_MALLOC_ERROR :
+        strcpy(str, "EDFlib: malloc error");
+        break;
+      case EDFLIB_NO_SUCH_FILE_OR_DIRECTORY :
+        strcpy(str, "EDFlib: no such file or directory");
+        break;
+      case EDFLIB_MAXFILES_REACHED :
+        strcpy(str, "EDFlib: maximum files reached");
+        break;
+      case EDFLIB_FILE_ALREADY_OPENED :
+        strcpy(str, "EDFlib: file already opened");
+        break;
+      case EDFLIB_NUMBER_OF_SIGNALS_INVALID :
+        strcpy(str, "EDFlib: number of signals is invalid");
+        break;
+      default :
+        strcpy(str, "EDFlib: unknown error");
+        break;
       }
 
       QMessageBox messagewindow(QMessageBox::Critical, "Error", str);
@@ -748,9 +761,9 @@ void UI_ExportAnnotationswindow::ExportButtonClicked()
 
 void UI_ExportAnnotationswindow::DurationCheckBoxChanged(int state)
 {
-	state = state;
-//	bool checked = state == Qt::Checked;
-//	if(checked) endCheckBox->setCheckState(Qt::Unchecked);
+  state = state;
+//  bool checked = state == Qt::Checked;
+//  if(checked) endCheckBox->setCheckState(Qt::Unchecked);
 
 }
 
@@ -758,8 +771,8 @@ void UI_ExportAnnotationswindow::DurationCheckBoxChanged(int state)
 
 //void UI_ExportAnnotationswindow::EndCheckBoxChanged(int state)
 //{
-//	bool checked = state == Qt::Checked;
-//	if(checked) durationCheckBox->setCheckState(Qt::Unchecked);
+//  bool checked = state == Qt::Checked;
+//  if(checked) durationCheckBox->setCheckState(Qt::Unchecked);
 //}
 
 
@@ -779,7 +792,7 @@ void UI_ExportAnnotationswindow::backup(const char* extension)
   long long end;
 
   double onset_from_start,
-	 end_from_start;
+         end_from_start;
 
   char path[MAX_PATH_LENGTH],
        str[1024],
@@ -799,8 +812,16 @@ void UI_ExportAnnotationswindow::backup(const char* extension)
 
 // ### Construct filename ###
 
-  if(!mainwindow->files_open)	{ ExportAnnotsDialog->close(); return; }
-  if(filelist->count() < 1)	{ ExportAnnotsDialog->close(); return; }
+  if(!mainwindow->files_open)
+  {
+    ExportAnnotsDialog->close();
+    return;
+  }
+  if(filelist->count() < 1)
+  {
+    ExportAnnotsDialog->close();
+    return;
+  }
 
   for(i=0; i<mainwindow->files_open; i++)
   {
@@ -834,16 +855,16 @@ void UI_ExportAnnotationswindow::backup(const char* extension)
   len = strlen(path);
   get_filename_from_path(path + len, mainwindow->edfheaderlist[n]->filename, MAX_PATH_LENGTH - len);
   remove_extension_from_filename(path);
- 
- 
 
-	csv_format = mainwindow->export_annotations_var->format;
-	if(mainwindow->export_annotations_var->separator == 0)
-		separator = ',';
-	else
-		separator = '\t';
-	include_duration = mainwindow->export_annotations_var->duration;
-	include_end = mainwindow->export_annotations_var->end;
+
+
+  csv_format = mainwindow->export_annotations_var->format;
+  if(mainwindow->export_annotations_var->separator == 0)
+    separator = ',';
+  else
+    separator = '\t';
+  include_duration = mainwindow->export_annotations_var->duration;
+  include_end = mainwindow->export_annotations_var->end;
 
   strcat(path, "_");
   strcat(path, extension);
@@ -874,7 +895,7 @@ void UI_ExportAnnotationswindow::backup(const char* extension)
   if(mainwindow->file_is_opened(path))
   {
     QMessageBox messagewindow(QMessageBox::Critical, "Export annotations", "Annotation backup: backup file is in use.");
-	QTimer::singleShot(2000, &messagewindow, SLOT(hide()));
+    QTimer::singleShot(2000, &messagewindow, SLOT(hide()));
     messagewindow.exec();
     return;
   }
@@ -892,101 +913,101 @@ void UI_ExportAnnotationswindow::backup(const char* extension)
     if(annotationfile == NULL)
     {
       QMessageBox messagewindow(QMessageBox::Critical, "Error", "Annotation backup: Cannot open annotationfile for writing.");
-	QTimer::singleShot(2000, &messagewindow, SLOT(hide()));
+      QTimer::singleShot(2000, &messagewindow, SLOT(hide()));
       messagewindow.exec();
       ExportAnnotsDialog->close();
       edfplus_annotation_delete_list(&annot_list);
       return;
     }
 
-    if(include_duration)	fprintf(annotationfile, "#Onset%cDuration%cAnnotation", separator, separator);
-    else if(include_end)	fprintf(annotationfile, "#Onset%cEnd%cAnnotation", separator, separator);
-    else			fprintf(annotationfile, "#Onset%cAnnotation", separator);
+    if(include_duration)  fprintf(annotationfile, "#Onset%cDuration%cAnnotation", separator, separator);
+    else if(include_end)  fprintf(annotationfile, "#Onset%cEnd%cAnnotation", separator, separator);
+    else      fprintf(annotationfile, "#Onset%cAnnotation", separator);
 
-#if defined(Q_OS_LINUX) || defined(Q_OS_MAC)
+    #if defined(Q_OS_LINUX) || defined(Q_OS_MAC)
     fprintf(annotationfile, "\n");
-#elif defined(Q_OS_WIN32)
+    #elif defined(Q_OS_WIN32)
     fprintf(annotationfile, "\r\n");
-#endif
+    #endif
 
-    for(j=0; j < annot_cnt; j++)		// for all annotations
+    for(j=0; j < annot_cnt; j++)    // for all annotations
     {
-	annot = edfplus_annotation_item(&annot_list, j);
-	if(annot == NULL) break;
+      annot = edfplus_annotation_item(&annot_list, j);
+      if(annot == NULL) break;
 
-	strncpy(str, annot->annotation, 1024);
-	str[1023] = 0;
-	utf8_to_latin1(str);
+      strncpy(str, annot->annotation, 1024);
+      str[1023] = 0;
+      utf8_to_latin1(str);
 
-	len = strlen(str);
-	for(i=0; i<len; i++)
-	{
-		if( (((unsigned char *)str)[i] < 32) or (((unsigned char *)str)[i] == ',') )
-		{
-			str[i] = '.';
-		}
-	}
-
-
-	end = annot->onset + atof(annot->duration) * TIME_DIMENSION;
-	onset_from_start = (double)(annot->onset - hdr->starttime_offset) / TIME_DIMENSION;
-	end_from_start = (double)(end - hdr->starttime_offset) / TIME_DIMENSION;
-
-	remainder = annot->onset % TIME_DIMENSION;
-	if(remainder < 0)
-	{
-		utc_to_date_time(hdr->utc_starttime + (annot->onset / TIME_DIMENSION) - 1, &tm);
-		remainder = TIME_DIMENSION + remainder;
-	}
-	else
-	{
-		utc_to_date_time(hdr->utc_starttime + (annot->onset / TIME_DIMENSION), &tm);
-	}
-
-	remainder_end = end % TIME_DIMENSION;
-	if(remainder_end < 0)
-	{
-		utc_to_date_time(hdr->utc_starttime + (end / TIME_DIMENSION) - 1, &tm_end);
-		remainder_end = TIME_DIMENSION + remainder_end;
-	}
-	else
-	{
-		utc_to_date_time(hdr->utc_starttime + (end / TIME_DIMENSION), &tm_end);
-	}
-
-	if(csv_format == 1)	 fprintf(annotationfile, "%+.7f", onset_from_start);
-	else if(csv_format == 2) fprintf(annotationfile, "%02i:%02i:%02i", tm.hour, tm.minute, tm.second);
-	else if(csv_format == 3) fprintf(annotationfile, "%04i-%02i-%02iT%02i:%02i:%02i", tm.year, tm.month, tm.day, tm.hour, tm.minute, tm.second);
-	else if(csv_format == 4) fprintf(annotationfile, "%02i:%02i:%02i.%07i", tm.hour, tm.minute, tm.second, remainder);
-	else if(csv_format == 5) fprintf(annotationfile, "%04i-%02i-%02iT%02i:%02i:%02i.%07i", tm.year, tm.month, tm.day, tm.hour, tm.minute, tm.second, remainder);
-	else if(csv_format == 6) fprintf(annotationfile, "%02i/%02i/%04i %02i:%02i:%02i", tm.month, tm.day, tm.year, tm.hour, tm.minute, tm.second);
-	else if(csv_format == 7) fprintf(annotationfile, "%02i/%02i/%04i %02i:%02i:%02i.%07i", tm.month, tm.day, tm.year, tm.hour, tm.minute, tm.second, remainder);
+      len = strlen(str);
+      for(i=0; i<len; i++)
+      {
+        if( (((unsigned char *)str)[i] < 32) or (((unsigned char *)str)[i] == ',') )
+        {
+          str[i] = '.';
+        }
+      }
 
 
-	fprintf(annotationfile, "%c", separator);
+      end = annot->onset + atof(annot->duration) * TIME_DIMENSION;
+      onset_from_start = (double)(annot->onset - hdr->starttime_offset) / TIME_DIMENSION;
+      end_from_start = (double)(end - hdr->starttime_offset) / TIME_DIMENSION;
+
+      remainder = annot->onset % TIME_DIMENSION;
+      if(remainder < 0)
+      {
+        utc_to_date_time(hdr->utc_starttime + (annot->onset / TIME_DIMENSION) - 1, &tm);
+        remainder = TIME_DIMENSION + remainder;
+      }
+      else
+      {
+        utc_to_date_time(hdr->utc_starttime + (annot->onset / TIME_DIMENSION), &tm);
+      }
+
+      remainder_end = end % TIME_DIMENSION;
+      if(remainder_end < 0)
+      {
+        utc_to_date_time(hdr->utc_starttime + (end / TIME_DIMENSION) - 1, &tm_end);
+        remainder_end = TIME_DIMENSION + remainder_end;
+      }
+      else
+      {
+        utc_to_date_time(hdr->utc_starttime + (end / TIME_DIMENSION), &tm_end);
+      }
+
+      if(csv_format == 1)  fprintf(annotationfile, "%+.7f", onset_from_start);
+      else if(csv_format == 2) fprintf(annotationfile, "%02i:%02i:%02i", tm.hour, tm.minute, tm.second);
+      else if(csv_format == 3) fprintf(annotationfile, "%04i-%02i-%02iT%02i:%02i:%02i", tm.year, tm.month, tm.day, tm.hour, tm.minute, tm.second);
+      else if(csv_format == 4) fprintf(annotationfile, "%02i:%02i:%02i.%07i", tm.hour, tm.minute, tm.second, remainder);
+      else if(csv_format == 5) fprintf(annotationfile, "%04i-%02i-%02iT%02i:%02i:%02i.%07i", tm.year, tm.month, tm.day, tm.hour, tm.minute, tm.second, remainder);
+      else if(csv_format == 6) fprintf(annotationfile, "%02i/%02i/%04i %02i:%02i:%02i", tm.month, tm.day, tm.year, tm.hour, tm.minute, tm.second);
+      else if(csv_format == 7) fprintf(annotationfile, "%02i/%02i/%04i %02i:%02i:%02i.%07i", tm.month, tm.day, tm.year, tm.hour, tm.minute, tm.second, remainder);
 
 
-	if(include_duration) fprintf(annotationfile, "%s%c", annot->duration, separator);
+      fprintf(annotationfile, "%c", separator);
 
-	else if(include_end)
-	{
-		if(csv_format == 1)	 fprintf(annotationfile, "%+.7f", end_from_start);
-		else if(csv_format == 2) fprintf(annotationfile, "%02i:%02i:%02i", tm_end.hour, tm_end.minute, tm_end.second);
-		else if(csv_format == 3) fprintf(annotationfile, "%04i-%02i-%02iT%02i:%02i:%02i", tm_end.year, tm_end.month, tm_end.day, tm_end.hour, tm_end.minute, tm_end.second);
-		else if(csv_format == 4) fprintf(annotationfile, "%02i:%02i:%02i.%07i", tm_end.hour, tm_end.minute, tm_end.second, remainder);
-		else if(csv_format == 5) fprintf(annotationfile, "%04i-%02i-%02iT%02i:%02i:%02i.%07i", tm_end.year, tm_end.month, tm_end.day, tm_end.hour, tm_end.minute, tm_end.second, remainder);
-		else if(csv_format == 6) fprintf(annotationfile, "%02i/%02i/%04i %02i:%02i:%02i", tm_end.month, tm_end.day, tm_end.year, tm_end.hour, tm_end.minute, tm_end.second);
-		else if(csv_format == 7) fprintf(annotationfile, "%02i/%02i/%04i %02i:%02i:%02i.%07i", tm_end.month, tm_end.day, tm_end.year, tm_end.hour, tm_end.minute, tm_end.second, remainder);
-		fprintf(annotationfile, "%c", separator);
-	}
 
-	fprintf(annotationfile, "%s", str);
+      if(include_duration) fprintf(annotationfile, "%s%c", annot->duration, separator);
 
-#if defined(Q_OS_LINUX) || defined(Q_OS_MAC)
-	fprintf(annotationfile, "\n");
-#elif defined(Q_OS_WIN32)
-	fprintf(annotationfile, "\r\n");
-#endif
+      else if(include_end)
+      {
+        if(csv_format == 1)  fprintf(annotationfile, "%+.7f", end_from_start);
+        else if(csv_format == 2) fprintf(annotationfile, "%02i:%02i:%02i", tm_end.hour, tm_end.minute, tm_end.second);
+        else if(csv_format == 3) fprintf(annotationfile, "%04i-%02i-%02iT%02i:%02i:%02i", tm_end.year, tm_end.month, tm_end.day, tm_end.hour, tm_end.minute, tm_end.second);
+        else if(csv_format == 4) fprintf(annotationfile, "%02i:%02i:%02i.%07i", tm_end.hour, tm_end.minute, tm_end.second, remainder);
+        else if(csv_format == 5) fprintf(annotationfile, "%04i-%02i-%02iT%02i:%02i:%02i.%07i", tm_end.year, tm_end.month, tm_end.day, tm_end.hour, tm_end.minute, tm_end.second, remainder);
+        else if(csv_format == 6) fprintf(annotationfile, "%02i/%02i/%04i %02i:%02i:%02i", tm_end.month, tm_end.day, tm_end.year, tm_end.hour, tm_end.minute, tm_end.second);
+        else if(csv_format == 7) fprintf(annotationfile, "%02i/%02i/%04i %02i:%02i:%02i.%07i", tm_end.month, tm_end.day, tm_end.year, tm_end.hour, tm_end.minute, tm_end.second, remainder);
+        fprintf(annotationfile, "%c", separator);
+      }
+
+      fprintf(annotationfile, "%s", str);
+
+      #if defined(Q_OS_LINUX) || defined(Q_OS_MAC)
+      fprintf(annotationfile, "\n");
+      #elif defined(Q_OS_WIN32)
+      fprintf(annotationfile, "\r\n");
+      #endif
 
     }
 
@@ -996,7 +1017,7 @@ void UI_ExportAnnotationswindow::backup(const char* extension)
 
 //    QMessageBox messagewindow(QMessageBox::Information, "Ready", "Done.");
 //    messagewindow.setIconPixmap(QPixmap(":/images/ok.png"));
-//	QTimer::singleShot(2000, &messagewindow, SLOT(hide()));
+//  QTimer::singleShot(2000, &messagewindow, SLOT(hide()));
 //    messagewindow.exec();
 
     ExportAnnotsDialog->close();
@@ -1012,7 +1033,7 @@ void UI_ExportAnnotationswindow::backup(const char* extension)
     if(annotationfile==NULL)
     {
       QMessageBox messagewindow(QMessageBox::Critical, "Error", "Annotation backup: Cannot open annotationfile for writing.");
-	QTimer::singleShot(2000, &messagewindow, SLOT(hide()));
+      QTimer::singleShot(2000, &messagewindow, SLOT(hide()));
       messagewindow.exec();
       ExportAnnotsDialog->close();
       edfplus_annotation_delete_list(&annot_list);
@@ -1028,13 +1049,13 @@ void UI_ExportAnnotationswindow::backup(const char* extension)
     utc_to_date_time(hdr->utc_starttime, &tm);
 
     fprintf(annotationfile, " <recording_start_time>%04i-%02i-%02iT%02i:%02i:%02i.%07i</recording_start_time>",
-                            tm.year, tm.month, tm.day, tm.hour, tm.minute, tm.second, (int)hdr->starttime_offset);
+            tm.year, tm.month, tm.day, tm.hour, tm.minute, tm.second, (int)hdr->starttime_offset);
 
-#if defined(Q_OS_LINUX) || defined(Q_OS_MAC)
-	fprintf(annotationfile, "\n");
-#elif defined(Q_OS_WIN32)
-	fprintf(annotationfile, "\r\n");
-#endif
+    #if defined(Q_OS_LINUX) || defined(Q_OS_MAC)
+    fprintf(annotationfile, "\n");
+    #elif defined(Q_OS_WIN32)
+    fprintf(annotationfile, "\r\n");
+    #endif
 
     for(j=0; j < annot_cnt; j++)
     {
@@ -1058,10 +1079,10 @@ void UI_ExportAnnotationswindow::backup(const char* extension)
       }
 
       fprintf(annotationfile, " <annotation>\n"
-                              "  <onset>%04i-%02i-%02iT%02i:%02i:%02i.%07i</onset>\n"
-                              "  <duration>%s</duration>\n"
-                              "  <description>",
-                              tm.year, tm.month, tm.day, tm.hour, tm.minute, tm.second, remainder, annot->duration);
+              "  <onset>%04i-%02i-%02iT%02i:%02i:%02i.%07i</onset>\n"
+              "  <duration>%s</duration>\n"
+              "  <description>",
+              tm.year, tm.month, tm.day, tm.hour, tm.minute, tm.second, remainder, annot->duration);
 
       xml_fwrite_encode_entity(annotationfile, annot->annotation);
 
@@ -1076,7 +1097,7 @@ void UI_ExportAnnotationswindow::backup(const char* extension)
 
     QMessageBox messagewindow(QMessageBox::Information, "Ready", "Annotation backup completed.");
     messagewindow.setIconPixmap(QPixmap(":/images/ok.png"));
-	QTimer::singleShot(2000, &messagewindow, SLOT(hide()));
+    QTimer::singleShot(2000, &messagewindow, SLOT(hide()));
     messagewindow.exec();
 
     ExportAnnotsDialog->close();
@@ -1093,22 +1114,28 @@ void UI_ExportAnnotationswindow::backup(const char* extension)
     {
       switch(hdl)
       {
-        case EDFLIB_MALLOC_ERROR : strcpy(str, "EDFlib: malloc error");
-                                  break;
-        case EDFLIB_NO_SUCH_FILE_OR_DIRECTORY : strcpy(str, "EDFlib: no such file or directory");
-                                  break;
-        case EDFLIB_MAXFILES_REACHED : strcpy(str, "EDFlib: maximum files reached");
-                                  break;
-        case EDFLIB_FILE_ALREADY_OPENED : strcpy(str, "EDFlib: file already opened");
-                                  break;
-        case EDFLIB_NUMBER_OF_SIGNALS_INVALID : strcpy(str, "EDFlib: number of signals is invalid");
-                                  break;
-        default : strcpy(str, "EDFlib: unknown error");
-                                  break;
+      case EDFLIB_MALLOC_ERROR :
+        strcpy(str, "EDFlib: malloc error");
+        break;
+      case EDFLIB_NO_SUCH_FILE_OR_DIRECTORY :
+        strcpy(str, "EDFlib: no such file or directory");
+        break;
+      case EDFLIB_MAXFILES_REACHED :
+        strcpy(str, "EDFlib: maximum files reached");
+        break;
+      case EDFLIB_FILE_ALREADY_OPENED :
+        strcpy(str, "EDFlib: file already opened");
+        break;
+      case EDFLIB_NUMBER_OF_SIGNALS_INVALID :
+        strcpy(str, "EDFlib: number of signals is invalid");
+        break;
+      default :
+        strcpy(str, "EDFlib: unknown error");
+        break;
       }
 
       QMessageBox messagewindow(QMessageBox::Critical, "Error", str);
-	QTimer::singleShot(2000, &messagewindow, SLOT(hide()));
+      QTimer::singleShot(2000, &messagewindow, SLOT(hide()));
       messagewindow.exec();
       edfplus_annotation_delete_list(&annot_list);
       ExportAnnotsDialog->close();
@@ -1224,7 +1251,7 @@ void UI_ExportAnnotationswindow::backup(const char* extension)
     if(edfclose_file(hdl) != 0)
     {
       QMessageBox messagewindow(QMessageBox::Critical, "Error", "An error occurred: edfclose_file()");
-	QTimer::singleShot(2000, &messagewindow, SLOT(hide()));
+      QTimer::singleShot(2000, &messagewindow, SLOT(hide()));
       messagewindow.exec();
     }
 
@@ -1232,7 +1259,7 @@ void UI_ExportAnnotationswindow::backup(const char* extension)
 
 //    QMessageBox messagewindow(QMessageBox::Information, "Ready", "Done.");
 //    messagewindow.setIconPixmap(QPixmap(":/images/ok.png"));
-//	QTimer::singleShot(2000, &messagewindow, SLOT(hide()));
+//  QTimer::singleShot(2000, &messagewindow, SLOT(hide()));
 //    messagewindow.exec();
 
     ExportAnnotsDialog->close();

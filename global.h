@@ -35,13 +35,13 @@
 
 #if defined(__APPLE__) || defined(__MACH__) || defined(__APPLE_CC__)
 
-	#define fopeno fopen
+  #define fopeno fopen
 
 #else
 
-	#define fseeko fseeko64
-	#define ftello ftello64
-	#define fopeno fopen64
+  #define fseeko fseeko64
+  #define ftello ftello64
+  #define fopeno fopen64
 
 #endif
 
@@ -82,225 +82,225 @@
 
 struct edfparamblock
 {
-        char   label[17];
-        char   transducer[81];
-        char   physdimension[9];
-        double phys_min;
-        double phys_max;
-        int    dig_min;
-        int    dig_max;
-        char   prefilter[81];
-        int    smp_per_record;
-        char   reserved[33];
-        double offset;
-        int    buf_offset;
-        double bitvalue;
-        int    annotation;
+  char   label[17];
+  char   transducer[81];
+  char   physdimension[9];
+  double phys_min;
+  double phys_max;
+  int    dig_min;
+  int    dig_max;
+  char   prefilter[81];
+  int    smp_per_record;
+  char   reserved[33];
+  double offset;
+  int    buf_offset;
+  double bitvalue;
+  int    annotation;
 };
 
 
 
 struct edfhdrblock
 {
-        FILE      *file_hdl;
-        int       file_num;
-        char      version[32];
-        char      filename[MAX_PATH_LENGTH];
-        char      patient[81];
-        char      recording[81];
-        char      plus_patientcode[81];
-        char      plus_gender[16];
-        char      plus_birthdate[16];
-        char      plus_patient_name[81];
-        char      plus_patient_additional[81];
-        char      plus_startdate[16];
-        char      plus_admincode[81];
-        char      plus_technician[81];
-        char      plus_equipment[81];
-        char      plus_recording_additional[81];
-        long long l_starttime;
-        long long utc_starttime;
-        char      reserved[45];
-        int       hdrsize;
-        int       edfsignals;
-        long long datarecords;
-        int       recordsize;
-        int       annot_ch[256];
-        int       nr_annot_chns;
-        int       edf;
-        int       edfplus;
-        int       bdf;
-        int       bdfplus;
-        int       discontinuous;
-        int       genuine_nk;
-        int       nk_triggers_read;
-        int       genuine_biosemi;
-        double    data_record_duration;
-        long long long_data_record_duration;
-        long long viewtime;
-        long long starttime_offset;
-        long long prefiltertime;
-        int       annots_not_read;
-        struct edfparamblock *edfparam;
+  FILE      *file_hdl;
+  int       file_num;
+  char      version[32];
+  char      filename[MAX_PATH_LENGTH];
+  char      patient[81];
+  char      recording[81];
+  char      plus_patientcode[81];
+  char      plus_gender[16];
+  char      plus_birthdate[16];
+  char      plus_patient_name[81];
+  char      plus_patient_additional[81];
+  char      plus_startdate[16];
+  char      plus_admincode[81];
+  char      plus_technician[81];
+  char      plus_equipment[81];
+  char      plus_recording_additional[81];
+  long long l_starttime;
+  long long utc_starttime;
+  char      reserved[45];
+  int       hdrsize;
+  int       edfsignals;
+  long long datarecords;
+  int       recordsize;
+  int       annot_ch[256];
+  int       nr_annot_chns;
+  int       edf;
+  int       edfplus;
+  int       bdf;
+  int       bdfplus;
+  int       discontinuous;
+  int       genuine_nk;
+  int       nk_triggers_read;
+  int       genuine_biosemi;
+  double    data_record_duration;
+  long long long_data_record_duration;
+  long long viewtime;
+  long long starttime_offset;
+  long long prefiltertime;
+  int       annots_not_read;
+  struct edfparamblock *edfparam;
 };
 
 
 
 struct signalcompblock
 {
-        int filenum;
-        struct edfhdrblock *edfhdr;
-        int num_of_signals;
-        int viewbufsize;
-        int viewbufoffset;
-        long long records_in_viewbuf;
-        long long samples_in_viewbuf;
-        long long samples_on_screen;
-        long long sample_start;			// Start of samples on window relative to beginning of window.
-        long long sample_stop;
-        int timeoffset;
-        int sample_timeoffset;
-        int pixels_shift;
-        double sample_timeoffset_part;
-        double sample_pixel_ratio;
-        int edfsignal[MAXSIGNALS];
-        int factor[MAXSIGNALS];
-        int polarity;
-        double sensitivity[MAXSIGNALS];
-        int oldvalue;
-        long long oldsmplnr;
-        long long file_duration;
-        char signallabel[512];
-        char alias[17];
-        int signallabellen;
-        char signallabel_bu[512];
-        int signallabellen_bu;
-        int hascursor1;
-        int hascursor2;
-        int hasoffsettracking;
-        int hasgaintracking;
-        int hasruler;
-        double screen_offset;
-        double voltpercm;
-        char physdimension[9];
-        char physdimension_bu[9];
-        int color;
-        int filter_cnt;
-        int samples_in_prefilterbuf;
-        long long prefilter_starttime;
-        int prefilter_reset_sample;
-        double filterpreset_a[MAXFILTERS];
-        double filterpreset_b[MAXFILTERS];
-        struct filter_settings *filter[MAXFILTERS];
-        int max_dig_value;
-        int min_dig_value;
-        int fidfilter_cnt;
-        int fidfilter_type[MAXFILTERS];
-        double fidfilter_freq[MAXFILTERS];
-        double fidfilter_freq2[MAXFILTERS];
-        double fidfilter_ripple[MAXFILTERS];
-        int fidfilter_order[MAXFILTERS];
-        int fidfilter_model[MAXFILTERS];
-        FidFilter *fidfilter[MAXFILTERS];
-        FidRun *fid_run[MAXFILTERS];
-        FidFunc *fidfuncp[MAXFILTERS];
-        void *fidbuf[MAXFILTERS];
-        void *fidbuf2[MAXFILTERS];
-        int fidfilter_setup[MAXFILTERS];
-        int stat_cnt;
-        int stat_zero_crossing_cnt;
-        double stat_sum;
-        double stat_sum_sqr;
-        double stat_sum_rectified;
-        int ravg_filter_cnt;
-        int ravg_filter_type[MAXFILTERS];
-        int ravg_filter_size[MAXFILTERS];
-        int ravg_filter_setup[MAXFILTERS];
-        struct ravg_filter_settings *ravg_filter[MAXFILTERS];
-        struct ecg_filter_settings *ecg_filter;
-        struct zratio_filter_settings *zratio_filter;
-        double zratio_crossoverfreq;
-        int spectr_dialog[MAXSPECTRUMDIALOGS];
-        int avg_dialog[MAXAVERAGECURVEDIALOGS];
-        int zscoredialog[MAXZSCOREDIALOGS];
-	int type;
+  int filenum;
+  struct edfhdrblock *edfhdr;
+  int num_of_signals;
+  int viewbufsize;
+  int viewbufoffset;
+  long long records_in_viewbuf;
+  long long samples_in_viewbuf;
+  long long samples_on_screen;
+  long long sample_start;     // Start of samples on window relative to beginning of window.
+  long long sample_stop;
+  int timeoffset;
+  int sample_timeoffset;
+  int pixels_shift;
+  double sample_timeoffset_part;
+  double sample_pixel_ratio;
+  int edfsignal[MAXSIGNALS];
+  int factor[MAXSIGNALS];
+  int polarity;
+  double sensitivity[MAXSIGNALS];
+  int oldvalue;
+  long long oldsmplnr;
+  long long file_duration;
+  char signallabel[512];
+  char alias[17];
+  int signallabellen;
+  char signallabel_bu[512];
+  int signallabellen_bu;
+  int hascursor1;
+  int hascursor2;
+  int hasoffsettracking;
+  int hasgaintracking;
+  int hasruler;
+  double screen_offset;
+  double voltpercm;
+  char physdimension[9];
+  char physdimension_bu[9];
+  int color;
+  int filter_cnt;
+  int samples_in_prefilterbuf;
+  long long prefilter_starttime;
+  int prefilter_reset_sample;
+  double filterpreset_a[MAXFILTERS];
+  double filterpreset_b[MAXFILTERS];
+  struct filter_settings *filter[MAXFILTERS];
+  int max_dig_value;
+  int min_dig_value;
+  int fidfilter_cnt;
+  int fidfilter_type[MAXFILTERS];
+  double fidfilter_freq[MAXFILTERS];
+  double fidfilter_freq2[MAXFILTERS];
+  double fidfilter_ripple[MAXFILTERS];
+  int fidfilter_order[MAXFILTERS];
+  int fidfilter_model[MAXFILTERS];
+  FidFilter *fidfilter[MAXFILTERS];
+  FidRun *fid_run[MAXFILTERS];
+  FidFunc *fidfuncp[MAXFILTERS];
+  void *fidbuf[MAXFILTERS];
+  void *fidbuf2[MAXFILTERS];
+  int fidfilter_setup[MAXFILTERS];
+  int stat_cnt;
+  int stat_zero_crossing_cnt;
+  double stat_sum;
+  double stat_sum_sqr;
+  double stat_sum_rectified;
+  int ravg_filter_cnt;
+  int ravg_filter_type[MAXFILTERS];
+  int ravg_filter_size[MAXFILTERS];
+  int ravg_filter_setup[MAXFILTERS];
+  struct ravg_filter_settings *ravg_filter[MAXFILTERS];
+  struct ecg_filter_settings *ecg_filter;
+  struct zratio_filter_settings *zratio_filter;
+  double zratio_crossoverfreq;
+  int spectr_dialog[MAXSPECTRUMDIALOGS];
+  int avg_dialog[MAXAVERAGECURVEDIALOGS];
+  int zscoredialog[MAXZSCOREDIALOGS];
+  int type;
 };
 
 
 
 struct zoomhistoryblock
 {
-        int pntr;
-        int history_size_tail;
-        int history_size_front;
-        long long viewtime[64][MAXFILES];
-        long long pagetime[64];
-        double voltpercm[64][MAXSIGNALS];
-        double sensitivity[64][MAXSIGNALS][MAXSIGNALS];
-        double screen_offset[64][MAXSIGNALS];
+  int pntr;
+  int history_size_tail;
+  int history_size_front;
+  long long viewtime[64][MAXFILES];
+  long long pagetime[64];
+  double voltpercm[64][MAXSIGNALS];
+  double sensitivity[64][MAXSIGNALS][MAXSIGNALS];
+  double screen_offset[64][MAXSIGNALS];
 };
 
 
 
 struct annotationblock
 {
-        int file_num;					// number of file the annotation belongs to?
-        long long onset;				// (relative?) onset of annotation
-        char duration[16];				// duration (why char?)
-        char annotation[MAX_ANNOTATION_LEN + 1];	// text descriptor of annotation
-        struct annotationblock *former_annotation;	// pointer to previous (temporal?) annotation
-        struct annotationblock *next_annotation;	// pointer to next (temporal?) annotation
-        int modified;					// modified switch (could be bool?)
-        int x_pos;					// position of the annotation in the viewcurve?
-        int selected;					// has the annotation been selected?
-        int jump;
-        int hidden;
-        int hidden_in_list;
-        unsigned int ident;
+  int file_num;         // number of file the annotation belongs to?
+  long long onset;        // (relative?) onset of annotation
+  char duration[16];        // duration (why char?)
+  char annotation[MAX_ANNOTATION_LEN + 1];  // text descriptor of annotation
+  struct annotationblock *former_annotation;  // pointer to previous (temporal?) annotation
+  struct annotationblock *next_annotation;  // pointer to next (temporal?) annotation
+  int modified;         // modified switch (could be bool?)
+  int x_pos;          // position of the annotation in the viewcurve?
+  int selected;         // has the annotation been selected?
+  int jump;
+  int hidden;
+  int hidden_in_list;
+  unsigned int ident;
 };
 
 
 
 struct active_markersblock
 {
-        int file_num;
-        struct annotationblock *list[MAX_ACTIVE_ANNOT_MARKERS];
-        int count;
-        int selected;
+  int file_num;
+  struct annotationblock *list[MAX_ACTIVE_ANNOT_MARKERS];
+  int count;
+  int selected;
 };
 
 
 
 struct graphicLineStruct
 {
-        int x1;
-        int y1;
-        int x2;
-        int y2;
+  int x1;
+  int y1;
+  int x2;
+  int y2;
 };
 
 
 
 struct graphicBufStruct
 {
-        struct graphicLineStruct graphicLine[MAXSIGNALS];
+  struct graphicLineStruct graphicLine[MAXSIGNALS];
 };
 
 
 
 struct crossHairStruct
 {
-        int color;
-        int file_num;
-        int active;
-        int moving;
-        int position;
-        int x_position;
-        int y_position;
-        int y_value;
-        double value;
-        long long time;
-        long long time_relative;
+  int color;
+  int file_num;
+  int active;
+  int moving;
+  int position;
+  int x_position;
+  int y_position;
+  int y_value;
+  double value;
+  long long time;
+  long long time_relative;
 };
 
 #endif

@@ -769,7 +769,7 @@ void UI_FilterDialog::ApplyButtonClicked()
     if((mainwindow->signalcomp[s]->filter_cnt + mainwindow->signalcomp[s]->fidfilter_cnt) > MAXFILTERS - 1)
     {
       QMessageBox messagewindow(QMessageBox::Critical, "Error", "The maximum amount of filters per signal has been reached.\n"
-                                                                         "Remove some filters first.");
+                                "Remove some filters first.");
       messagewindow.exec();
       return;
     }
@@ -785,8 +785,8 @@ void UI_FilterDialog::ApplyButtonClicked()
       if((type == FILTERTYPE_HIGHPASS) || (type == FILTERTYPE_LOWPASS) || (type == FILTERTYPE_NOTCH))
       {
         if(frequency >= ((mainwindow->signalcomp[s]->edfhdr->edfparam[mainwindow->signalcomp[s]->edfsignal[0]].smp_per_record
-                        / mainwindow->signalcomp[s]->edfhdr->data_record_duration)
-                        / 2.0))
+                          / mainwindow->signalcomp[s]->edfhdr->data_record_duration)
+                         / 2.0))
         {
           UI_Messagewindow errormessage("Error", "The frequency of the filter(s) must be less than: samplerate / 2");
           return;
@@ -795,8 +795,8 @@ void UI_FilterDialog::ApplyButtonClicked()
       else
       {
         if(frequency2 >= ((mainwindow->signalcomp[s]->edfhdr->edfparam[mainwindow->signalcomp[s]->edfsignal[0]].smp_per_record
-                        / mainwindow->signalcomp[s]->edfhdr->data_record_duration)
-                        / 2.0))
+                           / mainwindow->signalcomp[s]->edfhdr->data_record_duration)
+                          / 2.0))
         {
           QMessageBox messagewindow(QMessageBox::Critical, "Error", "The frequency of the filter(s) must be less than: samplerate / 2");
           messagewindow.exec();
@@ -907,7 +907,7 @@ void UI_FilterDialog::ApplyButtonClicked()
       }
 
       mainwindow->signalcomp[s]->fid_run[mainwindow->signalcomp[s]->fidfilter_cnt] = fid_run_new(mainwindow->signalcomp[s]->fidfilter[mainwindow->signalcomp[s]->fidfilter_cnt],
-                                                                                      &mainwindow->signalcomp[s]->fidfuncp[mainwindow->signalcomp[s]->fidfilter_cnt]);
+          &mainwindow->signalcomp[s]->fidfuncp[mainwindow->signalcomp[s]->fidfilter_cnt]);
 
       mainwindow->signalcomp[s]->fidbuf[mainwindow->signalcomp[s]->fidfilter_cnt] = fid_run_newbuf(mainwindow->signalcomp[s]->fid_run[mainwindow->signalcomp[s]->fidfilter_cnt]);
       mainwindow->signalcomp[s]->fidbuf2[mainwindow->signalcomp[s]->fidfilter_cnt] = fid_run_newbuf(mainwindow->signalcomp[s]->fid_run[mainwindow->signalcomp[s]->fidfilter_cnt]);

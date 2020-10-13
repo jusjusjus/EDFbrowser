@@ -72,21 +72,21 @@ public:
 
 private:
 
-QDialog      *set_diplaytime_dialog;
+  QDialog      *set_diplaytime_dialog;
 
-QLabel       *label1;
+  QLabel       *label1;
 
-QPushButton  *CloseButton,
-             *OKButton;
+  QPushButton  *CloseButton,
+               *OKButton;
 
-QTimeEdit    *timeEdit1;
+  QTimeEdit    *timeEdit1;
 
-QTime        time1;
+  QTime        time1;
 
 
 private slots:
 
-void okbutton_pressed();
+  void okbutton_pressed();
 
 };
 

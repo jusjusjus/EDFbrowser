@@ -43,8 +43,8 @@
 #include <QCursor>
 #include <QStyle>
 #if QT_VERSION < 0x050000
-#include <QPlastiqueStyle>
-#include <QWindowsStyle>
+  #include <QPlastiqueStyle>
+  #include <QWindowsStyle>
 #endif
 #include <QProgressDialog>
 #include <QString>
@@ -69,30 +69,31 @@ public:
 private:
 
 
-QPushButton  *pushButton1,
-             *pushButton2;
+  QPushButton  *pushButton1,
+               *pushButton2;
 
-QTextEdit    *textEdit1;
+  QTextEdit    *textEdit1;
 
-QDialog      *myobjectDialog;
+  QDialog      *myobjectDialog;
 
-char  *recent_opendir,
-      *recent_savedir;
-
-
-
-struct event_struct{
-         int onset;
-         int duration;
-         char description[80];
-       } *logbuf;
+  char  *recent_opendir,
+        *recent_savedir;
 
 
-int get_string(char *, FILE *, int, int);
+
+  struct event_struct
+  {
+    int onset;
+    int duration;
+    char description[80];
+  } *logbuf;
+
+
+  int get_string(char *, FILE *, int, int);
 
 private slots:
 
-void SelectFileButton();
+  void SelectFileButton();
 
 };
 

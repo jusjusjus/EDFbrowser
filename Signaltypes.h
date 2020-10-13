@@ -53,31 +53,31 @@ class Signaltype;
 
 class Signaltypes : public QObject
 {
-	Q_OBJECT
+  Q_OBJECT
 
 public:
-	Signaltypes(QObject *parent);
-	~Signaltypes();
+  Signaltypes(QObject *parent);
+  ~Signaltypes();
 
-	UI_AnnotationEditwindow *parent;
+  UI_AnnotationEditwindow *parent;
 
-	std::vector<Signaltype*> types;
+  std::vector<Signaltype*> types;
 
-	void reload_types(void);
+  void reload_types(void);
 
 private:
-	QDomElement* getRootElement();
-	void load_types(void);
-	int get_type_from_label(char *label);
-	void save_types(void);
-	void default_types(void);
-	void ask_for_types();
-	void reset();
+  QDomElement* getRootElement();
+  void load_types(void);
+  int get_type_from_label(char *label);
+  void save_types(void);
+  void default_types(void);
+  void ask_for_types();
+  void reset();
 
 
 public slots:
-	void registerSignaltypes(bool ask=true);	// Don't pop-up a window or program may crash.
-	void exec(int, int, int);
+  void registerSignaltypes(bool ask=true);  // Don't pop-up a window or program may crash.
+  void exec(int, int, int);
 };
 
 #endif

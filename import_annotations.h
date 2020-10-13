@@ -110,96 +110,96 @@ struct import_annotations_var_block
 
 class UI_ImportAnnotationswindow : public QObject
 {
-	Q_OBJECT
+  Q_OBJECT
 
 public:
 
 // UI_ImportAnnotationswindow(QWidget *parent);
-	UI_ImportAnnotationswindow(QWidget *parent, UI_Annotationswindow *annotations_dock, struct annotationblock **annotationlist, const char *filename=NULL);
+  UI_ImportAnnotationswindow(QWidget *parent, UI_Annotationswindow *annotations_dock, struct annotationblock **annotationlist, const char *filename=NULL);
 
-	UI_Mainwindow  *mainwindow;
+  UI_Mainwindow  *mainwindow;
 
 private:
 
-	struct annotationblock **annotationlist;
-	UI_Annotationswindow *annotations_dock;
+  struct annotationblock **annotationlist;
+  UI_Annotationswindow *annotations_dock;
 
-	QDialog        *ImportAnnotsDialog;
+  QDialog        *ImportAnnotsDialog;
 
-	QTabWidget     *tabholder;
+  QTabWidget     *tabholder;
 
-	QWidget        *tab[TAB_CNT];
+  QWidget        *tab[TAB_CNT];
 
-	QLabel         *SeparatorLabel,
-               		*OnsetColumnLabel,
-               		*DatastartLabel,
-               *OnsetTimeLabel,
-               *DCEventSignalLabel,
-               *DCEventBitTimeLabel,
-               *DCEventTriggerLevelLabel;
+  QLabel         *SeparatorLabel,
+                 *OnsetColumnLabel,
+                 *DatastartLabel,
+                 *OnsetTimeLabel,
+                 *DCEventSignalLabel,
+                 *DCEventBitTimeLabel,
+                 *DCEventTriggerLevelLabel;
 
-QLineEdit      *SeparatorLineEdit,
-               *DescriptionLineEdit;
+  QLineEdit      *SeparatorLineEdit,
+                 *DescriptionLineEdit;
 
-QSpinBox       *OnsetColumnSpinBox,
-               *DurationColumnSpinBox,
-               *EndColumnSpinBox,
-               *DescriptionColumnSpinBox,
-               *DatastartSpinbox,
-               *BitTimeSpinbox;
+  QSpinBox       *OnsetColumnSpinBox,
+                 *DurationColumnSpinBox,
+                 *EndColumnSpinBox,
+                 *DescriptionColumnSpinBox,
+                 *DatastartSpinbox,
+                 *BitTimeSpinbox;
 
-QDoubleSpinBox *DCEventTriggerLevelSpinBox;
+  QDoubleSpinBox *DCEventTriggerLevelSpinBox;
 
-QComboBox      *RelativeTimeComboBox,
-               *DCEventSignalComboBox;
+  QComboBox      *RelativeTimeComboBox,
+                 *DCEventSignalComboBox;
 
-QVBoxLayout    *asciiSettingsVBoxLayout,
-               *DCEventVBoxLayout,
-               *mainLayout;
+  QVBoxLayout    *asciiSettingsVBoxLayout,
+                 *DCEventVBoxLayout,
+                 *mainLayout;
 
-QHBoxLayout    *asciiSettingsHBoxLayout1,
-               *asciiSettingsHBoxLayout2,
-               *asciiSettingsHBoxLayout3,
-               *asciiSettingsHBoxLayout4,
-               *asciiSettingsHBoxLayout5,
-               *asciiSettingsHBoxLayout6,
-               *asciiSettingsHBoxLayout7,
-               *asciiSettingsHBoxLayout8,
-               *DCEventHBoxLayout1,
-               *DCEventHBoxLayout2,
-               *DCEventHBoxLayout3,
-               *horLayout;
+  QHBoxLayout    *asciiSettingsHBoxLayout1,
+                 *asciiSettingsHBoxLayout2,
+                 *asciiSettingsHBoxLayout3,
+                 *asciiSettingsHBoxLayout4,
+                 *asciiSettingsHBoxLayout5,
+                 *asciiSettingsHBoxLayout6,
+                 *asciiSettingsHBoxLayout7,
+                 *asciiSettingsHBoxLayout8,
+                 *DCEventHBoxLayout1,
+                 *DCEventHBoxLayout2,
+                 *DCEventHBoxLayout3,
+                 *horLayout;
 
-QRadioButton   *DescriptionColumnRadioButton,
-               *UseManualDescriptionRadioButton;
+  QRadioButton   *DescriptionColumnRadioButton,
+                 *UseManualDescriptionRadioButton;
 
-QCheckBox      *IgnoreConsecutiveCheckBox,
-               *DurationCheckBox,
-		*EndCheckBox;
+  QCheckBox      *IgnoreConsecutiveCheckBox,
+                 *DurationCheckBox,
+                 *EndCheckBox;
 
-	QButtonGroup *durationGroup;
+  QButtonGroup *durationGroup;
 
-QPushButton    *CloseButton,
-               *ImportButton;
+  QPushButton    *CloseButton,
+                 *ImportButton;
 
-	int tab_index_array[TAB_CNT];
+  int tab_index_array[TAB_CNT];
 
-int import_from_xml(void);
-int import_from_ascii(void);
-int import_from_ascii(const char *);
-int import_from_edfplus(void);
-int import_from_dcevent(void);
-	int read_datetime(char* line, long long& onset);
+  int import_from_xml(void);
+  int import_from_ascii(void);
+  int import_from_ascii(const char *);
+  int import_from_edfplus(void);
+  int import_from_dcevent(void);
+  int read_datetime(char* line, long long& onset);
 
 
 private slots:
 
-void ImportButtonClicked();
-void descriptionRadioButtonClicked(bool);
-void DCEventSignalChanged(int);
-void DurationCheckBoxChanged(int);
-	void EndCheckBoxChanged(int);
-void TabChanged(int);
+  void ImportButtonClicked();
+  void descriptionRadioButtonClicked(bool);
+  void DCEventSignalChanged(int);
+  void DurationCheckBoxChanged(int);
+  void EndCheckBoxChanged(int);
+  void TabChanged(int);
 
 };
 

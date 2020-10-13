@@ -46,15 +46,16 @@ extern "C" {
 
 
 
-struct date_time_struct{
-         int year;
-         int month;
-         int day;
-         int hour;
-         int minute;
-         int second;
-         char month_str[4];
-       };
+struct date_time_struct
+{
+  int year;
+  int month;
+  int day;
+  int hour;
+  int minute;
+  int second;
+  char month_str[4];
+};
 
 
 void utc_to_date_time(long long, struct date_time_struct *);

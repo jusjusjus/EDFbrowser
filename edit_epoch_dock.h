@@ -59,49 +59,49 @@ class UI_Mainwindow;
 
 class UI_EpochEditwindow : public QObject
 {
-	Q_OBJECT
+  Q_OBJECT
 
 public:
 
-	UI_EpochEditwindow(QWidget *parent);
+  UI_EpochEditwindow(QWidget *parent);
 
-	UI_Mainwindow *mainwindow;
+  UI_Mainwindow *mainwindow;
 
-	QDockWidget *dockedit;
+  QDockWidget *dockedit;
 
-	void set_selected_annotation(int);
+  void set_selected_annotation(int);
 
-	void set_selected_annotation(struct annotationblock *);
+  void set_selected_annotation(struct annotationblock *);
 
-	virtual void deselect();
+  virtual void deselect();
 
-	virtual void setup();
+  virtual void setup();
 
-	QAction *Delete_act;
+  QAction *Delete_act;
 
 
 private:
 
-	struct annotationblock *annotation;
+  struct annotationblock *annotation;
 
-	int annot_num;
+  int annot_num;
 
-	QWidget *annot_edit_widget;
+  QWidget *annot_edit_widget;
 
-	QLabel *onsetLabel,
-		 *durationLabel,
-		 *descriptionLabel;
+  QLabel *onsetLabel,
+         *durationLabel,
+         *descriptionLabel;
 
-	std::vector<QString*> stages;
-	std::vector<QKeySequence*> keys;
-	QButtonGroup *stage_buttons;
+  std::vector<QString*> stages;
+  std::vector<QKeySequence*> keys;
+  QButtonGroup *stage_buttons;
 
-	void load_xml();
-	void load_default();
+  void load_xml();
+  void load_default();
 
 
 public slots:
-	void open_close_dock(bool);
+  void open_close_dock(bool);
 
 
 //protected slots:
@@ -109,7 +109,7 @@ public slots:
 
 private slots:
 
-	void button_pressed(int);
+  void button_pressed(int);
 };
 
 

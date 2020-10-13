@@ -46,8 +46,8 @@
 #include <QCursor>
 #include <QStyle>
 #if QT_VERSION < 0x050000
-#include <QPlastiqueStyle>
-#include <QWindowsStyle>
+  #include <QPlastiqueStyle>
+  #include <QWindowsStyle>
 #endif
 #include <QMessageBox>
 #include <QString>
@@ -74,29 +74,29 @@ public:
 
 private:
 
-QDialog       *myobjectDialog;
+  QDialog       *myobjectDialog;
 
-QPushButton   *pushButton1,
-              *pushButton2;
+  QPushButton   *pushButton1,
+                *pushButton2;
 
-QLabel        *PatientnameLabel,
-              *RecordingLabel,
-              *DatetimeLabel;
+  QLabel        *PatientnameLabel,
+                *RecordingLabel,
+                *DatetimeLabel;
 
-QLineEdit     *PatientnameLineEdit,
-              *RecordingLineEdit;
+  QLineEdit     *PatientnameLineEdit,
+                *RecordingLineEdit;
 
-QDateTimeEdit *StartDatetimeedit;
+  QDateTimeEdit *StartDatetimeedit;
 
-char *recent_opendir,
-     *recent_savedir;
+  char *recent_opendir,
+       *recent_savedir;
 
-void enable_widgets(bool);
+  void enable_widgets(bool);
 
 
 private slots:
 
-void SelectFileButton();
+  void SelectFileButton();
 
 };
 

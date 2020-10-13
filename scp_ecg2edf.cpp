@@ -37,13 +37,13 @@
 
 #if defined(__APPLE__) || defined(__MACH__) || defined(__APPLE_CC__)
 
-#define fopeno fopen
+  #define fopeno fopen
 
 #else
 
-#define fseeko fseeko64
-#define ftello ftello64
-#define fopeno fopen64
+  #define fseeko fseeko64
+  #define ftello ftello64
+  #define fopeno fopen64
 
 #endif
 
@@ -113,12 +113,13 @@ void UI_SCPECG2EDFwindow::SelectFileButton()
        *block,
        ch_tmp;
 
-  union{
-         unsigned long long ll_int;
-         unsigned int one[2];
-         unsigned short two[4];
-         unsigned char four[8];
-       } var;
+  union
+  {
+    unsigned long long ll_int;
+    unsigned int one[2];
+    unsigned short two[4];
+    unsigned char four[8];
+  } var;
 
   pushButton1->setEnabled(false);
 
@@ -642,68 +643,68 @@ void UI_SCPECG2EDFwindow::SelectFileButton()
         {
           buf[((i / sf) * (sf * chns)) + (j * sf) + (i % sf)] = 0;
           bits++;
-        } else
-        if((var.four[0] & 7) == 1)  // b00000111
+        }
+        else if((var.four[0] & 7) == 1)   // b00000111
         {
           buf[((i / sf) * (sf * chns)) + (j * sf) + (i % sf)] = 1;
           bits += 3LL;
-        } else
-        if((var.four[0] & 7) == 5)  // b00000111
+        }
+        else if((var.four[0] & 7) == 5)   // b00000111
         {
           buf[((i / sf) * (sf * chns)) + (j * sf) + (i % sf)] = -1;
           bits += 3LL;
-        } else
-        if((var.four[0] & 15) == 3)  // b00001111
+        }
+        else if((var.four[0] & 15) == 3)   // b00001111
         {
           buf[((i / sf) * (sf * chns)) + (j * sf) + (i % sf)] = 2;
           bits += 4LL;
-        } else
-        if((var.four[0] & 15) == 11)  // b00001111
+        }
+        else if((var.four[0] & 15) == 11)   // b00001111
         {
           buf[((i / sf) * (sf * chns)) + (j * sf) + (i % sf)] = -2;
           bits += 4LL;
-        } else
-        if((var.four[0] & 31) == 7)  // b00011111
+        }
+        else if((var.four[0] & 31) == 7)   // b00011111
         {
           buf[((i / sf) * (sf * chns)) + (j * sf) + (i % sf)] = 3;
           bits += 5LL;
-        } else
-        if((var.four[0] & 31) == 23)  // b00011111
+        }
+        else if((var.four[0] & 31) == 23)   // b00011111
         {
           buf[((i / sf) * (sf * chns)) + (j * sf) + (i % sf)] = -3;
           bits += 5LL;
-        } else
-        if((var.four[0] & 63) == 15)  // b00111111
+        }
+        else if((var.four[0] & 63) == 15)   // b00111111
         {
           buf[((i / sf) * (sf * chns)) + (j * sf) + (i % sf)] = 4;
           bits += 6LL;
-        } else
-        if((var.four[0] & 63) == 47)  // b00111111
+        }
+        else if((var.four[0] & 63) == 47)   // b00111111
         {
           buf[((i / sf) * (sf * chns)) + (j * sf) + (i % sf)] = -4;
           bits += 6LL;
-        } else
-        if((var.four[0] & 127) == 31)  // b01111111
+        }
+        else if((var.four[0] & 127) == 31)   // b01111111
         {
           buf[((i / sf) * (sf * chns)) + (j * sf) + (i % sf)] = 5;
           bits += 7LL;
-        } else
-        if((var.four[0] & 127) == 95)  // b01111111
+        }
+        else if((var.four[0] & 127) == 95)   // b01111111
         {
           buf[((i / sf) * (sf * chns)) + (j * sf) + (i % sf)] = -5;
           bits += 7LL;
-        } else
-        if(var.four[0] == 63)  // b11111111
+        }
+        else if(var.four[0] == 63)   // b11111111
         {
           buf[((i / sf) * (sf * chns)) + (j * sf) + (i % sf)] = 6;
           bits += 8LL;
-        } else
-        if(var.four[0] == 191)  // b11111111
+        }
+        else if(var.four[0] == 191)   // b11111111
         {
           buf[((i / sf) * (sf * chns)) + (j * sf) + (i % sf)] = -6;
           bits += 8LL;
-        } else
-        if(var.four[0] == 127)  // b11111111
+        }
+        else if(var.four[0] == 127)   // b11111111
         {
           if((var.four[1] & 1) == 0)  // b00000001
           {
@@ -715,27 +716,27 @@ void UI_SCPECG2EDFwindow::SelectFileButton()
             buf[((i / sf) * (sf * chns)) + (j * sf) + (i % sf)] = -7;
             bits += 9LL;
           }
-        } else
-        if(var.four[0] == 255)  // b11111111
+        }
+        else if(var.four[0] == 255)   // b11111111
         {
           if((var.four[1] & 3) == 0)  // b00000011
           {
             buf[((i / sf) * (sf * chns)) + (j * sf) + (i % sf)] = 8;
             bits += 10LL;
-          } else
-          if((var.four[1] & 3) == 2)  // b00000011
+          }
+          else if((var.four[1] & 3) == 2)   // b00000011
           {
             buf[((i / sf) * (sf * chns)) + (j * sf) + (i % sf)] = -8;
             bits += 10LL;
-          } else
-          if((var.four[1] & 3) == 1)  // b00000011
+          }
+          else if((var.four[1] & 3) == 1)   // b00000011
           {
             var.ll_int >>= 2;
             var.four[1] = reverse_bitorder(var.four[1]);
             buf[((i / sf) * (sf * chns)) + (j * sf) + (i % sf)] = *((signed char *)&(var.four[1]));  // 8-bit original
             bits += 18LL;
-          } else
-          if((var.four[1] & 3) == 3)  // b00000011
+          }
+          else if((var.four[1] & 3) == 3)   // b00000011
           {
             var.ll_int >>= 10;
             ch_tmp = reverse_bitorder(var.four[0]);
@@ -949,7 +950,8 @@ void UI_SCPECG2EDFwindow::SelectFileButton()
             }
           }
           else  // Decoding of the 2nd difference data is performed using the following formula:
-          {     // X(n) = D2(n) + 2*X(n-1) - X(n-2)
+          {
+            // X(n) = D2(n) + 2*X(n-1) - X(n-2)
             var_tmp = buf[(i * chns * sf) + (j * sf) + k] + (abs_val_b[j] * 2) - abs_val_a[j];
 
             buf[(i * chns * sf) + (j * sf) + k] = var_tmp;
@@ -1220,32 +1222,33 @@ inline unsigned char UI_SCPECG2EDFwindow::reverse_bitorder(unsigned char byte)
 
 void UI_SCPECG2EDFwindow::lead_label_lookup(unsigned char idx, char *label)
 {
-  char scp_labels[256][9]={"unspec.", "I", "II", "V1", "V2", "V3", "V4", "V5", "V6", "V7",
-                           "V2R", "V3R", "V4R", "V5R", "V6R", "V7R", "X", "Y", "Z", "CC5",
-                           "CM5", "LA", "RA", "LL", "fl", "fE", "fC", "fA", "fM", "fF",
-                           "fH", "dl", "dll", "dV1", "dV2", "dV3", "dV4", "dV5", "dV6", "dV7",
-                           "dV2R", "dV3R", "dV4R", "dV5R", "dV6R", "dV7R", "dX", "dY", "dZ", "dCC5",
-                           "dCM5", "dLA", "dRA", "dLL", "dfl", "dfE", "dfC", "dfA", "dfM", "dfF",
-                           "dfH", "III", "aVR", "aVL", "aVF", "aVRneg", "V8", "V9", "V8R", "V9R",
-                           "D", "A", "J", "Defib", "Extern", "A1", "A2", "A3", "A4", "dV8",
-                           "dV9", "dV8R", "dV9R", "dD", "dA", "dj", "Chest", "V", "VR", "VL",
-                           "VF", "MCL", "MCL1", "MCL2", "MCL3", "MCL4", "MCL5", "MCL6", "CC", "CC1",
-                           "CC2", "CC3", "CC4", "CC6", "CC7", "CM", "CM1", "CM2", "CM3", "CM4",
-                           "CM6", "dIII", "daVR", "daVL", "daVF", "daVRneg", "dChest", "dV", "dVR", "dVL",
-                           "dVF", "CM7", "CH5", "CS5", "CB5", "CR5", "ML", "AB1", "AB2", "AB3",
-                           "AB4", "ES", "AS", "AI", "S", "dDefib", "dExtern", "da1", "da2", "da3",
-                           "da4", "dMCL1", "dMCL2", "dMCL3", "dMCL4", "dMCL5", "dMCL6", "RL", "CV5RL", "CV6LL",
-                           "CV6LU", "V10", "dMCL", "dCC", "dCC1", "dCC2", "dCC3", "dCC4", "dCC5", "dCC6",
-                           "dCM", "dCM1", "dCM2", "dCM3", "dCM4", "dCM6", "dCM7", "dCH5", "dCS5", "dCB5",
-                           "dCR5", "dML", "dAB1", "dAB2", "dAB3", "dAB4", "dES", "dAS", "dAI", "dS",
-                           "dRL", "dCV5RL", "dCV6LL", "dCV6LU", "dV10", "", "", "", "", "",
-                           "", "", "", "", "", "", "", "", "", "",
-                           "", "", "", "", "", "", "", "", "", "",
-                           "", "", "", "", "", "", "", "", "", "",
-                           "", "", "", "", "", "", "", "", "", "",
-                           "", "", "", "", "", "", "", "", "", "",
-                           "", "", "", "", "", "", "", "", "", "",
-                           "", "", "", "", "", ""};
+  char scp_labels[256][9]= {"unspec.", "I", "II", "V1", "V2", "V3", "V4", "V5", "V6", "V7",
+                            "V2R", "V3R", "V4R", "V5R", "V6R", "V7R", "X", "Y", "Z", "CC5",
+                            "CM5", "LA", "RA", "LL", "fl", "fE", "fC", "fA", "fM", "fF",
+                            "fH", "dl", "dll", "dV1", "dV2", "dV3", "dV4", "dV5", "dV6", "dV7",
+                            "dV2R", "dV3R", "dV4R", "dV5R", "dV6R", "dV7R", "dX", "dY", "dZ", "dCC5",
+                            "dCM5", "dLA", "dRA", "dLL", "dfl", "dfE", "dfC", "dfA", "dfM", "dfF",
+                            "dfH", "III", "aVR", "aVL", "aVF", "aVRneg", "V8", "V9", "V8R", "V9R",
+                            "D", "A", "J", "Defib", "Extern", "A1", "A2", "A3", "A4", "dV8",
+                            "dV9", "dV8R", "dV9R", "dD", "dA", "dj", "Chest", "V", "VR", "VL",
+                            "VF", "MCL", "MCL1", "MCL2", "MCL3", "MCL4", "MCL5", "MCL6", "CC", "CC1",
+                            "CC2", "CC3", "CC4", "CC6", "CC7", "CM", "CM1", "CM2", "CM3", "CM4",
+                            "CM6", "dIII", "daVR", "daVL", "daVF", "daVRneg", "dChest", "dV", "dVR", "dVL",
+                            "dVF", "CM7", "CH5", "CS5", "CB5", "CR5", "ML", "AB1", "AB2", "AB3",
+                            "AB4", "ES", "AS", "AI", "S", "dDefib", "dExtern", "da1", "da2", "da3",
+                            "da4", "dMCL1", "dMCL2", "dMCL3", "dMCL4", "dMCL5", "dMCL6", "RL", "CV5RL", "CV6LL",
+                            "CV6LU", "V10", "dMCL", "dCC", "dCC1", "dCC2", "dCC3", "dCC4", "dCC5", "dCC6",
+                            "dCM", "dCM1", "dCM2", "dCM3", "dCM4", "dCM6", "dCM7", "dCH5", "dCS5", "dCB5",
+                            "dCR5", "dML", "dAB1", "dAB2", "dAB3", "dAB4", "dES", "dAS", "dAI", "dS",
+                            "dRL", "dCV5RL", "dCV6LL", "dCV6LU", "dV10", "", "", "", "", "",
+                            "", "", "", "", "", "", "", "", "", "",
+                            "", "", "", "", "", "", "", "", "", "",
+                            "", "", "", "", "", "", "", "", "", "",
+                            "", "", "", "", "", "", "", "", "", "",
+                            "", "", "", "", "", "", "", "", "", "",
+                            "", "", "", "", "", "", "", "", "", "",
+                            "", "", "", "", "", ""
+                           };
 
   if(idx > 184)
   {
@@ -1276,7 +1279,7 @@ int UI_SCPECG2EDFwindow::get_patient_data(FILE *inputfile)
 
   offset = sp[1].file_offset + 16LL;
 
-for(int k=0; ; k++)
+  for(int k=0; ; k++)
   {
     fseeko(inputfile, offset, SEEK_SET);
 

@@ -84,18 +84,19 @@ private:
                *ExportButton;
 
 
-struct asciiedfparamblock{
-         int smp_per_record;
-         int smp_written;
-         int dig_min;
-         int dig_max;
-         double offset;
-         int buf_offset;
-         double phys_min;
-         double phys_max;
-         double time_step;
-         double sense;
-       } *edfparamascii;
+  struct asciiedfparamblock
+  {
+    int smp_per_record;
+    int smp_written;
+    int dig_min;
+    int dig_max;
+    double offset;
+    int buf_offset;
+    double phys_min;
+    double phys_max;
+    double time_step;
+    double sense;
+  } *edfparamascii;
 
 
 private slots:

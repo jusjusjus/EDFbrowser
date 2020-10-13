@@ -81,73 +81,73 @@ public:
 
 private:
 
-QTabWidget     *tabholder;
+  QTabWidget     *tabholder;
 
-QWidget        *tab1,
-               *tab2;
+  QWidget        *tab1,
+                 *tab2;
 
-QTableWidget *signallist;
+  QTableWidget *signallist;
 
-QLabel       *label1,
-             *label2,
-             *label3,
-             *label4,
-             *label5,
-             *label6,
-             *label7,
-             *label8,
-             *label9,
-             *label11,
-             *label12,
-             *fileNameLabel,
-             *charsleft1Label,
-             *charsleft2Label,
-	     *startTimeDateLabel;
+  QLabel       *label1,
+               *label2,
+               *label3,
+               *label4,
+               *label5,
+               *label6,
+               *label7,
+               *label8,
+               *label9,
+               *label11,
+               *label12,
+               *fileNameLabel,
+               *charsleft1Label,
+               *charsleft2Label,
+               *startTimeDateLabel;
 
-QLineEdit    *lineEdit1,
-             *lineEdit2,
-             *lineEdit3,
-             *lineEdit4,
-             *lineEdit5,
-             *lineEdit6,
-             *lineEdit7,
-             *lineEdit8,
-             *lineEdit9;
+  QLineEdit    *lineEdit1,
+               *lineEdit2,
+               *lineEdit3,
+               *lineEdit4,
+               *lineEdit5,
+               *lineEdit6,
+               *lineEdit7,
+               *lineEdit8,
+               *lineEdit9;
 
-QComboBox    *comboBox1;
+  QComboBox    *comboBox1;
 
-QCheckBox    *checkBox1;
+  QCheckBox    *checkBox1;
 
-QDateEdit    *dateEdit1;
+  QDateEdit    *dateEdit1;
 
-QPushButton  *pushButton1,
-             *pushButton2,
-             *pushButton3;
+  QPushButton  *pushButton1,
+               *pushButton2,
+               *pushButton3;
 
-QDateTimeEdit *startTimeDate;
+  QDateTimeEdit *startTimeDate;
 
-int edfplus,
-    bdfplus,
-    edf,
-    bdf,
-    edfsignals,
-    has_startdate,
-    recordsize,
-    datrecs;
+  int edfplus,
+      bdfplus,
+      edf,
+      bdf,
+      edfsignals,
+      has_startdate,
+      recordsize,
+      datrecs;
 
-char path[MAX_PATH_LENGTH],
-     *hdr;
+  char path[MAX_PATH_LENGTH],
+       *hdr;
 
-FILE *file;
+  FILE *file;
 
 private slots:
 
-void open_file();
-void save_hdr();
-void read_header();
-void closeEvent(QCloseEvent *);
-void calculate_chars_left_name(const QString &);
-void calculate_chars_left_recording(const QString &);
+  void open_file();
+  void save_hdr();
+  void read_header();
+  void closeEvent(QCloseEvent *);
+  void calculate_chars_left_name(const QString &);
+  void calculate_chars_left_recording(const QString &);
 
 };
 

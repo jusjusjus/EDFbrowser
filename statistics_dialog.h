@@ -64,40 +64,40 @@ class UI_StatisticWindow : public QObject
 
 public:
 
-UI_StatisticWindow(struct signalcompblock *, long long);
+  UI_StatisticWindow(struct signalcompblock *, long long);
 
 private:
 
-QDialog     *StatDialog;
+  QDialog     *StatDialog;
 
-QHBoxLayout *hlayout1,
-            *hlayout1_1_1;
+  QHBoxLayout *hlayout1,
+              *hlayout1_1_1;
 
-QVBoxLayout *vlayout1_1,
-            *vlayout2_1;
+  QVBoxLayout *vlayout1_1,
+              *vlayout2_1;
 
-QSlider     *startSlider,
-            *stopSlider;
+  QSlider     *startSlider,
+              *stopSlider;
 
-QLabel      *Label1,
-            *startLabel,
-            *stopLabel;
+  QLabel      *Label1,
+              *startLabel,
+              *stopLabel;
 
-QPushButton  *pushButton1;
+  QPushButton  *pushButton1;
 
-SignalCurve  *curve1;
+  SignalCurve  *curve1;
 
-int beat_cnt,
-    bpm_distribution[300],
-    max_val,
-    start_ruler,
-    end_ruler;
+  int beat_cnt,
+      bpm_distribution[300],
+      max_val,
+      start_ruler,
+      end_ruler;
 
 
 private slots:
 
-void startSliderMoved(int);
-void stopSliderMoved(int);
+  void startSliderMoved(int);
+  void stopSliderMoved(int);
 
 };
 

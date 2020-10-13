@@ -128,16 +128,16 @@ UI_Signalswindow::UI_Signalswindow(QWidget *w_parent) : QDialog(w_parent)
 
   smp_per_record = 0;
 
-  QObject::connect(CloseButton,       SIGNAL(clicked()),                this,		SLOT(close()));
-  QObject::connect(SelectAllButton,   SIGNAL(clicked()),                this,		SLOT(SelectAllButtonClicked()));
-  QObject::connect(HelpButton,        SIGNAL(clicked()),                this,		SLOT(HelpButtonClicked()));
-  QObject::connect(DisplayButton,     SIGNAL(clicked()),                this,		SLOT(DisplayButtonClicked()));
-  QObject::connect(DisplayCompButton, SIGNAL(clicked()),                this,		SLOT(DisplayCompButtonClicked()));
-  QObject::connect(AddButton,         SIGNAL(clicked()),                this,		SLOT(AddButtonClicked()));
-  QObject::connect(SubtractButton,    SIGNAL(clicked()),                this,		SLOT(SubtractButtonClicked()));
-  QObject::connect(RemoveButton,      SIGNAL(clicked()),                this,		SLOT(RemoveButtonClicked()));
-  QObject::connect(ColorButton,       SIGNAL(clicked(SpecialButton *)), this,		SLOT(ColorButtonClicked(SpecialButton *)));
-  QObject::connect(filelist,          SIGNAL(currentRowChanged(int)),   this,		SLOT(show_signals(int)));
+  QObject::connect(CloseButton,       SIGNAL(clicked()),                this,   SLOT(close()));
+  QObject::connect(SelectAllButton,   SIGNAL(clicked()),                this,   SLOT(SelectAllButtonClicked()));
+  QObject::connect(HelpButton,        SIGNAL(clicked()),                this,   SLOT(HelpButtonClicked()));
+  QObject::connect(DisplayButton,     SIGNAL(clicked()),                this,   SLOT(DisplayButtonClicked()));
+  QObject::connect(DisplayCompButton, SIGNAL(clicked()),                this,   SLOT(DisplayCompButtonClicked()));
+  QObject::connect(AddButton,         SIGNAL(clicked()),                this,   SLOT(AddButtonClicked()));
+  QObject::connect(SubtractButton,    SIGNAL(clicked()),                this,   SLOT(SubtractButtonClicked()));
+  QObject::connect(RemoveButton,      SIGNAL(clicked()),                this,   SLOT(RemoveButtonClicked()));
+  QObject::connect(ColorButton,       SIGNAL(clicked(SpecialButton *)), this,   SLOT(ColorButtonClicked(SpecialButton *)));
+  QObject::connect(filelist,          SIGNAL(currentRowChanged(int)),   this,   SLOT(show_signals(int)));
 
   curve_color = mainwindow->maincurve->signal_color;
 
@@ -200,7 +200,7 @@ void UI_Signalswindow::DisplayCompButtonClicked()
   newsignalcomp->color = curve_color;
   newsignalcomp->hasruler = 0;
   newsignalcomp->polarity = 1;
-  newsignalcomp->type = -1;			// undetermined default type
+  newsignalcomp->type = -1;     // undetermined default type
 
   for(i=0; i<n; i++)
   {
@@ -275,7 +275,7 @@ void UI_Signalswindow::DisplayButtonClicked()
 
   n = selectedlist.size();
 
-  if(n == 0)			// This request is probably not necessary.
+  if(n == 0)      // This request is probably not necessary.
   {
     close();
     return;
@@ -301,10 +301,10 @@ void UI_Signalswindow::DisplayButtonClicked()
     newsignalcomp->polarity = 1;
     newsignalcomp->type = -1; // undetermined default type
 
-    item = selectedlist.at(i);				// Get the i-th selection.
-    s = item->data(Qt::UserRole).toInt();		// Get the index of the i-th selection ..
-    newsignalcomp->edfsignal[0] = s;							// .. and set it ..
-    newsignalcomp->factor[0] = 1;								// .. with factor 1.
+    item = selectedlist.at(i);        // Get the i-th selection.
+    s = item->data(Qt::UserRole).toInt();   // Get the index of the i-th selection ..
+    newsignalcomp->edfsignal[0] = s;              // .. and set it ..
+    newsignalcomp->factor[0] = 1;               // .. with factor 1.
     if(newsignalcomp->edfhdr->edfparam[s].bitvalue < 0.0)
     {
       newsignalcomp->voltpercm = -100.0;
@@ -387,11 +387,11 @@ void UI_Signalswindow::AddButtonClicked()
       if(smp_per_record!=mainwindow->edfheaderlist[row]->edfparam[s].smp_per_record)
       {
         QMessageBox messagewindow(QMessageBox::Warning, "Warning",
-                                     "It is only possible to make combinations/derivations with signals which:\n"
-                                     " - are from the same file\n"
-                                     " - have the same samplerate\n"
-                                     " - have the same physical dimension (e.g. uV)\n"
-                                     " - have the same sensitivity (e.g. uV/bit)");
+                                  "It is only possible to make combinations/derivations with signals which:\n"
+                                  " - are from the same file\n"
+                                  " - have the same samplerate\n"
+                                  " - have the same physical dimension (e.g. uV)\n"
+                                  " - have the same sensitivity (e.g. uV/bit)");
         messagewindow.exec();
 
         continue;
@@ -407,11 +407,11 @@ void UI_Signalswindow::AddButtonClicked()
       if(strcmp(physdimension, mainwindow->edfheaderlist[row]->edfparam[s].physdimension))
       {
         QMessageBox messagewindow(QMessageBox::Warning, "Warning",
-                                     "It is only possible to make combinations/derivations with signals which:\n"
-                                     " - are from the same file\n"
-                                     " - have the same samplerate\n"
-                                     " - have the same physical dimension (e.g. uV)\n"
-                                     " - have the same sensitivity (e.g. uV/bit)");
+                                  "It is only possible to make combinations/derivations with signals which:\n"
+                                  " - are from the same file\n"
+                                  " - have the same samplerate\n"
+                                  " - have the same physical dimension (e.g. uV)\n"
+                                  " - have the same sensitivity (e.g. uV/bit)");
         messagewindow.exec();
 
         continue;
@@ -427,11 +427,11 @@ void UI_Signalswindow::AddButtonClicked()
       if(bitvalue!=mainwindow->edfheaderlist[row]->edfparam[s].bitvalue)
       {
         QMessageBox messagewindow(QMessageBox::Warning, "Warning",
-                                     "It is only possible to make combinations/derivations with signals which:\n"
-                                     " - are from the same file\n"
-                                     " - have the same samplerate\n"
-                                     " - have the same physical dimension (e.g. uV)\n"
-                                     " - have the same sensitivity (e.g. uV/bit)");
+                                  "It is only possible to make combinations/derivations with signals which:\n"
+                                  " - are from the same file\n"
+                                  " - have the same samplerate\n"
+                                  " - have the same physical dimension (e.g. uV)\n"
+                                  " - have the same sensitivity (e.g. uV/bit)");
         messagewindow.exec();
 
         continue;
@@ -463,10 +463,10 @@ void UI_Signalswindow::AddButtonClicked()
     }
     if(duplicate)
     {
-       if(str[23]==57)  continue;
+      if(str[23]==57)  continue;
 
-       str[23] += 1;
-       item->setText(str);
+      str[23] += 1;
+      item->setText(str);
     }
     else
     {
@@ -517,11 +517,11 @@ void UI_Signalswindow::SubtractButtonClicked()
       if(smp_per_record!=mainwindow->edfheaderlist[row]->edfparam[s].smp_per_record)
       {
         QMessageBox messagewindow(QMessageBox::Warning, "Warning",
-                                     "It is only possible to make combinations/derivations with signals which:\n"
-                                     " - are from the same file\n"
-                                     " - have the same samplerate\n"
-                                     " - have the same physical dimension (e.g. uV)\n"
-                                     " - have the same sensitivity (e.g. uV/bit)");
+                                  "It is only possible to make combinations/derivations with signals which:\n"
+                                  " - are from the same file\n"
+                                  " - have the same samplerate\n"
+                                  " - have the same physical dimension (e.g. uV)\n"
+                                  " - have the same sensitivity (e.g. uV/bit)");
         messagewindow.exec();
 
         continue;
@@ -537,11 +537,11 @@ void UI_Signalswindow::SubtractButtonClicked()
       if(strcmp(physdimension, mainwindow->edfheaderlist[row]->edfparam[s].physdimension))
       {
         QMessageBox messagewindow(QMessageBox::Warning, "Warning",
-                                     "It is only possible to make combinations/derivations with signals which:\n"
-                                     " - are from the same file\n"
-                                     " - have the same samplerate\n"
-                                     " - have the same physical dimension (e.g. uV)\n"
-                                     " - have the same sensitivity (e.g. uV/bit)");
+                                  "It is only possible to make combinations/derivations with signals which:\n"
+                                  " - are from the same file\n"
+                                  " - have the same samplerate\n"
+                                  " - have the same physical dimension (e.g. uV)\n"
+                                  " - have the same sensitivity (e.g. uV/bit)");
         messagewindow.exec();
 
         continue;
@@ -557,11 +557,11 @@ void UI_Signalswindow::SubtractButtonClicked()
       if(bitvalue!=mainwindow->edfheaderlist[row]->edfparam[s].bitvalue)
       {
         QMessageBox messagewindow(QMessageBox::Warning, "Warning",
-                                     "It is only possible to make combinations/derivations with signals which:\n"
-                                     " - are from the same file\n"
-                                     " - have the same samplerate\n"
-                                     " - have the same physical dimension (e.g. uV)\n"
-                                     " - have the same sensitivity (e.g. uV/bit)");
+                                  "It is only possible to make combinations/derivations with signals which:\n"
+                                  " - are from the same file\n"
+                                  " - have the same samplerate\n"
+                                  " - have the same physical dimension (e.g. uV)\n"
+                                  " - have the same sensitivity (e.g. uV/bit)");
         messagewindow.exec();
 
         continue;
@@ -590,10 +590,10 @@ void UI_Signalswindow::SubtractButtonClicked()
     }
     if(duplicate)
     {
-       if(str[23]==57)  continue;
+      if(str[23]==57)  continue;
 
-       str[23] += 1;
-       item->setText(str);
+      str[23] += 1;
+      item->setText(str);
     }
     else
     {
@@ -676,22 +676,22 @@ void UI_Signalswindow::show_signals(int row)
   date_time.month_str[2] += 32;
 
   snprintf(str, 256, "Start      %i %s %i   %2i:%02i:%02i",
-          date_time.day,
-          date_time.month_str,
-          date_time.year,
-          date_time.hour,
-          date_time.minute,
-          date_time.second);
+           date_time.day,
+           date_time.month_str,
+           date_time.year,
+           date_time.hour,
+           date_time.minute,
+           date_time.second);
 
   label3->setText(str);
 
   strcpy(str, "Duration   ");
   file_duration = mainwindow->edfheaderlist[row]->long_data_record_duration * mainwindow->edfheaderlist[row]->datarecords;
   snprintf(str + 11, 240,
-          "%2i:%02i:%02i",
-          (int)((file_duration / TIME_DIMENSION)/ 3600LL),
-          (int)(((file_duration / TIME_DIMENSION) % 3600LL) / 60LL),
-          (int)((file_duration / TIME_DIMENSION) % 60LL));
+           "%2i:%02i:%02i",
+           (int)((file_duration / TIME_DIMENSION)/ 3600LL),
+           (int)(((file_duration / TIME_DIMENSION) % 3600LL) / 60LL),
+           (int)((file_duration / TIME_DIMENSION) % 60LL));
   label4->setText(str);
 
   skip = 0;
@@ -752,20 +752,20 @@ void UI_Signalswindow::HelpButtonClicked()
 {
   UI_Messagewindow popup_help("Help",
 
-  "On top you will see a list of opened files.\n"
-  "Select (highlight) the file from which you want to add signals. At the left part of the dialog you see a list of\n"
-  "all the signals which are in the selected file. Select one or more signals and click on the \"Add signals\"\n"
-  "button. Now you will see the selected signals on the screen.\n"
+                              "On top you will see a list of opened files.\n"
+                              "Select (highlight) the file from which you want to add signals. At the left part of the dialog you see a list of\n"
+                              "all the signals which are in the selected file. Select one or more signals and click on the \"Add signals\"\n"
+                              "button. Now you will see the selected signals on the screen.\n"
 
-  "\nWhen you want to make a combination (derivation) of two or more signals, do as follows.\n"
-  "Select the file from which you want to add signals. For example, we choose an EEG file which contains\n"
-  "the signals \"P3\" and \"C3\" and we want to subtract \"C3\" from \"P3\".\n"
-  "- Select (highlight) the signal \"P3\".\n"
-  "- Click on the \"Add\" button.\n"
-  "- Select (highlight) the signal \"C3\".\n"
-  "- Click on the \"Subtract\" button.\n"
-  "- Click on the \"Make derivation\" button.\n"
-  "- The result of \"P3\" minus \"C3\" will appear on the screen.");
+                              "\nWhen you want to make a combination (derivation) of two or more signals, do as follows.\n"
+                              "Select the file from which you want to add signals. For example, we choose an EEG file which contains\n"
+                              "the signals \"P3\" and \"C3\" and we want to subtract \"C3\" from \"P3\".\n"
+                              "- Select (highlight) the signal \"P3\".\n"
+                              "- Click on the \"Add\" button.\n"
+                              "- Select (highlight) the signal \"C3\".\n"
+                              "- Click on the \"Subtract\" button.\n"
+                              "- Click on the \"Make derivation\" button.\n"
+                              "- The result of \"P3\" minus \"C3\" will appear on the screen.");
 }
 
 
@@ -782,12 +782,12 @@ void UI_Signalswindow::strip_types_from_label(char *label)
   }
 
   if((!(strncmp(label, "EEG ", 4)))
-   ||(!(strncmp(label, "ECG ", 4)))
-   ||(!(strncmp(label, "EOG ", 4)))
-   ||(!(strncmp(label, "ERG ", 4)))
-   ||(!(strncmp(label, "EMG ", 4)))
-   ||(!(strncmp(label, "MEG ", 4)))
-   ||(!(strncmp(label, "MCG ", 4))))
+      ||(!(strncmp(label, "ECG ", 4)))
+      ||(!(strncmp(label, "EOG ", 4)))
+      ||(!(strncmp(label, "ERG ", 4)))
+      ||(!(strncmp(label, "EMG ", 4)))
+      ||(!(strncmp(label, "MEG ", 4)))
+      ||(!(strncmp(label, "MCG ", 4))))
   {
     if(label[4]!=' ')
     {
